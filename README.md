@@ -11,10 +11,10 @@
  - 当前版本：2.2.4
 
 ## 运行环境
-### JDK 6及其以上
+ - JDK 6及其以上
 
 ## 安装
-### Maven方式
+#### Maven方式
 下载[最新版JAR](https://search.maven.org/remote_content?g=com.aliyun.openservices&a=ots-public&v=LATEST)或者通过Maven：
 ```xml
 <dependency>
