@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="logs/aliyun-openservices-ots.log"
+            immediateFlush="false"
+            filePattern="logs/$${date:yyyy-MM}/aliyun-openservices-ots-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy
+                    size="250 MB" />
+            </Policies>
+        </RollingFile>
+        <Async name="Async">
+            <AppenderRef ref="RollingFile" />
+        </Async>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="com.aliyun.openservices.ots.internal.OTSOperation" level="error" additivity="false">
+            <AppenderRef ref="Async" level="error" />
+        </AsyncLogger>
+        <AsyncLogger name="com.aliyun.openservices.ots.internal.OTSTraceLogger" level="warn" additivity="false">
+            <AppenderRef ref="Async" level="warn" />
+        </AsyncLogger>
+        <AsyncRoot level="warn">
+            <AppenderRef ref="Async" />
+        </AsyncRoot>
+    </Loggers>
+</configuration>
