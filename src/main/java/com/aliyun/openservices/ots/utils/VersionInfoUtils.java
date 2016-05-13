@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class VersionInfoUtils {
     private static final String VERSION_INFO_FILE = "versioninfo.properties";
+    private static final String USER_AGENT_PREFIX = "aliyun-tablestore-sdk-java";
     
     private static Log log = LogFactory.getLog(VersionInfoUtils.class);
 
@@ -25,7 +26,9 @@ public class VersionInfoUtils {
     
     public static String getDefaultUserAgent() {
         if (defaultUserAgent == null) {
-            defaultUserAgent = "aliyun-sdk-java" + "/" + getVersion();
+            defaultUserAgent = USER_AGENT_PREFIX + "/" + getVersion() + "(" +
+                    System.getProperty("os.name") + "/" + System.getProperty("os.version") + "/" +
+                    System.getProperty("os.arch") + ";" + System.getProperty("java.version") + ")";
         }
         return defaultUserAgent;
     }
