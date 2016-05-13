@@ -4,7 +4,7 @@
 [![GitHub version](https://badge.fury.io/gh/aliyun%2Faliyun-tablestore-java-sdk.svg)](https://badge.fury.io/gh/aliyun%2Faliyun-tablestore-java-sdk)
 
 ## 关于
- - 此C# SDK基于[阿里云表格存储服务](http://www.aliyun.com/product/ots/) API构建。
+ - 此JAVA SDK基于[阿里云表格存储服务](http://www.aliyun.com/product/ots/) API构建。
  - 阿里云表格存储是阿里云自主研发的NoSQL数据存储服务，提供海量结构化数据的存储和实时访问。
 
 ## 版本
