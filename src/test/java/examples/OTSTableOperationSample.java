@@ -29,7 +29,7 @@ public class OTSTableOperationSample {
     private static final String COLUMN_UID_NAME = "uid";
 
     public static void main(String args[]) {
-        final String endPoint = "http://10.101.16.10"; 
+        final String endPoint = "";
         final String accessId = "xxxx";
         final String accessKey = "yyyy";
         final String instanceName = "zzzz";

@@ -30,7 +30,7 @@ public class OTSConditionalUpdateSample {
     private static final String COLUMN_MOBILE_NAME = "mobile";
 
     public static void main(String args[]) {
-        final String endPoint = "http://10.101.168.94";
+        final String endPoint = "";
         final String accessId = "xxxx";
         final String accessKey = "yyyy";
         final String instanceName = "zzzz";

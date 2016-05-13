@@ -7,6 +7,7 @@
 
 package examples;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.aliyun.openservices.ots.ClientException;
@@ -14,23 +15,7 @@ import com.aliyun.openservices.ots.ServiceException;
 import com.aliyun.openservices.ots.OTSClient;
 import com.aliyun.openservices.ots.OTSErrorCode;
 import com.aliyun.openservices.ots.OTSException;
-import com.aliyun.openservices.ots.model.CapacityUnit;
-import com.aliyun.openservices.ots.model.ColumnValue;
-import com.aliyun.openservices.ots.model.Condition;
-import com.aliyun.openservices.ots.model.CreateTableRequest;
-import com.aliyun.openservices.ots.model.DeleteTableRequest;
-import com.aliyun.openservices.ots.model.GetRangeRequest;
-import com.aliyun.openservices.ots.model.GetRangeResult;
-import com.aliyun.openservices.ots.model.PrimaryKeyType;
-import com.aliyun.openservices.ots.model.PrimaryKeyValue;
-import com.aliyun.openservices.ots.model.PutRowRequest;
-import com.aliyun.openservices.ots.model.PutRowResult;
-import com.aliyun.openservices.ots.model.RangeRowQueryCriteria;
-import com.aliyun.openservices.ots.model.Row;
-import com.aliyun.openservices.ots.model.RowExistenceExpectation;
-import com.aliyun.openservices.ots.model.RowPrimaryKey;
-import com.aliyun.openservices.ots.model.RowPutChange;
-import com.aliyun.openservices.ots.model.TableMeta;
+import com.aliyun.openservices.ots.model.*;
 
 public class OTSMultiDataSample {
     private static final String COLUMN_GID_NAME = "gid";
@@ -41,10 +26,10 @@ public class OTSMultiDataSample {
     private static final String COLUMN_MOBILE_NAME = "mobile";
 
     public static void main(String args[]) {
-        final String endPoint = "http://10.101.16.10"; 
-        final String accessId = "xxxx";
-        final String accessKey = "yyyy";
-        final String instanceName = "zzzz";
+        final String endPoint = "";
+        final String accessId = "";
+        final String accessKey = "";
+        final String instanceName = "";
         
         OTSClient client = new OTSClient(endPoint, accessId, accessKey,
                 instanceName);
@@ -60,8 +45,12 @@ public class OTSMultiDataSample {
 
             // 插入多行数据。
             putRows(client, tableName);
+
             // 再取回来看看。
             getRange(client, tableName);
+
+            // 迭代读取
+            getByIterator(client, tableName);
         } catch (ServiceException e) {
             System.err.println("操作失败，详情：" + e.getMessage());
             // 可以根据错误代码做出处理， OTS的ErrorCode定义在OTSErrorCode中。
@@ -187,5 +176,42 @@ public class OTSMultiDataSample {
         int consumedReadCU = result.getConsumedCapacity().getCapacityUnit()
                 .getReadCapacityUnit();
         System.out.println("本次读操作消耗的读CapacityUnit为：" + consumedReadCU);
+    }
+
+    private static void getByIterator(OTSClient client, String tableName)
+            throws OTSException, ClientException {
+        // 构造迭代读取的起始位置
+        RowPrimaryKey inclusiveStartKey = new RowPrimaryKey();
+        inclusiveStartKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
+                PrimaryKeyValue.fromLong(1));
+        inclusiveStartKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
+                PrimaryKeyValue.INF_MIN);
+
+        // 构造迭代读取的结束位置
+        RowPrimaryKey exclusiveEndKey = new RowPrimaryKey();
+        exclusiveEndKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
+                PrimaryKeyValue.fromLong(4));
+        exclusiveEndKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
+                PrimaryKeyValue.INF_MAX);
+
+        // 构造迭代读取的参数对象，并设置起始和结束的位置，包括起始位置的行，不包括结束位置的行
+        RangeIteratorParameter rangeIteratorParameter = new RangeIteratorParameter(tableName);
+        rangeIteratorParameter.setInclusiveStartPrimaryKey(inclusiveStartKey);
+        rangeIteratorParameter.setExclusiveEndPrimaryKey(exclusiveEndKey);
+
+        // 创建出迭代器，并迭代获取美一行数据
+        try {
+            Iterator<Row> iterator = client.createRangeIterator(rangeIteratorParameter);
+            while (iterator.hasNext()) {
+                Row row = iterator.next();
+                System.out.println("name:" + row.getColumns().get(COLUMN_NAME_NAME));
+                System.out.println("address" + row.getColumns().get(COLUMN_ADDRESS_NAME));
+            }
+            System.out.println("Iterator get succeeded.");
+        } catch (ClientException ex) {
+            System.out.println("Iterator get failed.");
+        } catch (OTSException ex) {
+            System.out.println("Iterator get failed.");
+        }
     }
 }

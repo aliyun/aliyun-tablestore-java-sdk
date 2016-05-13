@@ -43,7 +43,7 @@ public class OTSMultiTableOperationSample {
     private static final int TABLE_COUNT = 5;
 
     public static void main(String args[]) {
-        final String endPoint = "http://10.101.16.10"; 
+        final String endPoint = "";
         final String accessId = "xxxx";
         final String accessKey = "yyyy";
         final String instanceName = "zzzz";

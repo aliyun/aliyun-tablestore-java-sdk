@@ -186,6 +186,16 @@ public interface OTS {
     public GetRangeResult getRange(GetRangeRequest getRangeRequest)
             throws OTSException, ClientException;
 
+    /**
+     *  从表(Table)中迭代读取满足条件的数据
+     * @param rangeIteratorParameter
+     *         迭代读时的参数，包括开始，结束位置
+     * @return 迭代器
+     * @throws OTSException
+     *          OTS访问返回错误消息
+     * @throws ClientException
+     *          请求的返回结果无效， 或由于网络原因请求失败， 或访问超时。
+     */
     public Iterator<Row> createRangeIterator(
             RangeIteratorParameter rangeIteratorParameter)
             throws OTSException, ClientException;
