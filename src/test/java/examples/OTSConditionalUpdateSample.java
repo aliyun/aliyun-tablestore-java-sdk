@@ -1,10 +1,3 @@
-/**
- * Copyright (C) Alibaba Cloud Computing
- * All rights reserved.
- * 
- * 版权所有 （C）阿里云计算有限公司
- */
-
 package examples;
 
 import com.aliyun.openservices.ots.ClientException;
@@ -15,7 +8,6 @@ import com.aliyun.openservices.ots.model.*;
 import com.aliyun.openservices.ots.model.condition.ColumnCondition;
 import com.aliyun.openservices.ots.model.condition.CompositeCondition;
 import com.aliyun.openservices.ots.model.condition.RelationalCondition;
-import com.aliyun.openservices.ots.protocol.OtsProtocol2;
 
 /**
  * 该示例代码包含了如何使用OTS的Conditional update功能

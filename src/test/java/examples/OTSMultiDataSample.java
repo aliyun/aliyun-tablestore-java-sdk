@@ -1,10 +1,3 @@
-/**
- * Copyright (C) Alibaba Cloud Computing
- * All rights reserved.
- * 
- * 版权所有 （C）阿里云计算有限公司
- */
-
 package examples;
 
 import java.util.Iterator;
@@ -199,7 +192,7 @@ public class OTSMultiDataSample {
         rangeIteratorParameter.setInclusiveStartPrimaryKey(inclusiveStartKey);
         rangeIteratorParameter.setExclusiveEndPrimaryKey(exclusiveEndKey);
 
-        // 创建出迭代器，并迭代获取美一行数据
+        // 创建出迭代器，并迭代获取每一行数据
         try {
             Iterator<Row> iterator = client.createRangeIterator(rangeIteratorParameter);
             while (iterator.hasNext()) {
