@@ -64,7 +64,7 @@ public class CapacityUnit {
 
     /**
      * 设置创建表时初始写CapacityUnit的值，设置的值必须为非负数。
-     * @param readCapacityUnit 写CapacityUnit的配置
+     * @param writeCapacityUnit 写CapacityUnit的配置
      * @throws IllegalArgumentException 
      *              若写CapacityUnit的值为负数。
      */

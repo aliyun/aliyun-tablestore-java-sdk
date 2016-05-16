@@ -12,7 +12,7 @@ public class ParamChecker {
      *  - primary key schema is matched with which defined in table meta.
      *  - primary key column's value size is less than {@link com.aliyun.openservices.ots.internal.writer.WriterConfig#maxPKColumnSize}
      *  - attribute column's value size is less than {@link com.aliyun.openservices.ots.internal.writer.WriterConfig#maxAttrColumnSize}
-     *  - the count of attribute columns is less than {@parma config#maxColumnsCount}
+     *  - the count of attribute columns is less than {@link WriterConfig#maxColumnsCount}
      *  - the name of attribute columns not duplicated with primary key column's name
      *  - the total row size
      *

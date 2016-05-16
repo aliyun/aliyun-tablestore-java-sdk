@@ -109,7 +109,7 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>  {
     /**
      * 转换为长整型。
      * 当且仅当数据类型为{@link PrimaryKeyType#INTEGER}时转换能够成功。
-     * @return <code>long</long>值。
+     * @return long 长整数值。
      */
     public long asLong() {
         if (this.type != PrimaryKeyType.INTEGER){

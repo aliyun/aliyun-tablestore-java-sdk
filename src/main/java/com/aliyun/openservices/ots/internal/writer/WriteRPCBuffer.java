@@ -29,8 +29,8 @@ public class WriteRPCBuffer {
      *  2. 如果新增这一行会导致缓冲区溢出
      *  3. 如果新增这一行会总行数会超过{@link com.aliyun.openservices.ots.internal.writer.WriterConfig#maxBatchRowsCount}限制
      *
-     * @param rowChange
-     * @return
+     * @param rowChange 行数据
+     * @return 是否添加成功
      */
     public boolean appendRowChange(RowChange rowChange) {
         RowPrimaryKey primaryKey = rowChange.getRowPrimaryKey();

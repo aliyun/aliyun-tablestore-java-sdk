@@ -27,7 +27,6 @@ public class OTSExecutionContext<Req, Res> {
 
     /**
      * asyncClientCallback的创建依赖OTSExecutionContext对象，所以这里要单独set, 且应在setRetryHandler之后。
-     * @return
      */
     public void setAsyncClientCallback(FutureCallback futureCallback) {
         this.asyncClientCallback = futureCallback;

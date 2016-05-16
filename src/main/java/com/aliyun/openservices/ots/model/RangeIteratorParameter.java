@@ -47,7 +47,7 @@ public class RangeIteratorParameter extends RowQueryCriteria {
     /**
      * 设置查询时单次请求返回的行数。
      * -1 表示全部符合条件的数据行（默认值）。
-     * @param limit 单次请求返回的行数。
+     * @param count 单次请求返回的行数。
      */
     public void setCount(int count) {
         if (count <= 0) {
@@ -104,7 +104,7 @@ public class RangeIteratorParameter extends RowQueryCriteria {
      * 范围查询需要用户指定一个主键的范围，该范围是一个左闭右开的区间，inclusiveStartPrimaryKey为该区间的左边界。
      * 若direction为FORWARD，则inclusiveStartPrimaryKey必须小于exclusiveEndPrimaryKey。
      * 若direction为BACKWARD，则inclusiveStartPrimaryKey必须大于exclusiveEndPrimaryKey。
-     * inclusiveStartPrimaryKey必须包含表中定义的所有主键列，列的值可以定义{@link PrimaryKeyRange.INF_MIN}或者{@link PrimaryKeyRange.INF_MAX}用于表示该列的所有取值范围。
+     * inclusiveStartPrimaryKey必须包含表中定义的所有主键列，列的值可以定义PrimaryKeyRange.INF_MIN或者PrimaryKeyRange.INF_MAX用于表示该列的所有取值范围。
      * @param inclusiveStartPrimaryKey 范围查询的左边界的主键值。
      */
     public void setInclusiveStartPrimaryKey(RowPrimaryKey inclusiveStartPrimaryKey) {
@@ -124,7 +124,7 @@ public class RangeIteratorParameter extends RowQueryCriteria {
      * 范围查询需要用户指定一个主键的范围，该范围是一个左闭右开的区间，exclusiveEndPrimaryKey为该区间的右边界。
      * 若direction为FORWARD，则exclusiveEndPrimaryKey必须大于inclusiveStartPrimaryKey。
      * 若direction为BACKWARD，则exclusiveEndPrimaryKey必须小于inclusiveStartPrimaryKey。
-     * exclusiveEndPrimaryKey必须包含表中定义的所有主键列，列的值可以定义{@link PrimaryKeyRange.INF_MIN}或者{@link PrimaryKeyRange.INF_MAX}用于表示该列的所有取值范围。
+     * exclusiveEndPrimaryKey必须包含表中定义的所有主键列，列的值可以定义PrimaryKeyRange.INF_MIN或者PrimaryKeyRange.INF_MAX用于表示该列的所有取值范围。
      * @param exclusiveEndPrimaryKey 范围查询的右边界的主键值。
      */
     public void setExclusiveEndPrimaryKey(RowPrimaryKey exclusiveEndPrimaryKey) {

@@ -73,6 +73,8 @@ public class ServiceCredentials {
      *          Access Key ID。
      * @param accessKeySecret
      *          Access Key Secret。
+     * @param stsToken
+     *          Aliyun STS token value
      * @exception NullPointerException accessKeyId或accessKeySecret为空指针。
      */
     public ServiceCredentials(String accessKeyId, String accessKeySecret, String stsToken){
@@ -84,7 +86,7 @@ public class ServiceCredentials {
     /**
      * 获取短期访问凭证。
      * 详细信息请参考阿里云STS (Security Token Service) 服务文档。
-     * @return
+     * @return token value
      */
     public String getStsToken() {
         return stsToken;
@@ -93,7 +95,7 @@ public class ServiceCredentials {
     /**
      * 设置短期访问凭证。
      * 详细信息请参考阿里云STS (Security Token Service) 服务文档。
-     * @param stsToken
+     * @param stsToken STS的临时token值
      */
     public void setStsToken(String stsToken) {
         this.stsToken = stsToken;
