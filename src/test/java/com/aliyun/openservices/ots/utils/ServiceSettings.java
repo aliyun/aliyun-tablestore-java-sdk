@@ -22,7 +22,11 @@ public class ServiceSettings {
     }
 
     public String getOTSEndpoint() {
-        return properties.getProperty("ots.endpoint");
+        String endpoint =  properties.getProperty("ots.endpoint");
+        if (endpoint.isEmpty()) {
+            endpoint = System.getenv("ots.endpoint");
+        }
+        return endpoint;
     }
 
     public void setOTSEndpoint(String otsEndpoint) {
@@ -30,7 +34,11 @@ public class ServiceSettings {
     }
 
     public String getOTSAccessKeyId() {
-        return properties.getProperty("ots.accesskeyid");
+        String accessKeyId =  properties.getProperty("ots.accesskeyid");
+        if (accessKeyId.isEmpty()) {
+            accessKeyId = System.getenv("ots.accesskeyid");
+        }
+        return accessKeyId;
     }
 
     public void setOTSAccessKeyId(String otsAccessKeyId) {
@@ -38,7 +46,11 @@ public class ServiceSettings {
     }
 
     public String getOTSAccessKeySecret() {
-        return properties.getProperty("ots.accesskeysecret");
+        String accessKeySecret =  properties.getProperty("ots.accesskeysecret");
+        if (accessKeySecret.isEmpty()) {
+            accessKeySecret = System.getenv("ots.accesskeysecret");
+        }
+        return accessKeySecret;
     }
 
     public void setOTSAccessKeySecret(String otsAccessKeySecret) {
@@ -46,7 +58,11 @@ public class ServiceSettings {
     }
     
     public String getOTSInstanceName() {
-        return properties.getProperty("ots.instancename");
+        String instanceName =  properties.getProperty("ots.instancename");
+        if (instanceName.isEmpty()) {
+            instanceName = System.getenv("ots.instancename");
+        }
+        return instanceName;
     }
     
     public void setOTSInstanceName(String otsInstanceName) {
