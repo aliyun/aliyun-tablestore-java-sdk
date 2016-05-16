@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 
 
 public class ConditionalUpdateTest {
-    private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
+    private static final int MILLISECONDS_UNTIL_TABLE_READY = 15 * 1000;
     
     private static String tableName = "conditional_update_test_table";
     private static final OTS ots = OTSClientFactory.createOTSClient(
