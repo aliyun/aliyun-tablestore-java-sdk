@@ -42,6 +42,8 @@ public class OTSRetryStrategyTest {
 
     @Test
     public void testNoRetry() {
+        LOG.info("Start testNoRetry");
+
         OTSRetryStrategy retryStrategy = new OTSRetryStrategy() {
             @Override
             public boolean shouldRetry(String action, Exception ex, int retries) {
@@ -68,6 +70,8 @@ public class OTSRetryStrategyTest {
     
     @Test
     public void testRetryOTSException() {
+        LOG.info("Start testRetryOTSException");
+
         OTSRetryStrategy retryStrategy = new OTSRetryStrategy() {
             @Override
             public boolean shouldRetry(String action, Exception ex, int retries) {
@@ -103,6 +107,8 @@ public class OTSRetryStrategyTest {
     
     @Test
     public void testRetryClientException() {
+        LOG.info("Start testRetryClientException");
+
         OTSRetryStrategy retryStrategy = new OTSRetryStrategy() {
             @Override
             public boolean shouldRetry(String action, Exception ex, int retries) {

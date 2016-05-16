@@ -178,6 +178,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxDepth_GetRow() {
+        LOG.info("Start testCompositeCondition_ExceedMaxDepth_GetRow");
+
         RowPrimaryKey primaryKey =
                 new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
@@ -223,6 +225,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxDepth_GetRange() {
+        LOG.info("Start testCompositeCondition_ExceedMaxDepth_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -270,6 +274,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxDepth_BatchGetRow() {
+        LOG.info("Start testCompositeCondition_ExceedMaxDepth_BatchGetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
 
         MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
@@ -315,6 +321,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxDepth_GetRow() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxDepth_GetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
         criteria.setPrimaryKey(primaryKey);
@@ -380,6 +388,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxDepth_GetRange() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxDepth_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -448,6 +458,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxDepth_BatchGetRow() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxDepth_BatchGetRow");
+
         RowPrimaryKey primaryKey1 = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey primaryKey2 = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -518,6 +530,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxBreadth_GetRow() {
+        LOG.info("Start testCompositeCondition_ExceedMaxBreadth_GetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
         criteria.setPrimaryKey(primaryKey);
@@ -561,6 +575,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxBreadth_GetRange() {
+        LOG.info("Start testCompositeCondition_ExceedMaxBreadth_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -608,6 +624,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_ExceedMaxBreadth_BatchGetRow() {
+        LOG.info("Start testCompositeCondition_ExceedMaxBreadth_BatchGetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
 
         MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
@@ -653,6 +671,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTree_ExceedMaxCount_GetRow() {
+        LOG.info("Start testCompositeConditionInBinaryTree_ExceedMaxCount_GetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
         criteria.setPrimaryKey(primaryKey);
@@ -697,6 +717,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTree_ExceedMaxCount_GetRange() {
+        LOG.info("Start testCompositeConditionInBinaryTree_ExceedMaxCount_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -744,6 +766,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTreeExceedMaxCount_BatchGetRow() {
+        LOG.info("Start testCompositeConditionInBinaryTreeExceedMaxCount_BatchGetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
 
         MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
@@ -789,6 +813,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxBreadth_GetRow() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxBreadth_GetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
         criteria.setPrimaryKey(primaryKey);
@@ -850,6 +876,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxBreadth_GetRange() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxBreadth_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -917,6 +945,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeCondition_NotExceedMaxBreadth_BatchGetRow() {
+        LOG.info("Start testCompositeCondition_NotExceedMaxBreadth_BatchGetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
 
         MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
@@ -983,6 +1013,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTree_NotExceedMaxCount_GetRow() {
+        LOG.info("Start testCompositeConditionInBinaryTree_NotExceedMaxCount_GetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
 		criteria.setPrimaryKey(primaryKey);
@@ -1045,6 +1077,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTree_NotExceedMaxCount_GetRange() {
+        LOG.info("Start testCompositeConditionInBinaryTree_NotExceedMaxCount_GetRange");
+
         RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
 
@@ -1093,6 +1127,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompositeConditionInBinaryTree_NotExceedMaxCount_BatchGetRow() {
+        LOG.info("Start testCompositeConditionInBinaryTree_NotExceedMaxCount_BatchGetRow");
+
         RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
 
         MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
@@ -1153,6 +1189,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testValueExceedMaxLength() {
+        LOG.info("Start testValueExceedMaxLength");
+
         // STRING
         {
             RowPrimaryKey primaryKey = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
@@ -1197,6 +1235,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testCompareWithDifferentType() {
+        LOG.info("Start testCompareWithDifferentType");
+
         PutRowRequest pr = new PutRowRequest();
 
         RowPrimaryKey primaryKey =
@@ -1238,6 +1278,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testLogicOperatorRestriction() {
+        LOG.info("Start testLogicOperatorRestriction");
+
         CompositeCondition orFilter = new CompositeCondition(CompositeCondition.LogicOperator.OR);
         CompositeCondition andFilter = new CompositeCondition(CompositeCondition.LogicOperator.AND);
         CompositeCondition notFilter = new CompositeCondition(CompositeCondition.LogicOperator.NOT);
@@ -1337,6 +1379,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
      */
     @Test
     public void testColumnNameMaxLength() {
+        LOG.info("Start testColumnNameMaxLength");
+
         RowPrimaryKey primaryKey =
                 new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         ColumnValue columnValue = ColumnValue.fromString(NewString(2 * 896, 'c'));
@@ -1370,6 +1414,8 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
     }
 
     private void testFilterWithMaxNameLength(CompositeCondition compositeFilter) {
+        LOG.info("Start testFilterWithMaxNameLength");
+
         RowPrimaryKey primaryKey =
                 new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
         ColumnValue columnValue = ColumnValue.fromString(NewString(2 * 896, 'c'));

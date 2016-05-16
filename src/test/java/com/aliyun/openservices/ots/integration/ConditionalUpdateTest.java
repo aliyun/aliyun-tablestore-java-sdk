@@ -41,6 +41,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testSingleColumnCondition() throws Exception {
+        LOG.info("Start testSingleColumnCondition");
+
         CreateTable();
 
         // put a row first
@@ -92,6 +94,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testColumnMissing() throws  Exception {
+        LOG.info("Start testColumnMissing");
+
         CreateTable();
 
         // put a row first
@@ -118,6 +122,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testCompositeCondition() throws Exception {
+        LOG.info("Start testCompositeCondition");
+
         CreateTable();
 
         // put a row first
@@ -203,6 +209,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testTransactionalUpdate() throws Exception {
+        LOG.info("Start testTransactionalUpdate");
+
         CreateTable();
 
         boolean success = putRow(23, "Col1", ColumnValue.fromLong(0), null);
@@ -233,6 +241,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testLimits() throws  Exception {
+        LOG.info("Start testLimits");
+
         CreateTable();
 
         // column condition count <= 10
@@ -288,6 +298,8 @@ public class ConditionalUpdateTest {
 
     @Test
     public void testBatchWriteRow() throws Exception {
+        LOG.info("Start testBatchWriteRow");
+
         CreateTable();
 
         boolean success = putRow(20, "Col1", ColumnValue.fromString("Value20"), null);
@@ -430,8 +442,8 @@ public class ConditionalUpdateTest {
     
     private CapacityUnit getTestCapacityUnit() {
         CapacityUnit capacityUnit = new CapacityUnit();
-        capacityUnit.setReadCapacityUnit(5000);
-        capacityUnit.setWriteCapacityUnit(5000);
+        capacityUnit.setReadCapacityUnit(1);
+        capacityUnit.setWriteCapacityUnit(1);
         return capacityUnit;
     }
     

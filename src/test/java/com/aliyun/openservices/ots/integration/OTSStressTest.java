@@ -94,6 +94,8 @@ public class OTSStressTest {
 
     @Test
     public void testConcurrentPutRow() throws Exception{
+        LOG.info("Start testConcurrentPutRow");
+
         final int CONCURRENCIES = 2;
         final int INTERVAL = 900; // in milliseconds
         final int MAX_OCCURS = 10;
@@ -252,6 +254,8 @@ public class OTSStressTest {
 
     @Test
     public void testGetRowBenchmark() throws Exception {
+        LOG.info("Start testGetRowBenchmark");
+
         final int CONCURRENCIES = 4;
         final int MAX_OCCURS = 100;
         final int ROW_COUNT = 10;
@@ -354,8 +358,8 @@ public class OTSStressTest {
     
     private CapacityUnit getTestTableCapacityUnit() {
         CapacityUnit capacityUnit = new CapacityUnit();
-        capacityUnit.setReadCapacityUnit(5000);
-        capacityUnit.setWriteCapacityUnit(5000);
+        capacityUnit.setReadCapacityUnit(1);
+        capacityUnit.setWriteCapacityUnit(1);
         return capacityUnit;
     }
 }

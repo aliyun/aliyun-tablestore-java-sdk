@@ -44,6 +44,8 @@ public class OTSClientTest {
 
     @Test
     public void testTableOperation() throws Exception {
+        LOG.info("Start testTableOperation");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -77,7 +79,7 @@ public class OTSClientTest {
         assertTrue(utResponse.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(utResponse.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
         assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 5000);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
 
         // get table meta and check table is updated
         dtResult = ots.describeTable(dtRequest);
@@ -86,7 +88,7 @@ public class OTSClientTest {
         assertTrue(dtResult.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 5000);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
 
         // decrease write capacity
         Thread.sleep(70 * 1000 + 10); // sleep more than 10 minutes
@@ -131,6 +133,8 @@ public class OTSClientTest {
 
     @Test
     public void testGetRowOperation() throws Exception {
+        LOG.info("Start testGetRowOperation");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -183,6 +187,8 @@ public class OTSClientTest {
 
     @Test
     public void testPutRowOperation() throws Exception {
+        LOG.info("Start testPutRowOperation");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -324,6 +330,8 @@ public class OTSClientTest {
     
     @Test
     public void testUpdateRowOperation() throws Exception {
+        LOG.info("Start testUpdateRowOperation");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -511,6 +519,8 @@ public class OTSClientTest {
     
     @Test
     public void testDeleteRowOperation() throws Exception {
+        LOG.info("Start testDeleteRowOperation");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -647,6 +657,8 @@ public class OTSClientTest {
     
     @Test
     public void testGetRange() throws Exception {
+        LOG.info("Start testGetRange");
+
         // create table
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
@@ -1027,6 +1039,8 @@ public class OTSClientTest {
     
     @Test
     public void testBatchGetRow() throws Exception {
+        LOG.info("Start testBatchGetRow");
+
         final int TABLE_COUNT = 10;
         final int ROW_COUNT = 100;
         // create table
@@ -1077,6 +1091,8 @@ public class OTSClientTest {
     
     @Test
     public void testBatchWriteRow() throws Exception {
+        LOG.info("Start testBatchWriteRow");
+
         final int TABLE_COUNT = 10;
         final int ROW_COUNT = 100;
         
@@ -1344,6 +1360,8 @@ public class OTSClientTest {
 
     @Test
     public void testCreateTableWithBinaryKey() {
+        LOG.info("Start testCreateTableWithBinaryKey");
+
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk0", PrimaryKeyType.BINARY);
         tableMeta.addPrimaryKeyColumn("pk1", PrimaryKeyType.STRING);
@@ -1368,8 +1386,8 @@ public class OTSClientTest {
     
     private CapacityUnit getTestCapacityUnit() {
         CapacityUnit capacityUnit = new CapacityUnit();
-        capacityUnit.setReadCapacityUnit(5000);
-        capacityUnit.setWriteCapacityUnit(5000);
+        capacityUnit.setReadCapacityUnit(1);
+        capacityUnit.setWriteCapacityUnit(1);
         return capacityUnit;
     }
     

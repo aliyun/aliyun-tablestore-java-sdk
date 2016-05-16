@@ -106,6 +106,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase1() throws UnsupportedEncodingException {
+        LOG.info("Start testCase1");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -411,6 +413,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase2() throws UnsupportedEncodingException {
+        LOG.info("Start testCase2");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -735,6 +739,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase3() throws UnsupportedEncodingException {
+        LOG.info("Start testCase3");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -1032,6 +1038,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase4() throws UnsupportedEncodingException {
+        LOG.info("Start testCase4");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -1353,6 +1361,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase5() throws UnsupportedEncodingException {
+        LOG.info("Start testCase5");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -1631,6 +1641,8 @@ public class RelationFilterTest extends BaseFT {
      * | row5 | 浙江 | DON'T CARE |
      */
     private HashMap<String, Row> WriteFixture4Case6() throws UnsupportedEncodingException {
+        LOG.info("Start testCase6");
+
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk", PrimaryKeyType.STRING);
 
@@ -1673,6 +1685,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase6() throws UnsupportedEncodingException {
+        LOG.info("Start testCase6");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -1991,6 +2005,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase7() throws UnsupportedEncodingException {
+        LOG.info("Start testCase7");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -2211,6 +2227,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase8() throws UnsupportedEncodingException {
+        LOG.info("Start testCase8");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -2380,6 +2398,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase9() throws UnsupportedEncodingException {
+        LOG.info("Start testCase9");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -2494,6 +2514,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase10() throws UnsupportedEncodingException {
+        LOG.info("Start testCase10");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 
@@ -2611,6 +2633,8 @@ public class RelationFilterTest extends BaseFT {
      */
     @Test
     public void testCase11() throws UnsupportedEncodingException {
+        LOG.info("Start testCase11");
+
         long ts = (new Date()).getTime();
         LOG.info("Begin time stamp : " + ts);
 

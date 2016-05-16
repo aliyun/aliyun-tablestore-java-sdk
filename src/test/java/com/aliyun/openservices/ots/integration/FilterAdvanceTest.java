@@ -115,6 +115,8 @@ public class FilterAdvanceTest extends BaseFT {
      */
     @Test
     public void testReadRangeFilterRows() throws Exception {
+        LOG.info("Start testReadRangeFilterRows");
+
         // createTable
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk", PrimaryKeyType.INTEGER);
@@ -276,6 +278,8 @@ public class FilterAdvanceTest extends BaseFT {
      */
     @Test
     public void testFilterIfMissing() throws Exception {
+        LOG.info("Start testFilterIfMissing");
+
         // createTable
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk", PrimaryKeyType.INTEGER);
@@ -316,6 +320,8 @@ public class FilterAdvanceTest extends BaseFT {
      */
     @Test
     public void testFilterIfMissing1000Rows() throws Exception {
+        LOG.info("Start testFilterIfMissing1000Rows");
+
         // createTable
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk", PrimaryKeyType.INTEGER);
@@ -417,6 +423,8 @@ public class FilterAdvanceTest extends BaseFT {
      */
     @Test
     public void testCompoundFilter() throws Exception {
+        LOG.info("Start testCompoundFilter");
+
         // createTable
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("pk", PrimaryKeyType.INTEGER);
