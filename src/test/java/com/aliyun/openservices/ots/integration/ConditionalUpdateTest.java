@@ -210,7 +210,7 @@ public class ConditionalUpdateTest {
         boolean success = putRow(23, "Col1", ColumnValue.fromLong(0), null);
         assertTrue(success);
 
-        int threadNum = 100;
+        int threadNum = 20;
         List<DoTxn> runnables = new ArrayList<DoTxn>();
         List<Thread> threads = new ArrayList<Thread>();
 
