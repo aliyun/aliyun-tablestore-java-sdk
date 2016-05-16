@@ -16,7 +16,7 @@
 
 ## 安装
 #### Maven方式
-下载[最新版JAR](https://search.maven.org/remote_content?g=com.aliyun.openservices&a=ots-public&v=LATEST)或者通过Maven：
+下载[最新版JAR包](https://search.maven.org/remote_content?g=com.aliyun.openservices&a=ots-public&v=LATEST)或者通过Maven：
 ```xml
 <dependency>
     <groupId>com.aliyun.openservices</groupId>
