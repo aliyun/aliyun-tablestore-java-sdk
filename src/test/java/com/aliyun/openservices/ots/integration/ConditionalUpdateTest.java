@@ -5,7 +5,7 @@ import com.aliyun.openservices.ots.model.*;
 import com.aliyun.openservices.ots.model.condition.*;
 import com.aliyun.openservices.ots.utils.ServiceSettings;
 
-import org.apache.commons.logging.Log;
+import com.aliyun.openservices.ots.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,24 +19,18 @@ import static org.junit.Assert.*;
 public class ConditionalUpdateTest {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 15 * 1000;
     
-    private static String tableName = "conditional_update_test_table";
-    private static final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private static String tableName = TestUtil.newTableName("conditional_update_test_table");
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
     private static Logger LOG = Logger.getLogger(ConditionalUpdateTest.class.getName());
 
     @Before
     public void setup() throws Exception {
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        ListTableResult r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        } catch (Exception ex) {;}
     }
 
     @Test

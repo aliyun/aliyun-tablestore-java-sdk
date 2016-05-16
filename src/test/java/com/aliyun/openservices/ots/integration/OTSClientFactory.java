@@ -20,14 +20,8 @@ public class OTSClientFactory {
 
     public static OTS createOTSClient(ServiceSettings ss){
         ClientConfiguration config = new ClientConfiguration();
-
-        // Use specified endpoint and config.
-        // Set max conn to 1 to detect CLOSE_WAIT bugs.
-        config.setMaxConnections(1);
-        if (!isNullOrEmpty(ss.getProxyHost())) {
-            config.setProxyHost(ss.getProxyHost());
-            config.setProxyPort(ss.getProxyPort());
-        }
+        config.setConnectionTimeoutInMillisecond( 30 * 1000);
+        config.setSocketTimeoutInMillisecond(30 * 1000);
 
         return createOTSClient(ss, config);
     }

@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.aliyun.openservices.ots.model.*;
+import com.aliyun.openservices.ots.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,9 +22,8 @@ public class OTSClientTest {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
     private static final int TABLE_OPERATION_INTERVAL_IN_MSEC = 1 * 1000;
     
-    private String tableName = "ots_client_test_table";
-    final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private String tableName = TestUtil.newTableName("ots_client_test_table");
+    final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
 
     private static final Logger LOG = Logger.getLogger(OTSClientTest.class.getName());
 
@@ -31,15 +31,10 @@ public class OTSClientTest {
     public void setup() throws Exception {
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        ListTableResult r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-
-            LOG.info("Delete table: " + table);
-            Thread.sleep(1000);
-        }
+        } catch (Exception ex) {;}
     }
 
     @Test
@@ -69,7 +64,7 @@ public class OTSClientTest {
 
         // update table
         // decrease read capacity
-        Thread.sleep(70 * 1000 + 10); // sleep more than 10 minutes
+        Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         UpdateTableRequest utRequest = new UpdateTableRequest(tableName);
         ReservedThroughputChange capacityChange = new ReservedThroughputChange();
         capacityChange.setReadCapacityUnit(97);
@@ -91,7 +86,7 @@ public class OTSClientTest {
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
 
         // decrease write capacity
-        Thread.sleep(70 * 1000 + 10); // sleep more than 10 minutes
+        Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         capacityChange = new ReservedThroughputChange();
         capacityChange.setWriteCapacityUnit(98);
         utRequest.setReservedThroughputChange(capacityChange);
@@ -1367,7 +1362,7 @@ public class OTSClientTest {
         tableMeta.addPrimaryKeyColumn("pk1", PrimaryKeyType.STRING);
         tableMeta.addPrimaryKeyColumn("pk2", PrimaryKeyType.BINARY);
 
-        CapacityUnit cu = new CapacityUnit(100, 100);
+        CapacityUnit cu = new CapacityUnit(1, 1);
         CreateTableRequest ctr = new CreateTableRequest();
         ctr.setTableMeta(tableMeta);
         ctr.setReservedThroughput(cu);

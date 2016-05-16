@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.aliyun.openservices.ots.model.*;
+import com.aliyun.openservices.ots.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,11 +24,10 @@ import com.aliyun.openservices.ots.OTSException;
 import com.aliyun.openservices.ots.utils.ServiceSettings;
 
 public class OTSStressTest {
-    private String tableName = "ots_stress_test_table";
+    private String tableName = TestUtil.newTableName("ots_stress_test_table");
     private static final int MAX_RETRIES = 3;
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
-    private static final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
     private static final Logger LOG = Logger.getLogger(OTSStressTest.class.getName());
 
     private static class Summary {
@@ -81,15 +81,10 @@ public class OTSStressTest {
     public void setup() throws Exception {
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        ListTableResult r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-
-            LOG.info("Delete table: " + table);
-            Thread.sleep(1000);
-        }
+        } catch (Exception ex) {;}
     }
 
     @Test

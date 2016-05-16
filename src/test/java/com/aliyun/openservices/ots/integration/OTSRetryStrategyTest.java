@@ -19,25 +19,11 @@ import java.util.logging.Logger;
 
 public class OTSRetryStrategyTest {
     private static int retries = 0;
-    private static final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
     private static Logger LOG = Logger.getLogger(OTSRetryStrategyTest.class.getName());
 
     public static void setRetries(int retries) {
         OTSRetryStrategyTest.retries = retries;
-    }
-
-    @Before
-    public void setup() throws Exception {
-        ListTableResult r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            ots.deleteTable(deleteTableRequest);
-
-            LOG.info("Delete table: " + table);
-            Thread.sleep(1000);
-        }
     }
 
     @Test

@@ -9,6 +9,7 @@ import com.aliyun.openservices.ots.model.*;
 import com.aliyun.openservices.ots.model.condition.CompositeCondition;
 import com.aliyun.openservices.ots.model.condition.RelationalCondition;
 import com.aliyun.openservices.ots.utils.ServiceSettings;
+import com.aliyun.openservices.ots.utils.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +23,9 @@ import static org.junit.Assert.assertEquals;
 public class RelationFilterTest extends BaseFT {
     private static Logger LOG = Logger.getLogger(RelationFilterTest.class.getName());
 
-    private static String tableName = "RelationFilterFunctionTest";
+    private static String tableName = TestUtil.newTableName("RelationFilterFunctionTest");
 
-    private static final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
 
     private static final int SECONDS_UNTIL_TABLE_READY = 10;
 
@@ -39,15 +39,10 @@ public class RelationFilterTest extends BaseFT {
         OTSHelper.deleteAllTable(ots);
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        ListTableResult r = ots.listTable();
-
-        for (String table : r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        } catch (Exception ex) {;}
     }
 
     private void VerifyRow(Row testRow, Row goldRow) {

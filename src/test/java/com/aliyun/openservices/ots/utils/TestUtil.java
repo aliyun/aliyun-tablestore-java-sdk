@@ -33,6 +33,10 @@ public class TestUtil {
         return result;
     }
 
+    public static String newTableName(String tableName) {
+        return tableName + "_" + System.getProperty("java.version").replace(".", "_");
+    }
+
     public static String randomString(int length) {
         Random random = new Random(System.currentTimeMillis());
         char[] chars = new char[length];

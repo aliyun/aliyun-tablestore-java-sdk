@@ -12,6 +12,7 @@ import com.aliyun.openservices.ots.model.condition.ColumnCondition;
 import com.aliyun.openservices.ots.model.condition.CompositeCondition;
 import com.aliyun.openservices.ots.model.condition.RelationalCondition;
 import com.aliyun.openservices.ots.utils.ServiceSettings;
+import com.aliyun.openservices.ots.utils.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,9 @@ import static org.junit.Assert.fail;
 public class FilterRestrictionAndParamCheckingTest extends BaseFT {
     private static Logger LOG = Logger.getLogger(FilterAdvanceTest.class.getName());
 
-    private static String tableName = "FilterRestrictionTest";
+    private static String tableName = TestUtil.newTableName("FilterRestrictionTest");
 
-    private static final OTS ots = OTSClientFactory.createOTSClient(
-            ServiceSettings.load(), new ClientConfiguration());
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
 
     private static final int SECONDS_UNTIL_TABLE_READY = 10;
 
