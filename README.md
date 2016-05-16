@@ -2,6 +2,7 @@
 
 [![Software License](https://img.shields.io/badge/license-apache2-brightgreen.svg)](LICENSE)
 [![GitHub version](https://badge.fury.io/gh/aliyun%2Faliyun-tablestore-java-sdk.svg)](https://badge.fury.io/gh/aliyun%2Faliyun-tablestore-java-sdk)
+[![Build Status](https://travis-ci.org/aliyun/aliyun-tablestore-java-sdk.svg)](https://travis-ci.org/aliyun/aliyun-tablestore-java-sdk)
 
 ## 关于
  - 此JAVA SDK基于[阿里云表格存储服务](http://www.aliyun.com/product/ots/) API构建。
