@@ -1422,7 +1422,7 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
 
         List<Row> rows = new ArrayList<Row>();
 
-        // get row
+        LOG.info("get row");
         {
 
             GetRowRequest request = new GetRowRequest();
@@ -1436,7 +1436,7 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
             rows.add(result.getRow());
         }
 
-        // get range
+        LOG.info("get range");
         {
             RowPrimaryKey begin = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
             RowPrimaryKey end = new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(10));
@@ -1454,7 +1454,7 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
             rows.add(result.getRows().get(0));
         }
 
-        // batch get row
+        LOG.info("batch get row");
         {
             MultiRowQueryCriteria criteria = new MultiRowQueryCriteria(tableName);
              
@@ -1470,6 +1470,7 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
             rows.add(result.getSucceedRows().get(0).getRow());
         }
 
+        LOG.info("check result");
         for (Row row : rows) {
             Row expect = new Row();
             expect.addColumn("PK0", ColumnValue.fromLong(0));

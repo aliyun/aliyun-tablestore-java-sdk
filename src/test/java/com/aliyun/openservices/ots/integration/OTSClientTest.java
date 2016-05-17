@@ -668,7 +668,7 @@ public class OTSClientTest {
 
         // test get range each time with one primary key value range from INF_MIN to INF_MAX and other primary key in a specific value
         {
-            // test flag from INF_MIN to INF_MAX
+            LOG.info("test flag from INF_MIN to INF_MAX");
             int i = 3;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -690,7 +690,7 @@ public class OTSClientTest {
             compareRow(result.getRows().get(0), i, new String[]{"uid", "name", "sid", "flag", "col_integer", "col_string", "col_boolean", "col_double", "col_binary"});
         }
         {
-            // test name from INF_MIN to INF_MAX
+            LOG.info("test name from INF_MIN to INF_MAX");
             int i = 3;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -712,7 +712,7 @@ public class OTSClientTest {
             compareRow(result.getRows().get(0), i, new String[]{"uid", "name", "sid", "flag", "col_integer", "col_string", "col_boolean", "col_double", "col_binary"});
         }
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -738,8 +738,8 @@ public class OTSClientTest {
             }
         }
 
-        // test get range in primary keys all in different value
         {
+            LOG.info("test get range in primary keys all in different value");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -775,7 +775,7 @@ public class OTSClientTest {
 
         // test get range with limit
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -805,7 +805,7 @@ public class OTSClientTest {
 
         // test get a large range, expect next start key is returned, and with next start key, we can read all rows in the range
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -835,7 +835,7 @@ public class OTSClientTest {
 
         // test get a large range with iterator, expect all rows in range is returned
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -862,7 +862,7 @@ public class OTSClientTest {
 
         // test get a large range with iterator, set limit, expect all rows in range is returned
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -890,7 +890,7 @@ public class OTSClientTest {
             }
         }
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -919,7 +919,7 @@ public class OTSClientTest {
             }
         }
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -945,7 +945,7 @@ public class OTSClientTest {
             }
         }
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -972,7 +972,7 @@ public class OTSClientTest {
             }
         }
         {
-            // test uid from INF_MIN to INF_MAX
+            LOG.info("test uid from INF_MIN to INF_MAX");
             int i = 0;
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(i);
             RowPrimaryKey exclusiveEndPrimaryKey = getRowPrimaryKeys(i);
@@ -1001,8 +1001,8 @@ public class OTSClientTest {
             }
         }
 
-        // test a really large data set
         {
+            LOG.info("test a really large data set");
             generateDataForTest(tableName, 1000, 59999);
             // test uid from 1000 to 100001
             RowPrimaryKey inclusiveStartPrimaryKey = getRowPrimaryKeys(0);

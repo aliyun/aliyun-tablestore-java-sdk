@@ -120,6 +120,7 @@ public class FilterAdvanceTest extends BaseFT {
         Utils.sleepSeconds(SECONDS_UNTIL_TABLE_READY);
 
         // put 10000 rows * 10 cols * 1 version
+        LOG.info("put 1000 rows");
         int kRowCount = 10000;
         int kColumnCount = 10;
         Map<String, ColumnValue> columns = new HashMap<String, ColumnValue>();
@@ -134,6 +135,7 @@ public class FilterAdvanceTest extends BaseFT {
         }
 
         // 正向，通过filter读出的行数
+        LOG.info("check result");
         checkReadRangeResult(0, Direction.FORWARD);
         checkReadRangeResult(1, Direction.FORWARD);
         checkReadRangeResult(4999, Direction.FORWARD);
@@ -328,6 +330,7 @@ public class FilterAdvanceTest extends BaseFT {
         List<Row> expectRows2 = new ArrayList<Row>();
 
         // put 1000 rows
+        LOG.info("put 1000 rows");
         for (int i = 0; i < 500; i++) {
             Map<String, ColumnValue> columns = new HashMap<String, ColumnValue>();
             RowPrimaryKey pk = new RowPrimaryKey().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i));
@@ -378,6 +381,7 @@ public class FilterAdvanceTest extends BaseFT {
         rangeRowQueryCriteria.setExclusiveEndPrimaryKey(endKey);
         rangeRowQueryCriteria.setFilter(filter);
 
+        LOG.info("start get range");
         List<Row> allRows = new ArrayList<Row>();
         RowPrimaryKey nextKey = beginKey;
         while (nextKey != null) {
@@ -396,6 +400,7 @@ public class FilterAdvanceTest extends BaseFT {
         filter.setPassIfMissing(true);
         rangeRowQueryCriteria.setFilter(filter);
 
+        LOG.info("check result");
         allRows.clear();
         nextKey = beginKey;
         while (nextKey != null) {
