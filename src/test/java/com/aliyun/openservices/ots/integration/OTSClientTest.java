@@ -34,6 +34,7 @@ public class OTSClientTest {
         try {
             DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
+            Thread.sleep(5000);
         } catch (Exception ex) {;}
     }
 
@@ -41,7 +42,7 @@ public class OTSClientTest {
     public void testTableOperation() throws Exception {
         LOG.info("Start testTableOperation");
 
-        // create table
+        LOG.info("create table");
         TableMeta tableMeta = getTestTableMeta();
         CapacityUnit tableCU = getTestCapacityUnit();
         CreateTableRequest request = new CreateTableRequest();
@@ -49,11 +50,11 @@ public class OTSClientTest {
         request.setReservedThroughput(tableCU);
         ots.createTable(request);
 
-        // list table to check table is exist
+        LOG.info("list table to check table is exist");
         List<String> tableNames = ots.listTable().getTableNames();
         assertTrue(tableNames.contains(tableName));
 
-        // get table meta and check table meta
+        LOG.info("get table meta and check table meta");
         DescribeTableRequest dtRequest = new DescribeTableRequest(tableName);
         DescribeTableResult dtResult = ots.describeTable(dtRequest);
         TableMeta meta = dtResult.getTableMeta();
@@ -62,8 +63,8 @@ public class OTSClientTest {
         assertEquals(dtResult.getReservedThroughputDetails().getLastDecreaseTime(), 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 0);
 
-        // update table
-        // decrease read capacity
+        LOG.info("update table");
+        LOG.info("decrease read capacity");
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         UpdateTableRequest utRequest = new UpdateTableRequest(tableName);
         ReservedThroughputChange capacityChange = new ReservedThroughputChange();
@@ -76,7 +77,7 @@ public class OTSClientTest {
         assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
         assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
 
-        // get table meta and check table is updated
+        LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
         compareTableMeta(tableMeta,dtResult.getTableMeta());
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
@@ -85,7 +86,7 @@ public class OTSClientTest {
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
 
-        // decrease write capacity
+        LOG.info("decrease write capacity");
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         capacityChange = new ReservedThroughputChange();
         capacityChange.setWriteCapacityUnit(98);
@@ -97,7 +98,7 @@ public class OTSClientTest {
         assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
         assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 98);
 
-        // get table meta and check table is updated
+        LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
         compareTableMeta(tableMeta,dtResult.getTableMeta());
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
@@ -106,11 +107,12 @@ public class OTSClientTest {
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
         assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 98);
 
-        // delete table
+        LOG.info("delete table");
         DeleteTableRequest delRequest = new DeleteTableRequest(tableName);
         ots.deleteTable(delRequest);
+        Thread.sleep(5000);
 
-        // list table to check table is not exist
+        LOG.info("list table to check table is not exist");
         tableNames = ots.listTable().getTableNames();
         assertTrue(!tableNames.contains(tableName));
     }
