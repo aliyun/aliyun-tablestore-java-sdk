@@ -119,9 +119,9 @@ public class FilterAdvanceTest extends BaseFT {
         OTSHelper.createTable(ots, tableMeta);
         Utils.sleepSeconds(SECONDS_UNTIL_TABLE_READY);
 
-        // put 10000 rows * 10 cols * 1 version
+        // put 1000 rows * 10 cols * 1 version
         LOG.info("put 1000 rows");
-        int kRowCount = 10000;
+        int kRowCount = 1000;
         int kColumnCount = 10;
         Map<String, ColumnValue> columns = new HashMap<String, ColumnValue>();
         for (int i = 0; i < kColumnCount; i++) {
@@ -138,20 +138,20 @@ public class FilterAdvanceTest extends BaseFT {
         LOG.info("check result");
         checkReadRangeResult(0, Direction.FORWARD);
         checkReadRangeResult(1, Direction.FORWARD);
-        checkReadRangeResult(4999, Direction.FORWARD);
-        checkReadRangeResult(5000, Direction.FORWARD);
-        checkReadRangeResult(5001, Direction.FORWARD);
-        checkReadRangeResult(9999, Direction.FORWARD);
-        checkReadRangeResult(10000, Direction.FORWARD);
+        checkReadRangeResult(499, Direction.FORWARD);
+        checkReadRangeResult(500, Direction.FORWARD);
+        checkReadRangeResult(501, Direction.FORWARD);
+        checkReadRangeResult(999, Direction.FORWARD);
+        checkReadRangeResult(1000, Direction.FORWARD);
 
         // 反向，通过filter读出的行数
         checkReadRangeResult(0, Direction.BACKWARD);
         checkReadRangeResult(1, Direction.BACKWARD);
-        checkReadRangeResult(4999, Direction.BACKWARD);
-        checkReadRangeResult(5000, Direction.BACKWARD);
-        checkReadRangeResult(5001, Direction.BACKWARD);
-        checkReadRangeResult(9999, Direction.BACKWARD);
-        checkReadRangeResult(10000, Direction.BACKWARD);
+        checkReadRangeResult(499, Direction.BACKWARD);
+        checkReadRangeResult(500, Direction.BACKWARD);
+        checkReadRangeResult(501, Direction.BACKWARD);
+        checkReadRangeResult(999, Direction.BACKWARD);
+        checkReadRangeResult(1000, Direction.BACKWARD);
     }
 
     enum FilterIfMissingType
