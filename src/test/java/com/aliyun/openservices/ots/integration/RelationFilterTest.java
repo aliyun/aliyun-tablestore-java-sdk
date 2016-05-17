@@ -36,7 +36,6 @@ public class RelationFilterTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(ots);
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
         try {

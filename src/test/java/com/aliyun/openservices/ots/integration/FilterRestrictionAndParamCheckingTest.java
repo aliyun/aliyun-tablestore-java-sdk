@@ -43,18 +43,14 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(ots);
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        ListTableResult r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
+            Thread.sleep(5000);
+        } catch (Exception ex) {;}
 
-            Thread.sleep(1000);
-        }
 
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("PK0", PrimaryKeyType.INTEGER);

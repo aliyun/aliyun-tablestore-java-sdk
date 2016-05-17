@@ -1048,6 +1048,12 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
+            try {
+                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableNames[i]);
+                ots.deleteTable(deleteTableRequest);
+                Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
+            } catch (Exception ex) {;}
+
             tableMeta.setTableName(tableNames[i]);
             ctRequest.setTableMeta(tableMeta);
             ots.createTable(ctRequest);
