@@ -34,7 +34,6 @@ public class OTSClientTest {
         try {
             DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             ots.deleteTable(deleteTableRequest);
-            Thread.sleep(5000);
         } catch (Exception ex) {;}
     }
 
@@ -68,14 +67,14 @@ public class OTSClientTest {
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         UpdateTableRequest utRequest = new UpdateTableRequest(tableName);
         ReservedThroughputChange capacityChange = new ReservedThroughputChange();
-        capacityChange.setReadCapacityUnit(97);
+        capacityChange.setReadCapacityUnit(7);
         utRequest.setReservedThroughputChange(capacityChange);
         UpdateTableResult utResponse = ots.updateTable(utRequest);
         assertTrue(utResponse.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(utResponse.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(utResponse.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 10);
 
         LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
@@ -83,20 +82,20 @@ public class OTSClientTest {
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(dtResult.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 1);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 10);
 
         LOG.info("decrease write capacity");
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         capacityChange = new ReservedThroughputChange();
-        capacityChange.setWriteCapacityUnit(98);
+        capacityChange.setWriteCapacityUnit(8);
         utRequest.setReservedThroughputChange(capacityChange);
         utResponse = ots.updateTable(utRequest);
         assertTrue(utResponse.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(utResponse.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(utResponse.getReservedThroughputDetails().getNumberOfDecreasesToday(), 2);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 98);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 8);
 
         LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
@@ -104,8 +103,8 @@ public class OTSClientTest {
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(dtResult.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 2);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 97);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 98);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 8);
 
         LOG.info("delete table");
         DeleteTableRequest delRequest = new DeleteTableRequest(tableName);
@@ -1102,6 +1101,12 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
+            try {
+                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableNames[i]);
+                ots.deleteTable(deleteTableRequest);
+                Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
+            } catch (Exception ex) {;}
+
             tableMeta.setTableName(tableNames[i]);
             ctRequest.setTableMeta(tableMeta);
             ots.createTable(ctRequest);
@@ -1383,8 +1388,8 @@ public class OTSClientTest {
     
     private CapacityUnit getTestCapacityUnit() {
         CapacityUnit capacityUnit = new CapacityUnit();
-        capacityUnit.setReadCapacityUnit(1);
-        capacityUnit.setWriteCapacityUnit(1);
+        capacityUnit.setReadCapacityUnit(10);
+        capacityUnit.setWriteCapacityUnit(10);
         return capacityUnit;
     }
     
