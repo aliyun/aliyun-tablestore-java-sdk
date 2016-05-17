@@ -20,11 +20,8 @@ public class OTSClientFactory {
 
     public static OTS createOTSClient(ServiceSettings ss){
         ClientConfiguration config = new ClientConfiguration();
-        config.setConnectionTimeoutInMillisecond(60 * 1000);
-        config.setSocketTimeoutInMillisecond(60 * 1000);
-        config.setRetryThreadCount(3);
-        config.setIoThreadCount(8);
-        config.setMaxConnections(50);
+        config.setConnectionTimeoutInMillisecond(30 * 1000);
+        config.setSocketTimeoutInMillisecond(30 * 1000);
 
         return createOTSClient(ss, config);
     }
