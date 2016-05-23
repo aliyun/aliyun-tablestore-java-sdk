@@ -39,7 +39,7 @@ public class OTSWriterSample {
 
             scanTable(client, tableName);
 
-            deleteTable(client, tableName);
+            //deleteTable(client, tableName);
 
         } catch (ServiceException e) {
             System.err.println("操作失败，详情：" + e.getMessage());
@@ -61,12 +61,12 @@ public class OTSWriterSample {
     private static void scanTable(OTSClient client, String tableName) {
         RangeIteratorParameter param = new RangeIteratorParameter(tableName);
         RowPrimaryKey startKey = new RowPrimaryKey();
-        startKey.addPrimaryKeyColumn("uid", PrimaryKeyValue.INF_MIN);
-        startKey.addPrimaryKeyColumn("gid", PrimaryKeyValue.INF_MIN);
+        startKey.addPrimaryKeyColumn(COLUMN_GID_NAME, PrimaryKeyValue.INF_MIN);
+        startKey.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyValue.INF_MIN);
 
         RowPrimaryKey endKey = new RowPrimaryKey();
-        endKey.addPrimaryKeyColumn("uid", PrimaryKeyValue.INF_MAX);
-        endKey.addPrimaryKeyColumn("gid", PrimaryKeyValue.INF_MAX);
+        endKey.addPrimaryKeyColumn(COLUMN_GID_NAME, PrimaryKeyValue.INF_MAX);
+        endKey.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyValue.INF_MAX);
 
         param.setInclusiveStartPrimaryKey(startKey);
         param.setExclusiveEndPrimaryKey(endKey);
@@ -183,8 +183,8 @@ public class OTSWriterSample {
             int start = id * rowsCount;
             for (int i = 0; i < rowsCount; i++) {
                 RowPrimaryKey primaryKey = new RowPrimaryKey();
-                primaryKey.addPrimaryKeyColumn("gid", PrimaryKeyValue.fromLong(start + i));
-                primaryKey.addPrimaryKeyColumn("uid", PrimaryKeyValue.fromLong(start + i));
+                primaryKey.addPrimaryKeyColumn(COLUMN_GID_NAME, PrimaryKeyValue.fromLong(start + i));
+                primaryKey.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyValue.fromLong(start + i));
 
                 RowPutChange rowChange = new RowPutChange(tableName);
                 rowChange.setPrimaryKey(primaryKey);
