@@ -86,7 +86,7 @@ public class OTSWriterSample {
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn(COLUMN_GID_NAME, PrimaryKeyType.INTEGER);
         tableMeta.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyType.INTEGER);
-        // 将该表的读写CU都设置为100
+        // 将该表的读写CU都设置为0
         CapacityUnit capacityUnit = new CapacityUnit(0, 0);
 
         CreateTableRequest request = new CreateTableRequest();
