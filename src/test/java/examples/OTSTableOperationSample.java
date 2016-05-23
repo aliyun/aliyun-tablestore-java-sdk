@@ -73,8 +73,8 @@ public class OTSTableOperationSample {
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn(COLUMN_GID_NAME, PrimaryKeyType.INTEGER);
         tableMeta.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyType.INTEGER);
-        // 将该表的读写CU都设置为100
-        CapacityUnit capacityUnit = new CapacityUnit(100, 100);
+        // 将该表的读写CU都设置为0
+        CapacityUnit capacityUnit = new CapacityUnit(0, 0);
 
         CreateTableRequest request = new CreateTableRequest();
         request.setTableMeta(tableMeta);
@@ -114,8 +114,8 @@ public class OTSTableOperationSample {
         UpdateTableRequest request = new UpdateTableRequest();
         request.setTableName(tableName);
         ReservedThroughputChange cuChange = new ReservedThroughputChange();
-        cuChange.setReadCapacityUnit(50); // 若想单独调整写CU，则无须设置读CU
-        cuChange.setWriteCapacityUnit(50); // 若想单独调整读CU，则无须设置写CU
+        cuChange.setReadCapacityUnit(1); // 若想单独调整写CU，则无须设置读CU
+        cuChange.setWriteCapacityUnit(1); // 若想单独调整读CU，则无须设置写CU
         request.setReservedThroughputChange(cuChange);
         UpdateTableResult result = client.updateTable(request);
 

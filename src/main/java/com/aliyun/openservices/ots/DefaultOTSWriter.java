@@ -43,6 +43,8 @@ public class DefaultOTSWriter implements OTSWriter {
 
     private RowChangeEventHandler eventHandler;
 
+    private ExecutorService disruptorExecutor;
+
     public DefaultOTSWriter(OTSAsync ots, String tableName, WriterConfig config, OTSCallback<RowChange, ConsumedCapacity> callback, Executor executor) {
         Preconditions.checkNotNull(ots, "The ots client can not be null.");
         Preconditions.checkArgument(tableName != null && !tableName.isEmpty(), "The table name can not be null or empty.");
@@ -70,7 +72,8 @@ public class DefaultOTSWriter implements OTSWriter {
         RowChangeEvent.RowChangeEventFactory factory = new RowChangeEvent.RowChangeEventFactory();
 
         // start flush thread, we only need one event handler, so we just set a thread pool with fixed size 1.
-        disruptor = new Disruptor<RowChangeEvent>(factory, writerConfig.getBufferSize(), Executors.newFixedThreadPool(1));
+        disruptorExecutor = Executors.newFixedThreadPool(1);
+        disruptor = new Disruptor<RowChangeEvent>(factory, writerConfig.getBufferSize(), disruptorExecutor);
         ringBuffer = disruptor.getRingBuffer();
         eventHandler = new RowChangeEventHandler(ots, writerConfig, callback, executor);
         disruptor.handleEventsWith(eventHandler);
@@ -190,5 +193,6 @@ public class DefaultOTSWriter implements OTSWriter {
         flushTimer.cancel();
         flush();
         disruptor.shutdown();
+        disruptorExecutor.shutdown();
     }
 }
