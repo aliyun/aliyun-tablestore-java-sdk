@@ -5,7 +5,6 @@ import com.aliyun.openservices.ots.internal.writer.RowChangeEvent;
 import com.aliyun.openservices.ots.internal.writer.RowChangeEventHandler;
 import com.aliyun.openservices.ots.internal.writer.WriterConfig;
 import com.aliyun.openservices.ots.model.*;
-import com.aliyun.openservices.ots.utils.CalculateHelper;
 import com.aliyun.openservices.ots.utils.ParamChecker;
 import com.aliyun.openservices.ots.utils.Preconditions;
 import com.lmax.disruptor.InsufficientCapacityException;

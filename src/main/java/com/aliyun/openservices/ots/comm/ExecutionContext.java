@@ -23,7 +23,7 @@ public class ExecutionContext {
     /**
      * Returns the default encoding (charset). Default: "UTF-8"
      * 
-     * @return
+     * @return 编码类型
      */
     public String getCharset() {
         return charset;
@@ -32,7 +32,7 @@ public class ExecutionContext {
     /**
      * Sets the default encoding (charset). Default: "UTF-8"
      * 
-     * @param defaultEncoding
+     * @param defaultEncoding 编码类型
      */
     public void setCharset(String defaultEncoding) {
         this.charset = defaultEncoding;

@@ -11,6 +11,9 @@ public interface RequestHandler {
 
     /**
      * 预处理需要发送的请求数据
+     * @param message 请求数据
+     * @throws ServiceException
+     * @throws ClientException
      */
     public void handle(RequestMessage message)
             throws ServiceException, ClientException;

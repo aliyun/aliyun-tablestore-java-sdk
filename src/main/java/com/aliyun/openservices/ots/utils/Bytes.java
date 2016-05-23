@@ -293,6 +293,7 @@ public class Bytes {
      * @param b1  The first byte array.
      * @param sep The separator to use.
      * @param b2  The second byte array.
+     * @return String b1+sep+b2 value
      */
     public static String toString(final byte[] b1,
                                   String sep,
@@ -806,7 +807,7 @@ public class Bytes {
     }
 
     /**
-     * This method will get a sequence of bytes from pos -> limit,
+     * This method will get a sequence of bytes from pos ,
      * but will restore pos after.
      *
      * @param buf
@@ -998,7 +999,7 @@ public class Bytes {
     /**
      * @param left  left operand
      * @param right right operand
-     * @return 0 if equal, < 0 if left is less than right, etc.
+     * @return int 相等时返回0，left小于right时返回负值
      */
     public static int compareTo(final byte[] left, final byte[] right) {
         return compareByteArrayInLexOrder(left, 0, left.length, right, 0, right.length);
@@ -1013,7 +1014,7 @@ public class Bytes {
      * @param offset2 Where to start comparing in the right buffer
      * @param length1 How much to compare from the left buffer
      * @param length2 How much to compare from the right buffer
-     * @return 0 if equal, < 0 if left is less than right, etc.
+     * @return 相等时返回0，left小于right时返回负值
      */
     public static int compareTo(byte[] buffer1, int offset1, int length1,
                                 byte[] buffer2, int offset2, int length2) {

@@ -91,10 +91,10 @@ public class RelationalCondition implements ColumnCondition {
 
     /**
      * 设置passIfMissing。
-     * <p/>于OTS一行的属性列不固定，有可能存在有condition条件的列在该行不存在的情况，这时{@link RelationalCondition#passIfMissing}参数控制在这种情况下对该行的检查结果。
-     * <p/>如果设置{@link RelationalCondition#passIfMissing}为true，则若列在该行中不存在，则检查条件通过。
-     * <p/>如果设置{@link RelationalCondition#passIfMissing}为false，则若列在该行中不存在，则检查条件失败。
-     * <p/>默认值为true。
+     * 于OTS一行的属性列不固定，有可能存在有condition条件的列在该行不存在的情况，这时{@link RelationalCondition#passIfMissing}参数控制在这种情况下对该行的检查结果。
+     * 如果设置{@link RelationalCondition#passIfMissing}为true，则若列在该行中不存在，则检查条件通过。
+     * 如果设置{@link RelationalCondition#passIfMissing}为false，则若列在该行中不存在，则检查条件失败。
+     * 默认值为true。
      *
      * @param passIfMissing
      * @return this for chain invocation

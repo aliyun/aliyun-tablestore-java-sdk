@@ -75,12 +75,12 @@ public abstract class RowChange {
 
     /**
      * 获取一行的数据大小。
-     * <p/>
-     * RowPutChange: 一行的数据大小包括所有主键列的名称和值的大小，以及所有属性列名称和值的大小总和。<br/>
-     * RowUpdateChange: 一行的数据大小包括所有主键列的名称和值的大小，以及所有需要被更改的属性列的名称和值的大小，以及所有需要被删除的属性列的名称大小总和。<br/>
-     * RowDeleteChange: 一行的数据大小只包括所有主键列的名称和值的大小总和。<br/>
      *
-     * @return
+     * RowPutChange: 一行的数据大小包括所有主键列的名称和值的大小，以及所有属性列名称和值的大小总和。
+     * RowUpdateChange: 一行的数据大小包括所有主键列的名称和值的大小，以及所有需要被更改的属性列的名称和值的大小，以及所有需要被删除的属性列的名称大小总和。
+     * RowDeleteChange: 一行的数据大小只包括所有主键列的名称和值的大小总和。
+     *
+     * @return int 数据大小
      */
     public abstract int getDataSize();
 }

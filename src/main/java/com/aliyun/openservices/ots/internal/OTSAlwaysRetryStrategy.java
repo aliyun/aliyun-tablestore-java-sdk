@@ -35,7 +35,7 @@ public class OTSAlwaysRetryStrategy implements OTSRetryStrategy {
      *
      * @param action  操作名，比如"ListTable"、"GetRow"、"PutRow"等
      * @param ex      上次访问失败的错误信息、为ClientException或OTSException
-     * @param retries 表示本次判断的为第retries次重试，retries > 0
+     * @param retries 表示本次判断的为第retries次重试，retries 大于 0
      * @return
      */
     @Override
@@ -52,7 +52,7 @@ public class OTSAlwaysRetryStrategy implements OTSRetryStrategy {
      *
      * @param action  操作名，比如"ListTable"、"GetRow"、"PutRow"等
      * @param ex      上次访问失败的错误信息、为ClientException或OTSException
-     * @param retries 表示将要发起第retries次重试， retries > 0
+     * @param retries 表示将要发起第retries次重试， retries 大于 0
      * @return
      */
     @Override
