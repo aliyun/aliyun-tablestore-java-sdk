@@ -32,6 +32,7 @@ public class FilterAdvanceTest extends BaseFT {
 
     @AfterClass
     public static void classAfter() {
+        TestUtil.DeleteTable(ots, tableName);
         ots.shutdown();
     }
 
