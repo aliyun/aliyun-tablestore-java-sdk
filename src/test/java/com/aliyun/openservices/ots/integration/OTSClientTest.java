@@ -38,7 +38,7 @@ public class OTSClientTest {
     public void setup() throws Exception {
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        deleteTable(tableName);
+        TestUtil.DeleteTable(ots, tableName);
     }
 
     @Test
@@ -1052,7 +1052,7 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
-            deleteTable(tableNames[i]);
+            TestUtil.DeleteTable(ots, tableNames[i]);
             Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
 
             tableMeta.setTableName(tableNames[i]);
@@ -1090,7 +1090,7 @@ public class OTSClientTest {
         }
 
         for (int i = 0; i < TABLE_COUNT; i++) {
-            deleteTable(tableNames[i]);
+            TestUtil.DeleteTable(ots, tableNames[i]);
         }
     }
     
@@ -1110,7 +1110,7 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
-            deleteTable(tableNames[i]);
+            TestUtil.DeleteTable(ots, tableNames[i]);
             Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
 
             tableMeta.setTableName(tableNames[i]);
@@ -1364,7 +1364,7 @@ public class OTSClientTest {
         }
 
         for (int i = 0; i < TABLE_COUNT; i++) {
-            deleteTable(tableNames[i]);
+            TestUtil.DeleteTable(ots, tableNames[i]);
         }
     }
 
@@ -1538,12 +1538,5 @@ public class OTSClientTest {
         if (!request.getRowPutChange().isEmpty()) {
             writeRows(request);
         }
-    }
-
-    private void deleteTable(String tableName) {
-        try {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
-            ots.deleteTable(deleteTableRequest);
-        } catch (Exception ex) {;}
     }
 }
