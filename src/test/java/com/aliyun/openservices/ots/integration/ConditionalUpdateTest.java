@@ -6,6 +6,7 @@ import com.aliyun.openservices.ots.model.condition.*;
 import com.aliyun.openservices.ots.utils.ServiceSettings;
 
 import com.aliyun.openservices.ots.utils.TestUtil;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,12 @@ public class ConditionalUpdateTest {
     private static String tableName = TestUtil.newTableName("conditional_update_test_table");
     private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
     private static Logger LOG = Logger.getLogger(ConditionalUpdateTest.class.getName());
+
+    @AfterClass
+    public static void classAfter() {
+        TestUtil.DeleteTable(ots, tableName);
+        ots.shutdown();
+    }
 
     @Before
     public void setup() throws Exception {

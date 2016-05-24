@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import com.aliyun.openservices.ots.model.*;
 import com.aliyun.openservices.ots.utils.TestUtil;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,19 +23,22 @@ public class OTSClientTest {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
     private static final int TABLE_OPERATION_INTERVAL_IN_MSEC = 1 * 1000;
     
-    private String tableName = TestUtil.newTableName("ots_client_test_table");
-    final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
+    private static String tableName = TestUtil.newTableName("ots_client_test_table");
+    private static final OTS ots = OTSClientFactory.createOTSClient(ServiceSettings.load());
 
     private static final Logger LOG = Logger.getLogger(OTSClientTest.class.getName());
+
+    @AfterClass
+    public static void classAfter() {
+        TestUtil.DeleteTable(ots, tableName);
+        ots.shutdown();
+    }
 
     @Before
     public void setup() throws Exception {
         LOG.info("Instance: " + ServiceSettings.load().getOTSInstanceName());
 
-        try {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
-            ots.deleteTable(deleteTableRequest);
-        } catch (Exception ex) {;}
+        TestUtil.DeleteTable(ots, tableName);
     }
 
     @Test
@@ -67,14 +71,14 @@ public class OTSClientTest {
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         UpdateTableRequest utRequest = new UpdateTableRequest(tableName);
         ReservedThroughputChange capacityChange = new ReservedThroughputChange();
-        capacityChange.setReadCapacityUnit(7);
+        capacityChange.setReadCapacityUnit(1);
         utRequest.setReservedThroughputChange(capacityChange);
         UpdateTableResult utResponse = ots.updateTable(utRequest);
         assertTrue(utResponse.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(utResponse.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(utResponse.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 10);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 1);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 3);
 
         LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
@@ -82,20 +86,20 @@ public class OTSClientTest {
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(dtResult.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 1);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 10);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 1);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 3);
 
         LOG.info("decrease write capacity");
         Thread.sleep(70 * 1000 + 10); // sleep more than 70 seconds
         capacityChange = new ReservedThroughputChange();
-        capacityChange.setWriteCapacityUnit(8);
+        capacityChange.setWriteCapacityUnit(2);
         utRequest.setReservedThroughputChange(capacityChange);
         utResponse = ots.updateTable(utRequest);
         assertTrue(utResponse.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(utResponse.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(utResponse.getReservedThroughputDetails().getNumberOfDecreasesToday(), 2);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
-        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 8);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 1);
+        assertEquals(utResponse.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 2);
 
         LOG.info("get table meta and check table is updated");
         dtResult = ots.describeTable(dtRequest);
@@ -103,8 +107,8 @@ public class OTSClientTest {
         assertTrue(dtResult.getReservedThroughputDetails().getLastDecreaseTime() != 0);
         assertTrue(dtResult.getReservedThroughputDetails().getLastIncreaseTime() != 0);
         assertEquals(dtResult.getReservedThroughputDetails().getNumberOfDecreasesToday(), 2);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 7);
-        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 8);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit(), 1);
+        assertEquals(dtResult.getReservedThroughputDetails().getCapacityUnit().getWriteCapacityUnit(), 2);
 
         LOG.info("delete table");
         DeleteTableRequest delRequest = new DeleteTableRequest(tableName);
@@ -1048,17 +1052,12 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
-            try {
-                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableNames[i]);
-                ots.deleteTable(deleteTableRequest);
-                Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
-            } catch (Exception ex) {;}
+            TestUtil.DeleteTable(ots, tableNames[i]);
+            Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
 
             tableMeta.setTableName(tableNames[i]);
             ctRequest.setTableMeta(tableMeta);
             ots.createTable(ctRequest);
-
-            Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
         }
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
         for (int i = 0; i < TABLE_COUNT; i++) {
@@ -1089,6 +1088,10 @@ public class OTSClientTest {
                 compareRow(row, i * ROW_COUNT + j, new String[]{"uid", "name", "sid", "flag", "col_integer", "col_string", "col_binary"});
             }
         }
+
+        for (int i = 0; i < TABLE_COUNT; i++) {
+            TestUtil.DeleteTable(ots, tableNames[i]);
+        }
     }
     
     @Test
@@ -1107,17 +1110,12 @@ public class OTSClientTest {
         String[] tableNames = new String[TABLE_COUNT];
         for (int i = 0; i < TABLE_COUNT; i++) {
             tableNames[i] = tableName + "_" + i;
-            try {
-                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableNames[i]);
-                ots.deleteTable(deleteTableRequest);
-                Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
-            } catch (Exception ex) {;}
+            TestUtil.DeleteTable(ots, tableNames[i]);
+            Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
 
             tableMeta.setTableName(tableNames[i]);
             ctRequest.setTableMeta(tableMeta);
             ots.createTable(ctRequest);
-
-            Thread.sleep(TABLE_OPERATION_INTERVAL_IN_MSEC);
         }
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
         for (int i = 0; i < TABLE_COUNT; i++) {
@@ -1364,6 +1362,10 @@ public class OTSClientTest {
                 }
             }
         }
+
+        for (int i = 0; i < TABLE_COUNT; i++) {
+            TestUtil.DeleteTable(ots, tableNames[i]);
+        }
     }
 
     @Test
@@ -1394,8 +1396,8 @@ public class OTSClientTest {
     
     private CapacityUnit getTestCapacityUnit() {
         CapacityUnit capacityUnit = new CapacityUnit();
-        capacityUnit.setReadCapacityUnit(10);
-        capacityUnit.setWriteCapacityUnit(10);
+        capacityUnit.setReadCapacityUnit(3);
+        capacityUnit.setWriteCapacityUnit(3);
         return capacityUnit;
     }
     

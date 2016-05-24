@@ -2,6 +2,7 @@ package com.aliyun.openservices.ots.integration;
 
 import com.aliyun.openservices.ots.ClientConfiguration;
 import com.aliyun.openservices.ots.OTS;
+import com.aliyun.openservices.ots.OTSClient;
 import com.aliyun.openservices.ots.common.BaseFT;
 import com.aliyun.openservices.ots.common.OTSHelper;
 import com.aliyun.openservices.ots.common.Utils;
@@ -31,6 +32,7 @@ public class RelationFilterTest extends BaseFT {
 
     @AfterClass
     public static void classAfter() {
+        TestUtil.DeleteTable(ots, tableName);
         ots.shutdown();
     }
 

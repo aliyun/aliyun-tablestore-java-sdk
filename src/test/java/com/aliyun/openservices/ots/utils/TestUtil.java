@@ -1,9 +1,8 @@
 package com.aliyun.openservices.ots.utils;
 
-import com.aliyun.openservices.ots.model.ColumnType;
-import com.aliyun.openservices.ots.model.ColumnValue;
-import com.aliyun.openservices.ots.model.PrimaryKeyType;
-import com.aliyun.openservices.ots.model.PrimaryKeyValue;
+import com.aliyun.openservices.ots.OTS;
+import com.aliyun.openservices.ots.OTSClient;
+import com.aliyun.openservices.ots.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +75,15 @@ public class TestUtil {
                 return ColumnValue.fromBinary(randomBytes(randomLength()));
             default:
                 throw new IllegalStateException("Unsupported column type: " + type);
+        }
+    }
+
+    public static void DeleteTable(OTS ots, String tableName) {
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
+            ots.deleteTable(deleteTableRequest);
+        } catch (Exception ex) {
+            ;
         }
     }
 }
