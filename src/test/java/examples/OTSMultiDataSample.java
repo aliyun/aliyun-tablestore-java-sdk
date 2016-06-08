@@ -1,5 +1,7 @@
 package examples;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,6 +46,9 @@ public class OTSMultiDataSample {
 
             // 迭代读取
             getByIterator(client, tableName);
+
+            // 统计行数
+            countRows(client, tableName);
         } catch (ServiceException e) {
             System.err.println("操作失败，详情：" + e.getMessage());
             // 可以根据错误代码做出处理， OTS的ErrorCode定义在OTSErrorCode中。
@@ -206,5 +211,40 @@ public class OTSMultiDataSample {
         } catch (OTSException ex) {
             System.out.println("Iterator get failed.");
         }
+    }
+
+    private static void countRows(OTSClient client, String tableName)
+            throws OTSException, ClientException {
+        // 构造迭代读取的起始位置
+        RowPrimaryKey inclusiveStartKey = new RowPrimaryKey();
+        inclusiveStartKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
+                PrimaryKeyValue.fromLong(1));
+        inclusiveStartKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
+                PrimaryKeyValue.INF_MIN);
+
+        // 构造迭代读取的结束位置
+        RowPrimaryKey exclusiveEndKey = new RowPrimaryKey();
+        exclusiveEndKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
+                PrimaryKeyValue.fromLong(4));
+        exclusiveEndKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
+                PrimaryKeyValue.INF_MAX);
+
+        // 构造迭代读取的参数对象，并设置起始和结束的位置，包括起始位置的行，不包括结束位置的行
+        RangeIteratorParameter rangeIteratorParameter = new RangeIteratorParameter(tableName);
+        rangeIteratorParameter.setInclusiveStartPrimaryKey(inclusiveStartKey);
+        rangeIteratorParameter.setExclusiveEndPrimaryKey(exclusiveEndKey);
+
+        List<String> columnsToGet = new ArrayList<String>();
+        columnsToGet.add(COLUMN_GID_NAME); // 由于我们只统计行数，为了避免读出过多的数据，这里选择只返回主键列中的一列。
+        rangeIteratorParameter.setColumnsToGet(columnsToGet);
+
+        int totalRowsCount = 0;
+        Iterator<Row> iter = client.createRangeIterator(rangeIteratorParameter);
+        while (iter.hasNext()) {
+            totalRowsCount++;
+            iter.next();
+        }
+
+        System.out.println("Rows count in range is: " + totalRowsCount);
     }
 }
