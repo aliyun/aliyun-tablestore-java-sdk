@@ -115,7 +115,7 @@ public class OTSMultiDataSample {
                     PrimaryKeyValue.fromLong(i));
             rowChange.setPrimaryKey(primaryKey);
             rowChange.addAttributeColumn(COLUMN_NAME_NAME,
-                    ColumnValue.fromString("小" + Integer.toString(i + 1)));
+                    ColumnValue.fromString("小" + Integer.toString(i)));
             rowChange.addAttributeColumn(COLUMN_MOBILE_NAME,
                     ColumnValue.fromString("111111111"));
             rowChange.addAttributeColumn(COLUMN_ADDRESS_NAME,
@@ -146,13 +146,13 @@ public class OTSMultiDataSample {
         inclusiveStartKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
                 PrimaryKeyValue.fromLong(1));
         inclusiveStartKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
-                PrimaryKeyValue.INF_MIN); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
+                PrimaryKeyValue.fromLong(1)); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
 
         RowPrimaryKey exclusiveEndKey = new RowPrimaryKey();
         exclusiveEndKey.addPrimaryKeyColumn(COLUMN_GID_NAME,
-                PrimaryKeyValue.fromLong(4));
+                PrimaryKeyValue.fromLong(1));
         exclusiveEndKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
-                PrimaryKeyValue.INF_MAX); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
+                PrimaryKeyValue.fromLong(4)); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
 
         criteria.setInclusiveStartPrimaryKey(inclusiveStartKey);
         criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
@@ -160,6 +160,8 @@ public class OTSMultiDataSample {
         request.setRangeRowQueryCriteria(criteria);
         GetRangeResult result = client.getRange(request);
         List<Row> rows = result.getRows();
+
+        System.out.println("GetRange result:");
         for (Row row : rows) {
             System.out.println("name信息为："
                     + row.getColumns().get(COLUMN_NAME_NAME));
