@@ -8,7 +8,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OTSPaginationRead {
+public class OTSPaginationReadSample {
     private static final String COLUMN_GID_NAME = "gid";
     private static final String COLUMN_UID_NAME = "uid";
     private static final String COLUMN_NAME_NAME = "name";
