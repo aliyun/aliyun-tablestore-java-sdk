@@ -2,8 +2,8 @@ package examples;
 
 import com.aliyun.openservices.ots.*;
 import com.aliyun.openservices.ots.model.*;
+import com.aliyun.openservices.ots.utils.Pair;
 import com.aliyun.openservices.ots.utils.Preconditions;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,21 +116,21 @@ public class OTSPaginationReadSample {
         endKey.addPrimaryKeyColumn(COLUMN_UID_NAME, PrimaryKeyValue.INF_MAX);
         // 读第一页，从范围的offset=33的行开始读起
         Pair<List<Row>, RowPrimaryKey> result = readByPage(client, tableName, startKey, endKey, offset, pageSize);
-        for (Row row : result.getKey()) {
+        for (Row row : result.getFirst()) {
             System.out.println(row.getColumns());
         }
-        System.out.println("Total rows count: " + result.getKey().size());
+        System.out.println("Total rows count: " + result.getFirst().size());
 
         // 顺序翻页，读完范围内的所有数据
-        startKey = result.getValue();
+        startKey = result.getSecond();
         while (startKey != null) {
             System.out.println("============= start read next page ==============");
             result = readByPage(client, tableName, startKey, endKey, 0, pageSize);
-            for (Row row : result.getKey()) {
+            for (Row row : result.getFirst()) {
                 System.out.println(row.getColumns());
             }
-            startKey = result.getValue();
-            System.out.println("Total rows count: " + result.getKey().size());
+            startKey = result.getSecond();
+            System.out.println("Total rows count: " + result.getFirst().size());
         }
     }
 
