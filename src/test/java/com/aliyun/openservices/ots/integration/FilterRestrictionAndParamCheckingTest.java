@@ -1194,14 +1194,14 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
             SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
 		    criteria.setPrimaryKey(primaryKey);
              
-            ColumnValue v = ColumnValue.fromString(NewString(64 * 1024 + 1, 'a'));
+            ColumnValue v = ColumnValue.fromString(NewString(2 * 1024 * 1024 + 1, 'a'));
             RelationalCondition singleFilter = new RelationalCondition("Column", RelationalCondition.CompareOperator.EQUAL, v);
             CompositeCondition compositeFilter = new CompositeCondition(CompositeCondition.LogicOperator.OR);
             compositeFilter.addCondition(singleFilter);
             compositeFilter.addCondition(new RelationalCondition("Column1", RelationalCondition.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
 
             OTSException lengthExceedExp = new OTSException(
-                    "The length of attribute column: 'Column' exceeded the MaxLength:65536 with CurrentLength:65537.",
+                    "The length of attribute column: 'Column' exceeded the MaxLength:2097152 with CurrentLength:2097153.",
                     null, "OTSParameterInvalid", "", 400);
             runAndExpectFail(singleFilter, lengthExceedExp);
             runAndExpectFail(compositeFilter, lengthExceedExp);
@@ -1213,59 +1213,17 @@ public class FilterRestrictionAndParamCheckingTest extends BaseFT {
             SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName);
 		    criteria.setPrimaryKey(primaryKey);
              
-            ColumnValue v = ColumnValue.fromBinary(new byte[64 * 1024 + 1]);
+            ColumnValue v = ColumnValue.fromBinary(new byte[2 * 1024 * 1024 + 1]);
             RelationalCondition singleFilter = new RelationalCondition("Column", RelationalCondition.CompareOperator.EQUAL, v);
             CompositeCondition compositeFilter = new CompositeCondition(CompositeCondition.LogicOperator.OR);
             compositeFilter.addCondition(singleFilter);
             compositeFilter.addCondition(new RelationalCondition("Column1", RelationalCondition.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
 
             OTSException lengthExceedExp = new OTSException(
-                    "The length of attribute column: 'Column' exceeded the MaxLength:65536 with CurrentLength:65537.",
+                    "The length of attribute column: 'Column' exceeded the MaxLength:2097152 with CurrentLength:2097153.",
                     null, "OTSParameterInvalid", "", 400);
             runAndExpectFail(singleFilter, lengthExceedExp);
             runAndExpectFail(compositeFilter, lengthExceedExp);
-        }
-    }
-
-    /**
-     * 构造一个column类型与cell类型不同的filter，交叉测试cell类型和filter类型分别是BINARY/STRING/INTEGER/DOUBLE/BOOLEAN。分别测试当个relation filter以及一个小的composite filter。
-     */
-    @Test
-    public void testCompareWithDifferentType() {
-        LOG.info("Start testCompareWithDifferentType");
-
-        PutRowRequest pr = new PutRowRequest();
-
-        RowPrimaryKey primaryKey =
-                new RowPrimaryKey().addPrimaryKeyColumn("PK0", PrimaryKeyValue.fromLong(0));
-        RowPutChange rowChange = new RowPutChange(tableName);
-        rowChange.setPrimaryKey(primaryKey);
-        String[] names = new String[]{"col_int", "col_string", "col_double", "col_boolean", "col_byte"};
-        ColumnValue[] values = new ColumnValue[] {ColumnValue.fromLong(0), ColumnValue.fromString("a"),
-                ColumnValue.fromDouble(1.0), ColumnValue.fromBoolean(true), ColumnValue.fromBinary(new byte[]{0})};
-
-        for (int i = 0; i < names.length; i++) {
-            rowChange.addAttributeColumn(names[i], values[i]);
-        }
-        pr.setRowChange(rowChange);
-        ots.putRow(pr);
-
-        for (int i = 0; i < names.length; i++) {
-            for (int j = 0; j < values.length; j++) {
-                if (i == j) {
-                    continue;
-                }
-
-                RelationalCondition singleFilter = new RelationalCondition(names[i], RelationalCondition.CompareOperator.EQUAL, values[j]);
-                CompositeCondition compositeFilter = new CompositeCondition(CompositeCondition.LogicOperator.AND);
-                compositeFilter.addCondition(singleFilter);
-                compositeFilter.addCondition(new RelationalCondition("CC", RelationalCondition.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
-
-                OTSException exp = new OTSException("The input parameter is invalid.", null, "OTSParameterInvalid", "", 400);
-
-                runAndExpectFail(singleFilter, exp);
-                runAndExpectFail(compositeFilter, exp);
-            }
         }
     }
 
