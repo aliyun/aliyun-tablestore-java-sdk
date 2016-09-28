@@ -154,12 +154,28 @@ public class OTSMultiDataSample {
         exclusiveEndKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
                 PrimaryKeyValue.fromLong(4)); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
 
-        criteria.setInclusiveStartPrimaryKey(inclusiveStartKey);
-        criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
         GetRangeRequest request = new GetRangeRequest();
-        request.setRangeRowQueryCriteria(criteria);
-        GetRangeResult result = client.getRange(request);
-        List<Row> rows = result.getRows();
+        int consumedReadCU = 0;
+        List<Row> rows = new ArrayList<Row>();
+
+        // 对表进行范围查询时，TableStore对一次查询返回的数据量会有限制，可能无法返回用户指定的范围内的所有数据。
+        // TableStore的getRange接口返回的结果中会包含一个nextStartPrimaryKey，即当前已经扫描到的主键的断点。若
+        // 需要继续在这个范围内读取还未返回的数据，需要拿这个nextStartPrimaryKey作为下一次查询的起始主键，继续下
+        // 一次查询，直到查询返回的nextStartPrimaryKey为空为止。
+        // 比如：用户想查询10条数据，通过调用一次GetRange，用户可能得到1条，5条，或者10条等，单次返回的结果是不确定
+        // 的，要保证获取完整的数据，就需要使用到nextStartPrimaryKey，下面的例子展示了nextStartPrimaryKey的使用方式。
+              
+        RowPrimaryKey next = inclusiveStartKey;
+        do {
+            criteria.setInclusiveStartPrimaryKey(next);
+            criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
+            request.setRangeRowQueryCriteria(criteria);
+            GetRangeResult result = client.getRange(request);
+            rows.addAll(result.getRows());
+            next = result.getNextStartPrimaryKey();
+            consumedReadCU += result.getConsumedCapacity().getCapacityUnit()
+                    .getReadCapacityUnit();
+        } while (next != null);
 
         System.out.println("GetRange result:");
         for (Row row : rows) {
@@ -172,9 +188,6 @@ public class OTSMultiDataSample {
             System.out
                     .println("age信息为：" + row.getColumns().get(COLUMN_AGE_NAME));
         }
-
-        int consumedReadCU = result.getConsumedCapacity().getCapacityUnit()
-                .getReadCapacityUnit();
         System.out.println("本次读操作消耗的读CapacityUnit为：" + consumedReadCU);
     }
 
