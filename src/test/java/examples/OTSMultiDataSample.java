@@ -163,10 +163,10 @@ public class OTSMultiDataSample {
             criteria.setInclusiveStartPrimaryKey(next);
             criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
             request.setRangeRowQueryCriteria(criteria);
-	    GetRangeResult result = client.getRange(request);
-	    rows.addAll(result.getRows());
-	    next = result.getNextStartPrimaryKey();
-	} while (next != null);
+            GetRangeResult result = client.getRange(request);
+            rows.addAll(result.getRows());
+            next = result.getNextStartPrimaryKey();
+        } while (next != null);
 
         System.out.println("GetRange result:");
         for (Row row : rows) {
