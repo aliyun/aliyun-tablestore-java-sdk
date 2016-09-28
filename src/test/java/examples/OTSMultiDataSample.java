@@ -158,11 +158,12 @@ public class OTSMultiDataSample {
         int consumedReadCU = 0;
         List<Row> rows = new ArrayList<Row>();
 
-        // 因为TableStore在Scan数据的时候，只承诺一次性最多返回不超过5000条数据，在API文档中有明确的注释。所以在任意的情况下GetRange的API都可能返回
-        // 那么用户仅仅通过调用一次GetRange，拿到的数据很有可能不是完整的数据。
-        // 因此，TableStore提供next_start_primary_key（断点）的方式，每次调用GetRange之后，都会返回下一次的断点，直到断点为空，表示数据读完。
-        // 所以我们用while的方式不断的调用GetRange API，并使用next_start_primary_key重置Request的InclusiveStartPrimaryKey，并发起新的请求
-        // 例子如下:
+        // 对表进行范围查询时，TableStore对一次查询返回的数据量会有限制，可能无法返回用户指定的范围内的所有数据。
+        // TableStore的getRange接口返回的结果中会包含一个nextStartPrimaryKey，即当前已经扫描到的主键的断点。若
+        // 需要继续在这个范围内读取还未返回的数据，需要拿这个nextStartPrimaryKey作为下一次查询的起始主键，继续下
+        // 一次查询，直到查询返回的nextStartPrimaryKey为空为止。
+        // 比如：用户想查询10条数据，通过调用一次GetRange，用户可能得到1条，5条，或者10条等，单次返回的结果是不确定
+        // 的，要保证获取完整的数据，就需要使用到nextStartPrimaryKey，下面的例子展示了nextStartPrimaryKey的使用方式。
               
         RowPrimaryKey next = inclusiveStartKey;
         do {
