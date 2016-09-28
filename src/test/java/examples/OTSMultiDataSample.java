@@ -155,7 +155,7 @@ public class OTSMultiDataSample {
                 PrimaryKeyValue.fromLong(4)); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
 
         GetRangeRequest request = new GetRangeRequest();
-
+        int consumedReadCU = 0;
         List<Row> rows = new ArrayList<Row>();
         RowPrimaryKey next = inclusiveStartKey;
         
@@ -166,6 +166,8 @@ public class OTSMultiDataSample {
             GetRangeResult result = client.getRange(request);
             rows.addAll(result.getRows());
             next = result.getNextStartPrimaryKey();
+            consumedReadCU += result.getConsumedCapacity().getCapacityUnit()
+                    .getReadCapacityUnit();
         } while (next != null);
 
         System.out.println("GetRange result:");
@@ -179,9 +181,6 @@ public class OTSMultiDataSample {
             System.out
                     .println("age信息为：" + row.getColumns().get(COLUMN_AGE_NAME));
         }
-
-        int consumedReadCU = result.getConsumedCapacity().getCapacityUnit()
-                .getReadCapacityUnit();
         System.out.println("本次读操作消耗的读CapacityUnit为：" + consumedReadCU);
     }
 
