@@ -154,12 +154,19 @@ public class OTSMultiDataSample {
         exclusiveEndKey.addPrimaryKeyColumn(COLUMN_UID_NAME,
                 PrimaryKeyValue.fromLong(4)); // 范围的边界需要提供完整的PK，若查询的范围不涉及到某一列值的范围，则需要将该列设置为无穷大或者无穷小
 
-        criteria.setInclusiveStartPrimaryKey(inclusiveStartKey);
-        criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
         GetRangeRequest request = new GetRangeRequest();
-        request.setRangeRowQueryCriteria(criteria);
-        GetRangeResult result = client.getRange(request);
-        List<Row> rows = result.getRows();
+
+        List<Row> rows = new ArrayList<Row>();
+        RowPrimaryKey next = inclusiveStartKey;
+        
+        do {
+        	criteria.setInclusiveStartPrimaryKey(next);
+        	criteria.setExclusiveEndPrimaryKey(exclusiveEndKey);
+        	request.setRangeRowQueryCriteria(criteria);
+			GetRangeResult result = client.getRange(request);
+			rows.addAll(result.getRows());
+			next = result.getNextStartPrimaryKey();
+		} while (next != null);
 
         System.out.println("GetRange result:");
         for (Row row : rows) {
