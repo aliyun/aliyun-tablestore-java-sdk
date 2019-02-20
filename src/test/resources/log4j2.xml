@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
     <Appenders>
-        <RollingFile name="RollingFile" fileName="logs/aliyun-openservices-ots.log"
-            immediateFlush="false"
-            filePattern="logs/$${date:yyyy-MM}/aliyun-openservices-ots-%d{MM-dd-yyyy}-%i.log.gz">
+        <RollingFile name="RollingFile" fileName="./logs/aliyun-tablestore.log"
+                     immediateFlush="false"
+                     filePattern="logs/$${date:yyyy-MM}/aliyun-tablestore-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
             <Policies>
-                <TimeBasedTriggeringPolicy />
-                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy
-                    size="250 MB" />
+                        size="250 MB"/>
             </Policies>
         </RollingFile>
         <Console name="STDOUT">
             <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
         </Console>
         <Async name="Async">
-            <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="RollingFile"/>
             <!--AppenderRef ref="STDOUT" /-->
         </Async>
     </Appenders>
     <Loggers>
-        <AsyncLogger name="com.aliyun.openservices.ots.internal.OTSOperation" level="debug" additivity="false">
-            <AppenderRef ref="Async" level="debug" />
+        <AsyncLogger name="com.alicloud.openservices.tablestore" level="info" additivity="false">
+            <AppenderRef ref="Async" level="info"/>
         </AsyncLogger>
-        <AsyncLogger name="com.aliyun.openservices.ots.internal.OTSTraceLogger" level="warn" additivity="false">
+        <AsyncLogger name="com.alicloud.openservices.tablestore.tunnel" level="debug" additivity="false">
+            <AppenderRef ref="Async" level="debug"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.alicloud.openservices.tablestore.core.TraceLogger" level="warn" additivity="false">
             <AppenderRef ref="Async" level="warn" />
         </AsyncLogger>
-        <AsyncLogger name="com.aliyun.openservices.ots" level="debug" additivity="false">
-            <AppenderRef ref="Async" level="debug" />
-        </AsyncLogger>
-        <AsyncRoot level="warn">
-            <AppenderRef ref="Async" />
+        <AsyncRoot level="debug">
+            <AppenderRef ref="Async"/>
         </AsyncRoot>
     </Loggers>
 </configuration>  

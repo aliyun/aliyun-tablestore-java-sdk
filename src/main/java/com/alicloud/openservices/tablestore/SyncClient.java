@@ -1,0 +1,461 @@
+package com.alicloud.openservices.tablestore;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.*;
+
+import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
+import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.search.*;
+import org.apache.http.concurrent.FutureCallback;
+import com.alicloud.openservices.tablestore.PrepareCallback;
+
+public class SyncClient implements SyncClientInterface {
+    public class DefaultPrepareCallback implements PrepareCallback {
+        public DefaultPrepareCallback() {
+        }
+
+        public void onPrepare() {
+        }
+    }
+    private InternalClient internalClient;
+    private PrepareCallback prepareCallback = new DefaultPrepareCallback();
+
+    /**
+     * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link SyncClient}实例。
+     *
+     * @param endpoint        TableStore服务的endpoint。
+     * @param accessKeyId     访问TableStore服务的Access ID。
+     * @param accessKeySecret 访问TableStore服务的Access Key。
+     * @param instanceName    访问TableStore服务的实例名称。
+     */
+    public SyncClient(String endpoint, String accessKeyId,
+                      String accessKeySecret, String instanceName) {
+        this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName);
+    }
+
+    /**
+     * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link SyncClient}实例。
+     *
+     * @param endpoint        TableStore服务的endpoint。
+     * @param accessKeyId     访问TableStore服务的Access ID。
+     * @param accessKeySecret 访问TableStore服务的Access Key。
+     * @param instanceName    访问TableStore服务的实例名称。
+     * @param stsToken        Sts Token.
+     */
+    public SyncClient(String endpoint, String accessKeyId,
+                      String accessKeySecret, String instanceName, String stsToken) {
+        this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, null, null, stsToken);
+    }
+
+    /**
+     * 使用指定的TableStore Endpoint和配置构造一个新的{@link SyncClient}实例。
+     *
+     * @param endpoint        TableStore服务的endpoint。
+     * @param accessKeyId     访问TableStore服务的Access ID。
+     * @param accessKeySecret 访问TableStore服务的Access Key。
+     * @param instanceName    访问TableStore服务的实例名称。
+     * @param config          客户端配置信息（{@link ClientConfiguration}）。 如果传入null则使用默认配置。
+     */
+    public SyncClient(String endpoint, String accessKeyId,
+                      String accessKeySecret, String instanceName,
+                      ClientConfiguration config) {
+        this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config);
+    }
+
+    /**
+     * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link SyncClient}实例。
+     *
+     * @param endpoint        TableStore服务的endpoint。
+     * @param accessKeyId     访问TableStore服务的Access ID。
+     * @param accessKeySecret 访问TableStore服务的Access Key。
+     * @param instanceName    访问TableStore服务的实例名称。
+     * @param config          客户端配置信息（{@link ClientConfiguration}）。 如果传入null则使用默认配置。
+     * @param stsToken        Sts Token.
+     */
+    public SyncClient(String endpoint, String accessKeyId,
+                      String accessKeySecret, String instanceName,  ClientConfiguration config, String stsToken) {
+        this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config, null, stsToken);
+    }
+
+    /**
+     * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link SyncClient}实例。
+     *
+     * @param endpoint         TableStore服务的endpoint。
+     * @param accessKeyId      访问TableStore服务的Access ID。
+     * @param accessKeySecret  访问TableStore服务的Access Key。
+     * @param instanceName     访问TableStore服务的实例名称。
+     * @param config           客户端配置信息（{@link ClientConfiguration}）。 如果传入null则使用默认配置。
+     * @param stsToken         Sts Token.
+     * @param callbackExecutor 执行callback的线程池，需要注意的是，client在shutdown的时候也会shutdown这个线程池。
+     */
+    public SyncClient(String endpoint, String accessKeyId,
+                      String accessKeySecret, String instanceName, ClientConfiguration config, String stsToken, ExecutorService callbackExecutor) {
+        this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config, callbackExecutor, stsToken);
+    }
+
+    SyncClient(InternalClient internalClient) {
+        this.internalClient = internalClient;
+    }
+
+    public void setExtraHeaders(Map<String, String> extraHeaders) {
+        this.internalClient.setExtraHeaders(extraHeaders);
+    }
+
+    /**
+     * 返回访问的TableStore Endpoint。
+     *
+     * @return TableStore Endpoint。
+     */
+    public String getEndpoint() {
+        return this.internalClient.getEndpoint();
+    }
+
+    /**
+     * 返回访问的实例的名称
+     *
+     * @return instance name
+     */
+    public String getInstanceName() {
+        return this.internalClient.getInstanceName();
+    }
+
+    @Override
+    public CreateTableResponse createTable(CreateTableRequest createTableRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(createTableRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<CreateTableResponse> res = this.internalClient.createTable(createTableRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListTableResponse listTable()
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListTableResponse> res = this.internalClient.listTable(null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeTableResponse describeTable(DescribeTableRequest request)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DescribeTableResponse> res = this.internalClient.describeTable(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteTableResponse deleteTable(DeleteTableRequest deleteTableRequest)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(deleteTableRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DeleteTableResponse> res = this.internalClient.deleteTable(deleteTableRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateTableResponse updateTable(UpdateTableRequest request)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateTableResponse> res = this.internalClient.updateTable(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public CreateIndexResponse createIndex(CreateIndexRequest createIndexRequest)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(createIndexRequest);
+
+        Future<CreateIndexResponse> res = this.internalClient.createIndex(createIndexRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteIndexResponse deleteIndex(DeleteIndexRequest deleteIndexRequest)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(deleteIndexRequest);
+
+        Future<DeleteIndexResponse> res = this.internalClient.deleteIndex(deleteIndexRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public GetRowResponse getRow(GetRowRequest getRowRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(getRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<GetRowResponse> res = this.internalClient.getRow(getRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public PutRowResponse putRow(PutRowRequest putRowRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(putRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<PutRowResponse> res = this.internalClient.putRow(putRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateRowResponse updateRow(UpdateRowRequest updateRowRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(updateRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateRowResponse> res = this.internalClient.updateRow(updateRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteRowResponse deleteRow(DeleteRowRequest deleteRowRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(deleteRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DeleteRowResponse> res = this.internalClient.deleteRow(deleteRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public BatchGetRowResponse batchGetRow(final BatchGetRowRequest batchGetRowRequest) 
+    		throws TableStoreException, ClientException 
+    {
+        Preconditions.checkNotNull(batchGetRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<BatchGetRowResponse> res = this.internalClient.batchGetRow(batchGetRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public BatchWriteRowResponse batchWriteRow(final BatchWriteRowRequest batchWriteRowRequest) 
+    		throws TableStoreException, ClientException 
+    {
+        Preconditions.checkNotNull(batchWriteRowRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<BatchWriteRowResponse> res = this.internalClient.batchWriteRow(batchWriteRowRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public GetRangeResponse getRange(GetRangeRequest getRangeRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(getRangeRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<GetRangeResponse> res = this.internalClient.getRange(getRangeRequest, null);
+        return waitForFuture(res);
+    }
+    
+    @Override
+    public ComputeSplitsBySizeResponse computeSplitsBySize(ComputeSplitsBySizeRequest computeSplitsBySizeRequest)
+            throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(computeSplitsBySizeRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ComputeSplitsBySizeResponse> res = this.internalClient.computeSplitsBySize(computeSplitsBySizeRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public Iterator<Row> createRangeIterator(
+            RangeIteratorParameter rangeIteratorParameter) throws TableStoreException,
+            ClientException {
+        return new RowIterator(this, rangeIteratorParameter);
+    }
+
+    @Override
+    public WideColumnIterator createWideColumnIterator(GetRowRequest getRowRequest) throws TableStoreException, ClientException {
+        GetRowColumnIteratorImpl getRowColumnIterator = new GetRowColumnIteratorImpl(internalClient, getRowRequest);
+        if (getRowColumnIterator.isRowExistent()) {
+            return new WideColumnIterator(getRowRequest.getRowQueryCriteria().getPrimaryKey(), getRowColumnIterator);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ListStreamResponse listStream(ListStreamRequest listStreamRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(listStreamRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListStreamResponse> res = this.internalClient.listStream(listStreamRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeStreamResponse describeStream(DescribeStreamRequest describeStreamRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(describeStreamRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DescribeStreamResponse> res = this.internalClient.describeStream(describeStreamRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public GetShardIteratorResponse getShardIterator(GetShardIteratorRequest getShardIteratorRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(getShardIteratorRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<GetShardIteratorResponse> res = this.internalClient.getShardIterator(getShardIteratorRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public GetStreamRecordResponse getStreamRecord(GetStreamRecordRequest getStreamRecordRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(getStreamRecordRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<GetStreamRecordResponse> res = this.internalClient.getStreamRecord(getStreamRecordRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public CreateSearchIndexResponse createSearchIndex(CreateSearchIndexRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<CreateSearchIndexResponse> res = this.internalClient.createSearchIndex(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListSearchIndexResponse listSearchIndex(ListSearchIndexRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListSearchIndexResponse> res = this.internalClient.listSearchIndex(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteSearchIndexResponse deleteSearchIndex(DeleteSearchIndexRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DeleteSearchIndexResponse> res = this.internalClient.deleteSearchIndex(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeSearchIndexResponse describeSearchIndex(DescribeSearchIndexRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkStringNotNullAndEmpty(request.getTableName(), "TableName should not be null or empty.");
+        Preconditions.checkStringNotNullAndEmpty(request.getIndexName(), "TableName should not be null or empty.");
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DescribeSearchIndexResponse> res = this.internalClient.describeSearchIndex(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public SearchResponse search(SearchRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<SearchResponse> res = this.internalClient.search(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public StartLocalTransactionResponse startLocalTransaction(StartLocalTransactionRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<StartLocalTransactionResponse> res = this.internalClient.startLocalTransaction(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public CommitTransactionResponse commitTransaction(CommitTransactionRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<CommitTransactionResponse> res = this.internalClient.commitTransaction(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public AbortTransactionResponse abortTransaction(AbortTransactionRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<AbortTransactionResponse> res = this.internalClient.abortTransaction(request, null);
+        return waitForFuture(res);
+    }
+
+    private <Res> Res waitForFuture(Future<Res> f) {
+        try {
+            return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);
+        } catch(InterruptedException e) {
+            throw new ClientException(String.format(
+                    "The thread was interrupted: %s", e.getMessage()));
+        } catch(ExecutionException e) {
+            throw new ClientException("The thread was aborted", e);
+        } catch (TimeoutException e) {
+            throw new ClientException("Wait future timeout", e);
+        }
+    }
+
+    @Override
+    public AsyncClientInterface asAsyncClient() {
+        return new AsyncClient(this.internalClient);
+    }
+
+    @Override
+    public void shutdown() {
+        this.internalClient.shutdown();
+    }
+
+    public void setPrepareCallback(PrepareCallback cb) {
+        prepareCallback = cb;
+    }
+
+    public void setCredentials(ServiceCredentials credentials) {
+        internalClient.setCredentials(credentials);
+    }
+
+    @Override
+    public void switchCredentialsProvider(CredentialsProvider newCrdsProvider) {
+        internalClient.switchCredentialsProvider(newCrdsProvider);
+    }
+}

@@ -1,0 +1,54 @@
+package com.alicloud.openservices.tablestore.core.http;
+
+import org.apache.http.HttpHost;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
+
+import com.alicloud.openservices.tablestore.core.Constants;
+import com.alicloud.openservices.tablestore.ClientConfiguration;
+import com.alicloud.openservices.tablestore.ClientException;
+
+class HttpFactory {
+    public static CloseableHttpAsyncClient createHttpAsyncClient(
+            ClientConfiguration config, PoolingNHttpClientConnectionManager cm) {
+        HttpAsyncClientBuilder httpClientBuilder = HttpAsyncClients.custom();
+        httpClientBuilder.setConnectionManager(cm);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(config.getConnectionTimeoutInMillisecond())
+                .setSocketTimeout(config.getSocketTimeoutInMillisecond()).build();
+        httpClientBuilder.setDefaultRequestConfig(requestConfig);
+        httpClientBuilder.setUserAgent(Constants.USER_AGENT);
+        httpClientBuilder.disableCookieManagement();
+
+        String proxyHost = config.getProxyHost();
+        int proxyPort = config.getProxyPort();
+        if (proxyHost != null) {
+            if (proxyPort <= 0) {
+                throw new ClientException("The proxy port is invalid. Please check your configuration.");
+            }
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+            httpClientBuilder.setProxy(proxy);
+            String proxyUsername = config.getProxyUsername();
+            String proxyPassword = config.getProxyPassword();
+            if (proxyUsername != null && proxyPassword != null) {
+                String proxyDomain = config.getProxyDomain();
+                String proxyWorkstation = config.getProxyWorkstation();
+                CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                credsProvider.setCredentials(
+                    new AuthScope(proxyHost, proxyPort),
+                    new NTCredentials(
+                        proxyUsername, proxyPassword, proxyWorkstation, proxyDomain));
+                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+            }
+        }
+
+        return httpClientBuilder.build();
+    }
+}
