@@ -9,19 +9,19 @@
  - 阿里云表格存储是阿里云自主研发的NoSQL数据存储服务，提供海量结构化数据的存储和实时访问。
 
 ## 版本
- - 当前版本：2.2.4
+ - 当前版本：4.10.0
 
 ## 运行环境
  - JDK 6及其以上
 
 ## 安装
 #### Maven方式
-下载[最新版JAR包](https://search.maven.org/remote_content?g=com.aliyun.openservices&a=ots-public&v=LATEST)或者通过Maven：
+下载[最新版JAR包](https://search.maven.org/remotecontent?filepath=com/aliyun/openservices/tablestore/4.10.0/tablestore-4.10.0.jar)或者通过Maven：
 ```xml
 <dependency>
-    <groupId>com.aliyun.openservices</groupId>
-    <artifactId>ots-public</artifactId>
-    <version>2.2.4</version>
+  <groupId>com.aliyun.openservices</groupId>
+  <artifactId>tablestore</artifactId>
+  <version>4.10.0</version>
 </dependency>
 ```
 
