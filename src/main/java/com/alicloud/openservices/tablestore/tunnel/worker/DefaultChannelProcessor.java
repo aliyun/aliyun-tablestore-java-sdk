@@ -34,14 +34,14 @@ public class DefaultChannelProcessor implements IChannelProcessor {
             try {
                 checkpointer.checkpoint(FINISH_TAG);
             } catch (Exception e) {
-                LOG.error("checkpoint error, detail: {}", e);
+                LOG.error("checkpoint error, detail: {}", e.toString());
             }
         } else if (System.currentTimeMillis() - latestCheckpoint > checkpointIntervalInMillis) {
             LOG.info("begin do checkpoint, token = {}", input.getNextToken());
             try {
                 checkpointer.checkpoint(input.getNextToken());
             } catch (Exception e) {
-                LOG.error("checkpoint error, detail: {}", e);
+                LOG.error("checkpoint error, detail: {}", e.toString());
             }
             latestCheckpoint = System.currentTimeMillis();
         }

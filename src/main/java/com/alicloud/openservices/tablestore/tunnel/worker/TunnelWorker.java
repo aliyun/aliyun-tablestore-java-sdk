@@ -149,6 +149,7 @@ public class TunnelWorker implements ITunnelWorker {
             // 若Worker处于ENDED状态，则需要重新进行资源初始化。
             if (workerStatus.get().equals(TunnelWorkerStatus.WORKER_ENDED)) {
                 workerStatus.set(TunnelWorkerStatus.WORKER_READY);
+                lastHeartbeatTime = new Date();
                 connect();
             }
             try {

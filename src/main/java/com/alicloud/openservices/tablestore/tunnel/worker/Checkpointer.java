@@ -57,7 +57,7 @@ public class Checkpointer implements ICheckpointer {
                 }
             }
         } catch (Exception e) {
-            LOG.warn("Checkpoint occurs error, detail: {}", e);
+            LOG.warn("Checkpoint occurs error, detail: {}", e.toString());
         }
     }
 

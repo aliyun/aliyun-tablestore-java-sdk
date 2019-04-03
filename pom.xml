@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.aliyun.openservices</groupId>
     <artifactId>tablestore</artifactId>
-    <version>4.10.1-SNAPSHOT</version>
+    <version>4.10.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>AliCloud TableStore SDK for Java</name>
     <url>http://www.aliyun.com</url>
@@ -183,6 +183,7 @@
                             <exclude>com.lmax:disruptor:jar:</exclude>
                             <exclude>commons-codec:commons-codec:jar:</exclude>
                             <exclude>org.hamcrest:hamcrest-core:jar:</exclude>
+                            <exclude>com.google.code.gson:gson:jar:</exclude>
                         </excludes>
                     </artifactSet>
                     <relocations>
