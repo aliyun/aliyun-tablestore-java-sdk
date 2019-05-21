@@ -35,7 +35,7 @@ public class TestTunnelWorkerReconnect {
     public static void main(String[] args) {
         TunnelClient client = new TunnelClient(Endpoint, AccessId, AccessKey, InstanceName);
         TunnelWorkerConfig config = new TunnelWorkerConfig(new SimpleProcessor());
-        TunnelWorker worker1 = new TunnelWorker("cfea9e1d-19f3-4835-8551-698a5c5c0773", client, config);
+        TunnelWorker worker1 = new TunnelWorker("9c0fbd17-65b7-4449-ac38-03e794e261aa", client, config);
         try {
             System.out.println("worker running....");
             worker1.connectAndWorking();

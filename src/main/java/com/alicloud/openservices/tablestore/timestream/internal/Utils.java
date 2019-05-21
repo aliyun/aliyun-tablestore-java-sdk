@@ -99,13 +99,13 @@ public class Utils {
         return pkBuilder;
     }
 
-    public static RowDeleteChange serializeTimestreamMeta(String tableName, TimestreamIdentifier meta) {
+    public static RowDeleteChange serializeTimestreamMetaToDelete(String tableName, TimestreamIdentifier meta) {
         PrimaryKeyBuilder pkBuilder = convertIdentifierToPK(meta);
         RowDeleteChange rowChange = new RowDeleteChange(tableName, pkBuilder.build());
         return rowChange;
     }
 
-    public static RowPutChange serializeTimestreamMeta(String tableName, TimestreamMeta meta) {
+    public static RowPutChange serializeTimestreamMetaToPut(String tableName, TimestreamMeta meta) {
         TimestreamIdentifier identifier = meta.getIdentifier();
         PrimaryKeyBuilder pkBuilder = convertIdentifierToPK(meta.getIdentifier());
         RowPutChange rowChange = new RowPutChange(tableName, pkBuilder.build());
@@ -119,6 +119,24 @@ public class Utils {
                 throw new ClientException("Key of attribute cannot be " + TableMetaGenerator.CN_TAMESTAMP_NAME + " .");
             }
             rowChange.addColumn(key, attributes.get(key));
+        }
+        return rowChange;
+    }
+
+    public static RowUpdateChange serializeTimestreamMetaToUpdate(String tableName, TimestreamMeta meta) {
+        TimestreamIdentifier identifier = meta.getIdentifier();
+        PrimaryKeyBuilder pkBuilder = convertIdentifierToPK(meta.getIdentifier());
+        RowUpdateChange rowChange = new RowUpdateChange(tableName, pkBuilder.build());
+        rowChange.put(
+                new Column(
+                        TableMetaGenerator.CN_TAMESTAMP_NAME,
+                        ColumnValue.fromLong(meta.getUpdateTimeInUsec())));
+        Map<String, ColumnValue> attributes = meta.getAttributes();
+        for (String key : meta.getAttributes().keySet()) {
+            if (key.equals(TableMetaGenerator.CN_TAMESTAMP_NAME)) {
+                throw new ClientException("Key of attribute cannot be " + TableMetaGenerator.CN_TAMESTAMP_NAME + " .");
+            }
+            rowChange.put(key, attributes.get(key));
         }
         return rowChange;
     }

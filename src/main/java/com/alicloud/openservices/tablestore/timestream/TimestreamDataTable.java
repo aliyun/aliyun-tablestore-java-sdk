@@ -97,4 +97,11 @@ public class TimestreamDataTable {
     public DataGetter get(TimestreamIdentifier identifier) {
         return new DataGetter(asyncClient, dataTableName, identifier);
     }
+
+    /**
+     * 将内存中缓存的所有数据写入到数据库中
+     */
+    public void flush() {
+        dataWriter.flush();
+    }
 }

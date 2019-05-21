@@ -1,7 +1,6 @@
 package com.alicloud.openservices.tablestore.timestream;
 
 import com.alicloud.openservices.tablestore.AsyncClient;
-import com.alicloud.openservices.tablestore.TableStoreWriter;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.timestream.internal.MetaCacheManager;
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
@@ -46,7 +45,7 @@ public class TimestreamMetaTable {
      * @param identifier 时间线标示
      */
     public void delete(TimestreamIdentifier identifier) {
-        RowDeleteChange rowChange = Utils.serializeTimestreamMeta(this.metaTableName, identifier);
+        RowDeleteChange rowChange = Utils.serializeTimestreamMetaToDelete(this.metaTableName, identifier);
         DeleteRowRequest request = new DeleteRowRequest();
         request.setRowChange(rowChange);
         Future<DeleteRowResponse> future = this.asyncClient.deleteRow(request, null);
@@ -62,10 +61,26 @@ public class TimestreamMetaTable {
             this.metaCacheManager.updateTimestreamMeta(meta.getIdentifier(), meta.getUpdateTimeInUsec());
         }
 
-        RowPutChange rowChange = Utils.serializeTimestreamMeta(this.metaTableName, meta);
+        RowPutChange rowChange = Utils.serializeTimestreamMetaToPut(this.metaTableName, meta);
         PutRowRequest request = new PutRowRequest();
         request.setRowChange(rowChange);
         Future<PutRowResponse> future = this.asyncClient.putRow(request, null);
+        Utils.waitForFuture(future);
+    }
+
+    /**
+     * 更新一条时间线
+     * @param meta 时间线
+     */
+    public void update(TimestreamMeta meta) {
+        if (this.metaCacheManager != null) {
+            this.metaCacheManager.updateTimestreamMeta(meta.getIdentifier(), meta.getUpdateTimeInUsec());
+        }
+
+        RowUpdateChange rowChange = Utils.serializeTimestreamMetaToUpdate(this.metaTableName, meta);
+        UpdateRowRequest request = new UpdateRowRequest();
+        request.setRowChange(rowChange);
+        Future<UpdateRowResponse> future = this.asyncClient.updateRow(request, null);
         Utils.waitForFuture(future);
     }
 

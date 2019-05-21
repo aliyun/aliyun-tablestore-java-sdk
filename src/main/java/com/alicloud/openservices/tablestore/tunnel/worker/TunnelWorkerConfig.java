@@ -49,17 +49,28 @@ public class TunnelWorkerConfig {
      * 用于读数据的线程池，可支持用户自定义。在自定义时，线程池中的线程数要和Tunnel中的Channel数尽可能一致，
      * 这样可以保障每个Channel都能很快的分配到计算资源(CPU).
      * 在我们的默认线程池配置中，我们做了以下几件事，以保障吞吐量:
-     *   1. 默认预发分配32个的核心线程，以保障数据较小时(Channel数较少时)的实时吞吐。
-     *   2. 工作队列的大小适当调小，这样在用户数据量比较大(Channel数较多)时，可以更快的触发线程池新建线程的策略，及时的弹起更多的计算资源。
-     *   3. 设置了默认的线程保活时间(默认60s)，当数据量下去后，可以及时回收线程资源。
+     * 1. 默认预发分配32个的核心线程，以保障数据较小时(Channel数较少时)的实时吞吐。
+     * 2. 工作队列的大小适当调小，这样在用户数据量比较大(Channel数较多)时，可以更快的触发线程池新建线程的策略，及时的弹起更多的计算资源。
+     * 3. 设置了默认的线程保活时间(默认60s)，当数据量下去后，可以及时回收线程资源。
      */
-    private ThreadPoolExecutor readRecordsExecutor = newDefaultThreadPool("read-records-executor-");
+    private ThreadPoolExecutor readRecordsExecutor;
     /**
      * 用于处理数据的线程池，可支持用户自定义，说明和上面的线程池一致。
      */
-    private ThreadPoolExecutor processRecordsExecutor = newDefaultThreadPool("process-records-executor-");
+    private ThreadPoolExecutor processRecordsExecutor;
 
     public TunnelWorkerConfig(IChannelProcessor processor) {
+        this(
+            newDefaultThreadPool("read-records-executor-"),
+            newDefaultThreadPool("process-records-executor-"),
+            processor
+        );
+    }
+
+    public TunnelWorkerConfig(ThreadPoolExecutor readRecordsExecutor, ThreadPoolExecutor processRecordsExecutor,
+                              IChannelProcessor processor) {
+        this.readRecordsExecutor = readRecordsExecutor;
+        this.processRecordsExecutor = processRecordsExecutor;
         this.channelProcessor = processor;
     }
 
@@ -112,6 +123,9 @@ public class TunnelWorkerConfig {
     }
 
     public void setReadRecordsExecutor(ThreadPoolExecutor readRecordsExecutor) {
+        if (this.readRecordsExecutor != null) {
+            this.readRecordsExecutor.shutdownNow();
+        }
         this.readRecordsExecutor = readRecordsExecutor;
     }
 
@@ -120,19 +134,27 @@ public class TunnelWorkerConfig {
     }
 
     public void setProcessRecordsExecutor(ThreadPoolExecutor processRecordsExecutor) {
+        if (this.processRecordsExecutor != null) {
+            this.processRecordsExecutor.shutdownNow();
+        }
         this.processRecordsExecutor = processRecordsExecutor;
     }
 
     /**
-     * 初始化默认的线程池。
+     * 初始化默认的线程池。在我们的默认线程池配置中，我们做了以下几件事，以保障吞吐量:
+     * 1. 默认预发分配32个的核心线程，以保障数据较小时(Channel数较少时)的实时吞吐。
+     * 2. 工作队列的大小适当调小，这样在用户数据量比较大(Channel数较多)时，可以更快的触发线程池新建线程的策略，及时的弹起更多的计算资源。
+     * 3. 设置了默认的线程保活时间(默认60s)，当数据量下去后，可以及时回收线程资源。
+     *
      * @param threadPrefix: 线程名称的前缀标识
      * @return
      */
-    private ThreadPoolExecutor newDefaultThreadPool(final String threadPrefix) {
+    public static ThreadPoolExecutor newDefaultThreadPool(final String threadPrefix) {
         return new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_CORE_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
             new ArrayBlockingQueue<Runnable>(BLOCKING_QUEUE_SIZE),
             new ThreadFactory() {
                 private final AtomicInteger counter = new AtomicInteger();
+
                 @Override
                 public Thread newThread(Runnable r) {
                     String threadName = threadPrefix + counter.getAndIncrement();

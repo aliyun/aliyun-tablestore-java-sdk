@@ -1,7 +1,6 @@
 package com.alicloud.openservices.tablestore.timestream.internal;
 
 import com.alicloud.openservices.tablestore.ClientException;
-import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.timestream.TimestreamRestrict;
 import com.alicloud.openservices.tablestore.timestream.functiontest.Helper;
@@ -199,7 +198,7 @@ public class UtilsUnittest {
      * serializeTimeSeiesMeta case
      */
     @Test
-    public void testSerializeTimestreamMeta() {
+    public void testSerializeTimestreamMetaToPut() {
         Random random = new Random(System.currentTimeMillis());
         // 没有attributes
         {
@@ -210,7 +209,7 @@ public class UtilsUnittest {
             TimestreamMeta meta = new TimestreamMeta(identifier);
             String tags = Utils.serializeTags(identifier.getTags());
             String tableName = "test_table";
-            RowChange rowChange = Utils.serializeTimestreamMeta(tableName, meta);
+            RowChange rowChange = Utils.serializeTimestreamMetaToPut(tableName, meta);
             Assert.assertTrue(rowChange instanceof RowPutChange);
             RowPutChange rowPutChange = (RowPutChange)rowChange;
             PrimaryKey pks = rowPutChange.getPrimaryKey();
@@ -233,7 +232,7 @@ public class UtilsUnittest {
                     .addAttribute("loc", "123,456");
             String tags = Utils.serializeTags(identifier.getTags());
             String tableName = "test_table";
-            RowChange rowChange = Utils.serializeTimestreamMeta(tableName, meta);
+            RowChange rowChange = Utils.serializeTimestreamMetaToPut(tableName, meta);
             Assert.assertTrue(rowChange instanceof RowPutChange);
             RowPutChange rowPutChange = (RowPutChange)rowChange;
             PrimaryKey pks = rowPutChange.getPrimaryKey();
@@ -303,6 +302,58 @@ public class UtilsUnittest {
             Row row = new Row(pks, cols);
             TimestreamMeta newMeta = Utils.deserializeTimestreamMeta(row);
             Assert.assertTrue(Helper.compareMeta(meta, newMeta));
+        }
+    }
+
+
+    @Test
+    public void testSerializeTimestreamMetaToUpdate() {
+        Random random = new Random(System.currentTimeMillis());
+        // 没有attributes
+        {
+            TimestreamIdentifier identifier = new TimestreamIdentifier.Builder("cpu")
+                    .addTag("tag1", String.valueOf(random.nextInt()))
+                    .addTag("tag2", String.valueOf(random.nextInt()))
+                    .build();
+            TimestreamMeta meta = new TimestreamMeta(identifier);
+            String tags = Utils.serializeTags(identifier.getTags());
+            String tableName = "test_table";
+            RowChange rowChange = Utils.serializeTimestreamMetaToUpdate(tableName, meta);
+            Assert.assertTrue(rowChange instanceof RowUpdateChange);
+            RowUpdateChange rowPutChange = (RowUpdateChange)rowChange;
+            PrimaryKey pks = rowPutChange.getPrimaryKey();
+            Assert.assertEquals(pks.getPrimaryKeyColumns().length, 3);
+            Assert.assertTrue(pks.getPrimaryKeyColumn(0).getName().equals(TableMetaGenerator.CN_PK0));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(0).getValue().asString().equals(Utils.getHashCode("cpu", tags)));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(1).getName().equals(TableMetaGenerator.CN_PK1));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(1).getValue().asString().equals("cpu"));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(2).getName().equals(TableMetaGenerator.CN_PK2));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(2).getValue().asString().equals(tags));
+            Assert.assertEquals(rowPutChange.getColumnsToUpdate().get(0).getFirst().getValue().asLong(), meta.getUpdateTimeInUsec());
+        }
+        // 有attributes
+        {
+            TimestreamIdentifier identifier = new TimestreamIdentifier.Builder("cpu")
+                    .addTag("tag1", String.valueOf(random.nextInt()))
+                    .addTag("tag2", String.valueOf(random.nextInt()))
+                    .build();
+            TimestreamMeta meta = new TimestreamMeta(identifier)
+                    .addAttribute("loc", "123,456");
+            String tags = Utils.serializeTags(identifier.getTags());
+            String tableName = "test_table";
+            RowChange rowChange = Utils.serializeTimestreamMetaToUpdate(tableName, meta);
+            Assert.assertTrue(rowChange instanceof RowUpdateChange);
+            RowUpdateChange rowPutChange = (RowUpdateChange)rowChange;
+            PrimaryKey pks = rowPutChange.getPrimaryKey();
+            Assert.assertEquals(pks.getPrimaryKeyColumns().length, 3);
+            Assert.assertTrue(pks.getPrimaryKeyColumn(0).getName().equals(TableMetaGenerator.CN_PK0));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(0).getValue().asString().equals(Utils.getHashCode("cpu", tags)));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(1).getName().equals(TableMetaGenerator.CN_PK1));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(1).getValue().asString().equals("cpu"));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(2).getName().equals(TableMetaGenerator.CN_PK2));
+            Assert.assertTrue(pks.getPrimaryKeyColumn(2).getValue().asString().equals(tags));
+            Assert.assertEquals(rowPutChange.getColumnsToUpdate().get(0).getFirst().getValue().asLong(), meta.getUpdateTimeInUsec());
+            Assert.assertTrue(rowPutChange.getColumnsToUpdate().get(1).getFirst().getValue().asString().equals(meta.getAttributeAsString("loc")));
         }
     }
 
