@@ -7,12 +7,12 @@ import com.alicloud.openservices.tablestore.TableStoreCallback;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.RowChange;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
 import com.alicloud.openservices.tablestore.writer.WriterConfig;
 import com.alicloud.openservices.tablestore.timestream.*;
 import com.alicloud.openservices.tablestore.timestream.model.*;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
-import com.alicloud.openservices.tablestore.timestream.model.filter.LastUpdateTime;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Name;
+import com.alicloud.openservices.tablestore.timestream.model.condition.LastUpdateTime;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Name;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import static com.alicloud.openservices.tablestore.timestream.model.filter.FilterFactory.*;
+import static com.alicloud.openservices.tablestore.timestream.model.condition.ConditionFactory.*;
 
 public class TimestreamWriterFunctiontest {
     private static Logger logger = LoggerFactory.getLogger(TimestreamMetaFunctiontest.class);
@@ -76,7 +76,7 @@ public class TimestreamWriterFunctiontest {
         Point point1 = new Point.Builder(now, TimeUnit.MILLISECONDS).addField("sys", 30).addField("usr", 50).build();
         dataTable.asyncWrite(identifier, point1);
         Thread.sleep(TimeUnit.SECONDS.toMillis(2));
-        Filter filter = Name.equal("cpu");
+        Condition filter = Name.equal("cpu");
         {
             Iterator<Point> pointIterator = dataTable.get(identifier).timeRange(TimeRange.range(now, now + 1000, TimeUnit.MILLISECONDS)).fetchAll();
             List<Point> points = new ArrayList<Point>();
@@ -108,7 +108,7 @@ public class TimestreamWriterFunctiontest {
 
         Helper.waitSync();
         {
-            Iterator<TimestreamMeta> metaIterator = metaTable.filter(filter).fetchAll();
+            Iterator<TimestreamMeta> metaIterator = metaTable.search(filter).fetchAll();
             List<TimestreamIdentifier> metaList = new ArrayList<TimestreamIdentifier>();
             while (metaIterator.hasNext()) {
                 metaList.add(metaIterator.next().getIdentifier());
@@ -267,9 +267,9 @@ public class TimestreamWriterFunctiontest {
         metaList.add(meta2);
         metaTable.put(meta2);
         Thread.sleep(20000);
-        Filter filter = Name.equal("cpu");
+        Condition filter = Name.equal("cpu");
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter).fetchAll();
             List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
             while(iterator.hasNext()) {
                 metas.add(iterator.next());
@@ -284,7 +284,7 @@ public class TimestreamWriterFunctiontest {
         metaTable.delete(meta2.getIdentifier());
         Thread.sleep(10000);
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             while (iterator.hasNext()) {
                 metas.add(iterator.next().getIdentifier());
@@ -339,12 +339,12 @@ public class TimestreamWriterFunctiontest {
         dataTable.asyncWrite(meta.getIdentifier(), point1);
         // wait for meta flush
         Thread.sleep(TimeUnit.SECONDS.toMillis(30));
-        Filter filter1 = and(
+        Condition filter1 = and(
                 Name.equal("cpu"),
                 LastUpdateTime.in(TimeRange.after(now, TimeUnit.MILLISECONDS)));
         long metaTime = 0;
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter1).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter1).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             while (iterator.hasNext()) {
                 TimestreamMeta tmpMeta = iterator.next();
@@ -354,7 +354,7 @@ public class TimestreamWriterFunctiontest {
             Assert.assertEquals(1, metas.size());
             Assert.assertTrue(Helper.isContaineIdentifier(metas, meta.getIdentifier()));
 
-            Filter filter2 = and(
+            Condition filter2 = and(
                     Name.equal("cpu"));
             Iterator<Point> pointIterator =  dataTable.get(meta.getIdentifier()).timeRange(TimeRange.range(now, now + 2000, TimeUnit.MILLISECONDS)).fetchAll();
             List<Point> points = new ArrayList<Point>();
@@ -371,7 +371,7 @@ public class TimestreamWriterFunctiontest {
         // wait for meta flush
         Thread.sleep(TimeUnit.SECONDS.toMillis(10));
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter1).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter1).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             long newMetaTime = 0;
             while (iterator.hasNext()) {
@@ -400,10 +400,10 @@ public class TimestreamWriterFunctiontest {
         // wait for meta flush
         Thread.sleep(TimeUnit.SECONDS.toMillis(10));
         {
-            Filter filter = and(
+            Condition filter = and(
                     Name.equal("cpu"),
                     LastUpdateTime.in(TimeRange.after(now, TimeUnit.MILLISECONDS)));
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             long newMetaTime = 0;
             while (iterator.hasNext()) {
@@ -429,7 +429,7 @@ public class TimestreamWriterFunctiontest {
         metaTable.delete(meta.getIdentifier());
         Thread.sleep(TimeUnit.SECONDS.toMillis(10));
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter1).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter1).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             while (iterator.hasNext()) {
                 metas.add(iterator.next().getIdentifier());
@@ -485,18 +485,18 @@ public class TimestreamWriterFunctiontest {
         dataTable.asyncWrite(meta.getIdentifier(), point1);
         // wait for meta flush
         Thread.sleep(TimeUnit.SECONDS.toMillis(30));
-        Filter filter1 = and(
+        Condition filter1 = and(
                 Name.equal("cpu"),
                 LastUpdateTime.in(TimeRange.after(now, TimeUnit.MILLISECONDS)));
         {
-            Iterator<TimestreamMeta> iterator = metaTable.filter(filter1).fetchAll();
+            Iterator<TimestreamMeta> iterator = metaTable.search(filter1).fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             while (iterator.hasNext()) {
                 metas.add(iterator.next().getIdentifier());
             }
             Assert.assertEquals(0, metas.size());
 
-            Filter filter2 = and(
+            Condition filter2 = and(
                     Name.equal("cpu"));
             Iterator<Point> pointIterator = dataTable.get(meta.getIdentifier()).timeRange(TimeRange.range(now, now + 2000, TimeUnit.MILLISECONDS)).fetchAll();
             List<Point> points = new ArrayList<Point>();
@@ -554,11 +554,11 @@ public class TimestreamWriterFunctiontest {
         dataTable.asyncWrite(meta.getIdentifier(), point1);
         // wait for meta flush
         Thread.sleep(TimeUnit.SECONDS.toMillis(30));
-        Filter filter1 = and(
+        Condition filter1 = and(
                 Name.equal("cpu"),
                 LastUpdateTime.in(TimeRange.after(now, TimeUnit.MILLISECONDS)));
         {
-            Filter filter2 = and(
+            Condition filter2 = and(
                     Name.equal("cpu"));
             Iterator<Point> pointIterator = dataTable.get(meta.getIdentifier()).timeRange(TimeRange.range(now, now + 2000, TimeUnit.MILLISECONDS)).fetchAll();
             List<Point> points = new ArrayList<Point>();

@@ -6,9 +6,9 @@ import com.alicloud.openservices.tablestore.timestream.internal.MetaCacheManager
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import com.alicloud.openservices.tablestore.timestream.model.TimestreamIdentifier;
 import com.alicloud.openservices.tablestore.timestream.model.TimestreamMeta;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 import com.alicloud.openservices.tablestore.timestream.model.query.MetaGetter;
 import com.alicloud.openservices.tablestore.timestream.model.query.MetaFilter;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
 
 import java.util.concurrent.Future;
 
@@ -97,16 +97,16 @@ public class TimestreamMetaTable {
      * 查询所有时间线
      * @return
      */
-    public MetaFilter filter() {
+    public MetaFilter search() {
         return new MetaFilter(asyncClient, metaTableName, index, null);
     }
 
     /**
      * 查询满足条件的时间线
-     * @param filter 查询条件
+     * @param condition 查询条件
      * @return
      */
-    public MetaFilter filter(Filter filter) {
-        return new MetaFilter(asyncClient, metaTableName, index, filter);
+    public MetaFilter search(Condition condition) {
+        return new MetaFilter(asyncClient, metaTableName, index, condition);
     }
 }

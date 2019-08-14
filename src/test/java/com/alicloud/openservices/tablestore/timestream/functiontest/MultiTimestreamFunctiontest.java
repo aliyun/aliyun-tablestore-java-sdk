@@ -7,9 +7,9 @@ import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 import com.alicloud.openservices.tablestore.timestream.bench.Conf;
 import com.alicloud.openservices.tablestore.timestream.bench.wrapper.TableStoreWrapper;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Attribute;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Name;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Attribute;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Name;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import static com.alicloud.openservices.tablestore.timestream.model.filter.FilterFactory.*;
+import static com.alicloud.openservices.tablestore.timestream.model.condition.ConditionFactory.*;
 
 public class MultiTimestreamFunctiontest {
     private static Logger logger = LoggerFactory.getLogger(MultiTimestreamFunctiontest.class);
@@ -150,8 +150,8 @@ public class MultiTimestreamFunctiontest {
 
         // 获取多条时间线
         {
-            Filter filter = Name.equal("cpu");
-            Iterator<TimestreamMeta> metaIterator = metaWriter.filter(filter)
+            Condition filter = Name.equal("cpu");
+            Iterator<TimestreamMeta> metaIterator = metaWriter.search(filter)
                     .fetchAll();
             List<TimestreamMeta> metaList = new ArrayList<TimestreamMeta>();
             while (metaIterator.hasNext()) {
@@ -228,13 +228,13 @@ public class MultiTimestreamFunctiontest {
                     "30.128854, 120.083825",
                     "30.127931, 120.081095"
             );
-            Filter filter = and(
+            Condition filter = and(
                     Name.in(new String[]{"status"}),
                     Attribute.inGeoPolygon("location", points)
             );
 
             Iterator<TimestreamMeta> iterator = metaTable
-                    .filter(filter)
+                    .search(filter)
                     .fetchAll();
             List<TimestreamIdentifier> metas = new ArrayList<TimestreamIdentifier>();
             while(iterator.hasNext()) {

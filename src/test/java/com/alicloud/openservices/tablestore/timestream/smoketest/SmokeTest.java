@@ -1,17 +1,24 @@
 package com.alicloud.openservices.tablestore.timestream.smoketest;
 
 import com.alicloud.openservices.tablestore.AsyncClient;
+import com.alicloud.openservices.tablestore.model.ColumnType;
+import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.filter.Filter;
+import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
 import com.alicloud.openservices.tablestore.timestream.*;
+import com.alicloud.openservices.tablestore.timestream.functiontest.Helper;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.alicloud.openservices.tablestore.timestream.bench.Conf;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Name;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
+import com.alicloud.openservices.tablestore.timestream.model.condition.Name;
+import com.alicloud.openservices.tablestore.timestream.model.query.Sorter;
 
 public class SmokeTest {
 
@@ -28,7 +35,10 @@ public class SmokeTest {
                 conf.getInstance());
         TimestreamDB client = new TimestreamDBClient(
                 asyncClient, config);
-        client.createMetaTable();
+        List<AttributeIndexSchema> attrIndexSchemas = new ArrayList<AttributeIndexSchema>();
+        attrIndexSchemas.add(new AttributeIndexSchema("OTS.role#", AttributeIndexSchema.Type.KEYWORD));
+        Helper.safeClearDB(asyncClient);
+        client.createMetaTable(attrIndexSchemas);
         String tableName = "datatable_1";
         client.createDataTable(tableName);
 
@@ -50,12 +60,20 @@ public class SmokeTest {
             Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 
             TimestreamMetaTable metaReader = client.metaTable();
-            Filter filter = Name.equal("cpu");
+            Condition condition = Name.equal("cpu");
 
             // ---------------------------------------------------
-            // 获取cpu下的所有时间线Meta
+            // 获取cpu下的所有时间线Meta，并按照attributes排序
             // ---------------------------------------------------
-            Iterator<TimestreamMeta> iterator = metaReader.filter(filter).fetchAll();
+            Sorter sorter = Sorter.Builder.newBuilder()
+                    .sortAttributes("OTS.role#", Sorter.SortOrder.ASC)
+                    .sortName(Sorter.SortOrder.DESC)
+                    .build();
+            Iterator<TimestreamMeta> iterator = metaReader
+                    .search(condition)
+                    .sort(sorter)
+                    .fetchAll();
+            metaReader.search(condition).fetchAll();
             while (iterator.hasNext()) {
                 TimestreamMeta metaOut = iterator.next();
                 System.out.print(metaOut.toString());
@@ -77,7 +95,15 @@ public class SmokeTest {
             // 通过Reader读取这个时间线下的Point
             // ---------------------------------------------------
             int count = 0;
-            Iterator<Point> pointIterator =  dataReader.get(meta.getIdentifier()).timeRange(TimeRange.range(0, 100, TimeUnit.SECONDS)).fetchAll();
+            Filter filter = new SingleColumnValueFilter(
+                    "load5",
+                    SingleColumnValueFilter.CompareOperator.GREATER_EQUAL,
+                    new ColumnValue(10L, ColumnType.INTEGER));
+            Iterator<Point> pointIterator =  dataReader.get(meta.getIdentifier())
+                    .timeRange(TimeRange.range(0, 100, TimeUnit.SECONDS))
+                    .filter(filter)
+                    .descTimestamp()
+                    .fetchAll();
             while (pointIterator.hasNext()) {
                 Point point = pointIterator.next();
                 System.out.println(point.getTimestamp() + ":" + point.toString());

@@ -81,6 +81,15 @@ public class AttributeIndexSchema {
         return this.fieldSchema.isArray();
     }
 
+    public AttributeIndexSchema setEnableSortAndAgg(boolean enableSortAndAgg) {
+        this.fieldSchema.setEnableSortAndAgg(enableSortAndAgg);
+        return this;
+    }
+
+    public Boolean isEnableSortAndAgg() {
+        return this.fieldSchema.isEnableSortAndAgg();
+    }
+
     public FieldSchema getFieldSchema() {
         return this.fieldSchema;
     }
