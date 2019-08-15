@@ -5,10 +5,9 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.search.SearchQuery;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest;
 import com.alicloud.openservices.tablestore.model.search.query.MatchAllQuery;
-import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.model.*;
-import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,20 +22,19 @@ public class MetaFilter {
     private AsyncClient asyncClient;
     private String metaTableName;
     private String indexName;
-    private Condition condition;
+    private Filter filter;
     private boolean returnAll = false;
     private List<String> attrToGet = null;
     private int limit = 100;
     private int offset = 0;
-    private Sort sort = null;
 
     public MetaFilter(AsyncClient asyncClient,
                       String metaTableName, String indexName,
-                      Condition condition) {
+                      Filter filter) {
         this.asyncClient = asyncClient;
         this.metaTableName = metaTableName;
         this.indexName = indexName;
-        this.condition = condition;
+        this.filter = filter;
     }
 
     /**
@@ -55,16 +53,6 @@ public class MetaFilter {
      */
     public MetaFilter offset(int offset) {
         this.offset = offset;
-        return this;
-    }
-
-	/**
-     * 指定排序条件会返回结果进行排序
-     * @param sorter 排序规则
-     * @return
-     */
-    public MetaFilter sort(Sorter sorter) {
-        this.sort = new Sort(sorter.getSorter());
         return this;
     }
 
@@ -122,13 +110,10 @@ public class MetaFilter {
         searchQuery.setLimit(limit);
         searchQuery.setOffset(offset);
         searchQuery.setGetTotalCount(true);
-        if (condition == null) {
+        if (filter == null) {
             searchQuery.setQuery(new MatchAllQuery());
         } else {
-            searchQuery.setQuery(condition.getQuery());
-        }
-        if (sort != null) {
-            searchQuery.setSort(sort);
+            searchQuery.setQuery(filter.getQuery());
         }
 
         SearchRequest request = new SearchRequest(metaTableName, indexName, searchQuery);

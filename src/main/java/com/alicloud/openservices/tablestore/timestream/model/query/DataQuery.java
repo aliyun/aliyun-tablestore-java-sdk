@@ -3,11 +3,11 @@ package com.alicloud.openservices.tablestore.timestream.model.query;
 import com.alicloud.openservices.tablestore.AsyncClient;
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.*;
-import com.alicloud.openservices.tablestore.model.filter.Filter;
 import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 import com.alicloud.openservices.tablestore.timestream.model.TimeRange;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +20,6 @@ public class DataQuery {
     private List<String> columnToGet = new ArrayList<String>();
     private TimeRange timeRange;
     private long timestamp = -1;
-    private boolean isDesc = false;
-    private Filter filter;
 
     public DataQuery(AsyncClient asyncClient, String tableName) {
         this.asyncClient = asyncClient;
@@ -59,35 +57,21 @@ public class DataQuery {
             end = timeRange.getEndTime();
         }
         PrimaryKeyBuilder beginPk = Utils.convertIdentifierToPK(identifier);
+        beginPk.addPrimaryKeyColumn(
+                TableMetaGenerator.CN_TAMESTAMP_NAME,
+                PrimaryKeyValue.fromLong(start)
+        );
+
         PrimaryKeyBuilder endPk = Utils.convertIdentifierToPK(identifier);
-        if (isDesc) {
-            beginPk.addPrimaryKeyColumn(
-                    TableMetaGenerator.CN_TAMESTAMP_NAME,
-                    PrimaryKeyValue.fromLong(end)
-            );
-            endPk.addPrimaryKeyColumn(
-                    TableMetaGenerator.CN_TAMESTAMP_NAME,
-                    PrimaryKeyValue.fromLong(start)
-            );
-            rangeRowQueryCriteria.setDirection(Direction.BACKWARD);
-        } else {
-            beginPk.addPrimaryKeyColumn(
-                    TableMetaGenerator.CN_TAMESTAMP_NAME,
-                    PrimaryKeyValue.fromLong(start)
-            );
-            endPk.addPrimaryKeyColumn(
-                    TableMetaGenerator.CN_TAMESTAMP_NAME,
-                    PrimaryKeyValue.fromLong(end)
-            );
-        }
+        endPk.addPrimaryKeyColumn(
+                TableMetaGenerator.CN_TAMESTAMP_NAME,
+                PrimaryKeyValue.fromLong(end)
+        );
 
         rangeRowQueryCriteria.setInclusiveStartPrimaryKey(beginPk.build());
         rangeRowQueryCriteria.setExclusiveEndPrimaryKey(endPk.build());
         rangeRowQueryCriteria.setMaxVersions(1);
         rangeRowQueryCriteria.addColumnsToGet(columnToGet);
-        if (filter != null) {
-            rangeRowQueryCriteria.setFilter(filter);
-        }
         GetRangeRequest request = new GetRangeRequest();
         request.setRangeRowQueryCriteria(rangeRowQueryCriteria);
 
@@ -104,9 +88,6 @@ public class DataQuery {
         singleRowQueryCriteria.setPrimaryKey(pkBuilder.build());
         singleRowQueryCriteria.setMaxVersions(1);
         singleRowQueryCriteria.addColumnsToGet(columnToGet);
-        if (filter != null) {
-            singleRowQueryCriteria.setFilter(filter);
-        }
         GetRowRequest request = new GetRowRequest(singleRowQueryCriteria);
         return new PointIterator(new GetRowIterator(asyncClient, request), identifier);
     }
@@ -129,36 +110,5 @@ public class DataQuery {
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-	/**
-     * 设置按照数据的时间戳进行逆序排序
-     */
-    protected void setOrderByTimestampDesc() {
-        this.isDesc = true;
-    }
-
-	/**
-     *
-     * @return 查询是否按照数据的时间戳进行逆序排序
-     */
-    public boolean isDescTimestamp() {
-        return this.isDesc;
-    }
-
-	/**
-     * 数据查询的过滤条件
-     * @param filter 数据查询过滤条件
-     */
-    protected void setFilter(Filter filter) {
-        this.filter = filter;
-    }
-
-	/**
-	 * 获取数据查询的过滤条件
-     * @return
-     */
-    public Filter getFilter() {
-        return this.filter;
     }
 }

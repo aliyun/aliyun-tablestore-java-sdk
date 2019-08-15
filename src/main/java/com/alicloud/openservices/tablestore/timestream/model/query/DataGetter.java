@@ -1,7 +1,6 @@
 package com.alicloud.openservices.tablestore.timestream.model.query;
 
 import com.alicloud.openservices.tablestore.AsyncClient;
-import com.alicloud.openservices.tablestore.model.filter.Filter;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 
 import java.util.concurrent.TimeUnit;
@@ -18,16 +17,6 @@ public class DataGetter extends DataQuery {
     public DataGetter(AsyncClient asyncClient, String tableName, TimestreamIdentifier identifier) {
         super(asyncClient, tableName);
         this.identifier = identifier;
-    }
-
-	/**
-     * 设置数据行的过滤条件，仅支持对数据行的fields进行过滤
-     * @param filter
-     * @return
-     */
-    public DataGetter filter(Filter filter) {
-        setFilter(filter);
-        return this;
     }
 
     /**
@@ -58,15 +47,6 @@ public class DataGetter extends DataQuery {
      */
     public DataGetter timestamp(long timestamp, TimeUnit unit) {
         setTimestamp(timestamp, unit);
-        return this;
-    }
-
-	/**
-     * 按照数据点的时间戳进行逆序排序，默认正序
-     * @return
-     */
-    public DataGetter descTimestamp() {
-        setOrderByTimestampDesc();
         return this;
     }
 

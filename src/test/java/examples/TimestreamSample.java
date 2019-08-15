@@ -3,17 +3,13 @@ package examples;
 import com.alicloud.openservices.tablestore.AsyncClient;
 import com.alicloud.openservices.tablestore.TableStoreCallback;
 import com.alicloud.openservices.tablestore.TableStoreException;
-import com.alicloud.openservices.tablestore.model.ColumnType;
-import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.RowChange;
-import com.alicloud.openservices.tablestore.model.filter.Filter;
-import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
 import com.alicloud.openservices.tablestore.timestream.*;
 import com.alicloud.openservices.tablestore.timestream.model.*;
-import com.alicloud.openservices.tablestore.timestream.model.condition.Attribute;
-import com.alicloud.openservices.tablestore.timestream.model.condition.Condition;
-import com.alicloud.openservices.tablestore.timestream.model.condition.Name;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Attribute;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Name;
 import com.alicloud.openservices.tablestore.writer.WriterConfig;
 
 import java.util.ArrayList;
@@ -22,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.alicloud.openservices.tablestore.timestream.model.condition.ConditionFactory.*;
+import static com.alicloud.openservices.tablestore.timestream.model.filter.FilterFactory.*;
 /**
  * Created by yanglian on 2019/4/11.
  */
@@ -153,7 +149,7 @@ public class TimestreamSample {
     }
 
     public static void queryMeta(TimestreamDB db) {
-        Condition filter = and(
+        Filter filter = and(
                 Name.equal("中通"),
                 Attribute.equal("sendPhone", "13058880000"),
                 Attribute.inGeoDistance("latestPos", "30.1319243712,120.0881250209", 10.0),
@@ -162,7 +158,7 @@ public class TimestreamSample {
 
         {   // 只查询identifier信息
             TimestreamMetaTable metaTable = db.metaTable();
-            TimestreamMetaIterator iter1 = metaTable.search(filter)
+            TimestreamMetaIterator iter1 = metaTable.filter(filter)
                     .fetchAll();    //获取所有订单
             System.out.print(iter1.getTotalCount()); // 打印命中的时间线数量
             while (iter1.hasNext()) {
@@ -172,7 +168,7 @@ public class TimestreamSample {
         }
         {   // 查询完整的meta信息
             TimestreamMetaTable metaTable = db.metaTable();
-            TimestreamMetaIterator iter1 = metaTable.search(filter)
+            TimestreamMetaIterator iter1 = metaTable.filter(filter)
                     .returnAll()    // 查询完整的meta信息
                     .limit(10)      // 设置每次查询多元索引的limit限制
                     .fetchAll();    //获取所有订单
@@ -184,7 +180,7 @@ public class TimestreamSample {
         }
         {   // 查询部分attributes
             TimestreamMetaTable metaTable = db.metaTable();
-            TimestreamMetaIterator iter1 = metaTable.search(filter)
+            TimestreamMetaIterator iter1 = metaTable.filter(filter)
                     .selectAttributes("status", "recvAddr")
                     .fetchAll();    //获取所有订单
             System.out.print(iter1.getTotalCount()); // 打印命中的时间线数量
@@ -232,22 +228,6 @@ public class TimestreamSample {
         // 查询时间戳为now的数据，查询所有fields
         Iterator<Point> iter2 = dataTable.get(identifier)
                 .timestamp(now, TimeUnit.MILLISECONDS)
-                .fetchAll();
-
-        // 对fields进行条件过滤
-        Filter filter = new SingleColumnValueFilter(
-                "loc",
-                SingleColumnValueFilter.CompareOperator.GREATER_EQUAL,
-                new ColumnValue("123", ColumnType.STRING));
-        Iterator<Point> iter3 = dataTable.get(identifier)
-                .timestamp(now, TimeUnit.MILLISECONDS)
-                .filter(filter)
-                .fetchAll();
-
-        // 按照时间逆序查询数据
-        Iterator<Point> iter4 = dataTable.get(identifier)
-                .timeRange(TimeRange.range(now - 60 * 1000, now, TimeUnit.MILLISECONDS))
-                .descTimestamp()
                 .fetchAll();
     }
 }
