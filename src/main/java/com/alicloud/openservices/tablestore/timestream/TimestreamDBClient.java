@@ -17,8 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * {@link TimestreamDBClient}定义，提供删建表，以及数据读写功能。
- * <p>后台默认打开自动更新时间线updateTime功能，可以通过{@link TimestreamDBConfiguration#enableDumpMeta}选择关闭 </p>
- * <p>当后台打开自动更新时间线updateTime功能时（{@link TimestreamDBConfiguration#enableDumpMeta}），TimestreamDBClient后台会维护一个内存缓存最近更新过的时间线。数据写入时，会判断该时间线是否需要更新updateTime（缓存中没有或者上次更新时间线超过设置的阈值），
+ * <p>后台默认打开自动更新时间线updateTime功能，可以通过{@link TimestreamDBConfiguration#dumpMeta}选择关闭 </p>
+ * <p>当后台打开自动更新时间线updateTime功能时（{@link TimestreamDBConfiguration#dumpMeta}），TimestreamDBClient后台会维护一个内存缓存最近更新过的时间线。数据写入时，会判断该时间线是否需要更新updateTime（缓存中没有或者上次更新时间线超过设置的阈值），
  * 如果需要更新则往meta表中插入一条记录（只更新updateTime）。</p>
  * <p>数据写入的异步api是通过{@link TableStoreWriter}来实现的，如果需要获取异步写入的结果，可以传入{@link TableStoreCallback}，该callback是所有数据表写入共用的</p>
  */
@@ -187,9 +187,9 @@ public class TimestreamDBClient implements TimestreamDB {
         fieldSchemas.add(
                 new FieldSchema(TableMetaGenerator.CN_PK0, FieldType.KEYWORD));
         fieldSchemas.add(
-                new FieldSchema(TableMetaGenerator.CN_PK1, FieldType.KEYWORD).setIndex(true));
+                new FieldSchema(TableMetaGenerator.CN_PK1, FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true));
         fieldSchemas.add(
-                new FieldSchema(TableMetaGenerator.CN_PK2, FieldType.KEYWORD).setIndex(true).setIsArray(true));
+                new FieldSchema(TableMetaGenerator.CN_PK2, FieldType.KEYWORD).setIndex(true).setIsArray(true).setEnableSortAndAgg(true));
         fieldSchemas.add(
                 new FieldSchema(TableMetaGenerator.CN_TAMESTAMP_NAME, FieldType.LONG).setIndex(true).setStore(true));
         indexSchema.setFieldSchemas(fieldSchemas);

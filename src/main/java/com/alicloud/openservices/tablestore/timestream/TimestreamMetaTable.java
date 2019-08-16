@@ -6,9 +6,9 @@ import com.alicloud.openservices.tablestore.timestream.internal.MetaCacheManager
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import com.alicloud.openservices.tablestore.timestream.model.TimestreamIdentifier;
 import com.alicloud.openservices.tablestore.timestream.model.TimestreamMeta;
-import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 import com.alicloud.openservices.tablestore.timestream.model.query.MetaGetter;
 import com.alicloud.openservices.tablestore.timestream.model.query.MetaFilter;
+import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 
 import java.util.concurrent.Future;
 

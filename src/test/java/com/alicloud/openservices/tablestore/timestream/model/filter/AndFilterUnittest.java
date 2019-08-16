@@ -15,11 +15,11 @@ public class AndFilterUnittest {
     public void testBasic() {
         Tag tagFilter = Tag.equal("t1", "v1");
         Attribute attrFilter = Attribute.equal("a1", "v2");
-        AndFilter filter = (AndFilter)(and(
+        AndFilter condition = (AndFilter)(and(
                 tagFilter,
                 attrFilter
         ));
-        Query query = filter.getQuery();
+        Query query = condition.getQuery();
         Assert.assertTrue(query instanceof BoolQuery);
         Assert.assertEquals(((BoolQuery)query).getMustQueries().size(), 2);
         Assert.assertTrue(((BoolQuery)query).getMustQueries().get(0) instanceof TermQuery);

@@ -3,8 +3,6 @@ package com.alicloud.openservices.tablestore.timestream.model.filter;
 import com.alicloud.openservices.tablestore.model.search.query.*;
 import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
-import com.alicloud.openservices.tablestore.timestream.model.expression.EqualExpression;
-import com.alicloud.openservices.tablestore.timestream.model.expression.NotInExpression;
 import org.junit.Assert;
 import org.junit.Test;
 

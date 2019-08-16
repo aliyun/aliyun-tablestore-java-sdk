@@ -2,7 +2,9 @@ package com.alicloud.openservices.tablestore.timestream.functiontest;
 
 import com.alicloud.openservices.tablestore.AsyncClient;
 import com.alicloud.openservices.tablestore.ClientException;
-import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.filter.Filter;
+import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
 import com.alicloud.openservices.tablestore.timestream.*;
 import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.internal.Utils;
@@ -725,6 +727,191 @@ public class SingleTimestreamFunctiontest {
             Assert.assertEquals(1, point.getFields().size());
             Assert.assertEquals(TimeUnit.SECONDS.toMicros(i * 10), point.getTimestamp());
             Assert.assertEquals(i, point.getField("temperature").asLong());
+        }
+    }
+
+    @Test
+    public void testFilter() throws Exception {
+        String table = "singlets_filter";
+        logger.debug("Table:" + table);
+
+        AsyncClient client = new AsyncClient(conf.getEndpoint(), conf.getAccessId(), conf.getAccessKey(), conf.getInstance());
+
+        String metaTableName = "singlets";
+        TimestreamDBConfiguration config = new TimestreamDBConfiguration(metaTableName);
+        AsyncClient asyncClient = new AsyncClient(
+                conf.getEndpoint(),
+                conf.getAccessId(),
+                conf.getAccessKey(),
+                conf.getInstance());
+        TimestreamDB db = new TimestreamDBClient(asyncClient, config);
+        Helper.safeClearDB(asyncClient);
+        db.createMetaTable();
+        db.createDataTable(table);
+        Thread.sleep(5000);
+        TimestreamDataTable dataTable = db.dataTable(table);
+
+        TableStoreWrapper wrapper = TableStoreWrapper.instance(client, table);
+        wrapper.createTableAfter();
+
+        TreeMap<String, String> tags = new TreeMap<String, String>();
+        tags.put("Cluster", "AY45W");
+        tags.put("Role", "OTSServer#");
+        String tagString = Utils.serializeTags(tags);
+        for (long i = 0; i < 10000; i += 10) {
+            wrapper.putRow()
+                    .addPrimaryKey(TableMetaGenerator.CN_PK0, Utils.getHashCode("cpu", tagString))
+                    .addPrimaryKey(TableMetaGenerator.CN_PK1, "cpu")
+                    .addPrimaryKey(TableMetaGenerator.CN_PK2, tagString)
+                    .addPrimaryKey(TableMetaGenerator.CN_TAMESTAMP_NAME, TimeUnit.SECONDS.toMicros(i))
+                    .addColumn("load1", i)
+                    .addColumn("load5", i)
+                    .addColumn("load15", i)
+                    .commit();
+        }
+        TimestreamIdentifier meta = new TimestreamIdentifier.Builder("cpu").setTags(tags).build();
+        Filter filter = new SingleColumnValueFilter("load1", SingleColumnValueFilter.CompareOperator.LESS_THAN, ColumnValue.fromLong(100));
+        Iterator<Point> pointIterator =  dataTable.get(meta)
+                .timeRange(TimeRange.range(0, 10000, TimeUnit.SECONDS))
+                .filter(filter)
+                .fetchAll();
+        List<Point> points = new ArrayList<Point>(1000);
+        while(pointIterator.hasNext()) {
+            points.add(pointIterator.next());
+        }
+
+        Assert.assertEquals(10, points.size());
+        for (int i = 0; i < 10; i++) {
+            Point point = points.get(i);
+            logger.debug(point.getTimestamp() + " : " + point.toString());
+            Assert.assertEquals(3, point.getFields().size());
+            Assert.assertEquals(TimeUnit.SECONDS.toMicros(i * 10), point.getTimestamp());
+            Assert.assertEquals(point.getField("load1").asLong(), i * 10);
+        }
+    }
+
+    @Test
+    public void testOrderBy() throws Exception {
+        String table = "singlets_orderby";
+        logger.debug("Table:" + table);
+
+        AsyncClient client = new AsyncClient(conf.getEndpoint(), conf.getAccessId(), conf.getAccessKey(), conf.getInstance());
+
+        String metaTableName = "singlets";
+        TimestreamDBConfiguration config = new TimestreamDBConfiguration(metaTableName);
+        AsyncClient asyncClient = new AsyncClient(
+                conf.getEndpoint(),
+                conf.getAccessId(),
+                conf.getAccessKey(),
+                conf.getInstance());
+        TimestreamDB db = new TimestreamDBClient(asyncClient, config);
+        Helper.safeClearDB(asyncClient);
+        db.createMetaTable();
+        db.createDataTable(table);
+        Thread.sleep(5000);
+        TimestreamDataTable dataTable = db.dataTable(table);
+
+        TableStoreWrapper wrapper = TableStoreWrapper.instance(client, table);
+        wrapper.createTableAfter();
+
+        TreeMap<String, String> tags = new TreeMap<String, String>();
+        tags.put("Cluster", "AY45W");
+        tags.put("Role", "OTSServer#");
+        String tagString = Utils.serializeTags(tags);
+        for (long i = 0; i < 10000; i += 10) {
+            wrapper.putRow()
+                    .addPrimaryKey(TableMetaGenerator.CN_PK0, Utils.getHashCode("cpu", tagString))
+                    .addPrimaryKey(TableMetaGenerator.CN_PK1, "cpu")
+                    .addPrimaryKey(TableMetaGenerator.CN_PK2, tagString)
+                    .addPrimaryKey(TableMetaGenerator.CN_TAMESTAMP_NAME, TimeUnit.SECONDS.toMicros(i))
+                    .addColumn("load1", i)
+                    .addColumn("load5", i)
+                    .addColumn("load15", i)
+                    .commit();
+        }
+        TimestreamIdentifier meta = new TimestreamIdentifier.Builder("cpu").setTags(tags).build();
+        Filter filter = new SingleColumnValueFilter("load1", SingleColumnValueFilter.CompareOperator.LESS_THAN, ColumnValue.fromLong(100));
+        Iterator<Point> pointIterator =  dataTable.get(meta)
+                .timeRange(TimeRange.range(0, 10000, TimeUnit.SECONDS))
+                .filter(filter)
+                .descTimestamp()
+                .fetchAll();
+        List<Point> points = new ArrayList<Point>(1000);
+        while(pointIterator.hasNext()) {
+            points.add(pointIterator.next());
+        }
+
+        Assert.assertEquals(9, points.size());
+        for (int i = 0; i < 9; i++) {
+            int j = 10 - i - 1;
+            Point point = points.get(i);
+            logger.debug(point.getTimestamp() + " : " + point.toString());
+            Assert.assertEquals(3, point.getFields().size());
+            Assert.assertEquals(TimeUnit.SECONDS.toMicros(j * 10), point.getTimestamp());
+            Assert.assertEquals(point.getField("load1").asLong(), j * 10);
+        }
+    }
+
+    @Test
+    public void testLimit() throws Exception {
+        String table = "singlets_orderby";
+        logger.debug("Table:" + table);
+
+        AsyncClient client = new AsyncClient(conf.getEndpoint(), conf.getAccessId(), conf.getAccessKey(), conf.getInstance());
+
+        String metaTableName = "singlets";
+        TimestreamDBConfiguration config = new TimestreamDBConfiguration(metaTableName);
+        AsyncClient asyncClient = new AsyncClient(
+                conf.getEndpoint(),
+                conf.getAccessId(),
+                conf.getAccessKey(),
+                conf.getInstance());
+        TimestreamDB db = new TimestreamDBClient(asyncClient, config);
+        Helper.safeClearDB(asyncClient);
+        db.createMetaTable();
+        db.createDataTable(table);
+        Thread.sleep(5000);
+        TimestreamDataTable dataTable = db.dataTable(table);
+
+        TableStoreWrapper wrapper = TableStoreWrapper.instance(client, table);
+        wrapper.createTableAfter();
+
+        TreeMap<String, String> tags = new TreeMap<String, String>();
+        tags.put("Cluster", "AY45W");
+        tags.put("Role", "OTSServer#");
+        String tagString = Utils.serializeTags(tags);
+        for (long i = 0; i < 10000; i += 10) {
+            wrapper.putRow()
+                    .addPrimaryKey(TableMetaGenerator.CN_PK0, Utils.getHashCode("cpu", tagString))
+                    .addPrimaryKey(TableMetaGenerator.CN_PK1, "cpu")
+                    .addPrimaryKey(TableMetaGenerator.CN_PK2, tagString)
+                    .addPrimaryKey(TableMetaGenerator.CN_TAMESTAMP_NAME, TimeUnit.SECONDS.toMicros(i))
+                    .addColumn("load1", i)
+                    .addColumn("load5", i)
+                    .addColumn("load15", i)
+                    .commit();
+        }
+        TimestreamIdentifier meta = new TimestreamIdentifier.Builder("cpu").setTags(tags).build();
+        Filter filter = new SingleColumnValueFilter("load1", SingleColumnValueFilter.CompareOperator.LESS_THAN, ColumnValue.fromLong(100));
+        Iterator<Point> pointIterator =  dataTable.get(meta)
+                .timeRange(TimeRange.range(0, 10000, TimeUnit.SECONDS))
+                .filter(filter)
+                .limit(1)
+                .descTimestamp()
+                .fetchAll();
+        List<Point> points = new ArrayList<Point>(1000);
+        while(pointIterator.hasNext()) {
+            points.add(pointIterator.next());
+        }
+
+        Assert.assertEquals(9, points.size());
+        for (int i = 0; i < 9; i++) {
+            int j = 10 - i - 1;
+            Point point = points.get(i);
+            logger.debug(point.getTimestamp() + " : " + point.toString());
+            Assert.assertEquals(3, point.getFields().size());
+            Assert.assertEquals(TimeUnit.SECONDS.toMicros(j * 10), point.getTimestamp());
+            Assert.assertEquals(point.getField("load1").asLong(), j * 10);
         }
     }
 }

@@ -3,13 +3,17 @@ package examples;
 import com.alicloud.openservices.tablestore.AsyncClient;
 import com.alicloud.openservices.tablestore.TableStoreCallback;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.model.ColumnType;
+import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.RowChange;
+import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
 import com.alicloud.openservices.tablestore.timestream.*;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 import com.alicloud.openservices.tablestore.timestream.model.filter.Attribute;
 import com.alicloud.openservices.tablestore.timestream.model.filter.Filter;
 import com.alicloud.openservices.tablestore.timestream.model.filter.Name;
+import com.alicloud.openservices.tablestore.timestream.model.query.Sorter;
 import com.alicloud.openservices.tablestore.writer.WriterConfig;
 
 import java.util.ArrayList;
@@ -189,6 +193,22 @@ public class TimestreamSample {
                 System.out.print(point.toString());
             }
         }
+        {   // 查询完整的meta信息，并根据attributes进行排序
+            TimestreamMetaTable metaTable = db.metaTable();
+            TimestreamMetaIterator iter1 = metaTable.filter(filter)
+                    .returnAll()    // 查询完整的meta信息
+                    .sort(
+                            Sorter.Builder.newBuilder()
+                                    .sortByAttributes("sendPhone", Sorter.SortOrder.ASC)
+                                    .build())
+                    .limit(10)      // 设置每次查询多元索引的limit限制
+                    .fetchAll();    //获取所有订单
+            System.out.print(iter1.getTotalCount()); // 打印命中的时间线数量
+            while (iter1.hasNext()) {
+                TimestreamMeta point = iter1.next();
+                System.out.print(point.toString());
+            }
+        }
     }
 
     public static void writeData(TimestreamDB db) {
@@ -228,6 +248,23 @@ public class TimestreamSample {
         // 查询时间戳为now的数据，查询所有fields
         Iterator<Point> iter2 = dataTable.get(identifier)
                 .timestamp(now, TimeUnit.MILLISECONDS)
+                .fetchAll();
+
+        // 对fields进行条件过滤
+        SingleColumnValueFilter filter = new SingleColumnValueFilter(
+                "loc",
+                SingleColumnValueFilter.CompareOperator.GREATER_EQUAL,
+                new ColumnValue("123", ColumnType.STRING));
+        Iterator<Point> iter3 = dataTable.get(identifier)
+                .timestamp(now, TimeUnit.MILLISECONDS)
+                .filter(filter)
+                .fetchAll();
+
+        // 按照时间逆序查询数据，每次查询最大返回1条记录
+        Iterator<Point> iter4 = dataTable.get(identifier)
+                .timeRange(TimeRange.range(now - 60 * 1000, now, TimeUnit.MILLISECONDS))
+                .descTimestamp()
+                .limit(1)
                 .fetchAll();
     }
 }

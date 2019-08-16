@@ -7,8 +7,6 @@ import com.alicloud.openservices.tablestore.timestream.model.TimeRange;
 import com.alicloud.openservices.tablestore.timestream.model.expression.Expression;
 import com.alicloud.openservices.tablestore.timestream.model.expression.RangeExpression;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * {@link com.alicloud.openservices.tablestore.timestream.model.TimestreamMeta#updateTime}过滤器，查询满足条件的TimestreamMeta
  */

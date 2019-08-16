@@ -2,7 +2,6 @@ package com.alicloud.openservices.tablestore.timestream.model.filter;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
-import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.model.expression.*;
 
 import java.util.List;

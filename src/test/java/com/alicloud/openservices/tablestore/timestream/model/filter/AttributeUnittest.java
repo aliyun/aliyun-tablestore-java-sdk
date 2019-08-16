@@ -2,8 +2,6 @@ package com.alicloud.openservices.tablestore.timestream.model.filter;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.*;
-import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
-import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 

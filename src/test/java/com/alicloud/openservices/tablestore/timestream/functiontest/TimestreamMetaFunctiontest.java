@@ -6,6 +6,7 @@ import com.alicloud.openservices.tablestore.timestream.*;
 import com.alicloud.openservices.tablestore.timestream.bench.Conf;
 import com.alicloud.openservices.tablestore.timestream.model.*;
 import com.alicloud.openservices.tablestore.timestream.model.filter.*;
+import com.alicloud.openservices.tablestore.timestream.model.query.Sorter;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1417,6 +1418,226 @@ public class TimestreamMetaFunctiontest {
                 metas.add(iterator.next());
             }
             Assert.assertEquals(0, metas.size());
+        }
+    }
+
+    @Test
+    public void testLocationArray() throws Exception {
+        String metaTableName = "tsmeta";
+        TimestreamDBConfiguration config = new TimestreamDBConfiguration(metaTableName);
+        AsyncClient asyncClient = new AsyncClient(
+                conf.getEndpoint(),
+                conf.getAccessId(),
+                conf.getAccessKey(),
+                conf.getInstance());
+        TimestreamDB db = new TimestreamDBClient(asyncClient, config);
+
+        Helper.safeClearDB(asyncClient);
+        List<AttributeIndexSchema> indexSchemas = new ArrayList<AttributeIndexSchema>();
+        indexSchemas.add(new AttributeIndexSchema("loc", AttributeIndexSchema.Type.GEO_POINT).setIsArray(true));
+        db.createMetaTable(indexSchemas);
+        Thread.sleep(5000);
+        TimestreamMetaTable metaTable = db.metaTable();
+
+        TimestreamMeta meta1 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company")
+                        .addTag("name", "alibaba1")
+                        .build())
+                .addAttribute("loc", "[\"30.130370, 120.083263\"]"); // 飞天园区
+
+        TimestreamMeta meta2 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company")
+                        .addTag("name", "alibaba2")
+                        .build())
+                .addAttribute("loc", "[\"30.129237, 120.088380\"]"); // 钱江Block
+
+        TimestreamMeta meta3 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company")
+                        .addTag("name", "alibaba3")
+                        .build())
+                .addAttribute("loc", "[\"30.130370, 120.083263\", \"30.129237, 120.088380\"]"); // 中大
+
+        metaTable.put(meta1);
+        metaTable.put(meta2);
+        metaTable.put(meta3);
+
+        Helper.waitSync();
+
+
+        // 简单的圆查找
+        {
+            Filter filter = and(
+                    Name.equal("company"),
+                    Attribute.inGeoDistance("loc", "30.130370, 120.083263", 1)
+            );
+
+            Iterator<TimestreamMeta> iterator = metaTable.filter(filter)
+                    .returnAll()
+                    .limit(1)
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while(iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(2, metas.size());
+            Assert.assertEquals(true, Helper.isContaineMeta(metas, meta1));
+            Assert.assertEquals(true, Helper.isContaineMeta(metas, meta3));
+        }
+        {
+            Filter filter = and(
+                    Name.equal("company"),
+                    Attribute.inGeoDistance("loc", "30.129237, 120.088380", 1)
+            );
+
+            Iterator<TimestreamMeta> iterator = metaTable.filter(filter)
+                    .returnAll()
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while(iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(2, metas.size());
+            Assert.assertEquals(true, Helper.isContaineMeta(metas, meta2));
+            Assert.assertEquals(true, Helper.isContaineMeta(metas, meta3));
+        }
+    }
+
+    @Test
+    public void testSort() throws Exception {
+        String metaTableName = "tsmeta";
+        TimestreamDBConfiguration config = new TimestreamDBConfiguration(metaTableName);
+        AsyncClient asyncClient = new AsyncClient(
+                conf.getEndpoint(),
+                conf.getAccessId(),
+                conf.getAccessKey(),
+                conf.getInstance());
+        TimestreamDB db = new TimestreamDBClient(asyncClient, config);
+
+        Helper.safeClearDB(asyncClient);
+        List<AttributeIndexSchema> indexSchemas = new ArrayList<AttributeIndexSchema>();
+        indexSchemas.add(new AttributeIndexSchema("value", AttributeIndexSchema.Type.LONG));
+        indexSchemas.add(new AttributeIndexSchema("desc", AttributeIndexSchema.Type.KEYWORD));
+        indexSchemas.add(new AttributeIndexSchema("loc", AttributeIndexSchema.Type.GEO_POINT));
+        db.createMetaTable(indexSchemas);
+        Thread.sleep(5000);
+        TimestreamMetaTable metaTable = db.metaTable();
+
+        TimestreamMeta meta1 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company1")
+                        .addTag("name", "alibaba1")
+                        .build())
+                .addAttribute("value", 2)
+                .addAttribute("desc", "feitian")
+                .addAttribute("loc", "30.130370, 120.083263"); // 飞天园区
+
+        TimestreamMeta meta2 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company2")
+                        .addTag("name", "alibaba2")
+                        .build())
+                .addAttribute("value", 1)
+                .addAttribute("desc", "qianjiang")
+                .addAttribute("loc", "30.130370, 120.083263"); // 飞天园区
+
+        TimestreamMeta meta3 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company3")
+                        .addTag("name", "alibaba3")
+                        .build())
+                .addAttribute("value", 1)
+                .addAttribute("desc", "feitian")
+                .addAttribute("loc", "30.129237, 120.088380"); // 钱江Block
+
+        TimestreamMeta meta4 = new TimestreamMeta(
+                new TimestreamIdentifier.Builder("company4")
+                        .addTag("name", "alibaba4")
+                        .build())
+                .addAttribute("value", 2)
+                .addAttribute("desc", "feitian")
+                .addAttribute("loc", "30.129237, 120.088380"); // 钱江Block
+
+        metaTable.put(meta1);
+        metaTable.put(meta2);
+        metaTable.put(meta3);
+        metaTable.put(meta4);
+
+        Helper.waitSync();
+
+        // sort DESC
+        {
+            Sorter sorter = Sorter.Builder.newBuilder().sortByName(Sorter.SortOrder.DESC).build();
+            Iterator<TimestreamMeta> iterator = metaTable.filter()
+                    .sort(sorter)
+                    .limit(1)
+                    .returnAll()
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while(iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(4, metas.size());
+            Assert.assertTrue(Helper.compareMeta(metas.get(0), meta4));
+            Assert.assertTrue(Helper.compareMeta(metas.get(1), meta3));
+            Assert.assertTrue(Helper.compareMeta(metas.get(2), meta2));
+            Assert.assertTrue(Helper.compareMeta(metas.get(3), meta1));
+        }
+
+        // sort ASC
+        {
+            Sorter sorter = Sorter.Builder.newBuilder().sortByName(Sorter.SortOrder.ASC).build();
+            Iterator<TimestreamMeta> iterator = metaTable.filter()
+                    .sort(sorter)
+                    .returnAll()
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while(iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(4, metas.size());
+            Assert.assertTrue(Helper.compareMeta(metas.get(0), meta1));
+            Assert.assertTrue(Helper.compareMeta(metas.get(1), meta2));
+            Assert.assertTrue(Helper.compareMeta(metas.get(2), meta3));
+            Assert.assertTrue(Helper.compareMeta(metas.get(3), meta4));
+        }
+
+        // sort by attribute and name
+        {
+            Sorter sorter = Sorter.Builder.newBuilder()
+                    .sortByAttributes("value", Sorter.SortOrder.DESC)
+                    .sortByName(Sorter.SortOrder.ASC)
+                    .build();
+            Iterator<TimestreamMeta> iterator = metaTable.filter()
+                    .sort(sorter)
+                    .returnAll()
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while (iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(4, metas.size());
+            Assert.assertTrue(Helper.compareMeta(metas.get(0), meta1));
+            Assert.assertTrue(Helper.compareMeta(metas.get(1), meta4));
+            Assert.assertTrue(Helper.compareMeta(metas.get(2), meta2));
+            Assert.assertTrue(Helper.compareMeta(metas.get(3), meta3));
+        }
+
+        // sort by attributes
+        {
+            Sorter sorter = Sorter.Builder.newBuilder()
+                    .sortByAttributes("value", Sorter.SortOrder.DESC)
+                    .sortByAttributesInGeo("loc", "30.129237, 120.088380", Sorter.SortOrder.ASC)
+                    .build();
+            Iterator<TimestreamMeta> iterator = metaTable.filter()
+                    .sort(sorter)
+                    .returnAll()
+                    .fetchAll();
+            List<TimestreamMeta> metas = new ArrayList<TimestreamMeta>();
+            while (iterator.hasNext()) {
+                metas.add(iterator.next());
+            }
+            Assert.assertEquals(4, metas.size());
+            Assert.assertTrue(Helper.compareMeta(metas.get(0), meta4));
+            Assert.assertTrue(Helper.compareMeta(metas.get(1), meta1));
+            Assert.assertTrue(Helper.compareMeta(metas.get(2), meta3));
+            Assert.assertTrue(Helper.compareMeta(metas.get(3), meta2));
         }
     }
 

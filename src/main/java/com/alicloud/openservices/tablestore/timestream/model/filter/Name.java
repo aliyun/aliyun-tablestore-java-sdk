@@ -5,10 +5,6 @@ import com.alicloud.openservices.tablestore.model.search.query.*;
 import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import com.alicloud.openservices.tablestore.timestream.model.expression.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * {@link com.alicloud.openservices.tablestore.timestream.model.TimestreamIdentifier#name}过滤器，查询满足条件的TimestreamMeta
  */
