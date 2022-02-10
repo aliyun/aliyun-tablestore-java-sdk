@@ -14,7 +14,7 @@ import com.alicloud.openservices.tablestore.core.utils.IOUtils;
 
 public class ContentMD5ResponseHandler implements ResponseHandler {
     public void handle(ResponseMessage responseData) throws ClientException {
-        Map<String, String> headers = responseData.getHeadersMap();
+        Map<String, String> headers = responseData.getLowerCaseHeadersMap();
 
         // 验证头信息完整性
         String contentMd5 = headers.get(Constants.OTS_HEADER_OTS_CONTENT_MD5);

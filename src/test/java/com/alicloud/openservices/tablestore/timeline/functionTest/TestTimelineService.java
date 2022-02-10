@@ -148,7 +148,7 @@ public class TestTimelineService {
         TimelineStore syncService = wrapper.getSyncTableStore();
 
         /**
-         * Test search exception
+         * MyTest search exception
          * */
         TermQuery wrongQuery = new TermQuery();
         wrongQuery.setFieldName("notExist");

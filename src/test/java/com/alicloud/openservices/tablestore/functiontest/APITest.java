@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -455,5 +456,57 @@ public class APITest {
         rangeRowQueryCriteria.setMaxVersions(Integer.MAX_VALUE);
         List<Row> rows = OTSHelper.getRange(ots, rangeRowQueryCriteria).getRows();
         assertEquals(0, rows.size());
+    }
+
+    @Test
+    public void testStreamWithLongTableName() throws Exception {
+        int startSize = 230;
+        int maxSize = 256;
+        int maxSizeForStream = 238;
+        for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < longTableNameSize; i++) {
+                sb.append("a");
+            }
+            String longTableName = sb.toString();
+            List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
+            scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
+            OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
+            UpdateTableRequest updateTableRequest = new UpdateTableRequest(longTableName);
+            updateTableRequest.setStreamSpecification(new StreamSpecification(true, 168));
+            ots.updateTable(updateTableRequest);
+        }
+        Utils.waitForPartitionLoad("");
+        for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < longTableNameSize; i++) {
+                sb.append("a");
+            }
+            String longTableName = sb.toString();
+            for (int i = 0; i < 10; i++) {
+                OTSHelper.putRow(ots, longTableName, PrimaryKeyBuilder.createPrimaryKeyBuilder().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i)).build(),
+                        Arrays.asList(new Column("col", ColumnValue.fromLong(i))));
+            }
+            ListStreamRequest listStreamRequest = new ListStreamRequest(longTableName);
+            String streamId = ots.listStream(listStreamRequest).getStreams().get(0).getStreamId();
+            DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest(streamId);
+            String shardId = ots.describeStream(describeStreamRequest).getShards().get(0).getShardId();
+            GetShardIteratorRequest getShardIteratorRequest = new GetShardIteratorRequest(streamId, shardId);
+            String shardIterator = ots.getShardIterator(getShardIteratorRequest).getShardIterator();
+            GetStreamRecordRequest getStreamRecordRequest = new GetStreamRecordRequest(shardIterator);
+            if (longTableNameSize > maxSizeForStream) {
+                try {
+                    GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
+                    fail();
+                } catch (TableStoreException ex) {
+                    assertEquals("OTSParameterInvalid", ex.getErrorCode());
+                    assertTrue(ex.getMessage().startsWith("Invalid stream id"));
+                }
+            } else {
+                GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
+                assertEquals(10, getStreamRecordResponse.getRecords().size());
+            }
+        }
+        OTSHelper.deleteAllTable(ots);
     }
 }

@@ -2,6 +2,20 @@ syntax = "proto2";
 
 package com.alicloud.openservices.tablestore.core.protocol;
 
+enum VariantType {
+    VT_INTEGER = 0;
+    VT_DOUBLE = 1;
+    //VT_BOOLEAN = 2;
+    VT_STRING = 3;
+    VT_NULL = 6;
+    VT_BLOB = 7;
+}
+
+message ValueTransferRule {
+    required string regex = 1;
+    optional VariantType cast_type = 2;
+}
+
 enum FilterType {
     FT_SINGLE_COLUMN_VALUE = 1;
     FT_COMPOSITE_COLUMN_VALUE = 2;
@@ -15,6 +29,8 @@ enum ComparatorType {
     CT_GREATER_EQUAL = 4;
     CT_LESS_THAN = 5;
     CT_LESS_EQUAL = 6;
+    CT_EXIST = 7;
+    CT_NOT_EXIST = 8;
 }
 
 message SingleColumnValueFilter {
@@ -23,6 +39,7 @@ message SingleColumnValueFilter {
     required bytes column_value = 3;
     required bool filter_if_missing = 4;
     required bool latest_version_only = 5; 
+    optional ValueTransferRule value_trans_rule = 6;
 }
 
 enum LogicalOperator {

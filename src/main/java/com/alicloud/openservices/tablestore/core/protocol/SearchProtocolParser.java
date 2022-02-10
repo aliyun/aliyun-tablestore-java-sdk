@@ -1,21 +1,41 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.CapacityUnit;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.ReservedThroughput;
-import com.alicloud.openservices.tablestore.model.search.*;
+import com.alicloud.openservices.tablestore.model.search.Collapse;
+import com.alicloud.openservices.tablestore.model.search.FieldSchema;
+import com.alicloud.openservices.tablestore.model.search.FieldType;
+import com.alicloud.openservices.tablestore.model.search.IndexOptions;
+import com.alicloud.openservices.tablestore.model.search.IndexSchema;
+import com.alicloud.openservices.tablestore.model.search.IndexSetting;
+import com.alicloud.openservices.tablestore.model.search.MeteringInfo;
+import com.alicloud.openservices.tablestore.model.search.ParallelScanRequest;
+import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
+import com.alicloud.openservices.tablestore.model.search.ScanQuery;
+import com.alicloud.openservices.tablestore.model.search.SearchQuery;
+import com.alicloud.openservices.tablestore.model.search.SearchRequest;
+import com.alicloud.openservices.tablestore.model.search.SearchRequest.ColumnsToGet;
+import com.alicloud.openservices.tablestore.model.search.SyncStat;
+import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.PrimaryKeySort;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchProtocolParser {
 
-    public static FieldType toFieldType(Search.FieldType fieldType) {
+    private static FieldType toFieldType(Search.FieldType fieldType) {
         switch (fieldType) {
             case LONG:
                 return FieldType.LONG;
@@ -36,7 +56,7 @@ public class SearchProtocolParser {
         }
     }
 
-    public static IndexOptions toIndexOptions(Search.IndexOptions indexOptions) {
+    private static IndexOptions toIndexOptions(Search.IndexOptions indexOptions) {
         switch (indexOptions) {
             case DOCS:
                 return IndexOptions.DOCS;
@@ -51,28 +71,50 @@ public class SearchProtocolParser {
         }
     }
 
-    public static FieldSchema toFieldSchema(Search.FieldSchema fieldSchema) {
+    private static SingleWordAnalyzerParameter toAnalyzerParameter(Search.SingleWordAnalyzerParameter analyzerParameter) {
+        SingleWordAnalyzerParameter result = new SingleWordAnalyzerParameter();
+        if (analyzerParameter.hasCaseSensitive()) {
+            result.setCaseSensitive(analyzerParameter.getCaseSensitive());
+        }
+        if (analyzerParameter.hasDelimitWord()) {
+            result.setDelimitWord(analyzerParameter.getDelimitWord());
+        }
+        return result;
+    }
+
+    private static SplitAnalyzerParameter toAnalyzerParameter(Search.SplitAnalyzerParameter analyzerParameter) {
+        SplitAnalyzerParameter result = new SplitAnalyzerParameter();
+        if (analyzerParameter.hasDelimiter()) {
+            result.setDelimiter(analyzerParameter.getDelimiter());
+        }
+        return result;
+    }
+
+    private static FuzzyAnalyzerParameter toAnalyzerParameter(Search.FuzzyAnalyzerParameter analyzerParameter) {
+        FuzzyAnalyzerParameter result = new FuzzyAnalyzerParameter();
+        if (analyzerParameter.hasMinChars()) {
+            result.setMinChars(analyzerParameter.getMinChars());
+        }
+        if (analyzerParameter.hasMaxChars()) {
+            result.setMaxChars(analyzerParameter.getMaxChars());
+        }
+        return result;
+    }
+
+    static FieldSchema toFieldSchema(Search.FieldSchema fieldSchema) {
         FieldSchema result = new FieldSchema(fieldSchema.getFieldName(),
                 toFieldType(fieldSchema.getFieldType()));
         if (fieldSchema.hasIndex()) {
             result.setIndex(fieldSchema.getIndex());
-        } else {
-            result.setIndex(false);
         }
-        if (fieldSchema.hasDocValues()) {
-            result.setEnableSortAndAgg(fieldSchema.getDocValues());
-        } else {
-            result.setEnableSortAndAgg(false);
+        if (fieldSchema.hasSortAndAgg()) {
+            result.setEnableSortAndAgg(fieldSchema.getSortAndAgg());
         }
         if (fieldSchema.hasStore()) {
             result.setStore(fieldSchema.getStore());
-        } else {
-            result.setStore(false);
         }
         if (fieldSchema.hasIsArray()) {
             result.setIsArray(fieldSchema.getIsArray());
-        } else {
-            result.setIsArray(false);
         }
         if (fieldSchema.hasIndexOptions()) {
             result.setIndexOptions(toIndexOptions(fieldSchema.getIndexOptions()));
@@ -80,6 +122,31 @@ public class SearchProtocolParser {
         if (fieldSchema.hasAnalyzer()) {
             result.setAnalyzer(FieldSchema.Analyzer.fromString(fieldSchema.getAnalyzer()));
         }
+        if (fieldSchema.hasAnalyzerParameter()) {
+            FieldSchema.Analyzer analyzer = FieldSchema.Analyzer.fromString(fieldSchema.getAnalyzer());
+            try {
+                switch (analyzer) {
+                    case SingleWord:
+                        result.setAnalyzerParameter(toAnalyzerParameter(
+                                Search.SingleWordAnalyzerParameter.parseFrom(fieldSchema.getAnalyzerParameter())
+                        ));
+                        break;
+                    case Split:
+                        result.setAnalyzerParameter(toAnalyzerParameter(
+                                Search.SplitAnalyzerParameter.parseFrom(fieldSchema.getAnalyzerParameter())
+                        ));
+                        break;
+                    case Fuzzy:
+                        result.setAnalyzerParameter(toAnalyzerParameter(
+                                Search.FuzzyAnalyzerParameter.parseFrom(fieldSchema.getAnalyzerParameter())
+                        ));
+                        break;
+                }
+            } catch (InvalidProtocolBufferException e) {
+                throw new ClientException("failed to parse single_word analyzer parameter: " + e.getMessage());
+            }
+        }
+
         if (fieldSchema.getFieldSchemasList() != null) {
             List<FieldSchema> subSchemas = new ArrayList<FieldSchema>();
             for (Search.FieldSchema subSchema : fieldSchema.getFieldSchemasList()) {
@@ -87,10 +154,14 @@ public class SearchProtocolParser {
             }
             result.setSubFieldSchemas(subSchemas);
         }
+        if (fieldSchema.hasIsVirtualField()) {
+            result.setVirtualField(fieldSchema.getIsVirtualField());
+        }
+        result.setSourceFieldNames(fieldSchema.getSourceFieldNamesList());
         return result;
     }
 
-    public static IndexSetting toIndexSetting(Search.IndexSetting indexSetting) {
+    private static IndexSetting toIndexSetting(Search.IndexSetting indexSetting) {
         IndexSetting result = new IndexSetting();
         if (indexSetting.getRoutingFieldsCount() > 0) {
             result.setRoutingFields(indexSetting.getRoutingFieldsList());
@@ -98,7 +169,7 @@ public class SearchProtocolParser {
         return result;
     }
 
-    public static Sort toIndexSort(Search.Sort sort) {
+    private static Sort toIndexSort(Search.Sort sort) {
         if (sort.getSorterCount() == 0) {
             return null;
         }
@@ -133,7 +204,7 @@ public class SearchProtocolParser {
         return new Sort(sorters);
     }
 
-    public static IndexSchema toIndexSchema(Search.IndexSchema indexSchema) {
+    static IndexSchema toIndexSchema(Search.IndexSchema indexSchema) {
         IndexSchema result = new IndexSchema();
         result.setIndexSetting(toIndexSetting(indexSchema.getIndexSetting()));
         List<FieldSchema> fieldSchemas = new ArrayList<FieldSchema>();
@@ -147,7 +218,7 @@ public class SearchProtocolParser {
         return result;
     }
 
-    public static SyncStat toSyncStat(Search.SyncStat syncStat) {
+    static SyncStat toSyncStat(Search.SyncStat syncStat) {
         SyncStat result = new SyncStat();
         if (!syncStat.hasSyncPhase()) {
             throw new ClientException("missing [SyncPhase] in SyncStat");
@@ -168,7 +239,7 @@ public class SearchProtocolParser {
         return result;
     }
 
-    public static MeteringInfo toMeteringInfo(Search.MeteringInfo meteringInfo) {
+    static MeteringInfo toMeteringInfo(Search.MeteringInfo meteringInfo) {
         MeteringInfo result = new MeteringInfo();
         if (meteringInfo.hasReservedReadCu()) {
             result.setReservedThroughput(new ReservedThroughput(
@@ -177,12 +248,177 @@ public class SearchProtocolParser {
         if (meteringInfo.hasStorageSize()) {
             result.setStorageSize(meteringInfo.getStorageSize());
         }
-        if (meteringInfo.hasDocCount()) {
-            result.setDocCount(meteringInfo.getDocCount());
+        if (meteringInfo.hasRowCount()) {
+            result.setRowCount(meteringInfo.getRowCount());
         }
         if (meteringInfo.hasTimestamp()) {
             result.setTimestamp(meteringInfo.getTimestamp());
         }
         return result;
+    }
+
+    static QueryFlowWeight toQueryFlowWeight(Search.QueryFlowWeight queryFlowWeight) {
+        if (!queryFlowWeight.hasIndexName()) {
+            throw new ClientException("[query_flow_weight] has no index name");
+        }
+        if (!queryFlowWeight.hasWeight()) {
+            throw new ClientException("[query_flow_weight] has no weight");
+        }
+        return new QueryFlowWeight(queryFlowWeight.getIndexName(), queryFlowWeight.getWeight());
+    }
+
+    public static SearchQuery toSearchQuery(ByteString byteString) throws IOException {
+        return toSearchQuery(byteString.toByteArray());
+    }
+
+    public static SearchQuery toSearchQuery(byte[] bytes) throws IOException {
+        SearchQuery searchQuery = new SearchQuery();
+        Search.SearchQuery pb = Search.SearchQuery.parseFrom(bytes);
+        if (pb.hasOffset()) {
+            searchQuery.setOffset(pb.getOffset());
+        }
+        if (pb.hasLimit()) {
+            searchQuery.setLimit(pb.getLimit());
+        }
+        if (pb.hasQuery()) {
+            searchQuery.setQuery(SearchQueryParser.toQuery(pb.getQuery()));
+        }
+        if (pb.hasSort()) {
+            searchQuery.setSort(SearchSortParser.toSort(pb.getSort()));
+        }
+        if (pb.hasCollapse()) {
+            Search.Collapse collapse = pb.getCollapse();
+            String fieldName = collapse.getFieldName();
+            searchQuery.setCollapse(new Collapse(fieldName));
+        }
+        if (pb.hasGetTotalCount()) {
+            searchQuery.setGetTotalCount(pb.getGetTotalCount());
+        }
+        if (pb.hasToken()) {
+            searchQuery.setToken(pb.getToken().toByteArray());
+        }
+        if (pb.hasAggs()) {
+            searchQuery.setAggregationList(SearchAggregationParser.toAggregations(pb.getAggs()));
+        }
+        if (pb.hasGroupBys()) {
+            searchQuery.setGroupByList(SearchGroupByParser.toGroupBys(pb.getGroupBys()));
+        }
+        return searchQuery;
+    }
+
+    public static ColumnsToGet toColumnsToGet(Search.ColumnsToGet pb) {
+        ColumnsToGet columnsToGet = new ColumnsToGet();
+        columnsToGet.setColumns(pb.getColumnNamesList());
+        Preconditions.checkArgument(pb.hasReturnType(), "Search.ColumnsToGet must has 'ReturnType'");
+        switch (pb.getReturnType()) {
+            case RETURN_ALL:
+                columnsToGet.setReturnAll(true);
+                break;
+            case RETURN_ALL_FROM_INDEX:
+                columnsToGet.setReturnAllFromIndex(true);
+                break;
+            case RETURN_SPECIFIED:
+            case RETURN_NONE:
+            default:
+                break;
+        }
+        return columnsToGet;
+    }
+
+    public static List<PrimaryKey> toRoutingValues(List<ByteString> byteStringList) throws IOException {
+        List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
+        for (ByteString byteString : byteStringList) {
+            PlainBufferCodedInputStream coded = new PlainBufferCodedInputStream(new PlainBufferInputStream(byteString.asReadOnlyByteBuffer()));
+            Preconditions.checkArgument(coded.readHeader() == PlainBufferConsts.HEADER, "check plain buff header failed");
+            coded.readTag();
+            List<PlainBufferCell> plainBufferCells = coded.readRowPK();
+            PrimaryKey primaryKey = PlainBufferConversion.toPrimaryKey(plainBufferCells);
+            primaryKeys.add(primaryKey);
+        }
+        return primaryKeys;
+    }
+
+    public static SearchRequest toSearchRequest(ByteString byteString) throws IOException {
+        return toSearchRequest(byteString.toByteArray());
+    }
+
+    public static SearchRequest toSearchRequest(byte[] bytes) throws IOException {
+        SearchRequest searchRequest = new SearchRequest();
+        Search.SearchRequest pb = Search.SearchRequest.parseFrom(bytes);
+        if (pb.hasTableName()) {
+            searchRequest.setTableName(pb.getTableName());
+        }
+        if (pb.hasIndexName()) {
+            searchRequest.setIndexName(pb.getIndexName());
+        }
+        if (pb.hasColumnsToGet()) {
+            searchRequest.setColumnsToGet(toColumnsToGet(pb.getColumnsToGet()));
+        }
+        if (pb.hasSearchQuery()) {
+            searchRequest.setSearchQuery(toSearchQuery(pb.getSearchQuery()));
+        }
+        if (!pb.getRoutingValuesList().isEmpty()) {
+            searchRequest.setRoutingValues(toRoutingValues(pb.getRoutingValuesList()));
+        }
+        if (pb.hasTimeoutMs() && pb.getTimeoutMs() > 0) {
+            searchRequest.setTimeoutInMillisecond(pb.getTimeoutMs());
+        }
+        return searchRequest;
+    }
+
+    public static ScanQuery toScanQuery(ByteString byteString) throws IOException {
+        return toScanQuery(byteString.toByteArray());
+    }
+
+    public static ScanQuery toScanQuery(byte[] bytes) throws IOException {
+        ScanQuery scanQuery = new ScanQuery();
+        Search.ScanQuery pb = Search.ScanQuery.parseFrom(bytes);
+        if (pb.hasLimit()) {
+            scanQuery.setLimit(pb.getLimit());
+        }
+        if (pb.hasQuery()) {
+            scanQuery.setQuery(SearchQueryParser.toQuery(pb.getQuery()));
+        }
+        if (pb.hasToken()) {
+            scanQuery.setToken(pb.getToken().toByteArray());
+        }
+        if (pb.hasMaxParallel()) {
+            scanQuery.setMaxParallel(pb.getMaxParallel());
+        }
+        if (pb.hasCurrentParallelId()) {
+            scanQuery.setCurrentParallelId(pb.getCurrentParallelId());
+        }
+        if (pb.hasAliveTime()) {
+            scanQuery.setAliveTime(pb.getAliveTime());
+        }
+        return scanQuery;
+    }
+
+    public static ParallelScanRequest toParallelScanRequest(ByteString byteString) throws IOException {
+        return toParallelScanRequest(byteString.toByteArray());
+    }
+
+    public static ParallelScanRequest toParallelScanRequest(byte[] bytes) throws IOException {
+        ParallelScanRequest request = new ParallelScanRequest();
+        Search.ParallelScanRequest pb = Search.ParallelScanRequest.parseFrom(bytes);
+        if (pb.hasTableName()) {
+            request.setTableName(pb.getTableName());
+        }
+        if (pb.hasIndexName()) {
+            request.setIndexName(pb.getIndexName());
+        }
+        if (pb.hasColumnsToGet()) {
+            request.setColumnsToGet(toColumnsToGet(pb.getColumnsToGet()));
+        }
+        if (pb.hasSessionId()) {
+            request.setSessionId(pb.getSessionId().toByteArray());
+        }
+        if (pb.hasScanQuery()) {
+            request.setScanQuery(toScanQuery(pb.getScanQuery().toByteString()));
+        }
+        if (pb.hasTimeoutMs() && pb.getTimeoutMs() > 0) {
+            request.setTimeoutInMillisecond(pb.getTimeoutMs());
+        }
+        return request;
     }
 }

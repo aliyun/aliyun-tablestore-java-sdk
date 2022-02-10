@@ -3,16 +3,17 @@ package com.alicloud.openservices.tablestore.functiontest;
 
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LocalTxnTest {
     String tableName = "test_local_txn";
@@ -36,6 +37,10 @@ public class LocalTxnTest {
         TableOptions tableOptions = new TableOptions(timeToLive, maxVersions);
 
         CreateTableRequest request = new CreateTableRequest(tableMeta, tableOptions);
+
+        Utils.deleteTableIfExist(client, tableName);
+
+        Utils.waitForPartitionLoad(tableName);
 
         client.createTable(request);
     }
@@ -271,10 +276,10 @@ public class LocalTxnTest {
         abortTxn(txnId);
 
         Row row = getRow("", "chengdu", 105L);
-        assertTrue(!row.isEmpty());
+        assertTrue(row == null);
 
         row = getRow("", "chengdu", 106L);
-        assertTrue(!row.isEmpty());
+        assertTrue(row == null);
     }
 
     @Test
@@ -323,7 +328,7 @@ public class LocalTxnTest {
         assertEquals(1, columns.length);
         assertEquals("Col", columns[ 0 ].getName());
         assertEquals(1099L, columns[ 0 ].getValue().asLong());
-        assertTrue(!columns[ 0 ].hasSetTimestamp());
+        assertTrue(columns[ 0 ].hasSetTimestamp());
 
         commitTxn(txnId);
     }
@@ -352,6 +357,38 @@ public class LocalTxnTest {
         assertEquals("chengdu", pks[ 0 ].getValue().asString());
         assertEquals("pk2", pks[ 1 ].getName());
         assertEquals(110L, pks[ 1 ].getValue().asLong());
+    }
+
+    @Test
+    public void TestCreateTableLocalTxnEnabled() {
+        createTableWithLocalTxn(true);
+        String transactionId = startLocalTxn();
+        assertFalse(transactionId.isEmpty());
+    }
+
+    @Test
+    public void TestCreateTableLocalTxnDisabled() {
+        createTableWithLocalTxn(false);
+        try {
+            startLocalTxn();
+            fail();
+        } catch (TableStoreException ex) {
+            assertEquals("OTSParameterInvalid", ex.getErrorCode());
+            assertEquals("Try to call method using explicit transaction on explicit-transaction-disabled table.", ex.getMessage());
+        }
+    }
+
+    @Test
+    @Ignore("TestCreateTableLocalTxnEnabled和TestCreateTableLocalTxnDisabled可以保证功能的正确性，所以这里没有必要继续保留")
+    public void TestCreateTableLocalTxnDefault() {
+        createTableWithLocalTxn(null);
+        try {
+            startLocalTxn();
+            fail();
+        } catch (TableStoreException ex) {
+            assertEquals("OTSParameterInvalid", ex.getErrorCode());
+            assertEquals("Try to call method using explicit transaction on explicit-transaction-disabled table.", ex.getMessage());
+        }
     }
 
     private String startLocalTxn() {
@@ -485,5 +522,27 @@ public class LocalTxnTest {
     private void commitTxn(String txnId) {
         CommitTransactionRequest commitRequest = new CommitTransactionRequest(txnId);
         client.commitTransaction(commitRequest);
+    }
+
+    private void createTableWithLocalTxn(Boolean enableLocalTxn) {
+        // 如果表格已存在，删除表格
+        Utils.deleteTableIfExist(client, tableName);
+        // 创建表格
+        List<PrimaryKeySchema> pks = new ArrayList<PrimaryKeySchema>();
+        pks.add(new PrimaryKeySchema("pk1", PrimaryKeyType.STRING));
+        TableMeta meta = new TableMeta(tableName);
+        meta.addPrimaryKeyColumns(pks);
+        TableOptions tableOptions = new TableOptions();
+        tableOptions.setMaxVersions(100);
+        tableOptions.setTimeToLive(-1);
+        tableOptions.setMaxTimeDeviation(Long.MAX_VALUE / 1000000);
+        CreateTableRequest createTableRequest = new CreateTableRequest(meta, tableOptions);
+        createTableRequest.setReservedThroughput(new ReservedThroughput(new CapacityUnit(0, 0)));
+        if (enableLocalTxn != null) {
+            createTableRequest.setLocalTxnEnabled(enableLocalTxn);
+        }
+        client.createTable(createTableRequest);
+        // 等待分区加载
+        Utils.waitForPartitionLoad(tableName);
     }
 }

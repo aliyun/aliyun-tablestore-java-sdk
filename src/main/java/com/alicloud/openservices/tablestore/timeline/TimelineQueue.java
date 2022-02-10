@@ -1,9 +1,12 @@
 package com.alicloud.openservices.tablestore.timeline;
 
+import com.alicloud.openservices.tablestore.model.search.SearchQuery;
 import com.alicloud.openservices.tablestore.timeline.model.TimelineEntry;
 import com.alicloud.openservices.tablestore.timeline.model.TimelineIdentifier;
 import com.alicloud.openservices.tablestore.timeline.model.TimelineMessage;
 import com.alicloud.openservices.tablestore.timeline.query.ScanParameter;
+import com.alicloud.openservices.tablestore.timeline.query.SearchParameter;
+import com.alicloud.openservices.tablestore.timeline.query.SearchResult;
 
 import java.util.Iterator;
 import java.util.concurrent.Future;
@@ -161,6 +164,26 @@ public interface TimelineQueue {
      * @return TimelineEntry
      */
     TimelineEntry getLatestTimelineEntry();
+
+    /**
+     * Search timeline entries by search parameter.
+     * Search will throw TimelineException when index info not set in TimelineSchema.
+     *
+     * @param searchParameter   The parameter of search, which will convert to SearchQuery.
+     *
+     * @return SearchResult<TimelineEntry>
+     */
+    SearchResult<TimelineEntry> search(SearchParameter searchParameter);
+
+    /**
+     * Search TimelineEntry by search parameter.
+     * Search will throw TimelineException when index info not set in TimelineSchema.
+     *
+     * @param searchQuery   The SearchQuery of search, which is self-defined query condition.
+     *
+     * @return SearchResult<TimelineEntry>
+     */
+    SearchResult<TimelineEntry> search(SearchQuery searchQuery);
 
     /**
      * Flush all the messages in buffer, wait until finish writing.

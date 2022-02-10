@@ -7,10 +7,14 @@
 
 package com.alicloud.openservices.tablestore.core.utils;
 
+import com.alicloud.openservices.tablestore.core.Constants;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpUtil {
 
@@ -65,5 +69,22 @@ public class HttpUtil {
 
         return paramString.toString();
     }
-    
+
+    /**
+     * Validate character contained in Endpoint to avoid SSRF attack.
+     * @param endpoint for check
+     * @return true if check passed, else false
+     */
+    public static boolean validateEndpointArgs(String endpoint) {
+        return StringUtils.matchRegexPattern(Constants.ENDPOINT_REGEX, endpoint);
+    }
+
+    /**
+     * Validate character contained in regular http params to avoid SSRF attack.
+     * @param param for check
+     * @return true if check passed, else false
+     */
+    public static boolean checkSSRF(String param) {
+        return StringUtils.matchRegexPattern(Constants.SSRF_CHECK_REGEX, param);
+    }
 }

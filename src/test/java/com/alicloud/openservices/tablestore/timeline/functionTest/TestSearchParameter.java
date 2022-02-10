@@ -61,7 +61,7 @@ public class TestSearchParameter {
 
             sleepForSyncData();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw e;
         }
     }
 

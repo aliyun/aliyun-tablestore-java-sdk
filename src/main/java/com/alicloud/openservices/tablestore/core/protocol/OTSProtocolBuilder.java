@@ -6,7 +6,11 @@ import java.util.Map.Entry;
 
 import com.alicloud.openservices.tablestore.model.condition.ColumnCondition;
 import com.alicloud.openservices.tablestore.model.condition.ColumnConditionType;
+import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.filter.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLPayloadVersion;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.tunnel.BulkExportQueryCriteria;
 import com.google.protobuf.ByteString;
 
 import com.alicloud.openservices.tablestore.ClientException;
@@ -56,8 +60,10 @@ public class OTSProtocolBuilder {
 
     public static OtsInternalApi.IndexType toPBIndexType(IndexType indexType) {
         switch (indexType) {
-            case IT_GLOBAL_INDEX:GLOBAL_INDEX:
+            case IT_GLOBAL_INDEX:
                 return OtsInternalApi.IndexType.IT_GLOBAL_INDEX;
+            case IT_LOCAL_INDEX:
+                return OtsInternalApi.IndexType.IT_LOCAL_INDEX;
             default:
                 throw new IllegalArgumentException("Unknown index type:" + indexType);
         }
@@ -67,8 +73,110 @@ public class OTSProtocolBuilder {
         switch (indexUpdateMode) {
             case IUM_ASYNC_INDEX:
                 return OtsInternalApi.IndexUpdateMode.IUM_ASYNC_INDEX;
+            case IUM_SYNC_INDEX:
+                return OtsInternalApi.IndexUpdateMode.IUM_SYNC_INDEX;
             default:
                 throw new IllegalArgumentException("Unknown index update mode" + indexUpdateMode);
+        }
+    }
+
+    public static OtsDelivery.EventColumn.eventTimeFormat toPBEventTimeFormat(EventTimeFormat eventTimeFormat) {
+        switch(eventTimeFormat) {
+            case RFC822:
+                return OtsDelivery.EventColumn.eventTimeFormat.RFC822;
+            case RFC850:
+                return OtsDelivery.EventColumn.eventTimeFormat.RFC850;
+            case RFC1123:
+                return OtsDelivery.EventColumn.eventTimeFormat.RFC1123;
+            case RFC3339:
+                return OtsDelivery.EventColumn.eventTimeFormat.RFC3339;
+            case Unix:
+                return OtsDelivery.EventColumn.eventTimeFormat.Unix;
+            default:
+                throw new IllegalArgumentException("Unknown eventTimeFormat: " + eventTimeFormat);
+        }
+    }
+
+    public static OtsDelivery.TimeFormatter toPBTimeFormatter(TimeFormatter timeFormatter) {
+        switch (timeFormatter) {
+            case YDMFormatter:
+                return OtsDelivery.TimeFormatter.YDMFormatter;
+            default:
+                throw new IllegalArgumentException("Unknown timeFormatter: " + timeFormatter);
+        }
+    }
+
+    public static OtsDelivery.Format toPBFormat(OSSFileFormat format) {
+        switch (format) {
+            case Parquet:
+                return OtsDelivery.Format.Parquet;
+            default:
+                throw new IllegalArgumentException("UnKnown format: " + format);
+        }
+    }
+
+    public static OtsDelivery.DeliveryTaskType toPBDeliveryTaskType(DeliveryTaskType deliveryTaskType) {
+        switch (deliveryTaskType) {
+            case BASE:
+                return OtsDelivery.DeliveryTaskType.BASE;
+            case INC:
+                return OtsDelivery.DeliveryTaskType.INC;
+            case BASE_INC:
+                return OtsDelivery.DeliveryTaskType.BASE_INC;
+            default:
+                throw new IllegalArgumentException("UnKnown deliveryTaskType: " + deliveryTaskType);
+        }
+    }
+
+    public static OtsDelivery.ParquetSchema.DataType toPBDataType(DataType dataType) {
+        switch (dataType) {
+            case BOOL:
+                return OtsDelivery.ParquetSchema.DataType.BOOL;
+            case INT64:
+                return OtsDelivery.ParquetSchema.DataType.INT64;
+            case UTF8:
+                return OtsDelivery.ParquetSchema.DataType.UTF8;
+            case DOUBLE:
+                return OtsDelivery.ParquetSchema.DataType.DOUBLE;
+            case DATE:
+                return OtsDelivery.ParquetSchema.DataType.DATE;
+            case DECIMAL:
+                return OtsDelivery.ParquetSchema.DataType.DECIMAL;
+            case TIME_MILLIS:
+                return OtsDelivery.ParquetSchema.DataType.TIME_MILLIS;
+            case TIME_MICROS:
+                return OtsDelivery.ParquetSchema.DataType.TIME_MICROS;
+            case LIST:
+                return OtsDelivery.ParquetSchema.DataType.LIST;
+            case MAP:
+                return OtsDelivery.ParquetSchema.DataType.MAP;
+            case INTERVAL:
+                return OtsDelivery.ParquetSchema.DataType.INTERVAL;
+            case FLOAT:
+                return OtsDelivery.ParquetSchema.DataType.FLOAT;
+            case INT32:
+                return OtsDelivery.ParquetSchema.DataType.INT32;
+            case INT96:
+                return OtsDelivery.ParquetSchema.DataType.INT96;
+            default:
+                throw new IllegalArgumentException("UnKnown dataType: " + dataType);
+        }
+    }
+
+    public static OtsDelivery.Encoding toPBEncoding(OSSFileEncoding encoding) {
+        switch (encoding) {
+            case PLAIN:
+                return OtsDelivery.Encoding.PLAIN;
+            case PLAIN_DICTIONARY:
+                return OtsDelivery.Encoding.PLAIN_DICTIONARY;
+            case DELTA_BINARY_PACKED:
+                return OtsDelivery.Encoding.DELTA_BINARY_PACKED;
+            case DELTA_BYTE_ARRAY:
+                return OtsDelivery.Encoding.DELTA_BYTE_ARRAY;
+            case DELTA_LENGTH_BYTE_ARRAY:
+                return OtsDelivery.Encoding.DELTA_LENGTH_BYTE_ARRAY;
+            default:
+                throw new IllegalArgumentException("UnKnown encoding: " + encoding);
         }
     }
 
@@ -175,6 +283,40 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
+    public static OtsInternalApi.PartitionRange buildPartitionRange(PrimaryKeyValue leftPoint, PrimaryKeyValue rightPoint){
+        OtsInternalApi.PartitionRange.Builder builderPartition = OtsInternalApi.PartitionRange.newBuilder();
+        try {
+            builderPartition.setBegin(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyValueWithoutLengthPrefix(leftPoint)));
+        } catch (Exception e) {
+            //Bug: serialize primary key value failed.
+            throw new ClientException(" Failed to build the start point of partition range.", e);
+        }
+        try {
+            builderPartition.setEnd(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyValueWithoutLengthPrefix(rightPoint)));
+        } catch (Exception e) {
+            //Bug: serialize primary key value failed.
+            throw new ClientException(" Failed to build the end point of partition range.", e);
+        }
+        return builderPartition.build();
+    }
+
+    public static void buildPartitionRanges(OtsInternalApi.CreateTableRequest.Builder builder, List<PrimaryKeyValue> splitPoints){
+        if (splitPoints.isEmpty()) {
+            return;
+        }
+        PrimaryKeyValue lastPoint = null;
+        for (PrimaryKeyValue currentPoint : splitPoints){
+            if (lastPoint == null) {
+                builder.addPartitions(buildPartitionRange(PrimaryKeyValue.INF_MIN, currentPoint));
+            } else{
+                builder.addPartitions(buildPartitionRange(lastPoint, currentPoint));
+            }
+            lastPoint = currentPoint;
+        }
+        builder.addPartitions(buildPartitionRange(lastPoint, PrimaryKeyValue.INF_MAX));
+    }
+
+
     private static OtsInternalApi.TimeRange buildTimeRange(TimeRange timeRange) {
         OtsInternalApi.TimeRange.Builder builder = OtsInternalApi.TimeRange.newBuilder();
         if (timeRange.containsOnlyOneVersion()) {
@@ -186,7 +328,7 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
-    public static OtsInternalApi.CreateTableRequest buildCreateTableRequest(CreateTableRequest createTableRequest) {
+    public static OtsInternalApi.CreateTableRequest.Builder getCreateTableRequestBuilder(CreateTableRequest createTableRequest) {
         OtsInternalApi.CreateTableRequest.Builder builder = OtsInternalApi.CreateTableRequest.newBuilder();
 
         // required TableMeta table_meta = 1;
@@ -207,10 +349,32 @@ public class OTSProtocolBuilder {
             builder.setStreamSpec(buildStreamSpecification(streamSpec));
         }
 
+        SSESpecification sseSpec = createTableRequest.getSseSpecification();
+        if (sseSpec != null) {
+            builder.setSseSpec(buildSseSpecification(sseSpec));
+        }
+
         List<IndexMeta> indexMeta = createTableRequest.getIndexMetaList();
         for (IndexMeta index : indexMeta) {
             builder.addIndexMetas(buildIndexMeta(index));
         }
+
+        if (createTableRequest.hasLocalTxnSet()) {
+            builder.setEnableLocalTxn(createTableRequest.isLocalTxnEnabled());
+        }
+
+        return builder;
+    }
+
+    public static OtsInternalApi.CreateTableRequest buildCreateTableRequest(CreateTableRequest createTableRequest) {
+        return getCreateTableRequestBuilder(createTableRequest).build();
+    }
+
+    public static OtsInternalApi.CreateTableRequest buildCreateTableExRequest(CreateTableRequestEx createTableRequestEx) {
+        OtsInternalApi.CreateTableRequest.Builder builder = getCreateTableRequestBuilder(createTableRequestEx);
+
+        List<PrimaryKeyValue> splitPoints = createTableRequestEx.getSplitPoints();
+        buildPartitionRanges(builder, splitPoints);
 
         return builder.build();
     }
@@ -228,6 +392,10 @@ public class OTSProtocolBuilder {
 
         if (x.hasSetMaxTimeDeviation()) {
             builder.setDeviationCellVersionInSec(x.getMaxTimeDeviation());
+        }
+
+        if (x.hasSetAllowUpdate()) {
+            builder.setAllowUpdate(x.getAllowUpdate());
         }
 
         return builder.build();
@@ -259,6 +427,92 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
+    public static OtsDelivery.CreateDeliveryTaskRequest buildCreateDeliveryTaskRequest(CreateDeliveryTaskRequest req) {
+        OtsDelivery.CreateDeliveryTaskRequest.Builder builder = OtsDelivery.CreateDeliveryTaskRequest.newBuilder();
+
+        //optional string tableName = 1;
+        builder.setTableName(req.getTableName());
+
+        //optional string taskName = 2;
+        builder.setTaskName(req.getTaskName());
+
+        //optional OSSTaskConfig taskConfig = 3;
+        builder.setTaskConfig(buildOSSTaskConfig(req.getTaskConfig()));
+
+        //optional DeliveryTaskType taskType = 4;
+        builder.setTaskType(toPBDeliveryTaskType(req.getTaskType()));
+        return builder.build();
+    }
+
+    public static OtsDelivery.OSSTaskConfig buildOSSTaskConfig(OSSTaskConfig taskConfig) {
+        OtsDelivery.OSSTaskConfig.Builder builder = OtsDelivery.OSSTaskConfig.newBuilder();
+
+        builder.setOssPrefix(taskConfig.getOssPrefix());
+        builder.clearFormatter();
+//        builder.setFormatter(toPBTimeFormatter(taskConfig.getTimeFormatter()));
+        builder.setOssBucket(taskConfig.getOssBucket());
+        builder.setOssEndpoint(taskConfig.getOssEndpoint());
+        builder.setOssStsRole(taskConfig.getOssStsRole());
+        if (taskConfig.getEventTimeColumn() != null) {
+            builder.setEventTimeColumn(buildEventTimeColumn(taskConfig.getEventTimeColumn()));
+        }
+        builder.setFormat(toPBFormat(taskConfig.getFormat()));
+        for (ParquetSchema ps : taskConfig.getParquetSchemaList()) {
+            builder.addSchema(buildParquetSchema(ps));
+        }
+        return builder.build();
+    }
+
+    private static OtsDelivery.ParquetSchema buildParquetSchema(ParquetSchema parquetSchema) {
+        OtsDelivery.ParquetSchema.Builder builder = OtsDelivery.ParquetSchema.newBuilder();
+        builder.setColumnName(parquetSchema.getColumnName());
+        builder.setOssColumnName(parquetSchema.getOssColumnName());
+        builder.setType(toPBDataType(parquetSchema.getType()));
+        builder.setEncode(toPBEncoding(parquetSchema.getEncode()));
+        if (parquetSchema.getTypeExtend() != null) {
+            builder.setTypeExtend(parquetSchema.getTypeExtend());
+        }
+        return builder.build();
+    }
+
+    public static OtsDelivery.EventColumn buildEventTimeColumn(EventColumn eventColumn) {
+        OtsDelivery.EventColumn.Builder builder = OtsDelivery.EventColumn.newBuilder();
+
+        builder.setColumnName(eventColumn.getColumnName());
+        builder.setTimeFormat(toPBEventTimeFormat(eventColumn.getEventTimeFormat()));
+        return builder.build();
+    }
+
+    public static OtsDelivery.DeleteDeliveryTaskRequest buildDeleteDeliveryTaskRequest(DeleteDeliveryTaskRequest req) {
+        OtsDelivery.DeleteDeliveryTaskRequest.Builder builder = OtsDelivery.DeleteDeliveryTaskRequest.newBuilder();
+
+        //optional string tableName = 1;
+        builder.setTableName(req.getTableName());
+
+        //optional string taskName = 2;
+        builder.setTaskName(req.getTaskName());
+        return builder.build();
+    }
+
+    public static OtsDelivery.DescribeDeliveryTaskRequest buildDescribeDeliveryTaskRequest(DescribeDeliveryTaskRequest req) {
+        OtsDelivery.DescribeDeliveryTaskRequest.Builder builder = OtsDelivery.DescribeDeliveryTaskRequest.newBuilder();
+
+        //optional string tableName = 1;
+        builder.setTableName(req.getTableName());
+
+        //optional string taskName = 2;
+        builder.setTaskName(req.getTaskName());
+        return builder.build();
+    }
+
+    public static OtsDelivery.ListDeliveryTaskRequest buildListDeliveryTaskRequest(ListDeliveryTaskRequest req) {
+        OtsDelivery.ListDeliveryTaskRequest.Builder builder = OtsDelivery.ListDeliveryTaskRequest.newBuilder();
+
+        //optional string tableName = 1;
+        builder.setTableName(req.getTableName());
+        return builder.build();
+    }
+
     public static OtsInternalApi.CreateIndexRequest buildCreateIndexRequest(CreateIndexRequest req) {
         OtsInternalApi.CreateIndexRequest.Builder builder = OtsInternalApi.CreateIndexRequest.newBuilder();
 
@@ -275,6 +529,30 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
+    public static OtsInternalApi.AddDefinedColumnRequest buildAddDefinedColumnRequest(AddDefinedColumnRequest req) {
+        OtsInternalApi.AddDefinedColumnRequest.Builder builder = OtsInternalApi.AddDefinedColumnRequest.newBuilder();
+
+        builder.setTableName(req.getTableName());
+        List<DefinedColumnSchema> defColumns = req.getDefinedColumn();
+        for (DefinedColumnSchema col : defColumns) {
+            builder.addColumns(buildDefinedColumnSchema(col));
+        }
+
+        return builder.build();
+    }
+
+    public static OtsInternalApi.DeleteDefinedColumnRequest buildDeleteDefinedColumnRequest(DeleteDefinedColumnRequest req) {
+        OtsInternalApi.DeleteDefinedColumnRequest.Builder builder = OtsInternalApi.DeleteDefinedColumnRequest.newBuilder();
+
+        builder.setTableName(req.getTableName());
+        List<String> defColumns = req.getDefinedColumn();
+        for (String col : defColumns) {
+            builder.addColumns(col);
+        }
+
+        return builder.build();
+    }
+
     public static OtsInternalApi.RowExistenceExpectation toPBRowExistenceExpectation(
             RowExistenceExpectation rowExistenceExpectation) {
         switch(rowExistenceExpectation) {
@@ -288,7 +566,7 @@ public class OTSProtocolBuilder {
             throw new IllegalArgumentException("Invalid row existence expectation: " + rowExistenceExpectation);
         }
     }
-    
+
     public static OtsInternalApi.Condition buildCondition(Condition cond)
     {
     	OtsInternalApi.Condition.Builder builder = OtsInternalApi.Condition.newBuilder();
@@ -299,7 +577,7 @@ public class OTSProtocolBuilder {
 
         return builder.build();
     }
-    
+
     public static OtsInternalApi.ReturnContent buildReturnContent(ReturnType returnType, Set<String> returnColumnNames)
     {
     	OtsInternalApi.ReturnContent.Builder builder = OtsInternalApi.ReturnContent.newBuilder();
@@ -312,7 +590,7 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
-    private static OtsInternalApi.ReturnType toPBReturnType(ReturnType returnType) 
+    private static OtsInternalApi.ReturnType toPBReturnType(ReturnType returnType)
     {
         switch(returnType) {
         case RT_NONE:
@@ -423,14 +701,20 @@ public class OTSProtocolBuilder {
             throw new IllegalArgumentException("Invalid direction type: " + direction);
         }
     }
-    
+
     public static OtsInternalApi.ComputeSplitPointsBySizeRequest buildComputeSplitsBySizeRequest(ComputeSplitsBySizeRequest req) {
         OtsInternalApi.ComputeSplitPointsBySizeRequest.Builder builder = OtsInternalApi.ComputeSplitPointsBySizeRequest.newBuilder();
 
         // required string table_name = 1;
         builder.setTableName(req.getTableName());
+        // required int64 split_size = 2;
         builder.setSplitSize(req.getSplitUnitCount());
+        // optional int64 split_size_unit_in_byte = 3;
         builder.setSplitSizeUnitInByte(req.getSplitUnitSizeInByte());
+        // optional int64 split_limit = 4;
+        if (req.hasSetSplitPointLimit()) {
+            builder.setSplitPointLimit(req.getSplitPointLimit());
+        }
         return builder.build();
     }
 
@@ -497,6 +781,42 @@ public class OTSProtocolBuilder {
         // optional bytes transaction_id = 14;
         if (request.hasSetTransactionId()) {
             builder.setTransactionId(request.getTransactionId());
+        }
+
+        return builder.build();
+    }
+
+    public static OtsInternalApi.BulkExportRequest buildBulkExportRequest(BulkExportRequest request) {
+        BulkExportQueryCriteria criteria = request.getBulkExportQueryCriteria();
+        OtsInternalApi.BulkExportRequest.Builder builder = OtsInternalApi.BulkExportRequest.newBuilder();
+
+        // required string table_name = 1;
+        builder.setTableName(criteria.getTableName());
+
+        // repeated string columns_to_get = 2;
+        for (String column : criteria.getColumnsToGet()) {
+            builder.addColumnsToGet(column);
+        }
+
+        try {
+            // required bytes inclusive_start_primary_key = 3;
+            builder.setInclusiveStartPrimaryKey(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyWithHeader(criteria.getInclusiveStartPrimaryKey())));
+            // required bytes exclusive_end_primary_key = 4;
+            builder.setExclusiveEndPrimaryKey(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyWithHeader(criteria.getExclusiveEndPrimaryKey())));
+        } catch (IOException e) {
+            throw new ClientException("Bug: serialize primary key failed.", e);
+        }
+
+        // optional bytes filter = 5;
+        if (criteria.hasSetFilter()) {
+            builder.setFilter(buildFilter(criteria.getFilter()));
+        }
+
+        //  optional DataBlockType data_block_type_hint = 6 [default = DBT_SIMPLE_ROW_MATRIX];
+        if (criteria.getDataBlockType() == DataBlockType.DBT_PLAIN_BUFFER) {
+            builder.setDataBlockTypeHint(OtsInternalApi.DataBlockType.DBT_PLAIN_BUFFER);
+        } else {
+            builder.setDataBlockTypeHint(OtsInternalApi.DataBlockType.DBT_SIMPLE_ROW_MATRIX);
         }
 
         return builder.build();
@@ -608,6 +928,41 @@ public class OTSProtocolBuilder {
             builder.setTransactionId(request.getTransactionId());
         }
 
+        if (request.isAtomicSet()) {
+            builder.setIsAtomic(request.isAtomic());
+        }
+
+        return builder.build();
+    }
+
+    public static OtsInternalApi.BulkImportRequest buildBulkImportRequest(BulkImportRequest request) {
+        OtsInternalApi.BulkImportRequest.Builder builder = OtsInternalApi.BulkImportRequest.newBuilder();
+
+        builder.setTableName(request.getTableName());
+
+        List<RowChange> rowChanges = request.getRowChange();
+        if (rowChanges != null && !rowChanges.isEmpty()) {
+            for (RowChange rowChange : rowChanges) {
+                try {
+                    OtsInternalApi.RowInBulkImportRequest.Builder rowBuilder = OtsInternalApi.RowInBulkImportRequest.newBuilder();
+                    if (rowChange instanceof RowPutChange) {
+                        rowBuilder.setType(OtsInternalApi.OperationType.PUT);
+                        rowBuilder.setRowChange(ByteString.copyFrom(PlainBufferBuilder.buildRowPutChangeWithHeader((RowPutChange) rowChange)));
+                    } else if (rowChange instanceof RowUpdateChange) {
+                        rowBuilder.setType(OtsInternalApi.OperationType.UPDATE);
+                        rowBuilder.setRowChange(ByteString.copyFrom(PlainBufferBuilder.buildRowUpdateChangeWithHeader((RowUpdateChange) rowChange)));
+                    } else if (rowChange instanceof RowDeleteChange) {
+                        rowBuilder.setType(OtsInternalApi.OperationType.DELETE);
+                        rowBuilder.setRowChange(ByteString.copyFrom(PlainBufferBuilder.buildRowDeleteChangeWithHeader((RowDeleteChange) rowChange)));
+                    } else {
+                        throw new ClientException("Unknown type of rowChange.");
+                    }
+                    builder.addRows(rowBuilder.build());
+                } catch (IOException e) {
+                    throw new ClientException("Bug: serialize row put change failed.", e);
+                }
+            }
+        }
         return builder.build();
     }
 
@@ -636,6 +991,31 @@ public class OTSProtocolBuilder {
         builder.setEnableStream(streamSpecification.isEnableStream());
         if (streamSpecification.getExpirationTime() > 0) {
             builder.setExpirationTime(streamSpecification.getExpirationTime());
+        }
+        return builder.build();
+    }
+
+    private static OtsInternalApi.SSESpecification buildSseSpecification(SSESpecification sseSpecification) {
+        OtsInternalApi.SSESpecification.Builder builder = OtsInternalApi.SSESpecification.newBuilder();
+        builder.setEnable(sseSpecification.isEnable());
+        if (sseSpecification.getKeyType() != null) {
+            SSEKeyType keyType = sseSpecification.getKeyType();
+            switch (keyType) {
+                case SSE_KMS_SERVICE:
+                    builder.setKeyType(OtsInternalApi.SSEKeyType.SSE_KMS_SERVICE);
+                    break;
+                case SSE_BYOK:
+                    builder.setKeyType(OtsInternalApi.SSEKeyType.SSE_BYOK);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown server side encryption key type: " + keyType);
+            }
+        }
+        if (sseSpecification.getKeyId() != null) {
+            builder.setKeyId(ByteString.copyFrom(sseSpecification.getKeyId().getBytes()));
+        }
+        if (sseSpecification.getRoleArn() != null) {
+            builder.setRoleArn(ByteString.copyFrom(sseSpecification.getRoleArn().getBytes()));
         }
         return builder.build();
     }
@@ -725,6 +1105,46 @@ public class OTSProtocolBuilder {
         return builder.build().toByteString();
     }
 
+    public static ByteString buildSingleColumnValueRegexFilter(SingleColumnValueRegexFilter filter) {
+        OtsFilter.SingleColumnValueFilter.Builder builder = OtsFilter.SingleColumnValueFilter.newBuilder();
+        builder.setColumnName(filter.getColumnName());
+        if (filter.hasRegexRule()) {
+            builder.setValueTransRule(filter.getRegexRule().serialize());
+        }
+        builder.setComparator(toComparatorType(filter.getOperator()));
+        try {
+            builder.setColumnValue(ByteString.copyFrom(PlainBufferBuilder.buildColumnValueWithoutLengthPrefix(filter.getColumnValue())));
+        } catch (IOException e) {
+            throw new ClientException("Bug: serialize column value failed.", e);
+        }
+        builder.setFilterIfMissing(true);
+        builder.setLatestVersionOnly(filter.getLatestVersionsOnly());
+        return builder.build().toByteString();
+    }
+
+    private static OtsFilter.ComparatorType toComparatorType(SingleColumnValueRegexFilter.CompareOperator operator) {
+        switch (operator) {
+            case EQUAL:
+                return OtsFilter.ComparatorType.CT_EQUAL;
+            case NOT_EQUAL:
+                return OtsFilter.ComparatorType.CT_NOT_EQUAL;
+            case GREATER_THAN:
+                return OtsFilter.ComparatorType.CT_GREATER_THAN;
+            case GREATER_EQUAL:
+                return OtsFilter.ComparatorType.CT_GREATER_EQUAL;
+            case LESS_THAN:
+                return OtsFilter.ComparatorType.CT_LESS_THAN;
+            case LESS_EQUAL:
+                return OtsFilter.ComparatorType.CT_LESS_EQUAL;
+            case EXIST:
+                return OtsFilter.ComparatorType.CT_EXIST;
+            case NOT_EXIST:
+                return OtsFilter.ComparatorType.CT_NOT_EXIST;
+            default:
+                throw new IllegalArgumentException("Unknown compare operator: " + operator);
+        }
+    }
+
     private static OtsFilter.ComparatorType toComparatorType(SingleColumnValueFilter.CompareOperator operator) {
         switch (operator) {
             case EQUAL:
@@ -775,6 +1195,12 @@ public class OTSProtocolBuilder {
         OtsInternalApi.GetShardIteratorRequest.Builder builder = OtsInternalApi.GetShardIteratorRequest.newBuilder();
         builder.setStreamId(request.getStreamId());
         builder.setShardId(request.getShardId());
+        if (request.hasTimestamp()) {
+            builder.setTimestamp(request.getTimestamp());
+        }
+        if (request.hasToken()) {
+            builder.setToken(request.getToken());
+        }
         return builder.build();
     }
 
@@ -808,5 +1234,42 @@ public class OTSProtocolBuilder {
         OtsInternalApi.CommitTransactionRequest.Builder builder = OtsInternalApi.CommitTransactionRequest.newBuilder();
         builder.setTransactionId(request.getTransactionID());
         return builder.build();
+    }
+
+    public static OtsInternalApi.ComputeSplitsRequest buildComputeSplitsRequest(ComputeSplitsRequest request) {
+        OtsInternalApi.ComputeSplitsRequest.Builder builder = OtsInternalApi.ComputeSplitsRequest.newBuilder();
+        if (null != request.getTableName()) {
+            builder.setTableName(request.getTableName());
+        }
+        if (null != request.getSplitsOptions()) {
+            SplitsOptions splitsOptions = request.getSplitsOptions();
+            if (splitsOptions instanceof SearchIndexSplitsOptions) {
+                SearchIndexSplitsOptions searchIndexSplitsOptions = (SearchIndexSplitsOptions)splitsOptions;
+                OtsInternalApi.SearchIndexSplitsOptions.Builder optionsBuilder = OtsInternalApi.SearchIndexSplitsOptions.newBuilder();
+                if (null != searchIndexSplitsOptions.getIndexName()) {
+                    optionsBuilder.setIndexName(searchIndexSplitsOptions.getIndexName());
+                }
+                builder.setSearchIndexSplitsOptions(optionsBuilder.build());
+            }
+        }
+        return builder.build();
+    }
+
+    public static OtsInternalApi.SQLQueryRequest buildSQLQueryRequest(SQLQueryRequest request) {
+        OtsInternalApi.SQLQueryRequest.Builder builder = OtsInternalApi.SQLQueryRequest.newBuilder();
+
+        builder.setQuery(request.getQuery());
+        builder.setVersion(buildSQLPayloadVersion(request.getSqlPayloadVersion()));
+
+        return builder.build();
+    }
+
+    public static OtsInternalApi.SQLPayloadVersion buildSQLPayloadVersion(SQLPayloadVersion sqlPayloadVersion) {
+        switch (sqlPayloadVersion) {
+            case SQL_FLAT_BUFFERS:
+                return OtsInternalApi.SQLPayloadVersion.SQL_FLAT_BUFFERS;
+            default:
+                throw new UnsupportedOperationException("not supported sql payload version: " + sqlPayloadVersion);
+        }
     }
 }

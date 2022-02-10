@@ -7,5 +7,6 @@ public enum IndexType {
     /**
      * 全局索引。
      */
-    IT_GLOBAL_INDEX;
+    IT_GLOBAL_INDEX,
+    IT_LOCAL_INDEX
 }

@@ -2,16 +2,29 @@ package com.alicloud.openservices.tablestore.timeline.core;
 
 import com.alicloud.openservices.tablestore.*;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.search.SearchQuery;
+import com.alicloud.openservices.tablestore.model.search.SearchRequest;
+import com.alicloud.openservices.tablestore.model.search.SearchResponse;
+import com.alicloud.openservices.tablestore.model.search.query.BoolQuery;
+import com.alicloud.openservices.tablestore.model.search.query.Query;
+import com.alicloud.openservices.tablestore.model.search.query.TermQuery;
+import com.alicloud.openservices.tablestore.model.search.query.TermsQuery;
 import com.alicloud.openservices.tablestore.timeline.TimelineQueue;
 import com.alicloud.openservices.tablestore.timeline.TimelineCallback;
 import com.alicloud.openservices.tablestore.timeline.TimelineException;
 import com.alicloud.openservices.tablestore.timeline.model.*;
 import com.alicloud.openservices.tablestore.timeline.model.RowPutChangeWithCallback;
 import com.alicloud.openservices.tablestore.timeline.query.ScanParameter;
+import com.alicloud.openservices.tablestore.timeline.query.SearchParameter;
+import com.alicloud.openservices.tablestore.timeline.query.SearchResult;
 import com.alicloud.openservices.tablestore.timeline.utils.Preconditions;
 import com.alicloud.openservices.tablestore.timeline.utils.Utils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class TimelineQueueImpl implements TimelineQueue {
@@ -95,6 +108,7 @@ public class TimelineQueueImpl implements TimelineQueue {
     public Future<TimelineEntry> storeAsync(TimelineMessage message, TimelineCallback callback) {
         Preconditions.checkArgument(schema.isAutoGenerateSeqId(),
                 "The sequence id of this timeline is not auto generated.");
+
 
         PrimaryKey primaryKey = Utils.identifierToPrimaryKeyWithSequenceId(identifier, this.schema.getSequenceIdColumnName(),
                 -1, schema.isAutoGenerateSeqId());
@@ -445,6 +459,59 @@ public class TimelineQueueImpl implements TimelineQueue {
         writer.addRowChange(rowChange);
 
         return rowChange.getFuture();
+    }
+
+    @Override
+    public SearchResult<TimelineEntry> search(SearchParameter searchParameter) {
+        return search(Utils.toSearchQuery(searchParameter));
+    }
+
+    @Override
+    public SearchResult<TimelineEntry> search(SearchQuery searchQuery) {
+        Preconditions.checkArgument(schema.hasDataIndex(), "The store not support search cause not has data index");
+
+        // add field value in identifier to searchquery
+        List<Query> queries = new ArrayList();
+        queries.add(searchQuery.getQuery());
+        for (PrimaryKeyColumn column : identifier.getFields()) {
+            try {
+                TermQuery q = new TermQuery();
+                q.setFieldName(column.getName());
+                q.setTerm(column.getValue().toColumnValue());
+                queries.add(q);
+            } catch (Exception e) {
+                throw Utils.convertException(e);
+            }
+        }
+        BoolQuery query = new BoolQuery();
+        query.setMustQueries(queries);
+
+        SearchQuery searchQueryCopy = searchQuery.toCopy();
+        searchQueryCopy.setQuery(query);
+
+        SearchRequest request = new SearchRequest(schema.getTableName(), schema.getIndexName(), searchQueryCopy);
+        SearchRequest.ColumnsToGet columnsToGet = new SearchRequest.ColumnsToGet();
+        columnsToGet.setReturnAll(true);
+        request.setColumnsToGet(columnsToGet);
+
+        SearchResponse response;
+        try {
+            response = client.search(request);
+        } catch (Exception e) {
+            throw Utils.convertException(e);
+        }
+
+        List<SearchResult.Entry<TimelineEntry>> entries = new ArrayList<SearchResult.Entry<TimelineEntry>>(response.getRows().size());
+        for (Row row : response.getRows()) {
+            TimelineEntry entry = Utils.rowToTimelineEntry(schema, row);
+            TimelineIdentifier identifier = Utils.primaryKeyToIdentifier(schema.getIdentifierSchema(), row.getPrimaryKey());
+            SearchResult.Entry<TimelineEntry> se = new SearchResult.Entry<TimelineEntry>(identifier, entry);
+            entries.add(se);
+        }
+        SearchResult<TimelineEntry> result = new SearchResult<TimelineEntry>(
+                entries, response.isAllSuccess(),
+                response.getTotalCount(), response.getNextToken());
+        return  result;
     }
 
     @Override

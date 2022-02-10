@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.model;
 
+import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.Map;
 public class BatchWriteRowRequest extends TxnRequest {
 
     private Map<String, List<RowChange>> rowChangesGroupByTable;
+
+    private OptionalValue<Boolean> isAtomic = new OptionalValue<Boolean>("IsAtomic");
 
     public BatchWriteRowRequest() {
         rowChangesGroupByTable = new HashMap<String, List<RowChange>>();
@@ -101,5 +104,36 @@ public class BatchWriteRowRequest extends TxnRequest {
             rowsCount += entry.getValue().size();
         }
         return rowsCount;
+    }
+
+    /**
+     * 是否设置了批量原子写选项。
+     *
+     * @return 是否设置了批量原子写选项
+     */
+    public boolean isAtomicSet() {
+        return isAtomic.isValueSet();
+    }
+
+    /**
+     * 设置是否为批量原子写。
+     * 如果启用了批量原子写，需要保证写入到同一张表格中的分区键相同，否则会写入失败。
+     *
+     * @param atomic 是否为批量原子写
+     */
+    public void setAtomic(boolean atomic) {
+        isAtomic.setValue(atomic);
+    }
+
+    /**
+     * 检查是否为批量原子写。
+     *
+     * @return 是否为批量原子写
+     */
+    public boolean isAtomic() {
+        if (!isAtomic.isValueSet()) {
+            throw new IllegalStateException("The value of isAtomic is not set.");
+        }
+        return isAtomic.getValue();
     }
 }

@@ -8,15 +8,19 @@ import com.google.protobuf.ByteString;
  */
 public class PrefixQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_PrefixQuery;
+
     private String fieldName;
     /**
      * 	字符串前缀
      */
     private String prefix;
 
+    private float weight = 1.0f;
+
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_PrefixQuery;
+        return queryType;
     }
 
     @Override
@@ -38,5 +42,49 @@ public class PrefixQuery implements Query {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String fieldName;
+        private String prefix;
+        private float weight = 1.0f;
+
+        public Builder weight(float weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        private Builder() {}
+
+        public Builder field(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder prefix(String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
+        @Override
+        public PrefixQuery build() {
+            PrefixQuery prefixQuery = new PrefixQuery();
+            prefixQuery.setFieldName(this.fieldName);
+            prefixQuery.setPrefix(this.prefix);
+            prefixQuery.setWeight(this.weight);
+            return prefixQuery;
+        }
     }
 }

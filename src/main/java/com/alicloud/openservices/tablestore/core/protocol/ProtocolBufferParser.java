@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import java.util.Map;
 
+import com.google.protobuf.CodedInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.protobuf.Message;
@@ -12,12 +13,11 @@ import com.alicloud.openservices.tablestore.model.Response;
 import com.alicloud.openservices.tablestore.core.Constants;
 import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
 import com.alicloud.openservices.tablestore.core.http.ResponseMessage;
-import com.alicloud.openservices.tablestore.core.protocol.ResultParseException;
-import com.alicloud.openservices.tablestore.core.protocol.ResultParser;
 
 public class ProtocolBufferParser implements ResultParser {
 
     private static Logger logger = LoggerFactory.getLogger(ProtocolBufferParser.class);
+    private static int pbSizeLimit = 1024 * 1024 * 1024; // 1GB
 
     private Message message;
 
@@ -32,7 +32,7 @@ public class ProtocolBufferParser implements ResultParser {
     public Object getObject(ResponseMessage response)
             throws ResultParseException {
         
-        Map<String, String> headers = response.getHeadersMap();
+        Map<String, String> headers = response.getLowerCaseHeadersMap();
 
         String requestId = headers.get(Constants.OTS_HEADER_REQUEST_ID);
         if (requestId == null){
@@ -40,7 +40,11 @@ public class ProtocolBufferParser implements ResultParser {
         }
         
         try {
-            Message result = message.newBuilderForType().mergeFrom(response.getContent()).buildPartial();
+            CodedInputStream codedInputStream = CodedInputStream.newInstance(response.getContent());
+            codedInputStream.setSizeLimit(pbSizeLimit);
+            Message.Builder resultBuilder = message.newBuilderForType().mergeFrom(codedInputStream);
+            codedInputStream.checkLastTagWas(0);
+            Message result = resultBuilder.buildPartial();
             if (!result.isInitialized()) {
                 throw new UninitializedMessageException(
                         result).asInvalidProtocolBufferException();

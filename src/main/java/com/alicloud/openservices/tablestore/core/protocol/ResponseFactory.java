@@ -1,26 +1,28 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
 import com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ComputeSplitPointsBySizeResponse.SplitLocation;
+import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.SQLResponseColumns;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
+import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexResponse;
+import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexResponse;
+import com.alicloud.openservices.tablestore.model.search.DescribeSearchIndexResponse;
+import com.alicloud.openservices.tablestore.model.search.ListSearchIndexResponse;
+import com.alicloud.openservices.tablestore.model.search.ParallelScanResponse;
+import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
+import com.alicloud.openservices.tablestore.model.search.SearchResponse;
 import com.alicloud.openservices.tablestore.model.Split;
 import com.alicloud.openservices.tablestore.model.search.*;
-import com.alicloud.openservices.tablestore.model.tunnel.ChannelInfo;
-import com.alicloud.openservices.tablestore.model.tunnel.ChannelStatus;
-import com.alicloud.openservices.tablestore.model.tunnel.ChannelType;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelInfo;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelStage;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelType;
+import com.alicloud.openservices.tablestore.model.sql.SQLPayloadVersion;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.sql.SQLStatementType;
+import com.alicloud.openservices.tablestore.model.tunnel.*;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.Channel;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ConnectTunnelResponse;
@@ -30,32 +32,38 @@ import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsRes
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelResponse;
 import com.google.protobuf.ByteString;
 
+import static com.alicloud.openservices.tablestore.core.protocol.SearchAggregationResultBuilder.buildAggregationResultsFromByteString;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchGroupByResultBuilder.buildGroupByResultsFromByteString;
+import static com.alicloud.openservices.tablestore.core.protocol.TunnelProtocolBuilder.MILLIS_TO_NANO;
+
 public class ResponseFactory {
 
     public static CreateTableResponse createCreateTableResponse(ResponseContentWithMeta response,
-                                                                OtsInternalApi.CreateTableResponse
-                                                                    createTableResponse) {
+        OtsInternalApi.CreateTableResponse createTableResponse) {
         return new CreateTableResponse(response.getMeta());
     }
 
     public static ListTableResponse createListTableResponse(ResponseContentWithMeta response,
-                                                            OtsInternalApi.ListTableResponse listTableResponse) {
+        OtsInternalApi.ListTableResponse listTableResponse) {
         ListTableResponse result = new ListTableResponse(response.getMeta());
         result.setTableNames(listTableResponse.getTableNamesList());
         return result;
     }
 
     public static DescribeTableResponse createDescribeTableResponse(ResponseContentWithMeta response,
-                                                                    OtsInternalApi.DescribeTableResponse
-                                                                        describeTableResponse) {
+        OtsInternalApi.DescribeTableResponse describeTableResponse) {
         try {
             DescribeTableResponse result = new DescribeTableResponse(response.getMeta());
             result.setTableMeta(OTSProtocolParser.parseTableMeta(describeTableResponse.getTableMeta()));
             result.setTableOptions(OTSProtocolParser.parseTableOptions(describeTableResponse.getTableOptions()));
             result.setReservedThroughputDetails(OTSProtocolParser
-                    .parseReservedThroughputDetails(describeTableResponse.getReservedThroughputDetails()));
+                .parseReservedThroughputDetails(describeTableResponse.getReservedThroughputDetails()));
             if (describeTableResponse.hasStreamDetails()) {
                 result.setStreamDetails(OTSProtocolParser.parseStreamDetails(describeTableResponse.getStreamDetails()));
+            }
+
+            if (describeTableResponse.hasSseDetails()) {
+                result.setSseDetails(OTSProtocolParser.parseSseDetails(describeTableResponse.getSseDetails()));
             }
 
             List<PrimaryKey> shards = new ArrayList<PrimaryKey>();
@@ -74,6 +82,9 @@ public class ResponseFactory {
             for (int i = 0; i < describeTableResponse.getIndexMetasCount(); ++i) {
                 result.addIndexMeta(OTSProtocolParser.parseIndexMeta(describeTableResponse.getIndexMetas(i)));
             }
+            if (describeTableResponse.hasCreationTime()) {
+                result.setCreationTime(describeTableResponse.getCreationTime());
+            }
             return result;
         } catch (Exception e) {
             throw new ClientException("Failed to parse describe table response.", e);
@@ -81,8 +92,7 @@ public class ResponseFactory {
     }
 
     public static DeleteTableResponse createDeleteTableResponse(ResponseContentWithMeta response,
-                                                                OtsInternalApi.DeleteTableResponse
-                                                                    deleteTableResponse) {
+        OtsInternalApi.DeleteTableResponse deleteTableResponse) {
         return new DeleteTableResponse(response.getMeta());
     }
 
@@ -92,19 +102,147 @@ public class ResponseFactory {
         return new CreateIndexResponse(response.getMeta());
     }
 
+    public static CreateDeliveryTaskResponse createDeliveryTaskResponse(
+        ResponseContentWithMeta response,
+        OtsDelivery.CreateDeliveryTaskResponse createDeliveryTaskResponse) {
+        return new CreateDeliveryTaskResponse(response.getMeta());
+    }
+
+    public static DeleteDeliveryTaskResponse deleteDeliveryTaskResponse(
+            ResponseContentWithMeta response,
+            OtsDelivery.DeleteDeliveryTaskResponse DeleteDeliveryTaskResponse) {
+        return new DeleteDeliveryTaskResponse(response.getMeta());
+    }
+
+    public static DescribeDeliveryTaskResponse describeDeliveryTaskResponse(
+            ResponseContentWithMeta response,
+            OtsDelivery.DescribeDeliveryTaskResponse describeDeliveryTaskResponse) {
+        DescribeDeliveryTaskResponse resp = new DescribeDeliveryTaskResponse(response.getMeta());
+        resp.setTaskConfig(createTaskConfig(describeDeliveryTaskResponse.getTaskConfig()));
+        resp.setTaskSyncStat(createTaskSyncStat(describeDeliveryTaskResponse.getTaskSyncStat()));
+        resp.setTaskType(createTaskType(describeDeliveryTaskResponse.getTaskType()));
+        return resp;
+    }
+
+    public static DeliveryTaskType createTaskType(OtsDelivery.DeliveryTaskType taskType) {
+        return DeliveryTaskType.valueOf(taskType.toString());
+    }
+
+    public static TaskSyncStat createTaskSyncStat(OtsDelivery.TaskSyncStat taskSyncStat) {
+        TaskSyncStat actualSyncStat = new TaskSyncStat();
+        actualSyncStat.setTaskSyncPhase(createTaskSycnPhase(taskSyncStat.getTaskSyncPhase()));
+        long rpoMillis = taskSyncStat.getCurrentSyncTimestamp() / MILLIS_TO_NANO;
+        actualSyncStat.setCurrentSyncPoint(new Date(rpoMillis));
+        actualSyncStat.setErrorType(createErrorType(taskSyncStat.getErrorCode()));
+        actualSyncStat.setDetail(taskSyncStat.getDetail());
+        return actualSyncStat;
+    }
+
+    public static TaskSyncPhase createTaskSycnPhase(OtsDelivery.TaskSyncStat.TaskSyncPhase taskSyncPhase) {
+        return TaskSyncPhase.valueOf(taskSyncPhase.toString());
+    }
+
+    public static DeliveryErrorType createErrorType(OtsDelivery.ErrorType errorType) {
+        return DeliveryErrorType.valueOf(errorType.toString());
+    }
+
+    public static OSSTaskConfig createTaskConfig(OtsDelivery.OSSTaskConfig taskConfig) {
+        OSSTaskConfig actualConfig = new OSSTaskConfig();
+        actualConfig.setOssPrefix(taskConfig.getOssPrefix());
+        actualConfig.setTimeFormatter(createTimeFormatter(taskConfig.getFormatter()));
+        actualConfig.setOssBucket(taskConfig.getOssBucket());
+        actualConfig.setOssEndpoint(taskConfig.getOssEndpoint());
+        actualConfig.setOssStsRole(taskConfig.getOssStsRole());
+        if (taskConfig.getEventTimeColumn().hasColumnName() && taskConfig.getEventTimeColumn().hasTimeFormat()) {
+            actualConfig.setEventTimeColumn(createEventTimeColumn(taskConfig.getEventTimeColumn()));
+        }
+        actualConfig.setFormat(createFormat(taskConfig.getFormat()));
+        for(OtsDelivery.ParquetSchema parquetSchema: taskConfig.getSchemaList()) {
+            ParquetSchema actualSchema = new ParquetSchema();
+            actualSchema.setColumnName(parquetSchema.getColumnName());
+            actualSchema.setOssColumnName(parquetSchema.getOssColumnName());
+            actualSchema.setType(createDataType(parquetSchema.getType()));
+            actualSchema.setEncode(createEncoding(parquetSchema.getEncode()));
+            if (actualSchema.getTypeExtend() != null) {
+                actualSchema.setTypeExtend(parquetSchema.getTypeExtend());
+            }
+            actualConfig.addParquetSchema(actualSchema);
+        }
+
+        return actualConfig;
+    }
+
+    public static DataType createDataType(OtsDelivery.ParquetSchema.DataType dataType) {
+        return DataType.valueOf(dataType.toString());
+    }
+
+    public static OSSFileEncoding createEncoding(OtsDelivery.Encoding encoding) {
+        return OSSFileEncoding.valueOf(encoding.toString());
+    }
+
+    public static EventColumn createEventTimeColumn(OtsDelivery.EventColumn eventColumn) {
+        EventColumn actualEvent = new EventColumn(eventColumn.getColumnName(), createTimeFormat(eventColumn.getTimeFormat()));
+        return actualEvent;
+    }
+
+    public static EventTimeFormat createTimeFormat(OtsDelivery.EventColumn.eventTimeFormat eventTimeFormat) {
+        return EventTimeFormat.valueOf(eventTimeFormat.toString());
+    }
+
+    public static TimeFormatter createTimeFormatter(OtsDelivery.TimeFormatter timeFormatter) {
+        return TimeFormatter.valueOf(timeFormatter.toString());
+    }
+
+    public static OSSFileFormat createFormat(OtsDelivery.Format format) {
+        return OSSFileFormat.valueOf(format.toString());
+    }
+
+    public static ListDeliveryTaskResponse listDeliveryTaskResponse(
+            ResponseContentWithMeta response,
+            OtsDelivery.ListDeliveryTaskResponse listDeliveryTaskResponse) {
+        ListDeliveryTaskResponse resp = new ListDeliveryTaskResponse(response.getMeta());
+        resp.setTaskInfos(createTaskInfoList(listDeliveryTaskResponse.getTasksList()));
+        return resp;
+    }
+
+    public static List<DeliveryTaskInfo> createTaskInfoList(List<OtsDelivery.DeliveryTaskInfo> taskInfos) {
+        List<DeliveryTaskInfo> actualTaskInfoList = new ArrayList<DeliveryTaskInfo>();
+        for(OtsDelivery.DeliveryTaskInfo taskInfo: taskInfos) {
+            DeliveryTaskInfo actualTaskInfo = new DeliveryTaskInfo();
+            actualTaskInfo.setTableName(taskInfo.getTableName());
+            actualTaskInfo.setTaskName(taskInfo.getTaskName());
+            actualTaskInfo.setTaskType(createTaskType(taskInfo.getTaskType()));
+            actualTaskInfoList.add(actualTaskInfo);
+        }
+        return actualTaskInfoList;
+    }
+
     public static DeleteIndexResponse createDeleteIndexResponse(
         ResponseContentWithMeta response,
         OtsInternalApi.DropIndexResponse dropIndexResponse) {
         return new DeleteIndexResponse(response.getMeta());
     }
 
+    public static AddDefinedColumnResponse createAddDefinedColumnResponse(
+        ResponseContentWithMeta response,
+        OtsInternalApi.AddDefinedColumnResponse addDefinedColumnResponse) {
+        return new AddDefinedColumnResponse(response.getMeta());
+    }
+
+    public static DeleteDefinedColumnResponse createDeleteDefinedColumnResponse(
+        ResponseContentWithMeta response,
+        OtsInternalApi.DeleteDefinedColumnResponse deleteDefinedColumnResponse) {
+        return new DeleteDefinedColumnResponse(response.getMeta());
+    }
+
     public static UpdateTableResponse createUpdateTableResponse(ResponseContentWithMeta response,
-                                                                OtsInternalApi.UpdateTableResponse
-                                                                    updateTableResponse) {
+        OtsInternalApi.UpdateTableResponse updateTableResponse) {
         UpdateTableResponse result = new UpdateTableResponse(response.getMeta());
         result.setReservedThroughputDetails(
-                OTSProtocolParser.parseReservedThroughputDetails(updateTableResponse.getReservedThroughputDetails()));
-
+            OTSProtocolParser.parseReservedThroughputDetails(updateTableResponse.getReservedThroughputDetails()));
+        if (updateTableResponse.hasTableOptions()) {
+            result.setTableOptions(OTSProtocolParser.parseTableOptions(updateTableResponse.getTableOptions()));
+        }
         if (updateTableResponse.hasStreamDetails()) {
             result.setStreamDetails(OTSProtocolParser.parseStreamDetails(updateTableResponse.getStreamDetails()));
         }
@@ -112,7 +250,7 @@ public class ResponseFactory {
     }
 
     public static GetRowResponse createGetRowResponse(ResponseContentWithMeta response,
-                                                      OtsInternalApi.GetRowResponse getRowResponse) {
+        OtsInternalApi.GetRowResponse getRowResponse) {
         ConsumedCapacity consumedCapacity = new ConsumedCapacity(
             OTSProtocolParser.parseCapacityUnit(getRowResponse.getConsumed().getCapacityUnit()));
         Row row = null;
@@ -137,7 +275,7 @@ public class ResponseFactory {
     }
 
     public static PutRowResponse createPutRowResponse(ResponseContentWithMeta response,
-                                                      OtsInternalApi.PutRowResponse putRowResponse) {
+        OtsInternalApi.PutRowResponse putRowResponse) {
         ConsumedCapacity consumedCapacity = new ConsumedCapacity(
             OTSProtocolParser.parseCapacityUnit(putRowResponse.getConsumed().getCapacityUnit()));
         Row row = null;
@@ -160,7 +298,7 @@ public class ResponseFactory {
     }
 
     public static UpdateRowResponse createUpdateRowResponse(ResponseContentWithMeta response,
-                                                            OtsInternalApi.UpdateRowResponse updateRowResponse) {
+        OtsInternalApi.UpdateRowResponse updateRowResponse) {
         ConsumedCapacity consumedCapacity = new ConsumedCapacity(
             OTSProtocolParser.parseCapacityUnit(updateRowResponse.getConsumed().getCapacityUnit()));
         Row row = null;
@@ -183,7 +321,7 @@ public class ResponseFactory {
     }
 
     public static DeleteRowResponse createDeleteRowResponse(ResponseContentWithMeta response,
-                                                            OtsInternalApi.DeleteRowResponse deleteRowResponse) {
+        OtsInternalApi.DeleteRowResponse deleteRowResponse) {
         ConsumedCapacity consumedCapacity = new ConsumedCapacity(
             OTSProtocolParser.parseCapacityUnit(deleteRowResponse.getConsumed().getCapacityUnit()));
         Row row = null;
@@ -206,12 +344,12 @@ public class ResponseFactory {
     }
 
     public static GetRangeResponse createGetRangeResponse(ResponseContentWithMeta response,
-                                                          OtsInternalApi.GetRangeResponse getRangeResponse) {
+        OtsInternalApi.GetRangeResponse getRangeResponse) {
         try {
             ConsumedCapacity consumedCapacity = new ConsumedCapacity(
                 OTSProtocolParser.parseCapacityUnit(getRangeResponse.getConsumed().getCapacityUnit()));
             GetRangeResponse result = new GetRangeResponse(response.getMeta(), consumedCapacity);
-
+            result.setBodyBytes(getRangeResponse.getSerializedSize());
             if (!getRangeResponse.hasNextStartPrimaryKey()) {
                 // has no next primary key
                 result.setNextStartPrimaryKey(null);
@@ -233,7 +371,7 @@ public class ResponseFactory {
             if (!getRangeResponse.getRows().isEmpty()) {
                 List<Row> rows = new ArrayList<Row>();
                 PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(
-                        new PlainBufferInputStream(getRangeResponse.getRows().asReadOnlyByteBuffer()));
+                    new PlainBufferInputStream(getRangeResponse.getRows().asReadOnlyByteBuffer()));
                 List<PlainBufferRow> pbRows = inputStream.readRowsWithHeader();
                 for (PlainBufferRow pbRow : pbRows) {
                     rows.add(PlainBufferConversion.toRow(pbRow));
@@ -253,10 +391,55 @@ public class ResponseFactory {
         }
     }
 
+    public static BulkExportResponse createBulkExportResponse(ResponseContentWithMeta response,
+                                                          OtsInternalApi.BulkExportResponse bulkExportResponse) {
+        try {
+            // ConsumedCapacity
+            ConsumedCapacity consumedCapacity = new ConsumedCapacity(
+                    OTSProtocolParser.parseCapacityUnit(bulkExportResponse.getConsumed().getCapacityUnit()));
+
+            if (bulkExportResponse.getConsumed().hasCapacityDataSize()){
+                consumedCapacity.setCapacityDataSize(
+                        OTSProtocolParser.parseCapacityDataSize(bulkExportResponse.getConsumed().getCapacityDataSize()));
+            }
+            BulkExportResponse result = new BulkExportResponse(response.getMeta(), consumedCapacity);
+            result.setBodyBytes(bulkExportResponse.getSerializedSize());
+            // Next Start PrimaryKey
+            if (!bulkExportResponse.hasNextStartPrimaryKey()) {
+                // has no next primary key
+                result.setNextStartPrimaryKey(null);
+            } else {
+                PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(
+                        new PlainBufferInputStream(bulkExportResponse.getNextStartPrimaryKey().asReadOnlyByteBuffer()));
+                List<PlainBufferRow> rows = inputStream.readRowsWithHeader();
+                if (rows.size() != 1) {
+                    throw new IOException("Expect only returns one row. Row count: " + rows.size());
+                }
+                PlainBufferRow row = rows.get(0);
+                if (row.hasDeleteMarker() || row.hasCells()) {
+                    throw new IOException("The next primary key should only have primary key: " + row);
+                }
+
+                result.setNextStartPrimaryKey(PlainBufferConversion.toPrimaryKey(row.getPrimaryKey()));
+            }
+
+            // Rows
+            if (!bulkExportResponse.getRows().isEmpty()) {
+                result.setRows(bulkExportResponse.getRows().asReadOnlyByteBuffer());
+            } else {
+                result.setRows(null);
+            }
+
+            // DataBlockType
+            result.setDataBlockType(DataBlockType.fromProtocolType(bulkExportResponse.getDataBlockType()));
+            return result;
+        } catch (Exception e) {
+            throw new ClientException("Failed to parse BulkExport response.", e);
+        }
+    }
+
     public static ComputeSplitsBySizeResponse createComputeSplitsBySizeResponse(ResponseContentWithMeta response,
-                                                                                OtsInternalApi
-                                                                                    .ComputeSplitPointsBySizeResponse
-                                                                                    computeSplitPointsBySizeResponse) {
+        OtsInternalApi.ComputeSplitPointsBySizeResponse computeSplitPointsBySizeResponse) {
         ComputeSplitsBySizeResponse result = new ComputeSplitsBySizeResponse(response.getMeta());
 
         ConsumedCapacity consumedCapacity = new ConsumedCapacity(
@@ -344,8 +527,7 @@ public class ResponseFactory {
     }
 
     public static BatchGetRowResponse createBatchGetRowResponse(ResponseContentWithMeta response,
-                                                                OtsInternalApi.BatchGetRowResponse
-                                                                    batchGetRowResponse) {
+        OtsInternalApi.BatchGetRowResponse batchGetRowResponse) {
         BatchGetRowResponse result = new BatchGetRowResponse(response.getMeta());
 
         for (OtsInternalApi.TableInBatchGetRowResponse table : batchGetRowResponse.getTablesList()) {
@@ -359,8 +541,7 @@ public class ResponseFactory {
     }
 
     public static BatchWriteRowResponse createBatchWriteRowResponse(ResponseContentWithMeta response,
-                                                                    OtsInternalApi.BatchWriteRowResponse
-                                                                        batchWriteRowResponse) {
+        OtsInternalApi.BatchWriteRowResponse batchWriteRowResponse) {
         BatchWriteRowResponse result = new BatchWriteRowResponse(response.getMeta());
 
         for (OtsInternalApi.TableInBatchWriteRowResponse table : batchWriteRowResponse.getTablesList()) {
@@ -375,8 +556,21 @@ public class ResponseFactory {
         return result;
     }
 
+    public static BulkImportResponse createBulkImportResponse(ResponseContentWithMeta response,
+                                                                OtsInternalApi.BulkImportResponse bulkImportResponse) {
+        BulkImportResponse result = new BulkImportResponse(response.getMeta());
+        String tableName = bulkImportResponse.getTableName();
+        result.setTableName(tableName);
+        List<OtsInternalApi.RowInBulkImportResponse> rows = bulkImportResponse.getRowsList();
+        for (int i = 0; i < rows.size(); i++) {
+            result.addRowResult(OTSProtocolParser.parseBulkImportStatus(rows.get(i), i));
+        }
+
+        return result;
+    }
+
     public static ListStreamResponse createListStreamResponse(ResponseContentWithMeta response,
-                                                              OtsInternalApi.ListStreamResponse listStreamResponse) {
+        OtsInternalApi.ListStreamResponse listStreamResponse) {
         ListStreamResponse result = new ListStreamResponse(response.getMeta());
         List<Stream> streams = new ArrayList<Stream>();
         for (OtsInternalApi.Stream stream : listStreamResponse.getStreamsList()) {
@@ -387,8 +581,7 @@ public class ResponseFactory {
     }
 
     public static DescribeStreamResponse createDescribeStreamResponse(ResponseContentWithMeta response,
-                                                                      OtsInternalApi.DescribeStreamResponse
-                                                                          describeStreamResponse) {
+        OtsInternalApi.DescribeStreamResponse describeStreamResponse) {
         DescribeStreamResponse result = new DescribeStreamResponse(response.getMeta());
         result.setStreamId(describeStreamResponse.getStreamId());
         result.setExpirationTime(describeStreamResponse.getExpirationTime());
@@ -407,16 +600,19 @@ public class ResponseFactory {
     }
 
     public static GetShardIteratorResponse createGetShardIteratorResponse(ResponseContentWithMeta response,
-                                                                          OtsInternalApi.GetShardIteratorResponse
-                                                                              getShardIteratorResponse) {
+        OtsInternalApi.GetShardIteratorResponse getShardIteratorResponse) {
         GetShardIteratorResponse result = new GetShardIteratorResponse(response.getMeta());
-        result.setShardIterator(getShardIteratorResponse.getShardIterator());
+        if (!getShardIteratorResponse.getShardIterator().isEmpty()) {
+            result.setShardIterator(getShardIteratorResponse.getShardIterator());
+        }
+        if (getShardIteratorResponse.hasNextToken() && !getShardIteratorResponse.getNextToken().isEmpty()) {
+            result.setNextToken(getShardIteratorResponse.getNextToken());
+        }
         return result;
     }
 
     public static GetStreamRecordResponse createGetStreamRecordResponse(ResponseContentWithMeta response,
-                                                                        OtsInternalApi.GetStreamRecordResponse
-                                                                            getStreamRecordResponse) {
+        OtsInternalApi.GetStreamRecordResponse getStreamRecordResponse) {
         GetStreamRecordResponse result = new GetStreamRecordResponse(response.getMeta());
         if (getStreamRecordResponse.hasNextShardIterator()) {
             result.setNextShardIterator(getStreamRecordResponse.getNextShardIterator());
@@ -444,40 +640,39 @@ public class ResponseFactory {
     }
 
     public static StartLocalTransactionResponse createStartLocalTransactionResponse(ResponseContentWithMeta response,
-                                                                                    OtsInternalApi
-                                                                                        .StartLocalTransactionResponse startLocalTransactionResponse) {
+        OtsInternalApi.StartLocalTransactionResponse startLocalTransactionResponse) {
         StartLocalTransactionResponse result = new StartLocalTransactionResponse(response.getMeta());
         result.setTransactionID(startLocalTransactionResponse.getTransactionId());
         return result;
     }
 
     public static CommitTransactionResponse createCommitTransactionResponse(ResponseContentWithMeta response,
-                                                                            OtsInternalApi.CommitTransactionResponse
-                                                                                commitTransactionResponse) {
+        OtsInternalApi.CommitTransactionResponse commitTransactionResponse) {
         return new CommitTransactionResponse(response.getMeta());
     }
 
     public static AbortTransactionResponse createAbortTransactionResponse(ResponseContentWithMeta response,
-                                                                          OtsInternalApi.AbortTransactionResponse
-                                                                              abortTransactionResponse) {
+        OtsInternalApi.AbortTransactionResponse abortTransactionResponse) {
         return new AbortTransactionResponse(response.getMeta());
     }
 
     public static CreateSearchIndexResponse createCreateSearchIndexResponse(ResponseContentWithMeta response,
-                                                                            Search.CreateSearchIndexResponse
-                                                                                createSearchIndexResponse) {
+        Search.CreateSearchIndexResponse createSearchIndexResponse) {
         return new CreateSearchIndexResponse(response.getMeta());
     }
 
+    public static UpdateSearchIndexResponse createUpdateSearchIndexResponse(ResponseContentWithMeta response,
+                                                                            Search.UpdateSearchIndexResponse updateSearchIndexResponse) {
+        return new UpdateSearchIndexResponse(response.getMeta());
+    }
+
     public static DeleteSearchIndexResponse createDeleteSearchIndexResponse(ResponseContentWithMeta response,
-                                                                            Search.DeleteSearchIndexResponse
-                                                                                deleteSearchIndexResponse) {
+        Search.DeleteSearchIndexResponse deleteSearchIndexResponse) {
         return new DeleteSearchIndexResponse(response.getMeta());
     }
 
     public static ListSearchIndexResponse createListSearchIndexResponse(ResponseContentWithMeta response,
-                                                                        Search.ListSearchIndexResponse
-                                                                            listSearchIndexResponse) {
+        Search.ListSearchIndexResponse listSearchIndexResponse) {
         ListSearchIndexResponse result = new ListSearchIndexResponse(response.getMeta());
         List<SearchIndexInfo> indexInfos = new ArrayList<SearchIndexInfo>();
         for (Search.IndexInfo indexInfo : listSearchIndexResponse.getIndicesList()) {
@@ -491,8 +686,7 @@ public class ResponseFactory {
     }
 
     public static DescribeSearchIndexResponse createDescribeSearchIndexResponse(ResponseContentWithMeta response,
-                                                                                Search.DescribeSearchIndexResponse
-                                                                                    describeSearchIndexResponse) {
+        Search.DescribeSearchIndexResponse describeSearchIndexResponse) {
         DescribeSearchIndexResponse result = new DescribeSearchIndexResponse(response.getMeta());
         result.setSchema(SearchProtocolParser.toIndexSchema(
             describeSearchIndexResponse.getSchema()));
@@ -502,16 +696,67 @@ public class ResponseFactory {
         }
         if (describeSearchIndexResponse.hasMeteringInfo()) {
             result.setMeteringInfo(SearchProtocolParser.toMeteringInfo(
-                    describeSearchIndexResponse.getMeteringInfo()));
+                describeSearchIndexResponse.getMeteringInfo()));
+        }
+        if (describeSearchIndexResponse.hasBrotherIndexName()) {
+            result.setBrotherIndexName(describeSearchIndexResponse.getBrotherIndexName());
+        }
+        if (describeSearchIndexResponse.getQueryFlowWeightCount() > 0) {
+            List<Search.QueryFlowWeight> pbQueryFlowWeightList = describeSearchIndexResponse.getQueryFlowWeightList();
+            for (Search.QueryFlowWeight pbQueryFlowWeight : pbQueryFlowWeightList) {
+                result.addQueryFlowWeight(SearchProtocolParser.toQueryFlowWeight(pbQueryFlowWeight));
+            }
+        }
+        if (describeSearchIndexResponse.hasCreateTime()) {
+            result.setCreateTime(describeSearchIndexResponse.getCreateTime());
+        }
+        if (describeSearchIndexResponse.hasTimeToLive()) {
+            result.setTimeToLive(describeSearchIndexResponse.getTimeToLive());
+        }
+        return result;
+    }
+
+    public static ComputeSplitsResponse createComputeSplitsResponse(ResponseContentWithMeta response,
+        OtsInternalApi.ComputeSplitsResponse computeSplitsResponse) throws IOException {
+        ComputeSplitsResponse result = new ComputeSplitsResponse(response.getMeta());
+        if (computeSplitsResponse.hasSplitsSize()){
+            result.setSplitsSize(computeSplitsResponse.getSplitsSize());
+        }
+        if (computeSplitsResponse.hasSessionId()){
+            result.setSessionId(computeSplitsResponse.getSessionId().toByteArray());
+        }
+        return result;
+    }
+
+    public static ParallelScanResponse createParallelScanResponse(ResponseContentWithMeta response,
+        Search.ParallelScanResponse parallelScanResponse) throws IOException {
+        ParallelScanResponse result = new ParallelScanResponse(response.getMeta());
+        result.setBodyBytes(parallelScanResponse.getSerializedSize());
+        List<Row> rows = new ArrayList<Row>();
+        for (int i = 0; i < parallelScanResponse.getRowsCount(); ++i) {
+            com.google.protobuf.ByteString bytes = parallelScanResponse.getRows(i);
+            PlainBufferCodedInputStream coded = new PlainBufferCodedInputStream(
+                new PlainBufferInputStream(bytes.asReadOnlyByteBuffer()));
+            List<PlainBufferRow> plainBufferRows = coded.readRowsWithHeader();
+            if (plainBufferRows.size() != 1) {
+                throw new IOException("Expect only returns one row. Row count: " + rows.size());
+            }
+            Row row = PlainBufferConversion.toRow(plainBufferRows.get(0));
+            rows.add(row);
+        }
+        result.setRows(rows);
+        if (parallelScanResponse.hasNextToken()) {
+            result.setNextToken(parallelScanResponse.getNextToken().toByteArray());
         }
         return result;
     }
 
     public static SearchResponse createSearchResponse(ResponseContentWithMeta response,
-                                                      Search.SearchResponse searchResponse) throws IOException {
+        Search.SearchResponse searchResponse) throws IOException {
         SearchResponse result = new SearchResponse(response.getMeta());
         result.setTotalCount(searchResponse.getTotalHits());
         result.setAllSuccess(searchResponse.getIsAllSucceeded());
+        result.setBodyBytes(searchResponse.getSerializedSize());
         List<Row> rows = new ArrayList<Row>();
         for (int i = 0; i < searchResponse.getRowsCount(); ++i) {
             com.google.protobuf.ByteString bytes = searchResponse.getRows(i);
@@ -524,10 +769,16 @@ public class ResponseFactory {
             Row row = PlainBufferConversion.toRow(plainBufferRows.get(0));
             rows.add(row);
         }
+        result.setRows(rows);
         if (searchResponse.hasNextToken()) {
             result.setNextToken(searchResponse.getNextToken().toByteArray());
         }
-        result.setRows(rows);
+        if (searchResponse.hasAggs()) {
+            result.setAggregationResults(buildAggregationResultsFromByteString(searchResponse.getAggs()));
+        }
+        if (searchResponse.hasGroupBys()) {
+            result.setGroupByResults(buildGroupByResultsFromByteString(searchResponse.getGroupBys()));
+        }
         return result;
     }
 
@@ -546,6 +797,24 @@ public class ResponseFactory {
         return TunnelStage.valueOf(stage);
     }
 
+    private static StreamTunnelConfig createStreamTunnelConfig(TunnelServiceApi.StreamTunnelConfig config) {
+        StreamTunnelConfig retConfig = new StreamTunnelConfig();
+        switch(config.getFlag()) {
+            case EARLIEST:
+                retConfig.setFlag(StartOffsetFlag.EARLIEST);
+                break;
+            case LATEST:
+                retConfig.setFlag(StartOffsetFlag.LATEST);
+                break;
+            default:
+                break;
+        }
+        // NanoSecond to MillSecond
+        retConfig.setStartOffset(config.getStartOffset() / MILLIS_TO_NANO);
+        retConfig.setEndOffset(config.getEndOffset() / MILLIS_TO_NANO);
+        return retConfig;
+    }
+
     private static TunnelInfo createTunnelInfo(TunnelServiceApi.TunnelInfo tunnelInfo) {
         TunnelInfo actualInfo = new TunnelInfo();
         actualInfo.setTunnelId(tunnelInfo.getTunnelId());
@@ -555,6 +824,11 @@ public class ResponseFactory {
         actualInfo.setStage(createTunnelStage(tunnelInfo.getStage()));
         actualInfo.setExpired(tunnelInfo.getExpired());
         actualInfo.setTunnelName(tunnelInfo.getTunnelName());
+        if (tunnelInfo.hasStreamTunnelConfig()) {
+            actualInfo.setStreamTunnelConfig(createStreamTunnelConfig(tunnelInfo.getStreamTunnelConfig()));
+        }
+        // NanoSecond to MilliSecond
+        actualInfo.setCreateTime(tunnelInfo.getCreateTime() / MILLIS_TO_NANO);
         return actualInfo;
     }
 
@@ -572,7 +846,7 @@ public class ResponseFactory {
         actualInfo.setChannelType(createChannelType(channelInfo.getChannelType()));
         actualInfo.setChannelStatus(createChannelStatus(channelInfo.getChannelStatus()));
         actualInfo.setClientId(channelInfo.getClientId());
-        long rpoMillis = channelInfo.getChannelRpo() / 1000000;
+        long rpoMillis = channelInfo.getChannelRpo() / MILLIS_TO_NANO;
         actualInfo.setChannelConsumePoint(new Date(rpoMillis));
         actualInfo.setChannelRpo(System.currentTimeMillis() - rpoMillis);
         actualInfo.setChannelCount(channelInfo.getChannelCount());
@@ -594,7 +868,7 @@ public class ResponseFactory {
     public static DescribeTunnelResponse createDescribeTunnelResponse(
         ResponseContentWithMeta response, TunnelServiceApi.DescribeTunnelResponse tunnelResponse) {
         DescribeTunnelResponse resp = new DescribeTunnelResponse(response.getMeta());
-        long rpoMillis = tunnelResponse.getTunnelRpo() / 1000000;
+        long rpoMillis = tunnelResponse.getTunnelRpo() / MILLIS_TO_NANO;
         resp.setTunnelConsumePoint(new Date(rpoMillis));
         resp.setTunnelInfo(createTunnelInfo(tunnelResponse.getTunnel()));
         List<ChannelInfo> actualInfos = new ArrayList<ChannelInfo>();
@@ -671,6 +945,7 @@ public class ResponseFactory {
     }
 
     public static final String FINISH_TAG = "finished";
+
     public static ReadRecordsResponse createReadRecordsResponse(
         ResponseContentWithMeta response, TunnelServiceApi.ReadRecordsResponse tunnelResponse) {
         ReadRecordsResponse resp = new ReadRecordsResponse(response.getMeta());
@@ -708,5 +983,30 @@ public class ResponseFactory {
     public static CheckpointResponse createCheckpointResponse(
         ResponseContentWithMeta response, TunnelServiceApi.CheckpointResponse tunnelResponse) {
         return new CheckpointResponse(response.getMeta());
+    }
+
+    public static SQLQueryResponse createSqlQueryResponse(ResponseContentWithMeta response,
+                                                          OtsInternalApi.SQLQueryResponse sqlQueryResponse) throws IOException {
+        try {
+            Map<String, ConsumedCapacity> consumedCapacityByTable = new HashMap<String, ConsumedCapacity>();
+            for(OtsInternalApi.TableConsumedCapacity tableConsumedCapacity :sqlQueryResponse.getConsumesList()) {
+                ConsumedCapacity consumedCapacity = new ConsumedCapacity(
+                        OTSProtocolParser.parseCapacityUnit(tableConsumedCapacity.getConsumed().getCapacityUnit()));
+                consumedCapacityByTable.put(tableConsumedCapacity.getTableName(), consumedCapacity);
+            }
+
+            SQLPayloadVersion sqlPayloadVersion = OTSProtocolParser.parseSQLPayloadVersion(sqlQueryResponse.getVersion());
+            SQLStatementType sqlStatementType = OTSProtocolParser.parseSQLStatementType(sqlQueryResponse.getType());
+
+            switch (sqlPayloadVersion) {
+                case SQL_FLAT_BUFFERS:
+                    return new SQLQueryResponse(response.getMeta(), consumedCapacityByTable,
+                            sqlPayloadVersion, sqlStatementType, sqlQueryResponse.getRows());
+                default:
+                    throw new UnsupportedOperationException("not supported sql payload version: " + sqlPayloadVersion);
+            }
+        } catch (Exception e) {
+            throw new ClientException("Failed to parse sql query response.", e);
+        }
     }
 }

@@ -39,6 +39,7 @@ public class CreateIndexRequest implements Request {
     public CreateIndexRequest(String mainTableName, IndexMeta indexMeta, boolean includeBaseData) {
         setMainTableName(mainTableName);
         setIndexMeta(indexMeta);
+        setIncludeBaseData(includeBaseData);
 
     }
 

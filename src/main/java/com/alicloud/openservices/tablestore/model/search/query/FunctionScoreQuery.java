@@ -9,6 +9,8 @@ import com.google.protobuf.ByteString;
  */
 public class FunctionScoreQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_FunctionScoreQuery;
+
     /**
      * 正常的{@link Query}
      */
@@ -38,11 +40,37 @@ public class FunctionScoreQuery implements Query {
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_FunctionScoreQuery;
+        return queryType;
     }
 
     @Override
     public ByteString serialize() {
         return SearchQueryBuilder.buildFunctionScoreQuery(this).toByteString();
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder{
+        private Query query;
+        private FieldValueFactor fieldValueFactor;
+
+        private Builder() {}
+
+        public Builder query(QueryBuilder queryBuilder) {
+            this.query = queryBuilder.build();
+            return this;
+        }
+
+        public Builder fieldValueFactor(String fieldName) {
+            this.fieldValueFactor = new FieldValueFactor(fieldName);
+            return this;
+        }
+
+        @Override
+        public FunctionScoreQuery build() {
+            return new FunctionScoreQuery(this.query, this.fieldValueFactor);
+        }
     }
 }

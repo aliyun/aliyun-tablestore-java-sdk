@@ -19,6 +19,8 @@
 
 package com.alicloud.openservices.tablestore.core.auth;
 
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+
 /**
  * Default implementation of {@link ServiceCredentials}.
  */
@@ -33,6 +35,8 @@ public class DefaultCredentials implements ServiceCredentials {
     }
 
     public DefaultCredentials(String accessKeyId, String secretAccessKey, String securityToken) {
+        Preconditions.checkArgument(AuthUtils.checkAccessKeyIdFormat(accessKeyId), "The access key id is not in valid format: " + accessKeyId);
+
         if (accessKeyId == null || accessKeyId.equals("")) {
             throw new InvalidCredentialsException("Access key id should not be null or empty.");
         }

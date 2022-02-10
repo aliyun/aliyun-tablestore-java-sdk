@@ -9,6 +9,9 @@ import com.google.protobuf.ByteString;
  * 但是不能直接查询，需要通过{@link NestedQuery}来进行查询。在"path"设置为“os”，然后query中放一个正常的Query</p>
  */
 public class NestedQuery implements Query {
+
+    private QueryType queryType = QueryType.QueryType_NestedQuery;
+
     /**
      * 嵌套文档的路径
      */
@@ -22,9 +25,11 @@ public class NestedQuery implements Query {
      */
     private ScoreMode scoreMode;
 
+    private float weight = 1.0f;
+
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_NestedQuery;
+        return queryType;
     }
 
     @Override
@@ -54,5 +59,56 @@ public class NestedQuery implements Query {
 
     public void setScoreMode(ScoreMode scoreMode) {
         this.scoreMode = scoreMode;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String path;
+        private Query query;
+        private ScoreMode scoreMode;
+        private float weight = 1.0f;
+
+        public Builder weight(float weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        private Builder() {}
+
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder query(QueryBuilder queryBuilder) {
+            this.query = queryBuilder.build();
+            return this;
+        }
+
+        public Builder scoreMode(ScoreMode scoreMode) {
+            this.scoreMode = scoreMode;
+            return this;
+        }
+
+        @Override
+        public NestedQuery build() {
+            NestedQuery nestedQuery = new NestedQuery();
+            nestedQuery.setPath(this.path);
+            nestedQuery.setQuery(this.query);
+            nestedQuery.setWeight(this.weight);
+            nestedQuery.setScoreMode(this.scoreMode);
+            return nestedQuery;
+        }
     }
 }

@@ -10,6 +10,8 @@ import com.google.protobuf.ByteString;
  */
 public class GeoDistanceQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_GeoDistanceQuery;
+
     /**
      * 字段名
      */
@@ -49,7 +51,7 @@ public class GeoDistanceQuery implements Query {
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_GeoDistanceQuery;
+        return queryType;
     }
 
     @Override
@@ -57,4 +59,39 @@ public class GeoDistanceQuery implements Query {
         return SearchQueryBuilder.buildGeoDistanceQuery(this).toByteString();
     }
 
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String fieldName;
+        private String centerPoint;
+        private double distanceInMeter;
+
+        private Builder() {}
+
+        public Builder field(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder centerPoint(String centerPoint) {
+            this.centerPoint = centerPoint;
+            return this;
+        }
+
+        public Builder distanceInMeter(double distanceInMeter) {
+            this.distanceInMeter = distanceInMeter;
+            return this;
+        }
+
+        @Override
+        public GeoDistanceQuery build() {
+            GeoDistanceQuery geoDistanceQuery = new GeoDistanceQuery();
+            geoDistanceQuery.setCenterPoint(this.centerPoint);
+            geoDistanceQuery.setDistanceInMeter(this.distanceInMeter);
+            geoDistanceQuery.setFieldName(this.fieldName);
+            return geoDistanceQuery;
+        }
+    }
 }

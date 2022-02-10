@@ -23,7 +23,6 @@ public class IndexSchema implements Jsonizable {
 
     /**
      * 自定义索引的预排序方式
-     * @return
      */
     private Sort indexSort;
 

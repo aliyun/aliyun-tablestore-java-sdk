@@ -14,6 +14,7 @@ public class ClientConfiguration {
     private int maxConnections = 300;
     private int socketTimeoutInMillisecond = 30 * 1000;
     private int connectionTimeoutInMillisecond = 30 * 1000;
+    private int connectionRequestTimeoutInMillisecond = -1;
     private int retryThreadCount = 1;
 
     private boolean enableRequestCompression = false;
@@ -32,6 +33,8 @@ public class ClientConfiguration {
     private String proxyWorkstation;
 
     private long syncClientWaitFutureTimeoutInMillis = 60 * 1000;
+
+    private TimeseriesConfiguration timeseriesConfiguration;
 
     /**
      * 构造新实例。
@@ -402,5 +405,33 @@ public class ClientConfiguration {
      */
     public void setSyncClientWaitFutureTimeoutInMillis(long syncClientWaitFutureTimeoutInMillis) {
         this.syncClientWaitFutureTimeoutInMillis = syncClientWaitFutureTimeoutInMillis;
+    }
+
+    /**
+     * 获取时序Client的配置。
+     * @return
+     */
+    public TimeseriesConfiguration getTimeseriesConfiguration() {
+        return timeseriesConfiguration;
+    }
+
+    /**
+     * 设置时序Client的配置。
+     * @param timeseriesConfiguration
+     */
+    public void setTimeseriesConfiguration(TimeseriesConfiguration timeseriesConfiguration) {
+        this.timeseriesConfiguration = timeseriesConfiguration;
+    }
+
+    public int getConnectionRequestTimeoutInMillisecond() {
+        return connectionRequestTimeoutInMillisecond;
+    }
+
+    /**
+     * 设置HttpAsyncClient的ConnectionRequestTimeout配置。
+     * @param connectionRequestTimeoutInMillisecond
+     */
+    public void setConnectionRequestTimeoutInMillisecond(int connectionRequestTimeoutInMillisecond) {
+        this.connectionRequestTimeoutInMillisecond = connectionRequestTimeoutInMillisecond;
     }
 }

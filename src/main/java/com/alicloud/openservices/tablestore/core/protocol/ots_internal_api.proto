@@ -28,7 +28,12 @@ enum PrimaryKeyOption {
 message PrimaryKeySchema {
     required string name = 1;
     required PrimaryKeyType type = 2;
-    optional PrimaryKeyOption option = 3; 
+    optional PrimaryKeyOption option = 3;
+}
+
+message PartitionRange {
+    required bytes begin = 1; // encoded as SQLVariant
+    required bytes end = 2; // encoded as SQLVariant
 }
 
 message DefinedColumnSchema {
@@ -40,6 +45,7 @@ message TableOptions {
     optional int32 time_to_live = 1;
     optional int32 max_versions = 2;
     optional int64 deviation_cell_version_in_sec = 5;
+    optional bool allow_update = 6;
 }
 
 enum IndexUpdateMode {
@@ -82,6 +88,11 @@ message CapacityUnit {
     optional int32 write = 2;
 }
 
+message CapacityDataSize {
+    optional int64 read_size = 1;
+    optional int64 write_size = 2;
+}
+
 message ReservedThroughputDetails {
     required CapacityUnit capacity_unit = 1;
     required int64 last_increase_time = 2;
@@ -94,6 +105,7 @@ message ReservedThroughput {
 
 message ConsumedCapacity {
     required CapacityUnit capacity_unit = 1;
+    optional CapacityDataSize capacity_data_size = 2;
 }
 
 message StreamSpecification {
@@ -108,12 +120,34 @@ message StreamDetails {
     optional int64 last_enable_time = 4;
 }
 
+enum SSEKeyType {
+    SSE_KMS_SERVICE = 1;
+    SSE_BYOK = 2;
+}
+
+message SSESpecification {
+    required bool enable = 1;
+    optional SSEKeyType key_type = 2;
+    optional bytes key_id = 3; // only useful when key_type is SSE_BYOK
+    optional bytes role_arn = 4; // only useful when key_type is SSE_BYOK
+}
+
+message SSEDetails {
+    required bool enable = 1;
+    optional SSEKeyType key_type = 2;
+    optional bytes key_id = 3;
+    optional bytes role_arn = 4; // only useful when key_type is SSE_BYOK
+}
+
 message CreateTableRequest {
     required TableMeta table_meta = 1;
-    required ReservedThroughput reserved_throughput = 2; 
+    required ReservedThroughput reserved_throughput = 2;
     optional TableOptions table_options = 3;
+    repeated PartitionRange partitions = 4;
     optional StreamSpecification stream_spec = 5;
+    optional SSESpecification sse_spec = 6;
     repeated IndexMeta index_metas = 7;
+    optional bool enable_local_txn = 8;
 }
 
 message CreateTableResponse {
@@ -134,6 +168,22 @@ message DropIndexRequest {
 }
 
 message DropIndexResponse {
+}
+
+message AddDefinedColumnRequest {
+    required string table_name = 1;
+    repeated DefinedColumnSchema columns = 2;
+}
+
+message AddDefinedColumnResponse {
+}
+
+message DeleteDefinedColumnRequest {
+    required string table_name = 1;
+    repeated string columns = 2;
+}
+
+message DeleteDefinedColumnResponse {
 }
 
 message UpdateTableRequest {
@@ -158,7 +208,9 @@ message DescribeTableResponse {
     required TableOptions table_options = 3;
     optional StreamDetails stream_details = 5;
     repeated bytes shard_splits = 6;
+    optional SSEDetails sse_details = 7;
     repeated IndexMeta index_metas = 8;
+    optional int64 creation_time = 9;
 }
 message ListTableRequest {
 }
@@ -200,12 +252,12 @@ enum ReturnType {
 message ReturnContent {
     optional ReturnType return_type = 1;
     repeated string return_column_names = 2;
-} 
+}
 
 message GetRowRequest {
     required string table_name = 1;
-    required bytes primary_key = 2; 
-    repeated string columns_to_get = 3; 
+    required bytes primary_key = 2;
+    repeated string columns_to_get = 3;
     optional TimeRange time_range = 4;
     optional int32 max_versions = 5;
     optional bytes filter = 7;
@@ -217,7 +269,7 @@ message GetRowRequest {
 
 message GetRowResponse {
     required ConsumedCapacity consumed = 1;
-    required bytes row = 2; 
+    required bytes row = 2;
     optional bytes next_token = 3;
 }
 message UpdateRowRequest {
@@ -234,7 +286,7 @@ message UpdateRowResponse {
 }
 message PutRowRequest {
     required string table_name = 1;
-    required bytes row = 2; 
+    required bytes row = 2;
     required Condition condition = 3;
     optional ReturnContent return_content = 4;
     optional string transaction_id = 5;
@@ -246,7 +298,7 @@ message PutRowResponse {
 }
 message DeleteRowRequest {
     required string table_name = 1;
-    required bytes primary_key = 2; 
+    required bytes primary_key = 2;
     required Condition condition = 3;
     optional ReturnContent return_content = 4;
     optional string transaction_id = 5;
@@ -258,9 +310,9 @@ message DeleteRowResponse {
 }
 message TableInBatchGetRowRequest {
     required string table_name = 1;
-    repeated bytes primary_key = 2; 
+    repeated bytes primary_key = 2;
     repeated bytes token = 3;
-    repeated string columns_to_get = 4; 
+    repeated string columns_to_get = 4;
     optional TimeRange time_range = 5;
     optional int32 max_versions = 6;
     optional bytes filter = 8;
@@ -276,7 +328,7 @@ message RowInBatchGetRowResponse {
     required bool is_ok = 1;
     optional Error error = 2;
     optional ConsumedCapacity consumed = 3;
-    optional bytes row = 4; 
+    optional bytes row = 4;
     optional bytes next_token = 5;
 }
 
@@ -297,9 +349,9 @@ enum OperationType {
 
 message RowInBatchWriteRowRequest {
     required OperationType type = 1;
-    required bytes row_change = 2; 
+    required bytes row_change = 2;
     required Condition condition = 3;
-    optional ReturnContent return_content = 4; 
+    optional ReturnContent return_content = 4;
 }
 
 message TableInBatchWriteRowRequest {
@@ -310,13 +362,14 @@ message TableInBatchWriteRowRequest {
 message BatchWriteRowRequest {
     repeated TableInBatchWriteRowRequest tables = 1;
     optional string transaction_id = 2;
+    optional bool is_atomic = 3;
 }
 
 message RowInBatchWriteRowResponse {
     required bool is_ok = 1;
     optional Error error = 2;
     optional ConsumedCapacity consumed = 3;
-    optional bytes row = 4; 
+    optional bytes row = 4;
 }
 
 message TableInBatchWriteRowResponse {
@@ -335,12 +388,12 @@ enum Direction {
 message GetRangeRequest {
     required string table_name = 1;
     required Direction direction = 2;
-    repeated string columns_to_get = 3; 
+    repeated string columns_to_get = 3;
     optional TimeRange time_range = 4;
     optional int32 max_versions = 5;
     optional int32 limit = 6;
-    required bytes inclusive_start_primary_key = 7; 
-    required bytes exclusive_end_primary_key = 8; 
+    required bytes inclusive_start_primary_key = 7;
+    required bytes exclusive_end_primary_key = 8;
     optional bytes filter = 10;
     optional string start_column = 11;
     optional string end_column = 12;
@@ -350,14 +403,14 @@ message GetRangeRequest {
 
 message GetRangeResponse {
     required ConsumedCapacity consumed = 1;
-    required bytes rows = 2; 
+    required bytes rows = 2;
     optional bytes next_start_primary_key = 3;
     optional bytes next_token = 4;
 }
 
 message StartLocalTransactionRequest {
     required string table_name = 1;
-    required bytes key = 2; 
+    required bytes key = 2;
 }
 
 message StartLocalTransactionResponse {
@@ -423,10 +476,13 @@ message DescribeStreamResponse {
 message GetShardIteratorRequest {
     required string stream_id = 1;
     required string shard_id = 2;
+    optional int64 timestamp = 3;
+    optional string token = 4;
 }
 
 message GetShardIteratorResponse {
     required string shard_iterator = 1;
+    optional string next_token = 2;
 }
 
 message GetStreamRecordRequest {
@@ -453,6 +509,7 @@ message ComputeSplitPointsBySizeRequest {
     required string table_name = 1;
     required int64 split_size = 2; // in 100MB
     optional int64 split_size_unit_in_byte = 3;
+    optional int32 split_point_limit = 4;
 }
 
 message ComputeSplitPointsBySizeResponse {
@@ -465,7 +522,7 @@ message ComputeSplitPointsBySizeResponse {
      * A split is a consecutive range of primary keys,
      * whose data size is about split_size specified in the request.
      * The size could be hard to be precise.
-     * 
+     *
      * A split point is an array of primary-key column w.r.t. table schema,
      * which is never longer than that of table schema.
      * Tailing -inf will be omitted to reduce transmission payloads.
@@ -484,5 +541,93 @@ message ComputeSplitPointsBySizeResponse {
      }
      repeated SplitLocation locations = 4;
 }
-/* -------------------------------------- */
 
+enum DataBlockType {
+    DBT_PLAIN_BUFFER = 0;
+    DBT_SIMPLE_ROW_MATRIX = 1;
+}
+
+message BulkExportRequest {
+    required string table_name = 1;
+    repeated string columns_to_get = 2;
+    required bytes inclusive_start_primary_key = 3;
+    required bytes exclusive_end_primary_key = 4;
+    optional bytes filter = 5;
+    optional DataBlockType data_block_type_hint = 6 [default = DBT_SIMPLE_ROW_MATRIX];
+}
+
+message BulkExportResponse {
+     required ConsumedCapacity consumed = 1;
+     required bytes rows = 2;
+     optional bytes next_start_primary_key = 3;
+     optional DataBlockType data_block_type = 4;
+}
+
+message BulkImportRequest {
+    required string table_name = 1;
+    repeated RowInBulkImportRequest rows = 2;
+}
+
+message RowInBulkImportRequest {
+    required OperationType type = 1;
+    required bytes row_change = 2;
+}
+
+message BulkImportResponse {
+    required string table_name = 1;
+    repeated RowInBulkImportResponse rows = 2;
+}
+
+message RowInBulkImportResponse {
+    required bool is_ok = 1;
+    optional Error error = 2;
+    optional ConsumedCapacity consumed = 3;
+}
+
+/* computeSplits */
+message ComputeSplitsRequest {
+    optional string table_name = 1;
+    optional SearchIndexSplitsOptions search_index_splits_options = 2;
+}
+
+message SearchIndexSplitsOptions{
+    optional string index_name = 1;
+}
+
+message ComputeSplitsResponse {
+    optional bytes session_id = 1;
+    optional int32 splits_size = 2;
+}
+
+/* SQLQuery */
+enum SQLPayloadVersion {
+    SQL_PLAIN_BUFFER = 1;
+    SQL_FLAT_BUFFERS = 2;
+}
+
+enum SQLStatementType {
+    SQL_SELECT = 1;
+    SQL_CREATE_TABLE = 2;
+    SQL_SHOW_TABLE = 3;
+    SQL_DESCRIBE_TABLE = 4;
+    SQL_DROP_TABLE = 5;
+    SQL_ALTER_TABLE = 6;
+}
+
+message SQLQueryRequest {
+    required string query = 1;
+    optional SQLPayloadVersion version = 2;
+}
+
+message TableConsumedCapacity {
+    optional string table_name = 1;
+    optional ConsumedCapacity consumed = 2;
+    optional ReservedThroughput reserved_throughput = 3;
+}
+
+message SQLQueryResponse {
+    repeated TableConsumedCapacity consumes = 1;
+    optional bytes rows = 2;
+    optional SQLPayloadVersion version = 3;
+    optional SQLStatementType type = 4;
+}

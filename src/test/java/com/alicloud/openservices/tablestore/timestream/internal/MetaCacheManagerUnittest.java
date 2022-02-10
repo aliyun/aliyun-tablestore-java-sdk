@@ -1,18 +1,19 @@
 package com.alicloud.openservices.tablestore.timestream.internal;
 
-import com.alicloud.openservices.tablestore.ClientException;
-import com.alicloud.openservices.tablestore.TableStoreCallback;
-import com.alicloud.openservices.tablestore.TableStoreWriter;
+import com.alicloud.openservices.tablestore.*;
 import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.RowChange;
 import com.alicloud.openservices.tablestore.writer.RowWriteResult;
 import com.alicloud.openservices.tablestore.writer.WriterConfig;
+import com.alicloud.openservices.tablestore.writer.WriterResult;
 import com.alicloud.openservices.tablestore.writer.WriterStatistics;
 import com.alicloud.openservices.tablestore.timestream.model.TimestreamIdentifier;
 import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.Future;
 
 public class MetaCacheManagerUnittest {
 
@@ -138,6 +139,11 @@ public class MetaCacheManagerUnittest {
         public void addRowChange(RowChange var1) {
         }
 
+        @Override
+        public Future<WriterResult> addRowChangeWithFuture(RowChange rowChange) throws ClientException {
+            return null;
+        }
+
         public void setReturnTrue(boolean res) {
             this.returnTrue = res;
         }
@@ -152,6 +158,11 @@ public class MetaCacheManagerUnittest {
         }
 
         public void addRowChange(List<RowChange> var1, List<RowChange> var2) throws ClientException{
+        }
+
+        @Override
+        public Future<WriterResult> addRowChangeWithFuture(List<RowChange> rowChanges) throws ClientException {
+            return null;
         }
 
         /** @deprecated */

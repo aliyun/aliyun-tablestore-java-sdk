@@ -34,7 +34,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
 
     private static final int SECONDS_UNTIL_TABLE_READY = 10;
 
-    private static final int MAX_FILTER_COUNT = 10;
+    private static final int MAX_FILTER_COUNT = 32;
 
     @BeforeClass
     public static void classBefore() throws JsonSyntaxException, IOException {
@@ -92,8 +92,10 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             filterCount++;
         }
 
-        for (int i = filterCount; i < MAX_FILTER_COUNT; i++) {
-            lastFilter.addFilter(new SingleColumnValueFilter("ColumnD", SingleColumnValueFilter.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
+        if (operator != CompositeColumnValueFilter.LogicOperator.NOT) {
+            for (int i = filterCount; i < MAX_FILTER_COUNT; i++) {
+                lastFilter.addFilter(new SingleColumnValueFilter("ColumnD", SingleColumnValueFilter.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
+            }
         }
         return rootFilter;
     }
@@ -197,7 +199,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -209,7 +211,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -221,7 +223,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -251,7 +253,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -262,7 +264,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -273,7 +275,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -298,7 +300,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -309,7 +311,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -320,7 +322,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -339,14 +341,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxDepth(20, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.OR));
@@ -358,14 +360,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxDepth(20, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.AND));
@@ -377,17 +379,17 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxDepth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
-            criteria.setFilter(makeFilterWithMaxDepth(10, CompositeColumnValueFilter.LogicOperator.NOT));
+            criteria.setFilter(makeFilterWithMaxDepth(30, CompositeColumnValueFilter.LogicOperator.NOT));
             GetRowRequest request = new GetRowRequest();
             request.setRowQueryCriteria(criteria);
             ots.getRow(request);
@@ -414,13 +416,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxDepth(32, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.OR));
@@ -433,13 +436,13 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxDepth(30, CompositeColumnValueFilter.LogicOperator.AND));
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.AND));
@@ -451,13 +454,13 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxDepth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(10, CompositeColumnValueFilter.LogicOperator.NOT));
@@ -486,13 +489,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxDepth(32, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 BatchGetRowResponse Response = ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.AND));
@@ -506,13 +510,13 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(6, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxDepth(32, CompositeColumnValueFilter.LogicOperator.OR));
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 BatchGetRowResponse Response = ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(5, CompositeColumnValueFilter.LogicOperator.OR));
@@ -525,13 +529,13 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxDepth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxDepth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 BatchGetRowResponse Response = ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxDepth(10, CompositeColumnValueFilter.LogicOperator.NOT));
@@ -562,7 +566,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -574,7 +578,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -586,7 +590,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -616,7 +620,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -628,7 +632,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -640,7 +644,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -666,7 +670,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -678,7 +682,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -690,7 +694,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -715,7 +719,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -727,7 +731,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -739,7 +743,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -769,7 +773,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -781,7 +785,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -793,7 +797,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.getRange(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -819,7 +823,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test AND
@@ -831,7 +835,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
 
         // test NOT
@@ -843,7 +847,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             ots.batchGetRow(request);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
         }
     }
 
@@ -862,14 +866,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRowRequest request = new GetRowRequest();
@@ -880,14 +884,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             // 广度优先无法使用NOT，NOT只允许一个Filter
@@ -896,14 +900,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
 
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.AND));
@@ -933,14 +937,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
 
             }
 
@@ -953,14 +957,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRangeRequest request = new GetRangeRequest();
@@ -971,14 +975,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRangeRequest request = new GetRangeRequest();
@@ -1003,14 +1007,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.AND));
             BatchGetRowRequest request = new BatchGetRowRequest();
@@ -1022,14 +1026,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.AND));
             BatchGetRowRequest request = new BatchGetRowRequest();
@@ -1041,14 +1045,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterWithMaxBreadth(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterWithMaxBreadth(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.AND));
             BatchGetRowRequest request = new BatchGetRowRequest();
@@ -1073,14 +1077,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRowRequest request = new GetRowRequest();
@@ -1091,14 +1095,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRowRequest request = new GetRowRequest();
@@ -1109,13 +1113,13 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 GetRowRequest request = new GetRowRequest();
                 request.setRowQueryCriteria(criteria);
                 ots.getRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterWithMaxBreadth(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRowRequest request = new GetRowRequest();
@@ -1144,14 +1148,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterInBinaryForm(10, CompositeColumnValueFilter.LogicOperator.OR));
             GetRangeRequest request = new GetRangeRequest();
@@ -1162,14 +1166,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 GetRangeRequest request = new GetRangeRequest();
                 request.setRangeRowQueryCriteria(criteria);
                 ots.getRange(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterInBinaryForm(10, CompositeColumnValueFilter.LogicOperator.AND));
             GetRangeRequest request = new GetRangeRequest();
@@ -1194,14 +1198,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test OR
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.OR));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.OR));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterInBinaryForm(10, CompositeColumnValueFilter.LogicOperator.OR));
             BatchGetRowRequest request = new BatchGetRowRequest();
@@ -1212,14 +1216,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test AND
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.AND));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.AND));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
             criteria.setFilter(makeFilterInBinaryForm(10, CompositeColumnValueFilter.LogicOperator.AND));
             BatchGetRowRequest request = new BatchGetRowRequest();
@@ -1231,14 +1235,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
         // test NOT
         {
             try {
-                criteria.setFilter(makeFilterInBinaryForm(11, CompositeColumnValueFilter.LogicOperator.NOT));
+                criteria.setFilter(makeFilterInBinaryForm(33, CompositeColumnValueFilter.LogicOperator.NOT));
                 criteria.setMaxVersions(1);
                 BatchGetRowRequest request = new BatchGetRowRequest();
                 request.addMultiRowQueryCriteria(criteria);
                 ots.batchGetRow(request);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 10.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The count of filter exceeds the max: 32.", 400, e);
             }
         }
     }

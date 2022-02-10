@@ -26,6 +26,10 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     private ColumnType type;
     private int dataSize = -1;
 
+    public Object getValue() {
+        return value;
+    }
+
     public ColumnValue(Object value, ColumnType type) {
         this.value = value;
         this.type = type;

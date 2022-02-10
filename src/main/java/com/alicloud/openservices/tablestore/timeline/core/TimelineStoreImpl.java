@@ -136,6 +136,7 @@ public class TimelineStoreImpl implements TimelineStore {
         TableOptions tableOptions = new TableOptions();
         tableOptions.setTimeToLive(schema.getTimeToLive());
         tableOptions.setMaxVersions(1);
+        tableOptions.setMaxTimeDeviation(86400L * 365 * 100);
 
         CreateTableRequest request = new CreateTableRequest(tableMeta, tableOptions);
         try {

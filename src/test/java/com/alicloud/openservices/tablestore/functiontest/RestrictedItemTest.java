@@ -1879,7 +1879,7 @@ public class RestrictedItemTest extends BaseFT {
      * @throws Exception
      */
     @Test
-    public void testCaes16() throws Exception {
+    public void testCase16() throws Exception {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         List<PrimaryKeyColumn> primaryKeyColumn = new ArrayList<PrimaryKeyColumn>();
         List<PrimaryKeyColumn> begin = new ArrayList<PrimaryKeyColumn>();
@@ -1911,6 +1911,10 @@ public class RestrictedItemTest extends BaseFT {
                 assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of primary key columns must be in range: [1, 4].", 400, e);
             }
         }
+
+        // should create table now to avoid "Request table not exist" error when to get row.
+        OTSHelper.createTable(ots, tableName, scheme.subList(0, OTSRestrictedItemConst.PRIMARY_KEY_COLUMN_NUMBER_MAX));
+
         { // get row
             try {
                 OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn));

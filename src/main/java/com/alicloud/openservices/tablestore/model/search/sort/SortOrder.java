@@ -6,4 +6,5 @@ package com.alicloud.openservices.tablestore.model.search.sort;
 public enum SortOrder {
     ASC,
     DESC
+
 }

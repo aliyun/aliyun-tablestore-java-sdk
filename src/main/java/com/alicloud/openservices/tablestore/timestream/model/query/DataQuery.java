@@ -135,14 +135,14 @@ public class DataQuery {
         return timestamp;
     }
 
-    /**
+	/**
      * 设置按照数据的时间戳进行逆序排序
      */
     protected void setOrderByTimestampDesc() {
         this.isDesc = true;
     }
 
-    /**
+	/**
      *
      * @return 查询是否按照数据的时间戳进行逆序排序
      */
@@ -150,7 +150,7 @@ public class DataQuery {
         return this.isDesc;
     }
 
-    /**
+	/**
      * 数据查询的过滤条件
      * @param filter 数据查询过滤条件
      */
@@ -158,7 +158,7 @@ public class DataQuery {
         this.filter = filter;
     }
 
-    /**
+	/**
 	 * 获取数据查询的过滤条件
      * @return
      */
@@ -166,7 +166,7 @@ public class DataQuery {
         return this.filter;
     }
 
-    /**
+	/**
      * 设置查询时单次请求返回的行数
      * @param limit
      */
@@ -177,7 +177,7 @@ public class DataQuery {
         this.limit = limit;
     }
 
-    /**
+	/**
      * 获取查询时单次请求返回的行数
      * @return
      */

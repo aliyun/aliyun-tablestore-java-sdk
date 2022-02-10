@@ -49,54 +49,63 @@ public class AsyncCompletion<Req extends Request, Res extends Response>
 
     @Override
     public void completed(Res result) {
-        result.setTraceId(tracer.getTraceId());
-        LogUtil.logOnCompleted(tracer, retry, result.getRequestId());
-        tracer.printLog();
-        onCompleted(request, result);
+        try {
+            result.setTraceId(tracer.getTraceId());
+            LogUtil.logOnCompleted(tracer, retry, result.getRequestId());
+            tracer.printLog();
+            onCompleted(request, result);
+        } catch (Exception ex) {
+            LogUtil.LOG.error("unknown error in completed, future or user callback may not be notified", ex);
+        }
     }
 
     @Override
     public void failed(Exception ex) {
-        final Exception e;
-        String requestId = null;
-        if (ex instanceof TableStoreException) {
-            e = ex;
-            requestId = ((TableStoreException) ex).getRequestId();
-            ((TableStoreException) e).setTraceId(tracer.getTraceId());
-        } else if (ex instanceof ClientException) {
-            e = ex;
-            ((ClientException) e).setTraceId(tracer.getTraceId());
-        } else {
-            e = new ClientException("Unexpected error: " + ex, ex, tracer.getTraceId());
-        }
-        long nextPause = retry.nextPause(request.getOperationName(), e);
-        LogUtil.logOnFailed(tracer, retry, e, requestId, nextPause > 0);
-        if (nextPause <= 0) {
-            tracer.printLog();
-            if (e instanceof PartialResultFailedException) {
-            	onCompleted(this.request, (Res)((PartialResultFailedException)e).getResult());
+        try {
+            final Exception e;
+            String requestId = null;
+            if (ex instanceof TableStoreException) {
+                e = ex;
+                requestId = ((TableStoreException) ex).getRequestId();
+                ((TableStoreException) e).setTraceId(tracer.getTraceId());
+            } else if (ex instanceof ClientException) {
+                e = ex;
+                ((ClientException) e).setTraceId(tracer.getTraceId());
             } else {
-            	onFailed(request, e);
+                e = new ClientException("Unexpected error: " + ex, ex, tracer.getTraceId());
             }
-        } else {
-            final AsyncCompletion<Req, Res> self = this;
-            retryExecutor.schedule(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                        	Req requestForRetry = (Req)launcher.getRequestForRetry(e);
-                            launcher.fire(requestForRetry, self);
-                        } catch(Exception ex) {
-                            failed(new ClientException("Fail to retry.", ex));
+            long nextPause = retry.nextPause(request.getOperationName(), e);
+            LogUtil.logOnFailed(tracer, retry, e, requestId, nextPause > 0);
+            if (nextPause <= 0) {
+                tracer.printLog();
+                if (e instanceof PartialResultFailedException) {
+                    onCompleted(this.request, (Res) ((PartialResultFailedException) e).getResult());
+                } else {
+                    onFailed(request, e);
+                }
+            } else {
+                final AsyncCompletion<Req, Res> self = this;
+                retryExecutor.schedule(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Req requestForRetry = (Req) launcher.getRequestForRetry(e);
+                                launcher.fire(requestForRetry, self);
+                            } catch (Exception ex) {
+                                failed(new ClientException("Fail to retry.", ex));
+                            }
                         }
-                    }
-                },
-                nextPause, TimeUnit.MILLISECONDS);
+                    },
+                    nextPause, TimeUnit.MILLISECONDS);
+            }
+        } catch (Exception exception) {
+            LogUtil.LOG.error("unknown error in failed, future or user callback may not be notified", exception);
         }
     }
 
     @Override public void cancelled() {
+        failed(new ClientException("request cancelled"));
     }
 
     @Override public void onCompleted(final Req req, final Res res) {

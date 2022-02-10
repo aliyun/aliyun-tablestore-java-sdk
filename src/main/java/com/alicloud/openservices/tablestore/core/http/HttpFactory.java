@@ -20,10 +20,13 @@ class HttpFactory {
             ClientConfiguration config, PoolingNHttpClientConnectionManager cm) {
         HttpAsyncClientBuilder httpClientBuilder = HttpAsyncClients.custom();
         httpClientBuilder.setConnectionManager(cm);
-        RequestConfig requestConfig = RequestConfig.custom()
+        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
                 .setConnectTimeout(config.getConnectionTimeoutInMillisecond())
-                .setSocketTimeout(config.getSocketTimeoutInMillisecond()).build();
-        httpClientBuilder.setDefaultRequestConfig(requestConfig);
+                .setSocketTimeout(config.getSocketTimeoutInMillisecond());
+        if (config.getConnectionRequestTimeoutInMillisecond() > 0) {
+            requestConfigBuilder.setConnectionRequestTimeout(config.getConnectionRequestTimeoutInMillisecond());
+        }
+        httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
         httpClientBuilder.setUserAgent(Constants.USER_AGENT);
         httpClientBuilder.disableCookieManagement();
 

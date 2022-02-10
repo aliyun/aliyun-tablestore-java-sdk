@@ -49,8 +49,6 @@ public class SyncStat implements Jsonizable {
         if (currentSyncTimestamp != null) {
             sb.append("\"CurrentSyncTimestamp\": ");
             sb.append(currentSyncTimestamp.toString());
-            sb.append(",");
-            sb.append(newline);
         }
         sb.append("}");
     }

@@ -10,6 +10,8 @@ import com.google.protobuf.ByteString;
  */
 public class GeoBoundingBoxQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_GeoBoundingBoxQuery;
+
     private String fieldName;
     /**
      * 矩形的左上角的经纬度
@@ -48,11 +50,53 @@ public class GeoBoundingBoxQuery implements Query {
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_GeoBoundingBoxQuery;
+        return queryType;
     }
 
     @Override
     public ByteString serialize() {
         return SearchQueryBuilder.buildGeoBoundingBoxQuery(this).toByteString();
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String fieldName;
+        private String topLeft;
+        private String bottomRight;
+
+        private Builder() {}
+
+        public Builder field(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        /**
+         * @param topLeft 矩形的左上角的经纬度,示例："46.24123424, 23.2342424"
+         */
+        public Builder topLeft(String topLeft) {
+            this.topLeft = topLeft;
+            return this;
+        }
+
+        /**
+         * @param bottomRight 矩形的右下角经纬度,示例："46.24123424, 23.2342424"
+         */
+        public Builder bottomRight(String bottomRight) {
+            this.bottomRight = bottomRight;
+            return this;
+        }
+
+        @Override
+        public GeoBoundingBoxQuery build() {
+            GeoBoundingBoxQuery boundingBoxQuery = new GeoBoundingBoxQuery();
+            boundingBoxQuery.setBottomRight(this.bottomRight);
+            boundingBoxQuery.setTopLeft(this.topLeft);
+            boundingBoxQuery.setFieldName(this.fieldName);
+            return boundingBoxQuery;
+        }
     }
 }

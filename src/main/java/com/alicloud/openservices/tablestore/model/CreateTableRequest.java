@@ -40,6 +40,16 @@ public class CreateTableRequest implements Request {
     private OptionalValue<StreamSpecification> streamSpecification = new OptionalValue<StreamSpecification>("StreamSpecification");
 
     /**
+     * 表的服务器端加密配置。
+     */
+    private OptionalValue<SSESpecification> sseSpecification = new OptionalValue<SSESpecification>("SSESpecification");
+
+    /**
+     * 是否启用本地事务
+     */
+    private OptionalValue<Boolean> enableLocalTxn = new OptionalValue<Boolean>("EnableLocalTxn");
+
+    /**
      * 初始化CreateTableRequest实例。
      * <p>表的预留吞吐量和表的配置都会采用默认值，若有需求需要定制更改，可以调用相应的设置函数。
      * <p>表默认将不进行任何预切分，若需要对表的分区进行设置，可以调用相应的设置函数。
@@ -105,6 +115,8 @@ public class CreateTableRequest implements Request {
      */
     public void setTableMeta(TableMeta tableMeta) {
         Preconditions.checkNotNull(tableMeta, "TableMeta should not be null.");
+        Preconditions.checkArgument(tableMeta.getPrimaryKeyList().size() != 0,
+                "TableMeta should set at least one primary key.");
         this.tableMeta = tableMeta;
     }
 
@@ -171,6 +183,25 @@ public class CreateTableRequest implements Request {
     }
 
     /**
+     * 获取服务器端加密的配置参数
+     *
+     * @return 服务器端加密的配置参数。若返回null，则代表未设置该配置。
+     */
+    public SSESpecification getSseSpecification() {
+        return sseSpecification.getValue();
+    }
+
+    /**
+     * 设置服务器端加密的配置参数
+     *
+     * @param sseSpecification
+     */
+    public void setSseSpecification(SSESpecification sseSpecification) {
+        Preconditions.checkArgument(sseSpecification != null, "The server-side-encryption specification should not be null");
+        this.sseSpecification.setValue(sseSpecification);
+    }
+
+    /**
      * 添加索引表
      *
      * @param indexMetas 索引表meta
@@ -197,5 +228,35 @@ public class CreateTableRequest implements Request {
      */
     public List<IndexMeta> getIndexMetaList() {
         return Collections.unmodifiableList(indexMeta);
+    }
+
+    /**
+     * 是否显式设置了本地事务开关
+     *
+     * @return 本地事务开关是否被设置。
+     */
+    public boolean hasLocalTxnSet() {
+        return enableLocalTxn.isValueSet();
+    }
+
+    /**
+     * 设置本地事务开关
+     *
+     * @param enableLocalTxn 本地事务开关
+     */
+    public void setLocalTxnEnabled(boolean enableLocalTxn) {
+        this.enableLocalTxn.setValue(enableLocalTxn);
+    }
+
+    /**
+     * 获取本地事务开关，如果未设置则抛出异常
+     *
+     * @return 本地事务开关设置。
+     */
+    public boolean isLocalTxnEnabled() {
+        if (!enableLocalTxn.isValueSet()) {
+            throw new IllegalStateException("The value of enableLocalTxn is not set.");
+        }
+        return enableLocalTxn.getValue();
     }
 }

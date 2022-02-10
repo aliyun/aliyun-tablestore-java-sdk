@@ -1,6 +1,14 @@
 package com.alicloud.openservices.tablestore.model.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
+import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilder;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilder;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
+import com.alicloud.openservices.tablestore.model.search.query.QueryBuilder;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 
 /**
@@ -35,9 +43,37 @@ public class SearchQuery {
      */
     private Sort sort;
 
+    /**
+     * 是否返回匹配到的总行数
+     */
     private boolean getTotalCount = false;
 
+    private List<Aggregation> aggregationList;
+
+    private List<GroupBy> groupByList;
+
     private byte[] token;
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public List<Aggregation> getAggregationList() {
+        return aggregationList;
+    }
+
+    public void setAggregationList(
+        List<Aggregation> aggregationList) {
+        this.aggregationList = aggregationList;
+    }
+
+    public List<GroupBy> getGroupByList() {
+        return groupByList;
+    }
+
+    public void setGroupByList(List<GroupBy> groupByList) {
+        this.groupByList = groupByList;
+    }
 
     public Integer getOffset() {
         return offset;
@@ -98,6 +134,117 @@ public class SearchQuery {
 
     public void setToken(byte[] token) {
         this.token = token;
-        this.sort = null; // Token中编码了Sort条件，所以设置Token时不需要设置Sort
+        // Token中编码了Sort条件，所以设置Token时不需要设置Sort
+        if (null != token) {
+            this.sort = null;
+        }
+    }
+
+    public SearchQuery() {
+    }
+
+    public SearchQuery toCopy() {
+        SearchQuery copy = new SearchQuery();
+        copy.setAggregationList(this.getAggregationList());
+        copy.setCollapse(this.getCollapse());
+        copy.setGetTotalCount(this.isGetTotalCount());
+        copy.setGroupByList(this.getGroupByList());
+        copy.setLimit(this.getLimit());
+        copy.setOffset(this.getOffset());
+        copy.setQuery(this.getQuery());
+        copy.setSort(this.getSort());
+        copy.setToken(this.getToken());
+        return copy;
+    }
+
+    private SearchQuery(Builder builder) {
+        setOffset(builder.offset);
+        setLimit(builder.limit);
+        setQuery(builder.query);
+        setCollapse(builder.collapse);
+        setSort(builder.sort);
+        setGetTotalCount(builder.getTotalCount);
+        setAggregationList(builder.aggregationList);
+        setGroupByList(builder.groupByList);
+        setToken(builder.token);
+    }
+
+    public static final class Builder {
+        private Integer offset;
+        private Integer limit;
+        private Query query;
+        private Collapse collapse;
+        private Sort sort;
+        private boolean getTotalCount = false;
+        private List<Aggregation> aggregationList;
+        private List<GroupBy> groupByList;
+        private byte[] token;
+
+        private Builder() {}
+
+        public Builder offset(int val) {
+            offset = val;
+            return this;
+        }
+
+        public Builder limit(int val) {
+            limit = val;
+            return this;
+        }
+
+        public Builder query(QueryBuilder queryBuilder) {
+            query = queryBuilder.build();
+            return this;
+        }
+
+        /**
+         * 字段折叠
+         * 能够实现某个字段的结果去重。
+         */
+        public Builder collapse(String fieldName) {
+            collapse = new Collapse(fieldName);
+            return this;
+        }
+
+        public Builder sort(Sort val) {
+            sort = val;
+            return this;
+        }
+
+        /**
+         * 是否返回匹配到的总行数
+         */
+        public Builder getTotalCount(boolean val) {
+            getTotalCount = val;
+            return this;
+        }
+
+        public Builder addAggregation(AggregationBuilder aggregationBuilder) {
+            if (aggregationList == null) {
+                aggregationList = new ArrayList<Aggregation>();
+            }
+            aggregationList.add(aggregationBuilder.build());
+            return this;
+        }
+
+        public Builder addGroupBy(GroupByBuilder groupByBuilder) {
+            if (groupByList == null) {
+                groupByList = new ArrayList<GroupBy>();
+            }
+            groupByList.add(groupByBuilder.build());
+            return this;
+        }
+
+        /**
+         * 进行翻页的参数
+         */
+        public Builder token(byte[] val) {
+            token = val;
+            return this;
+        }
+
+        public SearchQuery build() {
+            return new SearchQuery(this);
+        }
     }
 }

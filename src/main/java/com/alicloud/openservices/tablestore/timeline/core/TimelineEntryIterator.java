@@ -3,7 +3,8 @@ package com.alicloud.openservices.tablestore.timeline.core;
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.model.RangeIteratorParameter;
 import com.alicloud.openservices.tablestore.model.Row;
-import com.alicloud.openservices.tablestore.model.RowIterator;
+import com.alicloud.openservices.tablestore.model.iterator.GetRangeRowIterator;
+import com.alicloud.openservices.tablestore.model.iterator.RowIterator;
 import com.alicloud.openservices.tablestore.timeline.model.TimelineEntry;
 import com.alicloud.openservices.tablestore.timeline.model.TimelineSchema;
 import com.alicloud.openservices.tablestore.timeline.utils.Utils;
@@ -15,7 +16,7 @@ public class TimelineEntryIterator implements Iterator<TimelineEntry> {
     private TimelineSchema schema;
 
     TimelineEntryIterator(SyncClientInterface client, RangeIteratorParameter iteratorParameter, TimelineSchema schema) {
-        rowIterator = new RowIterator(client, iteratorParameter);
+        rowIterator = new GetRangeRowIterator(client, iteratorParameter);
         this.schema = schema;
     }
 

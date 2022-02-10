@@ -4,19 +4,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.*;
 
+import com.alicloud.openservices.tablestore.core.ResourceManager;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
+import com.alicloud.openservices.tablestore.model.iterator.*;
 import com.alicloud.openservices.tablestore.model.search.*;
-import org.apache.http.concurrent.FutureCallback;
-import com.alicloud.openservices.tablestore.PrepareCallback;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 
 public class SyncClient implements SyncClientInterface {
     public class DefaultPrepareCallback implements PrepareCallback {
         public DefaultPrepareCallback() {
         }
 
+        @Override
         public void onPrepare() {
         }
     }
@@ -94,6 +98,11 @@ public class SyncClient implements SyncClientInterface {
     public SyncClient(String endpoint, String accessKeyId,
                       String accessKeySecret, String instanceName, ClientConfiguration config, String stsToken, ExecutorService callbackExecutor) {
         this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config, callbackExecutor, stsToken);
+    }
+
+    public SyncClient(String endpoint, CredentialsProvider credsProvider, String instanceName,
+                      ClientConfiguration config, ResourceManager resourceManager) {
+        this.internalClient = new InternalClient(endpoint, credsProvider, instanceName, config, resourceManager);
     }
 
     SyncClient(InternalClient internalClient) {
@@ -200,6 +209,26 @@ public class SyncClient implements SyncClientInterface {
     }
 
     @Override
+    public AddDefinedColumnResponse addDefinedColumn(AddDefinedColumnRequest addDefinedColumnRequest)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(addDefinedColumnRequest);
+
+        Future<AddDefinedColumnResponse> res = this.internalClient.addDefinedColumn(addDefinedColumnRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteDefinedColumnResponse deleteDefinedColumn(DeleteDefinedColumnRequest deleteDefinedColumnRequest)
+        throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(deleteDefinedColumnRequest);
+
+        Future<DeleteDefinedColumnResponse> res = this.internalClient.deleteDefinedColumn(deleteDefinedColumnRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
     public GetRowResponse getRow(GetRowRequest getRowRequest) throws TableStoreException, ClientException {
         Preconditions.checkNotNull(getRowRequest);
         Preconditions.checkNotNull(prepareCallback);
@@ -264,6 +293,18 @@ public class SyncClient implements SyncClientInterface {
     }
 
     @Override
+    public BulkImportResponse bulkImport(final BulkImportRequest bulkImportRequest)
+            throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(bulkImportRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<BulkImportResponse> res = this.internalClient.bulkImport(bulkImportRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
     public GetRangeResponse getRange(GetRangeRequest getRangeRequest) throws TableStoreException, ClientException {
         Preconditions.checkNotNull(getRangeRequest);
         Preconditions.checkNotNull(prepareCallback);
@@ -272,7 +313,16 @@ public class SyncClient implements SyncClientInterface {
         Future<GetRangeResponse> res = this.internalClient.getRange(getRangeRequest, null);
         return waitForFuture(res);
     }
-    
+
+    @Override
+    public BulkExportResponse bulkExport(BulkExportRequest bulkExportRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(bulkExportRequest);
+        Preconditions.checkNotNull(prepareCallback);
+        prepareCallback.onPrepare();
+        Future<BulkExportResponse> res = this.internalClient.bulkExport(bulkExportRequest, null);
+        return waitForFuture(res);
+    }
+
     @Override
     public ComputeSplitsBySizeResponse computeSplitsBySize(ComputeSplitsBySizeRequest computeSplitsBySizeRequest)
             throws TableStoreException, ClientException {
@@ -288,7 +338,14 @@ public class SyncClient implements SyncClientInterface {
     public Iterator<Row> createRangeIterator(
             RangeIteratorParameter rangeIteratorParameter) throws TableStoreException,
             ClientException {
-        return new RowIterator(this, rangeIteratorParameter);
+        return new GetRangeRowIterator(this, rangeIteratorParameter);
+    }
+
+    @Override
+    public Iterator<Row> createBulkExportIterator(
+            RangeIteratorParameter rangeIteratorParameter) throws TableStoreException,
+            ClientException {
+        return new BulkExportIterator(this, rangeIteratorParameter);
     }
 
     @Override
@@ -352,6 +409,16 @@ public class SyncClient implements SyncClientInterface {
     }
 
     @Override
+    public UpdateSearchIndexResponse updateSearchIndex(UpdateSearchIndexRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateSearchIndexResponse> res = this.internalClient.updateSearchIndex(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
     public ListSearchIndexResponse listSearchIndex(ListSearchIndexRequest request) throws TableStoreException, ClientException {
         Preconditions.checkNotNull(request);
         Preconditions.checkNotNull(prepareCallback);
@@ -381,6 +448,36 @@ public class SyncClient implements SyncClientInterface {
         prepareCallback.onPrepare();
         Future<DescribeSearchIndexResponse> res = this.internalClient.describeSearchIndex(request, null);
         return waitForFuture(res);
+    }
+
+    @Override
+    public ComputeSplitsResponse computeSplits(ComputeSplitsRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ComputeSplitsResponse> res = this.internalClient.computeSplits(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ParallelScanResponse parallelScan(ParallelScanRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ParallelScanResponse> res = this.internalClient.parallelScan(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public RowIterator createParallelScanIterator(ParallelScanRequest request) throws TableStoreException, ClientException {
+        return new ParallelScanRowIterator(this, request);
+    }
+
+    @Override
+    public RowIterator createSearchIterator(SearchRequest request) throws TableStoreException, ClientException {
+        return new SearchRowIterator(this, request);
     }
 
     @Override
@@ -423,6 +520,56 @@ public class SyncClient implements SyncClientInterface {
         return waitForFuture(res);
     }
 
+    @Override
+    public CreateDeliveryTaskResponse createDeliveryTask(CreateDeliveryTaskRequest request)
+            throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+
+        Future<CreateDeliveryTaskResponse> res = this.internalClient.createDeliveryTask(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteDeliveryTaskResponse deleteDeliveryTask(DeleteDeliveryTaskRequest request)
+            throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+
+        Future<DeleteDeliveryTaskResponse> res = this.internalClient.deleteDeliveryTask(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeDeliveryTaskResponse describeDeliveryTask(DescribeDeliveryTaskRequest request)
+            throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+
+        Future<DescribeDeliveryTaskResponse> res = this.internalClient.describeDeliveryTask(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListDeliveryTaskResponse listDeliveryTask(ListDeliveryTaskRequest request)
+            throws TableStoreException, ClientException
+    {
+        Preconditions.checkNotNull(request);
+
+        Future<ListDeliveryTaskResponse> res = this.internalClient.listDeliveryTask(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public SQLQueryResponse sqlQuery(SQLQueryRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<SQLQueryResponse> res = this.internalClient.sqlQuery(request,null);
+        return waitForFuture(res);
+    }
+
     private <Res> Res waitForFuture(Future<Res> f) {
         try {
             return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);
@@ -439,6 +586,14 @@ public class SyncClient implements SyncClientInterface {
     @Override
     public AsyncClientInterface asAsyncClient() {
         return new AsyncClient(this.internalClient);
+    }
+
+    public TimeseriesClient asTimeseriesClient() {
+        return new TimeseriesClient(this.internalClient);
+    }
+
+    public AsyncTimeseriesClient asAsyncTimeseriesClient() {
+        return new AsyncTimeseriesClient(this.internalClient);
     }
 
     @Override

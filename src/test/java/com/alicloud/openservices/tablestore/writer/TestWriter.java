@@ -4,7 +4,10 @@ import com.alicloud.openservices.tablestore.*;
 import com.alicloud.openservices.tablestore.core.ErrorCode;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.alicloud.openservices.tablestore.writer.enums.BatchRequestType;
+import com.alicloud.openservices.tablestore.writer.enums.WriteMode;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,8 +17,7 @@ import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestWriter {
     private static final String tableName = "WriterTest";
@@ -85,7 +87,11 @@ public class TestWriter {
 
             @Override
             public long nextPause(String action, Exception ex) {
-                if (action.equals("DeleteTable")) {
+                if ("DeleteRow".equals(action)) {
+                    return 0;
+                }
+
+                if ("DeleteTable".equals(action)) {
                     return 0;
                 }
 
@@ -447,6 +453,7 @@ public class TestWriter {
         config.setFlushInterval(1000000);
         config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
         config.setMaxBatchSize(4 * 1024 * 1024);
+        config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
         for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
@@ -455,9 +462,43 @@ public class TestWriter {
 
         DefaultTableStoreWriter writer = createWriter(ots, config, executor);
 
-        int dirtyRowId = 25;
+        int putDirtyRowId = 25;
+        int updateDirtyRowId = 75;
         try {
-            for (int i = 0; i < 100; i++) {
+            for (int i = -1; i < 0; i++) {
+                PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                        .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
+                        .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_not_exist_" + i ))
+                        .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(i))
+                        .build();
+
+                RowDeleteChange rowChange = new RowDeleteChange(tableName, pk);
+
+                Condition condition = new Condition();
+                condition.setRowExistenceExpectation(RowExistenceExpectation.EXPECT_EXIST);
+                rowChange.setCondition(condition);
+
+                writer.addRowChange(rowChange);
+            }
+            for (int i = 0; i < 50; i++) {
+                PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                        .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
+                        .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_" + i))
+                        .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(i))
+                        .build();
+
+                RowPutChange rowChange = new RowPutChange(tableName, pk);
+                for (int j = 0; j < columnsCount; j++) {
+                    rowChange.addColumn("column_" + j, ColumnValue.fromString(strValue));
+                }
+
+                if (i == putDirtyRowId) {
+                    rowChange.addColumn("longattr", ColumnValue.fromString(longStr.toString()));
+                }
+
+                writer.addRowChange(rowChange);
+            }
+            for (int i = 50; i < 100; i++) {
                 PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
                         .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
                         .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_" + i))
@@ -469,7 +510,7 @@ public class TestWriter {
                     rowChange.put("column_" + j, ColumnValue.fromString(strValue));
                 }
 
-                if (i == dirtyRowId) {
+                if (i == updateDirtyRowId) {
                     rowChange.put("longattr", ColumnValue.fromString(longStr.toString()));
                 }
 
@@ -478,19 +519,21 @@ public class TestWriter {
 
             writer.flush();
 
+        } catch (Exception e) {
+            fail();
         } finally {
             writer.close();
             executor.shutdown();
             executor.awaitTermination(10, TimeUnit.SECONDS);
         }
 
-        assertEquals(succeedRows.get(), 99);
-        assertEquals(failedRows.get(), 1);
-        assertEquals(writer.getWriterStatistics().getTotalRowsCount(), 100);
-        assertEquals(writer.getWriterStatistics().getTotalSucceedRowsCount(), 99);
-        assertEquals(writer.getWriterStatistics().getTotalFailedRowsCount(), 1);
-        assertEquals(writer.getWriterStatistics().getTotalSingleRowRequestCount(), 100);
-        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 101);
+        assertEquals(succeedRows.get(), 98);
+        assertEquals(failedRows.get(), 3);
+        assertEquals(writer.getWriterStatistics().getTotalRowsCount(), 101);
+        assertEquals(writer.getWriterStatistics().getTotalSucceedRowsCount(), 98);
+        assertEquals(writer.getWriterStatistics().getTotalFailedRowsCount(), 3);
+        assertEquals(writer.getWriterStatistics().getTotalSingleRowRequestCount(), 101);  //only when bucket = 1
+        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 103);
 
         int rowsCountInTable = 0;
         RangeRowQueryCriteria criteria = new RangeRowQueryCriteria(tableName);
@@ -517,7 +560,7 @@ public class TestWriter {
             Future<GetRangeResponse> future = ots.getRange(request, null);
             GetRangeResponse result = future.get();
             for (Row row : result.getRows()) {
-                if (rowsCountInTable == dirtyRowId) {
+                if (rowsCountInTable == putDirtyRowId || rowsCountInTable == updateDirtyRowId) {
                     rowsCountInTable++;
                 }
                 PrimaryKeyValue pk0 = row.getPrimaryKey().getPrimaryKeyColumn("pk0").getValue();
@@ -552,5 +595,98 @@ public class TestWriter {
         } while (nextStart != null);
 
         assertEquals(rowsCountInTable, 100);
+    }
+
+    @Test
+    public void testBulkImportWriteDirtyRows() throws Exception {
+        final WriterConfig config = new WriterConfig();
+        config.setConcurrency(concurrency);
+        config.setBufferSize(queueSize);
+        config.setFlushInterval(1000000);
+        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxBatchSize(4 * 1024 * 1024);
+        config.setBucketCount(1);
+        config.setBatchRequestType(BatchRequestType.BULK_IMPORT);
+        config.setWriteMode(WriteMode.SEQUENTIAL);
+        StringBuilder longStr = new StringBuilder();
+        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+            longStr.append('a');
+        }
+        final ExecutorService executor = Executors.newFixedThreadPool(10);
+
+        DefaultTableStoreWriter writer = createWriter(ots, config, executor);
+
+        int putDirtyRowId = 25;
+        int updateDirtyRowId = 75;
+        try {
+            for (int i = -1; i < 0; i++) {
+                PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                        .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
+                        .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_not_exist_" + i ))
+                        .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(i))
+                        .build();
+
+                RowDeleteChange rowChange = new RowDeleteChange(tableName, pk);
+
+                Condition condition = new Condition();
+                condition.setRowExistenceExpectation(RowExistenceExpectation.EXPECT_EXIST);
+                rowChange.setCondition(condition);
+
+                writer.addRowChange(rowChange);
+            }
+            for (int i = 0; i < 50; i++) {
+                PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                        .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
+                        .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_" + i))
+                        .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(i))
+                        .build();
+
+                RowPutChange rowChange = new RowPutChange(tableName, pk);
+                for (int j = 0; j < columnsCount; j++) {
+                    rowChange.addColumn("column_" + j, ColumnValue.fromString(strValue));
+                }
+
+                if (i == putDirtyRowId) {
+                    rowChange.addColumn("longattr", ColumnValue.fromString(longStr.toString()));
+                }
+
+                writer.addRowChange(rowChange);
+            }
+            for (int i = 50; i < 100; i++) {
+                PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                        .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromLong(i))
+                        .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("pk_" + i))
+                        .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(i))
+                        .build();
+
+                RowUpdateChange rowChange = new RowUpdateChange(tableName, pk);
+                for (int j = 0; j < columnsCount; j++) {
+                    rowChange.put("column_" + j, ColumnValue.fromString(strValue));
+                }
+
+                if (i == updateDirtyRowId) {
+                    rowChange.put("longattr", ColumnValue.fromString(longStr.toString()));
+                }
+
+                writer.addRowChange(rowChange);
+            }
+
+            writer.flush();
+
+        } catch (Exception e) {
+            fail();
+        } finally {
+            writer.close();
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.SECONDS);
+        }
+
+        assertEquals(succeedRows.get(), 98);
+        assertEquals(failedRows.get(), 3);
+        assertEquals(writer.getWriterStatistics().getTotalRowsCount(), 101);
+        assertEquals(writer.getWriterStatistics().getTotalSucceedRowsCount(), 98);
+        assertEquals(writer.getWriterStatistics().getTotalFailedRowsCount(), 3);
+        assertEquals(writer.getWriterStatistics().getTotalSingleRowRequestCount(), 101);  //only when bucket = 1
+        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 103);
     }
 }

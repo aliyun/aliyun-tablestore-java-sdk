@@ -68,7 +68,7 @@ public class Utils {
         try {
             OTSHelper.deleteTable(ots, tableName);
         } catch (TableStoreException e) {
-            if (e.getErrorCode() != ErrorCode.OBJECT_NOT_EXIST) {
+            if (!e.getErrorCode().equals(ErrorCode.OBJECT_NOT_EXIST)) {
                 throw e;
             }
         }

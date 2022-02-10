@@ -2,6 +2,8 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLPayloadVersion;
+import com.alicloud.openservices.tablestore.model.sql.SQLStatementType;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +38,7 @@ public class OTSProtocolParser {
                 throw new IllegalArgumentException("Unknown defined column type: " + type);
         }
     }
-    
+
     public static PrimaryKeyOption toPrimaryKeyOption(OtsInternalApi.PrimaryKeyOption option) {
         switch (option) {
             case AUTO_INCREMENT:
@@ -66,6 +68,8 @@ public class OTSProtocolParser {
         switch (indexType) {
             case IT_GLOBAL_INDEX:
                 return IndexType.IT_GLOBAL_INDEX;
+            case IT_LOCAL_INDEX:
+                return IndexType.IT_LOCAL_INDEX;
             default:
                 throw new IllegalArgumentException("Unknown index type: " + indexType);
         }
@@ -75,6 +79,8 @@ public class OTSProtocolParser {
         switch (indexUpdateMode) {
             case IUM_ASYNC_INDEX:
                 return IndexUpdateMode.IUM_ASYNC_INDEX;
+            case IUM_SYNC_INDEX:
+                return IndexUpdateMode.IUM_SYNC_INDEX;
             default:
                 throw new IllegalArgumentException("Unknown index update mode: " + indexUpdateMode);
         }
@@ -114,6 +120,46 @@ public class OTSProtocolParser {
         return result;
     }
 
+    public static CapacityDataSize parseCapacityDataSize(OtsInternalApi.CapacityDataSize capacityDataSize) {
+        CapacityDataSize result = new CapacityDataSize();
+        if (capacityDataSize.hasReadSize()) {
+            result.setReadCapacityDataSize(capacityDataSize.getReadSize());
+        }
+
+        if (capacityDataSize.hasWriteSize()) {
+            result.setWriteCapacityDataSize(capacityDataSize.getWriteSize());
+        }
+        return result;
+    }
+
+    public static SQLPayloadVersion parseSQLPayloadVersion(OtsInternalApi.SQLPayloadVersion sqlPayloadVersion) {
+        switch (sqlPayloadVersion) {
+            case SQL_FLAT_BUFFERS:
+                return SQLPayloadVersion.SQL_FLAT_BUFFERS;
+            default:
+                throw new UnsupportedOperationException("not supported sql payload version: " + sqlPayloadVersion);
+        }
+    }
+
+    public static SQLStatementType parseSQLStatementType(OtsInternalApi.SQLStatementType sqlStatementType) {
+        switch (sqlStatementType) {
+            case SQL_SELECT:
+                return SQLStatementType.SQL_SELECT;
+            case SQL_CREATE_TABLE:
+                return SQLStatementType.SQL_CREATE_TABLE;
+            case SQL_SHOW_TABLE:
+                return SQLStatementType.SQL_SHOW_TABLE;
+            case SQL_DESCRIBE_TABLE:
+                return SQLStatementType.SQL_DESCRIBE_TABLE;
+            case SQL_DROP_TABLE:
+                return SQLStatementType.SQL_DROP_TABLE;
+            case SQL_ALTER_TABLE:
+                return SQLStatementType.SQL_ALTER_TABLE;
+            default:
+                throw new UnsupportedOperationException("not supported sql type: " + sqlStatementType);
+        }
+    }
+
     public static TableOptions parseTableOptions(OtsInternalApi.TableOptions tableOptions) {
         TableOptions result = new TableOptions();
 
@@ -127,6 +173,10 @@ public class OTSProtocolParser {
 
         if (tableOptions.hasTimeToLive()) {
             result.setTimeToLive(tableOptions.getTimeToLive());
+        }
+
+        if (tableOptions.hasAllowUpdate()) {
+            result.setAllowUpdate(tableOptions.getAllowUpdate());
         }
 
         return result;
@@ -163,7 +213,7 @@ public class OTSProtocolParser {
 	Row row = null;
         if (status.getIsOk()) {
             ConsumedCapacity consumedCapacity = new ConsumedCapacity(parseCapacityUnit(status.getConsumed().getCapacityUnit()));
-            
+
             if (status.hasRow() && !status.getRow().isEmpty()) {
                 try {
                     PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(new PlainBufferInputStream(status.getRow().asReadOnlyByteBuffer()));
@@ -182,6 +232,21 @@ public class OTSProtocolParser {
             return new BatchWriteRowResponse.RowResult(tableName, row, error, index);
         }
     }
+
+    public static BulkImportResponse.RowResult parseBulkImportStatus(OtsInternalApi.RowInBulkImportResponse status, int index) {
+        if (status.getIsOk()) {
+            ConsumedCapacity consumedCapacity = new ConsumedCapacity(
+                    OTSProtocolParser.parseCapacityUnit(status.getConsumed().getCapacityUnit()));
+            if (status.getConsumed().hasCapacityDataSize()){
+                consumedCapacity.setCapacityDataSize(OTSProtocolParser.parseCapacityDataSize(status.getConsumed().getCapacityDataSize()));
+            }
+            return new BulkImportResponse.RowResult(consumedCapacity, index);
+        } else {
+            com.alicloud.openservices.tablestore.model.Error error = new com.alicloud.openservices.tablestore.model.Error(status.getError().getCode(), status.getError().getMessage());
+            return new BulkImportResponse.RowResult(error, index);
+        }
+    }
+
 
     public static StreamDetails parseStreamDetails(OtsInternalApi.StreamDetails streamDetails) {
         StreamDetails result = new StreamDetails();
@@ -226,5 +291,30 @@ public class OTSProtocolParser {
             default:
                 throw new ClientException("Unknown stream status:" + status);
         }
+    }
+
+    public static SSEDetails parseSseDetails(OtsInternalApi.SSEDetails sseDetails) {
+        SSEDetails result = new SSEDetails();
+        result.setEnable(sseDetails.getEnable());
+        if (sseDetails.hasKeyType()) {
+            OtsInternalApi.SSEKeyType keyType = sseDetails.getKeyType();
+            switch (keyType) {
+                case SSE_KMS_SERVICE:
+                    result.setKeyType(SSEKeyType.SSE_KMS_SERVICE);
+                    break;
+                case SSE_BYOK:
+                    result.setKeyType(SSEKeyType.SSE_BYOK);
+                    break;
+                default:
+                    throw new ClientException("Unknown server side encryption key type: " + keyType);
+            }
+        }
+        if (sseDetails.hasKeyId()) {
+            result.setKeyId(sseDetails.getKeyId().toByteArray());
+        }
+        if (sseDetails.hasRoleArn()) {
+            result.setRoleArn(sseDetails.getRoleArn().toByteArray());
+        }
+        return result;
     }
 }

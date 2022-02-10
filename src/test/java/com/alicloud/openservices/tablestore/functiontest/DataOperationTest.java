@@ -27,7 +27,7 @@ import com.alicloud.openservices.tablestore.common.Utils;
 import com.google.gson.JsonSyntaxException;
 
 public class DataOperationTest extends BaseFT{
-    
+
     private static String tableName = "TableOptionsFunctiontest";
     
     private static SyncClientInterface ots;

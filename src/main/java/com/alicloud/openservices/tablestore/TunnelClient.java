@@ -1,9 +1,7 @@
 package com.alicloud.openservices.tablestore;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
@@ -223,12 +221,14 @@ public class TunnelClient implements TunnelClientInterface {
 
     private <Res> Res waitForFuture(Future<Res> f) {
         try {
-            return f.get();
+            return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new ClientException(String.format(
                 "The thread was interrupted: %s", e.getMessage()));
         } catch (ExecutionException e) {
             throw new ClientException("The thread was aborted", e);
+        } catch (TimeoutException e) {
+            throw new ClientException("Wait future timeout", e);
         }
     }
 

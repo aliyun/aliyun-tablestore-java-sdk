@@ -18,6 +18,7 @@ message Tunnel {
     required string table_name = 1;
     required string tunnel_name = 3;
     required TunnelType tunnel_type = 4;
+    optional StreamTunnelConfig StreamTunnelConfig = 5;
 }
 
 message CreateTunnelRequest {
@@ -51,6 +52,8 @@ message TunnelInfo {
     optional bool expired = 7;
     optional string tunnel_name = 8;
     optional bool   public = 9;
+    optional StreamTunnelConfig stream_tunnel_config = 10;
+    optional int64  create_time = 11;
 }
 
 message ListTunnelResponse {
@@ -195,3 +198,15 @@ message TokenContentV2 {
     optional int64 timestamp = 3;
     optional int64 total_count = 4;
 }
+
+enum StartOffsetFlag {
+    LATEST = 0;
+    EARLIEST = 1;
+}
+
+message StreamTunnelConfig {
+    optional StartOffsetFlag flag = 1;
+    optional uint64 startOffset = 2;
+    optional uint64 endOffset = 3;
+}
+

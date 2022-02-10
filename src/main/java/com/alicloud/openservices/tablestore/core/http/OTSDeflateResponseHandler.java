@@ -21,7 +21,7 @@ public class OTSDeflateResponseHandler implements ResponseHandler {
     public void handle(ResponseMessage responseData)
         throws TableStoreException, ClientException
     {
-        Map<String, String> header = responseData.getHeadersMap();
+        Map<String, String> header = responseData.getLowerCaseHeadersMap();
         String compressType = header.get(Constants.OTS_HEADER_RESPONSE_COMPRESS_TYPE);
         if(compressType != null) {
             try{

@@ -7,6 +7,9 @@ package com.alicloud.openservices.tablestore.model.search;
  * 但是我们通过设置{@link Collapse}为菜系type，就可以返回8个最火的菜（每个菜系只返回一个，因为{@link Collapse}帮我们进行了去重）。一次查询搞定用户的需求。</p>
  */
 public class Collapse {
+    public Collapse(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
     private String fieldName;
 

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 public class Utils {
     private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
-    private static TunnelServiceApi.TokenContentV2 parseRequestToken(String token) throws Exception {
+    public static TunnelServiceApi.TokenContentV2 parseRequestToken(String token) throws Exception {
         TunnelServiceApi.Token tokenPb = TunnelServiceApi.Token.parseFrom(Base64.decodeBase64(token));
         if (!tokenPb.hasVersion()) {
             throw new Exception("token miss must field: version.");

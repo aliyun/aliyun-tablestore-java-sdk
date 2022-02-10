@@ -76,6 +76,13 @@ public class TestCredentials {
             assertEquals(e.getMessage(), "Access key secret should not be null or empty.");
         }
 
+        try {
+            CredentialsProviderFactory.newDefaultCredentialProvider("%", "ad9j23JDS");
+            fail("expect failure");
+        } catch (IllegalArgumentException e) {
+            assertEquals(e.getMessage(), "The access key id is invalid: %");
+        }
+
         CredentialsProvider cp = CredentialsProviderFactory.newDefaultCredentialProvider("accessid", "accesskey", "token");
         assertEquals(cp.getCredentials().getAccessKeyId(), "accessid");
         assertEquals(cp.getCredentials().getAccessKeySecret(), "accesskey");
@@ -85,6 +92,11 @@ public class TestCredentials {
         assertEquals(cp.getCredentials().getSecurityToken(), null);
         assertEquals(cp.getCredentials().getAccessKeyId(), "accessid");
         assertEquals(cp.getCredentials().getAccessKeySecret(), "accesskey");
+
+        cp = CredentialsProviderFactory.newDefaultCredentialProvider("STS.adjxau239x", "ad9j23JDS");
+        assertEquals(cp.getCredentials().getSecurityToken(), null);
+        assertEquals(cp.getCredentials().getAccessKeyId(), "STS.adjxau239x");
+        assertEquals(cp.getCredentials().getAccessKeySecret(), "ad9j23JDS");
     }
 
     @Test

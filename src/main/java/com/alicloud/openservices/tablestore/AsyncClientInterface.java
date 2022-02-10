@@ -4,7 +4,10 @@ import java.util.concurrent.Future;
 
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 
 public interface AsyncClientInterface {
 
@@ -117,6 +120,30 @@ public interface AsyncClientInterface {
         TableStoreCallback<DeleteIndexRequest, DeleteIndexResponse> callback);
 
     /**
+     * 为用户指定的表添加预定义列
+     * @param addDefinedColumnRequest 执行addDefinedColumn所需的参数
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要执行回调函数
+     * @return 获取结果的Future
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求返回的结果无效、或遇到网络异常
+     */
+    public Future<AddDefinedColumnResponse> addDefinedColumn(
+            AddDefinedColumnRequest addDefinedColumnRequest,
+            TableStoreCallback<AddDefinedColumnRequest, AddDefinedColumnResponse> callback);
+
+    /**
+     * 为用户指定的表删除预定义列
+     * @param deleteDefinedColumnRequest 执行deleteDefinedColumn所需的参数
+     * @param callback 请求完成后调用的回调函数，可以为nukk，则代表不需要执行回调函数
+     * @return 获取结果的future
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求返回的结果无效、或遇到网络异常
+     */
+    public Future<DeleteDefinedColumnResponse> deleteDefinedColumn(
+        DeleteDefinedColumnRequest deleteDefinedColumnRequest,
+        TableStoreCallback<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse> callback);
+
+    /**
      * 读取表中的一行数据。
      *
      * @param getRowRequest 执行GetRow操作所需的参数。
@@ -196,6 +223,18 @@ public interface AsyncClientInterface {
             BatchWriteRowRequest batchWriteRowRequest, TableStoreCallback<BatchWriteRowRequest, BatchWriteRowResponse> callback);
 
     /**
+     * 在单张表中对多行执行更新或者删除操作，离线服务接口。
+     * <p>BulkImport 操作可视为多个PutRow、UpdateRow、DeleteRow 操作的集合，各个操作独立执行，独立返回结果，独立计算消费单元。</p>
+     * <p>执行 BulkImport 操作后，需要逐个检查子请求的状态，来判断写入结果，并选择对失败的行进行重试。</p>
+     *
+     * @param bulkImportRequest 执行BatchWriteRow操作所需的参数。
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要执行回调函数
+     * @return 获取结果的Future
+     */
+    public Future<BulkImportResponse> bulkImport(
+            BulkImportRequest bulkImportRequest, TableStoreCallback<BulkImportRequest, BulkImportResponse> callback);
+
+    /**
      * 从表中查询一个范围内的多行数据。
      *
      * @param getRangeRequest 执行GetRange操作所需的参数。
@@ -206,6 +245,16 @@ public interface AsyncClientInterface {
             GetRangeRequest getRangeRequest, TableStoreCallback<GetRangeRequest, GetRangeResponse> callback);
 
     /**
+     * 从表中查询一个范围内的多行数据，离线服务接口。
+     *
+     * @param bulkExportRequest 执行GetRange操作所需的参数。
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要执行回调函数
+     * @return 获取结果的Future
+     */
+    public Future<BulkExportResponse> bulkExport(
+            BulkExportRequest bulkExportRequest, TableStoreCallback<BulkExportRequest, BulkExportResponse> callback);
+
+    /**
      * 对表的数据根据一定的数据大小进行分块，并返回分块的信息以供数据获取接口使用。返回的数据分块按照主键列的递增顺序排列，返回的每个数据分块信息中包含分块所处的partition分区的ID的哈希值以及起始行和终止行的主键值，遵循左闭右开区间。
      *
      * @param computeSplitsBySizeRequest 执行ComputeSplitsBySize操作所需的参数。
@@ -213,7 +262,7 @@ public interface AsyncClientInterface {
      * @return 获取结果的Future
      */
     public Future<ComputeSplitsBySizeResponse> computeSplitsBySize(ComputeSplitsBySizeRequest computeSplitsBySizeRequest, TableStoreCallback<ComputeSplitsBySizeRequest, ComputeSplitsBySizeResponse> callback);
-    
+
     /**
      * 获取用户当前实例下的全部Stream列表或者特定表下的Stream。
      *
@@ -296,6 +345,17 @@ public interface AsyncClientInterface {
             CreateSearchIndexRequest request, TableStoreCallback<CreateSearchIndexRequest, CreateSearchIndexResponse> callback);
 
     /**
+     * 更新SearchIndex（用于交换索引，或设置索引查询权重）。推荐优先使用官网控制台来实现动态修改多元索引schema的功能。
+     * @param request   更新SearchIndex所需的参数
+     * @param callback  请求完成后调用的回调函数，可以为null，则代表不需要执行回调函数
+     * @return SearchIndex服务返回的创建结果
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public Future<UpdateSearchIndexResponse> updateSearchIndex(
+            UpdateSearchIndexRequest request, TableStoreCallback<UpdateSearchIndexRequest, UpdateSearchIndexResponse> callback);
+
+    /**
      * 获取表下的SearchIndex列表
      * <p>一个table下面，可以存在多个SearchIndex表，通过该函数，将能够获取一个table下面的所有SearchIndex信息</p>
      * @param request  获取SearchIndex列表所需的参数
@@ -330,6 +390,63 @@ public interface AsyncClientInterface {
      */
     public Future<DescribeSearchIndexResponse> describeSearchIndex(
             DescribeSearchIndexRequest request, TableStoreCallback<DescribeSearchIndexRequest, DescribeSearchIndexResponse> callback);
+
+    /**
+     * Get the partition information of the data
+     *
+     * @param request Parameters required to perform the computeSplits operation.
+     * @param callback The callback function invoked after the request is completed. It can be null, which means that no callback function is required.
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     */
+    public Future<ComputeSplitsResponse> computeSplits(ComputeSplitsRequest request, TableStoreCallback<ComputeSplitsRequest, ComputeSplitsResponse> callback);
+
+    /**
+     * Scan data form SearchIndex.
+     *
+     * @param request Parameters required to perform the parallelScan operation.
+     * @param callback The callback function invoked after the request is completed. It can be null, which means that no callback function is required.
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     */
+    public Future<ParallelScanResponse> parallelScan(ParallelScanRequest request, TableStoreCallback<ParallelScanRequest, ParallelScanResponse> callback);
+
+    /**
+     * 创建投递任务
+     * @param request 创建投递任务所需的参数
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要回调函数
+     * @return
+     */
+    public Future<CreateDeliveryTaskResponse> createDeliveryTask(
+            CreateDeliveryTaskRequest request, TableStoreCallback<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse> callback);
+
+    /**
+     * 删除投递任务
+     * @param request 删除投递任务所需要的参数
+     * @return  删除投递任务执行后返回的删除结果
+     * @throws TableStoreException  Tablestore服务返回的异常
+     * @throws ClientException  请求的返回结果无效、或遇到网络异常
+     */
+    public Future<DeleteDeliveryTaskResponse> deleteDeliveryTask(
+            DeleteDeliveryTaskRequest request, TableStoreCallback<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse> callback);
+
+    /**
+     * 描述投递任务
+     * @param request 描述投递任务所需要的参数
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要回调函数
+     * @return
+     */
+    public Future<DescribeDeliveryTaskResponse> describeDeliveryTask(
+            DescribeDeliveryTaskRequest request, TableStoreCallback<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse> callback);
+
+    /**
+     * 列出投递任务列表
+     * @param request 列出投递任务列表所需要的参数
+     * @param callback 请求完成后调用的回调函数，可以为null，则代表不需要回调函数
+     * @return
+     */
+    public Future<ListDeliveryTaskResponse> listDeliveryTask(
+            ListDeliveryTaskRequest request, TableStoreCallback<ListDeliveryTaskRequest, ListDeliveryTaskResponse> callback);
 
     /**
      * 搜索功能
@@ -374,4 +491,6 @@ public interface AsyncClientInterface {
      * @param newCrdsProvider new CredentialsProvider, see {@link com.alicloud.openservices.tablestore.core.auth.CredentialsProviderFactory}.
      */
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider);
+
+    public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request, TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback);
 }

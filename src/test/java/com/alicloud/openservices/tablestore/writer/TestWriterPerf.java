@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.writer;
 import com.alicloud.openservices.tablestore.*;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestWriterPerf {
 
-    private static final String tableName = "WriterTest";
+    private static final String TABLE_NAME = "WriterTest";
     private static ServiceSettings serviceSettings = ServiceSettings.load();
     private static long totalTime = 0;
     private volatile boolean stop = false;
@@ -33,9 +34,10 @@ public class TestWriterPerf {
     private AsyncClientInterface ots;
     final String strValue = "0123456789";
     private static AtomicLong retryCount = new AtomicLong();
+    private static ExecutorService threadPool;
 
     public void createTable(AsyncClientInterface ots) {
-        TableMeta tableMeta = new TableMeta(tableName);
+        TableMeta tableMeta = new TableMeta(TABLE_NAME);
         tableMeta.addPrimaryKeyColumn("pk0", PrimaryKeyType.INTEGER);
         tableMeta.addPrimaryKeyColumn("pk1", PrimaryKeyType.STRING);
         tableMeta.addPrimaryKeyColumn("pk2", PrimaryKeyType.INTEGER);
@@ -53,6 +55,10 @@ public class TestWriterPerf {
 
     @Before
     public void setUp() throws Exception {
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("writer-pool-%d").build();
+        threadPool = new ThreadPoolExecutor(10, 10, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue(1024), threadFactory, new ThreadPoolExecutor.AbortPolicy());
+
         ClientConfiguration cc = new ClientConfiguration();
         cc.setMaxConnections(1000);
         cc.setRetryStrategy(new RetryStrategy() {
@@ -80,7 +86,7 @@ public class TestWriterPerf {
                 serviceSettings.getOTSInstanceName(), cc);
 
         try {
-            DeleteTableRequest request = new DeleteTableRequest(tableName);
+            DeleteTableRequest request = new DeleteTableRequest(TABLE_NAME);
             Future<DeleteTableResponse> future = ots.deleteTable(request, null);
             future.get();
         } catch (Exception e) {
@@ -107,7 +113,7 @@ public class TestWriterPerf {
                 failedRows.incrementAndGet();
             }
         };
-        DefaultTableStoreWriter writer = new DefaultTableStoreWriter(ots, tableName, config, callback, executor);
+        DefaultTableStoreWriter writer = new DefaultTableStoreWriter(ots, TABLE_NAME, config, callback, executor);
 
         return writer;
     }
@@ -123,12 +129,13 @@ public class TestWriterPerf {
         long st = System.currentTimeMillis();
         List<Thread> threads = new ArrayList<Thread>();
         List<DefaultTableStoreWriter> writers = new ArrayList<DefaultTableStoreWriter>();
+        final CountDownLatch latch = new CountDownLatch(writerCount * sendThreads);
         for (int tc = 0; tc < writerCount; tc++) {
             final DefaultTableStoreWriter writer = createWriter(ots, config, executor);
             writers.add(writer);
             for (int k = 0; k < sendThreads; k++) {
                 final int threadId = k;
-                Thread th = new Thread(new Runnable() {
+                threadPool.execute(new Runnable() {
                     public void run() {
 
                         for (long index = rowIndex.incrementAndGet(); index < rowsCount; index = rowIndex.incrementAndGet()) {
@@ -138,7 +145,7 @@ public class TestWriterPerf {
                                     .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(index))
                                     .build();
 
-                            RowUpdateChange rowChange = new RowUpdateChange(tableName, pk);
+                            RowUpdateChange rowChange = new RowUpdateChange(TABLE_NAME, pk);
                             for (int j = 0; j < columnsCount; j++) {
                                 rowChange.put("column_" + j, ColumnValue.fromString(strValue));
                             }
@@ -147,20 +154,13 @@ public class TestWriterPerf {
                             writer.addRowChange(rowChange);
                         }
                         System.out.println("Write thread finished.");
+                        latch.countDown();
                     }
                 });
-                threads.add(th);
             }
         }
 
-        for (Thread th : threads) {
-            th.start();
-        }
-
-        for (Thread th : threads) {
-            th.join();
-        }
-
+        latch.await();
         for (DefaultTableStoreWriter writer : writers) {
             writer.flush();
             writer.close();
@@ -191,7 +191,7 @@ public class TestWriterPerf {
     private void scanTable(AsyncClientInterface ots) throws ExecutionException, InterruptedException {
         System.out.println("#################### Begin scan table ####################");
         int rowsCountInTable = 0;
-        RangeRowQueryCriteria criteria = new RangeRowQueryCriteria(tableName);
+        RangeRowQueryCriteria criteria = new RangeRowQueryCriteria(TABLE_NAME);
         PrimaryKey start = PrimaryKeyBuilder.createPrimaryKeyBuilder()
                 .addPrimaryKeyColumn("pk0", PrimaryKeyValue.INF_MIN)
                 .addPrimaryKeyColumn("pk1", PrimaryKeyValue.INF_MIN)
@@ -243,17 +243,16 @@ public class TestWriterPerf {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 6) {
-            System.out.println("Arguments not enough.");
-            System.exit(-1);
+        if (args.length >= 6) {
+            rowsCount = Long.parseLong(args[0]);
+            columnsCount = Long.parseLong(args[1]);
+            concurrency = Integer.parseInt(args[2]);
+            queueSize = Integer.parseInt(args[3]);
+            sendThreads = Integer.parseInt(args[4]);
+            writerCount = Integer.parseInt(args[5]);
         }
 
-        rowsCount = Long.parseLong(args[0]);
-        columnsCount = Long.parseLong(args[1]);
-        concurrency = Integer.parseInt(args[2]);
-        queueSize = Integer.parseInt(args[3]);
-        sendThreads = Integer.parseInt(args[4]);
-        writerCount = Integer.parseInt(args[5]);
+
         System.out.println("RowsCount: " + rowsCount);
         System.out.println("ColumnsCount: " + columnsCount);
         System.out.println("Concurrency: " + concurrency);

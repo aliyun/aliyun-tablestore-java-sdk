@@ -31,6 +31,16 @@ public class TunnelInfo {
     private boolean expired;
 
     /**
+     * Tunnel对应的时间范围配置。
+     */
+    private StreamTunnelConfig streamTunnelConfig;
+
+    /**
+     * Tunnel创建时间。
+     */
+    private long createTime;
+
+    /**
      * 获取Tunnel名称。
      * @return Tunnel名称。
      */
@@ -142,13 +152,30 @@ public class TunnelInfo {
         this.expired = expired;
     }
 
+    public StreamTunnelConfig getStreamTunnelConfig() {
+        return streamTunnelConfig;
+    }
+
+    public void setStreamTunnelConfig(StreamTunnelConfig streamTunnelConfig) {
+        this.streamTunnelConfig = streamTunnelConfig;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append("TunnelName: ").append(tunnelName).append(", TunnelId: ")
             .append(tunnelId).append(", TunnelType: ").append(tunnelType).append(", TableName: ").append(tableName)
             .append(", InstanceName: ").append(instanceName).append(", Stage: ").append(stage.name())
-            .append(", Expired: ").append(expired).append("}");
+            .append(", Expired: ").append(expired).append(", StreamTunnelConfig: ").append(streamTunnelConfig)
+                .append(", CreateTime: ").append(createTime).append("}");
         return sb.toString();
     }
 }

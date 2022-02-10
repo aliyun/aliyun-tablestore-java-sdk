@@ -227,6 +227,75 @@ public final class TunnelServiceApi {
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.ActionType)
   }
   
+  public enum StartOffsetFlag
+      implements com.google.protobuf.ProtocolMessageEnum {
+    LATEST(0, 0),
+    EARLIEST(1, 1),
+    ;
+    
+    public static final int LATEST_VALUE = 0;
+    public static final int EARLIEST_VALUE = 1;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static StartOffsetFlag valueOf(int value) {
+      switch (value) {
+        case 0: return LATEST;
+        case 1: return EARLIEST;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<StartOffsetFlag>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<StartOffsetFlag>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<StartOffsetFlag>() {
+            public StartOffsetFlag findValueByNumber(int number) {
+              return StartOffsetFlag.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.getDescriptor().getEnumTypes().get(3);
+    }
+    
+    private static final StartOffsetFlag[] VALUES = {
+      LATEST, EARLIEST, 
+    };
+    
+    public static StartOffsetFlag valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private StartOffsetFlag(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.StartOffsetFlag)
+  }
+  
   public interface ErrorOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -812,6 +881,11 @@ public final class TunnelServiceApi {
     // required .com.alicloud.openservices.tablestore.core.protocol.TunnelType tunnel_type = 4;
     boolean hasTunnelType();
     com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelType getTunnelType();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig StreamTunnelConfig = 5;
+    boolean hasStreamTunnelConfig();
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig();
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder();
   }
   public static final class Tunnel extends
       com.google.protobuf.GeneratedMessage
@@ -916,10 +990,24 @@ public final class TunnelServiceApi {
       return tunnelType_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig StreamTunnelConfig = 5;
+    public static final int STREAMTUNNELCONFIG_FIELD_NUMBER = 5;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig streamTunnelConfig_;
+    public boolean hasStreamTunnelConfig() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig() {
+      return streamTunnelConfig_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder() {
+      return streamTunnelConfig_;
+    }
+    
     private void initFields() {
       tableName_ = "";
       tunnelName_ = "";
       tunnelType_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelType.BaseData;
+      streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -954,6 +1042,9 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeEnum(4, tunnelType_.getNumber());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(5, streamTunnelConfig_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -974,6 +1065,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, tunnelType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, streamTunnelConfig_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1091,6 +1186,7 @@ public final class TunnelServiceApi {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStreamTunnelConfigFieldBuilder();
         }
       }
       private static Builder create() {
@@ -1105,6 +1201,12 @@ public final class TunnelServiceApi {
         bitField0_ = (bitField0_ & ~0x00000002);
         tunnelType_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelType.BaseData;
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+        } else {
+          streamTunnelConfigBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -1155,6 +1257,14 @@ public final class TunnelServiceApi {
           to_bitField0_ |= 0x00000004;
         }
         result.tunnelType_ = tunnelType_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (streamTunnelConfigBuilder_ == null) {
+          result.streamTunnelConfig_ = streamTunnelConfig_;
+        } else {
+          result.streamTunnelConfig_ = streamTunnelConfigBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1179,6 +1289,9 @@ public final class TunnelServiceApi {
         }
         if (other.hasTunnelType()) {
           setTunnelType(other.getTunnelType());
+        }
+        if (other.hasStreamTunnelConfig()) {
+          mergeStreamTunnelConfig(other.getStreamTunnelConfig());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1242,6 +1355,15 @@ public final class TunnelServiceApi {
                 bitField0_ |= 0x00000004;
                 tunnelType_ = value;
               }
+              break;
+            }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.newBuilder();
+              if (hasStreamTunnelConfig()) {
+                subBuilder.mergeFrom(getStreamTunnelConfig());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setStreamTunnelConfig(subBuilder.buildPartial());
               break;
             }
           }
@@ -1344,6 +1466,96 @@ public final class TunnelServiceApi {
         tunnelType_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelType.BaseData;
         onChanged();
         return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig StreamTunnelConfig = 5;
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder> streamTunnelConfigBuilder_;
+      public boolean hasStreamTunnelConfig() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig() {
+        if (streamTunnelConfigBuilder_ == null) {
+          return streamTunnelConfig_;
+        } else {
+          return streamTunnelConfigBuilder_.getMessage();
+        }
+      }
+      public Builder setStreamTunnelConfig(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig value) {
+        if (streamTunnelConfigBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          streamTunnelConfig_ = value;
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder setStreamTunnelConfig(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder builderForValue) {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = builderForValue.build();
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder mergeStreamTunnelConfig(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig value) {
+        if (streamTunnelConfigBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              streamTunnelConfig_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance()) {
+            streamTunnelConfig_ =
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.newBuilder(streamTunnelConfig_).mergeFrom(value).buildPartial();
+          } else {
+            streamTunnelConfig_ = value;
+          }
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder clearStreamTunnelConfig() {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder getStreamTunnelConfigBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getStreamTunnelConfigFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder() {
+        if (streamTunnelConfigBuilder_ != null) {
+          return streamTunnelConfigBuilder_.getMessageOrBuilder();
+        } else {
+          return streamTunnelConfig_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder> 
+          getStreamTunnelConfigFieldBuilder() {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfigBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder>(
+                  streamTunnelConfig_,
+                  getParentForChildren(),
+                  isClean());
+          streamTunnelConfig_ = null;
+        }
+        return streamTunnelConfigBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.Tunnel)
@@ -3448,6 +3660,15 @@ public final class TunnelServiceApi {
     // optional bool public = 9;
     boolean hasPublic();
     boolean getPublic();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig stream_tunnel_config = 10;
+    boolean hasStreamTunnelConfig();
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig();
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder();
+    
+    // optional int64 create_time = 11;
+    boolean hasCreateTime();
+    long getCreateTime();
   }
   public static final class TunnelInfo extends
       com.google.protobuf.GeneratedMessage
@@ -3722,6 +3943,29 @@ public final class TunnelServiceApi {
       return public_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig stream_tunnel_config = 10;
+    public static final int STREAM_TUNNEL_CONFIG_FIELD_NUMBER = 10;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig streamTunnelConfig_;
+    public boolean hasStreamTunnelConfig() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig() {
+      return streamTunnelConfig_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder() {
+      return streamTunnelConfig_;
+    }
+    
+    // optional int64 create_time = 11;
+    public static final int CREATE_TIME_FIELD_NUMBER = 11;
+    private long createTime_;
+    public boolean hasCreateTime() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public long getCreateTime() {
+      return createTime_;
+    }
+    
     private void initFields() {
       tunnelId_ = "";
       tunnelType_ = "";
@@ -3732,6 +3976,8 @@ public final class TunnelServiceApi {
       expired_ = false;
       tunnelName_ = "";
       public_ = false;
+      streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+      createTime_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3796,6 +4042,12 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeBool(9, public_);
       }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeMessage(10, streamTunnelConfig_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeInt64(11, createTime_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -3840,6 +4092,14 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(9, public_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, streamTunnelConfig_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(11, createTime_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3957,6 +4217,7 @@ public final class TunnelServiceApi {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStreamTunnelConfigFieldBuilder();
         }
       }
       private static Builder create() {
@@ -3983,6 +4244,14 @@ public final class TunnelServiceApi {
         bitField0_ = (bitField0_ & ~0x00000080);
         public_ = false;
         bitField0_ = (bitField0_ & ~0x00000100);
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+        } else {
+          streamTunnelConfigBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        createTime_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
       
@@ -4057,6 +4326,18 @@ public final class TunnelServiceApi {
           to_bitField0_ |= 0x00000100;
         }
         result.public_ = public_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        if (streamTunnelConfigBuilder_ == null) {
+          result.streamTunnelConfig_ = streamTunnelConfig_;
+        } else {
+          result.streamTunnelConfig_ = streamTunnelConfigBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.createTime_ = createTime_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4099,6 +4380,12 @@ public final class TunnelServiceApi {
         }
         if (other.hasPublic()) {
           setPublic(other.getPublic());
+        }
+        if (other.hasStreamTunnelConfig()) {
+          mergeStreamTunnelConfig(other.getStreamTunnelConfig());
+        }
+        if (other.hasCreateTime()) {
+          setCreateTime(other.getCreateTime());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4198,6 +4485,20 @@ public final class TunnelServiceApi {
             case 72: {
               bitField0_ |= 0x00000100;
               public_ = input.readBool();
+              break;
+            }
+            case 82: {
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.newBuilder();
+              if (hasStreamTunnelConfig()) {
+                subBuilder.mergeFrom(getStreamTunnelConfig());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setStreamTunnelConfig(subBuilder.buildPartial());
+              break;
+            }
+            case 88: {
+              bitField0_ |= 0x00000400;
+              createTime_ = input.readInt64();
               break;
             }
           }
@@ -4496,6 +4797,117 @@ public final class TunnelServiceApi {
       public Builder clearPublic() {
         bitField0_ = (bitField0_ & ~0x00000100);
         public_ = false;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig stream_tunnel_config = 10;
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder> streamTunnelConfigBuilder_;
+      public boolean hasStreamTunnelConfig() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getStreamTunnelConfig() {
+        if (streamTunnelConfigBuilder_ == null) {
+          return streamTunnelConfig_;
+        } else {
+          return streamTunnelConfigBuilder_.getMessage();
+        }
+      }
+      public Builder setStreamTunnelConfig(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig value) {
+        if (streamTunnelConfigBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          streamTunnelConfig_ = value;
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder setStreamTunnelConfig(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder builderForValue) {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = builderForValue.build();
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder mergeStreamTunnelConfig(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig value) {
+        if (streamTunnelConfigBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+              streamTunnelConfig_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance()) {
+            streamTunnelConfig_ =
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.newBuilder(streamTunnelConfig_).mergeFrom(value).buildPartial();
+          } else {
+            streamTunnelConfig_ = value;
+          }
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder clearStreamTunnelConfig() {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfig_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+          onChanged();
+        } else {
+          streamTunnelConfigBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder getStreamTunnelConfigBuilder() {
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return getStreamTunnelConfigFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder() {
+        if (streamTunnelConfigBuilder_ != null) {
+          return streamTunnelConfigBuilder_.getMessageOrBuilder();
+        } else {
+          return streamTunnelConfig_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder> 
+          getStreamTunnelConfigFieldBuilder() {
+        if (streamTunnelConfigBuilder_ == null) {
+          streamTunnelConfigBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder>(
+                  streamTunnelConfig_,
+                  getParentForChildren(),
+                  isClean());
+          streamTunnelConfig_ = null;
+        }
+        return streamTunnelConfigBuilder_;
+      }
+      
+      // optional int64 create_time = 11;
+      private long createTime_ ;
+      public boolean hasCreateTime() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      public long getCreateTime() {
+        return createTime_;
+      }
+      public Builder setCreateTime(long value) {
+        bitField0_ |= 0x00000400;
+        createTime_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearCreateTime() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        createTime_ = 0L;
         onChanged();
         return this;
       }
@@ -12007,2001 +12419,6 @@ public final class TunnelServiceApi {
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.ShutdownResponse)
   }
   
-  public interface LockChannelRequestOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required string tunnel_id = 1;
-    boolean hasTunnelId();
-    String getTunnelId();
-    
-    // required string client_id = 2;
-    boolean hasClientId();
-    String getClientId();
-    
-    // required string channel_id = 3;
-    boolean hasChannelId();
-    String getChannelId();
-    
-    // required string lock_id = 4;
-    boolean hasLockId();
-    String getLockId();
-    
-    // required int64 timeout = 5;
-    boolean hasTimeout();
-    long getTimeout();
-  }
-  public static final class LockChannelRequest extends
-      com.google.protobuf.GeneratedMessage
-      implements LockChannelRequestOrBuilder {
-    // Use LockChannelRequest.newBuilder() to construct.
-    private LockChannelRequest(Builder builder) {
-      super(builder);
-    }
-    private LockChannelRequest(boolean noInit) {}
-    
-    private static final LockChannelRequest defaultInstance;
-    public static LockChannelRequest getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public LockChannelRequest getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_fieldAccessorTable;
-    }
-    
-    private int bitField0_;
-    // required string tunnel_id = 1;
-    public static final int TUNNEL_ID_FIELD_NUMBER = 1;
-    private java.lang.Object tunnelId_;
-    public boolean hasTunnelId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public String getTunnelId() {
-      java.lang.Object ref = tunnelId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          tunnelId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getTunnelIdBytes() {
-      java.lang.Object ref = tunnelId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        tunnelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string client_id = 2;
-    public static final int CLIENT_ID_FIELD_NUMBER = 2;
-    private java.lang.Object clientId_;
-    public boolean hasClientId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getClientId() {
-      java.lang.Object ref = clientId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          clientId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getClientIdBytes() {
-      java.lang.Object ref = clientId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        clientId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string channel_id = 3;
-    public static final int CHANNEL_ID_FIELD_NUMBER = 3;
-    private java.lang.Object channelId_;
-    public boolean hasChannelId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getChannelId() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          channelId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getChannelIdBytes() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        channelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string lock_id = 4;
-    public static final int LOCK_ID_FIELD_NUMBER = 4;
-    private java.lang.Object lockId_;
-    public boolean hasLockId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public String getLockId() {
-      java.lang.Object ref = lockId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          lockId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getLockIdBytes() {
-      java.lang.Object ref = lockId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        lockId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required int64 timeout = 5;
-    public static final int TIMEOUT_FIELD_NUMBER = 5;
-    private long timeout_;
-    public boolean hasTimeout() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    public long getTimeout() {
-      return timeout_;
-    }
-    
-    private void initFields() {
-      tunnelId_ = "";
-      clientId_ = "";
-      channelId_ = "";
-      lockId_ = "";
-      timeout_ = 0L;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      if (!hasTunnelId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasClientId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasChannelId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLockId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTimeout()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getTunnelIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getClientIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getChannelIdBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getLockIdBytes());
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt64(5, timeout_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getTunnelIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getClientIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getChannelIdBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getLockIdBytes());
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, timeout_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_descriptor;
-      }
-      
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_fieldAccessorTable;
-      }
-      
-      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private Builder(BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        tunnelId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        clientId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        channelId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        lockId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        timeout_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.getDescriptor();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest getDefaultInstanceForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.getDefaultInstance();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest build() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest buildPartial() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.tunnelId_ = tunnelId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.clientId_ = clientId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.channelId_ = channelId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.lockId_ = lockId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.timeout_ = timeout_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest) {
-          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest other) {
-        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.getDefaultInstance()) return this;
-        if (other.hasTunnelId()) {
-          setTunnelId(other.getTunnelId());
-        }
-        if (other.hasClientId()) {
-          setClientId(other.getClientId());
-        }
-        if (other.hasChannelId()) {
-          setChannelId(other.getChannelId());
-        }
-        if (other.hasLockId()) {
-          setLockId(other.getLockId());
-        }
-        if (other.hasTimeout()) {
-          setTimeout(other.getTimeout());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        if (!hasTunnelId()) {
-          
-          return false;
-        }
-        if (!hasClientId()) {
-          
-          return false;
-        }
-        if (!hasChannelId()) {
-          
-          return false;
-        }
-        if (!hasLockId()) {
-          
-          return false;
-        }
-        if (!hasTimeout()) {
-          
-          return false;
-        }
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              tunnelId_ = input.readBytes();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              clientId_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              channelId_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              lockId_ = input.readBytes();
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              timeout_ = input.readInt64();
-              break;
-            }
-          }
-        }
-      }
-      
-      private int bitField0_;
-      
-      // required string tunnel_id = 1;
-      private java.lang.Object tunnelId_ = "";
-      public boolean hasTunnelId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public String getTunnelId() {
-        java.lang.Object ref = tunnelId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          tunnelId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setTunnelId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        tunnelId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearTunnelId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        tunnelId_ = getDefaultInstance().getTunnelId();
-        onChanged();
-        return this;
-      }
-      void setTunnelId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000001;
-        tunnelId_ = value;
-        onChanged();
-      }
-      
-      // required string client_id = 2;
-      private java.lang.Object clientId_ = "";
-      public boolean hasClientId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getClientId() {
-        java.lang.Object ref = clientId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          clientId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setClientId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        clientId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearClientId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        clientId_ = getDefaultInstance().getClientId();
-        onChanged();
-        return this;
-      }
-      void setClientId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        clientId_ = value;
-        onChanged();
-      }
-      
-      // required string channel_id = 3;
-      private java.lang.Object channelId_ = "";
-      public boolean hasChannelId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getChannelId() {
-        java.lang.Object ref = channelId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          channelId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setChannelId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        channelId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearChannelId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        channelId_ = getDefaultInstance().getChannelId();
-        onChanged();
-        return this;
-      }
-      void setChannelId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        channelId_ = value;
-        onChanged();
-      }
-      
-      // required string lock_id = 4;
-      private java.lang.Object lockId_ = "";
-      public boolean hasLockId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getLockId() {
-        java.lang.Object ref = lockId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          lockId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setLockId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        lockId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearLockId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        lockId_ = getDefaultInstance().getLockId();
-        onChanged();
-        return this;
-      }
-      void setLockId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
-        lockId_ = value;
-        onChanged();
-      }
-      
-      // required int64 timeout = 5;
-      private long timeout_ ;
-      public boolean hasTimeout() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      public long getTimeout() {
-        return timeout_;
-      }
-      public Builder setTimeout(long value) {
-        bitField0_ |= 0x00000010;
-        timeout_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearTimeout() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        timeout_ = 0L;
-        onChanged();
-        return this;
-      }
-      
-      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.LockChannelRequest)
-    }
-    
-    static {
-      defaultInstance = new LockChannelRequest(true);
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.LockChannelRequest)
-  }
-  
-  public interface LockChannelResponseOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-  }
-  public static final class LockChannelResponse extends
-      com.google.protobuf.GeneratedMessage
-      implements LockChannelResponseOrBuilder {
-    // Use LockChannelResponse.newBuilder() to construct.
-    private LockChannelResponse(Builder builder) {
-      super(builder);
-    }
-    private LockChannelResponse(boolean noInit) {}
-    
-    private static final LockChannelResponse defaultInstance;
-    public static LockChannelResponse getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public LockChannelResponse getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_fieldAccessorTable;
-    }
-    
-    private void initFields() {
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponseOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_descriptor;
-      }
-      
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_fieldAccessorTable;
-      }
-      
-      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private Builder(BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.getDescriptor();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse getDefaultInstanceForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.getDefaultInstance();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse build() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse buildPartial() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse(this);
-        onBuilt();
-        return result;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse) {
-          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse other) {
-        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.LockChannelResponse)
-    }
-    
-    static {
-      defaultInstance = new LockChannelResponse(true);
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.LockChannelResponse)
-  }
-  
-  public interface UnlockChannelRequestOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-    
-    // required string tunnel_id = 1;
-    boolean hasTunnelId();
-    String getTunnelId();
-    
-    // required string client_id = 2;
-    boolean hasClientId();
-    String getClientId();
-    
-    // required string channel_id = 3;
-    boolean hasChannelId();
-    String getChannelId();
-    
-    // required string lock_id = 4;
-    boolean hasLockId();
-    String getLockId();
-  }
-  public static final class UnlockChannelRequest extends
-      com.google.protobuf.GeneratedMessage
-      implements UnlockChannelRequestOrBuilder {
-    // Use UnlockChannelRequest.newBuilder() to construct.
-    private UnlockChannelRequest(Builder builder) {
-      super(builder);
-    }
-    private UnlockChannelRequest(boolean noInit) {}
-    
-    private static final UnlockChannelRequest defaultInstance;
-    public static UnlockChannelRequest getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public UnlockChannelRequest getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_fieldAccessorTable;
-    }
-    
-    private int bitField0_;
-    // required string tunnel_id = 1;
-    public static final int TUNNEL_ID_FIELD_NUMBER = 1;
-    private java.lang.Object tunnelId_;
-    public boolean hasTunnelId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public String getTunnelId() {
-      java.lang.Object ref = tunnelId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          tunnelId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getTunnelIdBytes() {
-      java.lang.Object ref = tunnelId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        tunnelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string client_id = 2;
-    public static final int CLIENT_ID_FIELD_NUMBER = 2;
-    private java.lang.Object clientId_;
-    public boolean hasClientId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getClientId() {
-      java.lang.Object ref = clientId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          clientId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getClientIdBytes() {
-      java.lang.Object ref = clientId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        clientId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string channel_id = 3;
-    public static final int CHANNEL_ID_FIELD_NUMBER = 3;
-    private java.lang.Object channelId_;
-    public boolean hasChannelId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getChannelId() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          channelId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getChannelIdBytes() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        channelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // required string lock_id = 4;
-    public static final int LOCK_ID_FIELD_NUMBER = 4;
-    private java.lang.Object lockId_;
-    public boolean hasLockId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    public String getLockId() {
-      java.lang.Object ref = lockId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          lockId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getLockIdBytes() {
-      java.lang.Object ref = lockId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        lockId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    private void initFields() {
-      tunnelId_ = "";
-      clientId_ = "";
-      channelId_ = "";
-      lockId_ = "";
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      if (!hasTunnelId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasClientId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasChannelId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLockId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getTunnelIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getClientIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getChannelIdBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getLockIdBytes());
-      }
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getTunnelIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getClientIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getChannelIdBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getLockIdBytes());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequestOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_descriptor;
-      }
-      
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_fieldAccessorTable;
-      }
-      
-      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private Builder(BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        tunnelId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        clientId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        channelId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        lockId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.getDescriptor();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest getDefaultInstanceForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.getDefaultInstance();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest build() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest buildPartial() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.tunnelId_ = tunnelId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.clientId_ = clientId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.channelId_ = channelId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.lockId_ = lockId_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest) {
-          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest other) {
-        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.getDefaultInstance()) return this;
-        if (other.hasTunnelId()) {
-          setTunnelId(other.getTunnelId());
-        }
-        if (other.hasClientId()) {
-          setClientId(other.getClientId());
-        }
-        if (other.hasChannelId()) {
-          setChannelId(other.getChannelId());
-        }
-        if (other.hasLockId()) {
-          setLockId(other.getLockId());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        if (!hasTunnelId()) {
-          
-          return false;
-        }
-        if (!hasClientId()) {
-          
-          return false;
-        }
-        if (!hasChannelId()) {
-          
-          return false;
-        }
-        if (!hasLockId()) {
-          
-          return false;
-        }
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              tunnelId_ = input.readBytes();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              clientId_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              channelId_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              lockId_ = input.readBytes();
-              break;
-            }
-          }
-        }
-      }
-      
-      private int bitField0_;
-      
-      // required string tunnel_id = 1;
-      private java.lang.Object tunnelId_ = "";
-      public boolean hasTunnelId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public String getTunnelId() {
-        java.lang.Object ref = tunnelId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          tunnelId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setTunnelId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        tunnelId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearTunnelId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        tunnelId_ = getDefaultInstance().getTunnelId();
-        onChanged();
-        return this;
-      }
-      void setTunnelId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000001;
-        tunnelId_ = value;
-        onChanged();
-      }
-      
-      // required string client_id = 2;
-      private java.lang.Object clientId_ = "";
-      public boolean hasClientId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getClientId() {
-        java.lang.Object ref = clientId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          clientId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setClientId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        clientId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearClientId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        clientId_ = getDefaultInstance().getClientId();
-        onChanged();
-        return this;
-      }
-      void setClientId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        clientId_ = value;
-        onChanged();
-      }
-      
-      // required string channel_id = 3;
-      private java.lang.Object channelId_ = "";
-      public boolean hasChannelId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getChannelId() {
-        java.lang.Object ref = channelId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          channelId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setChannelId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        channelId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearChannelId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        channelId_ = getDefaultInstance().getChannelId();
-        onChanged();
-        return this;
-      }
-      void setChannelId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        channelId_ = value;
-        onChanged();
-      }
-      
-      // required string lock_id = 4;
-      private java.lang.Object lockId_ = "";
-      public boolean hasLockId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      public String getLockId() {
-        java.lang.Object ref = lockId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          lockId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setLockId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        lockId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearLockId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        lockId_ = getDefaultInstance().getLockId();
-        onChanged();
-        return this;
-      }
-      void setLockId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
-        lockId_ = value;
-        onChanged();
-      }
-      
-      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.UnlockChannelRequest)
-    }
-    
-    static {
-      defaultInstance = new UnlockChannelRequest(true);
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.UnlockChannelRequest)
-  }
-  
-  public interface UnlockChannelResponseOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-  }
-  public static final class UnlockChannelResponse extends
-      com.google.protobuf.GeneratedMessage
-      implements UnlockChannelResponseOrBuilder {
-    // Use UnlockChannelResponse.newBuilder() to construct.
-    private UnlockChannelResponse(Builder builder) {
-      super(builder);
-    }
-    private UnlockChannelResponse(boolean noInit) {}
-    
-    private static final UnlockChannelResponse defaultInstance;
-    public static UnlockChannelResponse getDefaultInstance() {
-      return defaultInstance;
-    }
-    
-    public UnlockChannelResponse getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-    
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_descriptor;
-    }
-    
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_fieldAccessorTable;
-    }
-    
-    private void initFields() {
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      getUnknownFields().writeTo(output);
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponseOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_descriptor;
-      }
-      
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_fieldAccessorTable;
-      }
-      
-      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private Builder(BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.getDescriptor();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse getDefaultInstanceForType() {
-        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.getDefaultInstance();
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse build() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse buildPartial() {
-        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse(this);
-        onBuilt();
-        return result;
-      }
-      
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse) {
-          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-      
-      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse other) {
-        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder(
-            this.getUnknownFields());
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              this.setUnknownFields(unknownFields.build());
-              onChanged();
-              return this;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                this.setUnknownFields(unknownFields.build());
-                onChanged();
-                return this;
-              }
-              break;
-            }
-          }
-        }
-      }
-      
-      
-      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.UnlockChannelResponse)
-    }
-    
-    static {
-      defaultInstance = new UnlockChannelResponse(true);
-      defaultInstance.initFields();
-    }
-    
-    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.UnlockChannelResponse)
-  }
-  
   public interface GetCheckpointRequestOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -19302,6 +17719,467 @@ public final class TunnelServiceApi {
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.TokenContentV2)
   }
   
+  public interface StreamTunnelConfigOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StartOffsetFlag flag = 1;
+    boolean hasFlag();
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag getFlag();
+    
+    // optional uint64 startOffset = 2;
+    boolean hasStartOffset();
+    long getStartOffset();
+    
+    // optional uint64 endOffset = 3;
+    boolean hasEndOffset();
+    long getEndOffset();
+  }
+  public static final class StreamTunnelConfig extends
+      com.google.protobuf.GeneratedMessage
+      implements StreamTunnelConfigOrBuilder {
+    // Use StreamTunnelConfig.newBuilder() to construct.
+    private StreamTunnelConfig(Builder builder) {
+      super(builder);
+    }
+    private StreamTunnelConfig(boolean noInit) {}
+    
+    private static final StreamTunnelConfig defaultInstance;
+    public static StreamTunnelConfig getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public StreamTunnelConfig getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.StartOffsetFlag flag = 1;
+    public static final int FLAG_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag flag_;
+    public boolean hasFlag() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag getFlag() {
+      return flag_;
+    }
+    
+    // optional uint64 startOffset = 2;
+    public static final int STARTOFFSET_FIELD_NUMBER = 2;
+    private long startOffset_;
+    public boolean hasStartOffset() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public long getStartOffset() {
+      return startOffset_;
+    }
+    
+    // optional uint64 endOffset = 3;
+    public static final int ENDOFFSET_FIELD_NUMBER = 3;
+    private long endOffset_;
+    public boolean hasEndOffset() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public long getEndOffset() {
+      return endOffset_;
+    }
+    
+    private void initFields() {
+      flag_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag.LATEST;
+      startOffset_ = 0L;
+      endOffset_ = 0L;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, flag_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt64(2, startOffset_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeUInt64(3, endOffset_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, flag_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, startOffset_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, endOffset_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        flag_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag.LATEST;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        startOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        endOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig build() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.flag_ = flag_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.startOffset_ = startOffset_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.endOffset_ = endOffset_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance()) return this;
+        if (other.hasFlag()) {
+          setFlag(other.getFlag());
+        }
+        if (other.hasStartOffset()) {
+          setStartOffset(other.getStartOffset());
+        }
+        if (other.hasEndOffset()) {
+          setEndOffset(other.getEndOffset());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag value = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                flag_ = value;
+              }
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              startOffset_ = input.readUInt64();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              endOffset_ = input.readUInt64();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.StartOffsetFlag flag = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag flag_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag.LATEST;
+      public boolean hasFlag() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag getFlag() {
+        return flag_;
+      }
+      public Builder setFlag(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        flag_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFlag() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        flag_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StartOffsetFlag.LATEST;
+        onChanged();
+        return this;
+      }
+      
+      // optional uint64 startOffset = 2;
+      private long startOffset_ ;
+      public boolean hasStartOffset() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public long getStartOffset() {
+        return startOffset_;
+      }
+      public Builder setStartOffset(long value) {
+        bitField0_ |= 0x00000002;
+        startOffset_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStartOffset() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        startOffset_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // optional uint64 endOffset = 3;
+      private long endOffset_ ;
+      public boolean hasEndOffset() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public long getEndOffset() {
+        return endOffset_;
+      }
+      public Builder setEndOffset(long value) {
+        bitField0_ |= 0x00000004;
+        endOffset_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearEndOffset() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        endOffset_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig)
+    }
+    
+    static {
+      defaultInstance = new StreamTunnelConfig(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Error_descriptor;
   private static
@@ -19413,26 +18291,6 @@ public final class TunnelServiceApi {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_ShutdownResponse_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -19482,6 +18340,11 @@ public final class TunnelServiceApi {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContentV2_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -19494,87 +18357,91 @@ public final class TunnelServiceApi {
       "\n\030tunnel_service_api.proto\0222com.alicloud" +
       ".openservices.tablestore.core.protocol\"9" +
       "\n\005Error\022\014\n\004code\030\001 \002(\t\022\017\n\007message\030\002 \001(\t\022\021" +
-      "\n\ttunnel_id\030\003 \001(\t\"\206\001\n\006Tunnel\022\022\n\ntable_na" +
+      "\n\ttunnel_id\030\003 \001(\t\"\352\001\n\006Tunnel\022\022\n\ntable_na" +
       "me\030\001 \002(\t\022\023\n\013tunnel_name\030\003 \002(\t\022S\n\013tunnel_" +
       "type\030\004 \002(\0162>.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.TunnelType\"a\n\023Cr" +
-      "eateTunnelRequest\022J\n\006tunnel\030\001 \002(\0132:.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.Tunnel\")\n\024CreateTunnelResponse\022\021\n",
-      "\ttunnel_id\030\001 \002(\t\"Q\n\023DeleteTunnelRequest\022" +
-      "\022\n\ntable_name\030\001 \002(\t\022\023\n\013tunnel_name\030\002 \002(\t" +
-      "\022\021\n\ttunnel_id\030\003 \001(\t\"\026\n\024DeleteTunnelRespo" +
-      "nse\"\'\n\021ListTunnelRequest\022\022\n\ntable_name\030\001" +
-      " \001(\t\"\267\001\n\nTunnelInfo\022\021\n\ttunnel_id\030\001 \002(\t\022\023" +
-      "\n\013tunnel_type\030\002 \002(\t\022\022\n\ntable_name\030\003 \002(\t\022" +
-      "\025\n\rinstance_name\030\004 \002(\t\022\021\n\tstream_id\030\005 \002(" +
-      "\t\022\r\n\005stage\030\006 \002(\t\022\017\n\007expired\030\007 \001(\010\022\023\n\013tun" +
-      "nel_name\030\010 \001(\t\022\016\n\006public\030\t \001(\010\"e\n\022ListTu" +
-      "nnelResponse\022O\n\007tunnels\030\001 \003(\0132>.com.alic",
+      "ablestore.core.protocol.TunnelType\022b\n\022St" +
+      "reamTunnelConfig\030\005 \001(\0132F.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Stre" +
+      "amTunnelConfig\"a\n\023CreateTunnelRequest\022J\n",
+      "\006tunnel\030\001 \002(\0132:.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.Tunnel\")\n\024Cre" +
+      "ateTunnelResponse\022\021\n\ttunnel_id\030\001 \002(\t\"Q\n\023" +
+      "DeleteTunnelRequest\022\022\n\ntable_name\030\001 \002(\t\022" +
+      "\023\n\013tunnel_name\030\002 \002(\t\022\021\n\ttunnel_id\030\003 \001(\t\"" +
+      "\026\n\024DeleteTunnelResponse\"\'\n\021ListTunnelReq" +
+      "uest\022\022\n\ntable_name\030\001 \001(\t\"\262\002\n\nTunnelInfo\022" +
+      "\021\n\ttunnel_id\030\001 \002(\t\022\023\n\013tunnel_type\030\002 \002(\t\022" +
+      "\022\n\ntable_name\030\003 \002(\t\022\025\n\rinstance_name\030\004 \002" +
+      "(\t\022\021\n\tstream_id\030\005 \002(\t\022\r\n\005stage\030\006 \002(\t\022\017\n\007",
+      "expired\030\007 \001(\010\022\023\n\013tunnel_name\030\010 \001(\t\022\016\n\006pu" +
+      "blic\030\t \001(\010\022d\n\024stream_tunnel_config\030\n \001(\013" +
+      "2F.com.alicloud.openservices.tablestore." +
+      "core.protocol.StreamTunnelConfig\022\023\n\013crea" +
+      "te_time\030\013 \001(\003\"e\n\022ListTunnelResponse\022O\n\007t" +
+      "unnels\030\001 \003(\0132>.com.alicloud.openservices" +
+      ".tablestore.core.protocol.TunnelInfo\"S\n\025" +
+      "DescribeTunnelRequest\022\022\n\ntable_name\030\001 \002(" +
+      "\t\022\023\n\013tunnel_name\030\002 \002(\t\022\021\n\ttunnel_id\030\003 \001(" +
+      "\t\"\216\001\n\013ChannelInfo\022\022\n\nchannel_id\030\001 \002(\t\022\024\n",
+      "\014channel_type\030\002 \001(\t\022\026\n\016channel_status\030\003 " +
+      "\001(\t\022\021\n\tclient_id\030\004 \001(\t\022\023\n\013channel_rpo\030\005 " +
+      "\001(\003\022\025\n\rchannel_count\030\006 \001(\003\"\317\001\n\026DescribeT" +
+      "unnelResponse\022N\n\006tunnel\030\001 \002(\0132>.com.alic" +
       "loud.openservices.tablestore.core.protoc" +
-      "ol.TunnelInfo\"S\n\025DescribeTunnelRequest\022\022" +
-      "\n\ntable_name\030\001 \002(\t\022\023\n\013tunnel_name\030\002 \002(\t\022" +
-      "\021\n\ttunnel_id\030\003 \001(\t\"\216\001\n\013ChannelInfo\022\022\n\nch" +
-      "annel_id\030\001 \002(\t\022\024\n\014channel_type\030\002 \001(\t\022\026\n\016" +
-      "channel_status\030\003 \001(\t\022\021\n\tclient_id\030\004 \001(\t\022" +
-      "\023\n\013channel_rpo\030\005 \001(\003\022\025\n\rchannel_count\030\006 " +
-      "\001(\003\"\317\001\n\026DescribeTunnelResponse\022N\n\006tunnel" +
-      "\030\001 \002(\0132>.com.alicloud.openservices.table" +
-      "store.core.protocol.TunnelInfo\022Q\n\010channe",
-      "ls\030\002 \003(\0132?.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.ChannelInfo\022\022\n\ntun" +
-      "nel_rpo\030\003 \001(\003\"\"\n\rGetRpoRequest\022\021\n\ttunnel" +
-      "_id\030\001 \001(\t\"=\n\016GetRpoResponse\022\021\n\trpo_infos" +
-      "\030\001 \001(\014\022\030\n\020tunnel_rpo_infos\030\002 \001(\014\"3\n\014Clie" +
-      "ntConfig\022\017\n\007timeout\030\001 \001(\003\022\022\n\nclient_tag\030" +
-      "\002 \001(\t\"|\n\016ConnectRequest\022\021\n\ttunnel_id\030\001 \002" +
-      "(\t\022W\n\rclient_config\030\002 \001(\0132@.com.alicloud" +
-      ".openservices.tablestore.core.protocol.C" +
-      "lientConfig\"$\n\017ConnectResponse\022\021\n\tclient",
-      "_id\030\001 \002(\t\"\221\001\n\007Channel\022\022\n\nchannel_id\030\001 \002(" +
-      "\t\022\017\n\007version\030\002 \002(\003\022Q\n\006status\030\003 \002(\0162A.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.ChannelStatus\022\016\n\006detail\030\004 \001(\014\"\207\001" +
-      "\n\020HeartbeatRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n" +
-      "\tclient_id\030\002 \002(\t\022M\n\010channels\030\003 \003(\0132;.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.Channel\"b\n\021HeartbeatResponse\022M\n\010" +
-      "channels\030\001 \003(\0132;.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.Channel\"7\n\017S",
-      "hutdownRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tcli" +
-      "ent_id\030\002 \002(\t\"\022\n\020ShutdownResponse\"p\n\022Lock" +
-      "ChannelRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tcli" +
-      "ent_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\022\017\n\007lock" +
-      "_id\030\004 \002(\t\022\017\n\007timeout\030\005 \002(\003\"\025\n\023LockChanne" +
-      "lResponse\"a\n\024UnlockChannelRequest\022\021\n\ttun" +
-      "nel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nchann" +
-      "el_id\030\003 \002(\t\022\017\n\007lock_id\030\004 \002(\t\"\027\n\025UnlockCh" +
-      "annelResponse\"P\n\024GetCheckpointRequest\022\021\n" +
-      "\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nc",
-      "hannel_id\030\003 \002(\t\"D\n\025GetCheckpointResponse" +
-      "\022\022\n\ncheckpoint\030\001 \002(\t\022\027\n\017sequence_number\030" +
-      "\002 \002(\003\"z\n\021CheckpointRequest\022\021\n\ttunnel_id\030" +
-      "\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nchannel_id\030\003" +
-      " \002(\t\022\022\n\ncheckpoint\030\004 \002(\t\022\027\n\017sequence_num" +
-      "ber\030\005 \002(\003\"\024\n\022CheckpointResponse\"]\n\022ReadR" +
-      "ecordsRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclie" +
-      "nt_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\022\r\n\005token" +
-      "\030\004 \002(\t\"m\n\006Record\022S\n\013action_type\030\001 \002(\0162>." +
-      "com.alicloud.openservices.tablestore.cor",
-      "e.protocol.ActionType\022\016\n\006record\030\002 \002(\014\"v\n" +
-      "\023ReadRecordsResponse\022K\n\007records\030\001 \003(\0132:." +
+      "ol.TunnelInfo\022Q\n\010channels\030\002 \003(\0132?.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.ChannelInfo\022\022\n\ntunnel_rpo\030\003 \001(\003\"\"\n\r" +
+      "GetRpoRequest\022\021\n\ttunnel_id\030\001 \001(\t\"=\n\016GetR" +
+      "poResponse\022\021\n\trpo_infos\030\001 \001(\014\022\030\n\020tunnel_",
+      "rpo_infos\030\002 \001(\014\"3\n\014ClientConfig\022\017\n\007timeo" +
+      "ut\030\001 \001(\003\022\022\n\nclient_tag\030\002 \001(\t\"|\n\016ConnectR" +
+      "equest\022\021\n\ttunnel_id\030\001 \002(\t\022W\n\rclient_conf" +
+      "ig\030\002 \001(\0132@.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.ClientConfig\"$\n\017Co" +
+      "nnectResponse\022\021\n\tclient_id\030\001 \002(\t\"\221\001\n\007Cha" +
+      "nnel\022\022\n\nchannel_id\030\001 \002(\t\022\017\n\007version\030\002 \002(" +
+      "\003\022Q\n\006status\030\003 \002(\0162A.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.ChannelSt" +
+      "atus\022\016\n\006detail\030\004 \001(\014\"\207\001\n\020HeartbeatReques",
+      "t\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022" +
+      "M\n\010channels\030\003 \003(\0132;.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.Channel\"b" +
+      "\n\021HeartbeatResponse\022M\n\010channels\030\001 \003(\0132;." +
       "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.Record\022\022\n\nnext_token\030\002 \002(\t\")\n" +
-      "\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007content\030\002 \002(\014" +
-      "\"H\n\014TokenContent\022\023\n\013primary_key\030\001 \001(\014\022\020\n" +
-      "\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"_\n\016To" +
-      "kenContentV2\022\023\n\013primary_key\030\001 \001(\014\022\020\n\010ite" +
-      "rator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\022\023\n\013total_" +
-      "count\030\004 \001(\003*9\n\nTunnelType\022\014\n\010BaseData\020\001\022",
-      "\n\n\006Stream\020\002\022\021\n\rBaseAndStream\020\003*A\n\rChanne" +
-      "lStatus\022\010\n\004OPEN\020\001\022\013\n\007CLOSING\020\002\022\t\n\005CLOSE\020" +
-      "\003\022\016\n\nTERMINATED\020\004*9\n\nActionType\022\013\n\007PUT_R" +
-      "OW\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003"
+      "e.protocol.Channel\"7\n\017ShutdownRequest\022\021\n" +
+      "\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\"\022\n\020S" +
+      "hutdownResponse\"P\n\024GetCheckpointRequest\022" +
+      "\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n" +
+      "\nchannel_id\030\003 \002(\t\"D\n\025GetCheckpointRespon",
+      "se\022\022\n\ncheckpoint\030\001 \002(\t\022\027\n\017sequence_numbe" +
+      "r\030\002 \002(\003\"z\n\021CheckpointRequest\022\021\n\ttunnel_i" +
+      "d\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nchannel_id" +
+      "\030\003 \002(\t\022\022\n\ncheckpoint\030\004 \002(\t\022\027\n\017sequence_n" +
+      "umber\030\005 \002(\003\"\024\n\022CheckpointResponse\"]\n\022Rea" +
+      "dRecordsRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tcl" +
+      "ient_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\022\r\n\005tok" +
+      "en\030\004 \002(\t\"m\n\006Record\022S\n\013action_type\030\001 \002(\0162" +
+      ">.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.ActionType\022\016\n\006record\030\002 \002(\014\"",
+      "v\n\023ReadRecordsResponse\022K\n\007records\030\001 \003(\0132" +
+      ":.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.Record\022\022\n\nnext_token\030\002 \002(\t\"" +
+      ")\n\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007content\030\002 \002" +
+      "(\014\"H\n\014TokenContent\022\023\n\013primary_key\030\001 \001(\014\022" +
+      "\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"_\n\016" +
+      "TokenContentV2\022\023\n\013primary_key\030\001 \001(\014\022\020\n\010i" +
+      "terator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\022\023\n\013tota" +
+      "l_count\030\004 \001(\003\"\217\001\n\022StreamTunnelConfig\022Q\n\004" +
+      "flag\030\001 \001(\0162C.com.alicloud.openservices.t",
+      "ablestore.core.protocol.StartOffsetFlag\022" +
+      "\023\n\013startOffset\030\002 \001(\004\022\021\n\tendOffset\030\003 \001(\004*" +
+      "9\n\nTunnelType\022\014\n\010BaseData\020\001\022\n\n\006Stream\020\002\022" +
+      "\021\n\rBaseAndStream\020\003*A\n\rChannelStatus\022\010\n\004O" +
+      "PEN\020\001\022\013\n\007CLOSING\020\002\022\t\n\005CLOSE\020\003\022\016\n\nTERMINA" +
+      "TED\020\004*9\n\nActionType\022\013\n\007PUT_ROW\020\001\022\016\n\nUPDA" +
+      "TE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*+\n\017StartOffsetF" +
+      "lag\022\n\n\006LATEST\020\000\022\014\n\010EARLIEST\020\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -19594,7 +18461,7 @@ public final class TunnelServiceApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Tunnel_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Tunnel_descriptor,
-              new java.lang.String[] { "TableName", "TunnelName", "TunnelType", },
+              new java.lang.String[] { "TableName", "TunnelName", "TunnelType", "StreamTunnelConfig", },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Tunnel.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Tunnel.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateTunnelRequest_descriptor =
@@ -19642,7 +18509,7 @@ public final class TunnelServiceApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TunnelInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_TunnelInfo_descriptor,
-              new java.lang.String[] { "TunnelId", "TunnelType", "TableName", "InstanceName", "StreamId", "Stage", "Expired", "TunnelName", "Public", },
+              new java.lang.String[] { "TunnelId", "TunnelType", "TableName", "InstanceName", "StreamId", "Stage", "Expired", "TunnelName", "Public", "StreamTunnelConfig", "CreateTime", },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelInfo.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TunnelInfo.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ListTunnelResponse_descriptor =
@@ -19757,40 +18624,8 @@ public final class TunnelServiceApi {
               new java.lang.String[] { },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ShutdownResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ShutdownResponse.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_descriptor =
-            getDescriptor().getMessageTypes().get(22);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelRequest_descriptor,
-              new java.lang.String[] { "TunnelId", "ClientId", "ChannelId", "LockId", "Timeout", },
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.class,
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelRequest.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_descriptor =
-            getDescriptor().getMessageTypes().get(23);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_com_alicloud_openservices_tablestore_core_protocol_LockChannelResponse_descriptor,
-              new java.lang.String[] { },
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.class,
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.LockChannelResponse.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_descriptor =
-            getDescriptor().getMessageTypes().get(24);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelRequest_descriptor,
-              new java.lang.String[] { "TunnelId", "ClientId", "ChannelId", "LockId", },
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.class,
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelRequest.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_descriptor =
-            getDescriptor().getMessageTypes().get(25);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_com_alicloud_openservices_tablestore_core_protocol_UnlockChannelResponse_descriptor,
-              new java.lang.String[] { },
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.class,
-              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.UnlockChannelResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointRequest_descriptor =
-            getDescriptor().getMessageTypes().get(26);
+            getDescriptor().getMessageTypes().get(22);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointRequest_descriptor,
@@ -19798,7 +18633,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.GetCheckpointRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.GetCheckpointRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointResponse_descriptor =
-            getDescriptor().getMessageTypes().get(27);
+            getDescriptor().getMessageTypes().get(23);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GetCheckpointResponse_descriptor,
@@ -19806,7 +18641,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.GetCheckpointResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.GetCheckpointResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointRequest_descriptor =
-            getDescriptor().getMessageTypes().get(28);
+            getDescriptor().getMessageTypes().get(24);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointRequest_descriptor,
@@ -19814,7 +18649,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.CheckpointRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.CheckpointRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointResponse_descriptor =
-            getDescriptor().getMessageTypes().get(29);
+            getDescriptor().getMessageTypes().get(25);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_CheckpointResponse_descriptor,
@@ -19822,7 +18657,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.CheckpointResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.CheckpointResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsRequest_descriptor =
-            getDescriptor().getMessageTypes().get(30);
+            getDescriptor().getMessageTypes().get(26);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsRequest_descriptor,
@@ -19830,7 +18665,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_descriptor =
-            getDescriptor().getMessageTypes().get(31);
+            getDescriptor().getMessageTypes().get(27);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_descriptor,
@@ -19838,7 +18673,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Record.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Record.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_descriptor =
-            getDescriptor().getMessageTypes().get(32);
+            getDescriptor().getMessageTypes().get(28);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_descriptor,
@@ -19846,7 +18681,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Token_descriptor =
-            getDescriptor().getMessageTypes().get(33);
+            getDescriptor().getMessageTypes().get(29);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Token_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Token_descriptor,
@@ -19854,7 +18689,7 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Token.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Token.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContent_descriptor =
-            getDescriptor().getMessageTypes().get(34);
+            getDescriptor().getMessageTypes().get(30);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContent_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContent_descriptor,
@@ -19862,13 +18697,21 @@ public final class TunnelServiceApi {
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TokenContent.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TokenContent.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContentV2_descriptor =
-            getDescriptor().getMessageTypes().get(35);
+            getDescriptor().getMessageTypes().get(31);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContentV2_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_TokenContentV2_descriptor,
               new java.lang.String[] { "PrimaryKey", "Iterator", "Timestamp", "TotalCount", },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TokenContentV2.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.TokenContentV2.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor =
+            getDescriptor().getMessageTypes().get(32);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor,
+              new java.lang.String[] { "Flag", "StartOffset", "EndOffset", },
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.class,
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.Builder.class);
           return null;
         }
       };

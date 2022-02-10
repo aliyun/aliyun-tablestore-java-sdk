@@ -4,11 +4,15 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.BulkExportRequest;
 import com.alicloud.openservices.tablestore.model.condition.ColumnCondition;
 import com.alicloud.openservices.tablestore.model.condition.SingleColumnValueCondition;
 import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
+import com.alicloud.openservices.tablestore.model.tunnel.BulkExportQueryCriteria;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DataOperationSample {
 
@@ -413,4 +417,53 @@ public class DataOperationSample {
         }
     }
 
+    private static void bulkImport(SyncClient client, String start, String end){
+        // create bulkImportRequest
+        BulkImportRequest bulkImportRequest = new BulkImportRequest(TABLE_NAME);
+
+        // create rowChanges
+        List<RowChange> rowChanges = new ArrayList<RowChange>();
+        for (Integer i = Integer.valueOf(start); i <= Integer.valueOf(end); i++){
+            PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
+            primaryKeyBuilder.addPrimaryKeyColumn("pk", PrimaryKeyValue.fromString(String.valueOf(i)));
+            PrimaryKey primaryKey = primaryKeyBuilder.build();
+            RowPutChange rowChange = new RowPutChange(TABLE_NAME,primaryKey);
+            rowChange.addColumn(new Column("DC1", ColumnValue.fromString(i.toString())));
+            rowChange.addColumn(new Column("DC2", ColumnValue.fromString(i.toString())));
+            rowChange.addColumn(new Column("DC3", ColumnValue.fromString(i.toString())));
+            rowChanges.add(rowChange);
+        }
+
+        bulkImportRequest.addRowChanges(rowChanges);
+        // get bulkImportResponse
+        BulkImportResponse bulkImportResponse = client.bulkImport(bulkImportRequest);
+    }
+
+    private static void bulkExport(SyncClient client, String start, String end){
+        // create startPrimaryKey
+        PrimaryKeyBuilder startPrimaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
+        startPrimaryKeyBuilder.addPrimaryKeyColumn("pk", PrimaryKeyValue.fromString(String.valueOf(start)));
+        PrimaryKey startPrimaryKey = startPrimaryKeyBuilder.build();
+
+        // create endPrimaryKey
+        PrimaryKeyBuilder endPrimaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
+        endPrimaryKeyBuilder.addPrimaryKeyColumn("pk", PrimaryKeyValue.fromString(String.valueOf(end)));
+        PrimaryKey endPrimaryKey = endPrimaryKeyBuilder.build();
+
+        // create bulkExportRequest
+        BulkExportRequest bulkExportRequest = new BulkExportRequest();
+        // create bulkExportQueryCriteria
+        BulkExportQueryCriteria bulkExportQueryCriteria = new BulkExportQueryCriteria(TABLE_NAME);
+
+        bulkExportQueryCriteria.setInclusiveStartPrimaryKey(startPrimaryKey);
+        bulkExportQueryCriteria.setExclusiveEndPrimaryKey(endPrimaryKey);
+        bulkExportQueryCriteria.setDataBlockType(DataBlockType.DBT_PLAIN_BUFFER);
+        bulkExportQueryCriteria.addColumnsToGet("pk");
+        bulkExportQueryCriteria.addColumnsToGet("DC1");
+        bulkExportQueryCriteria.addColumnsToGet("DC2");
+
+        bulkExportRequest.setBulkExportQueryCriteria(bulkExportQueryCriteria);
+        // get bulkExportResponse
+        BulkExportResponse bulkExportResponse = client.bulkExport(bulkExportRequest);
+    }
 }

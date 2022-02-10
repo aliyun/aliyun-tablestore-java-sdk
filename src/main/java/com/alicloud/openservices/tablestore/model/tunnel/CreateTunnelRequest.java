@@ -24,6 +24,11 @@ public class CreateTunnelRequest implements Request {
     private TunnelType tunnelType;
 
     /**
+     * Tunnel时间范围配置。
+     */
+    private StreamTunnelConfig streamTunnelConfig;
+
+    /**
      * 初始化CreateTunnelRequest实例。
      *
      * @param tableName  表名。
@@ -100,5 +105,13 @@ public class CreateTunnelRequest implements Request {
     @Override
     public String getOperationName() {
         return OperationNames.OP_CREATE_TUNNEL;
+    }
+
+    public StreamTunnelConfig getStreamTunnelConfig() {
+        return streamTunnelConfig;
+    }
+
+    public void setStreamTunnelConfig(StreamTunnelConfig streamTunnelConfig) {
+        this.streamTunnelConfig = streamTunnelConfig;
     }
 }

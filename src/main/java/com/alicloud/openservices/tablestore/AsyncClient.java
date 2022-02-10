@@ -4,9 +4,13 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutorService;
 
+import com.alicloud.openservices.tablestore.core.ResourceManager;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 
 public class AsyncClient implements AsyncClientInterface {
 
@@ -105,6 +109,11 @@ public class AsyncClient implements AsyncClientInterface {
         internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config, callbackExecutor, stsToken);
     }
 
+    public AsyncClient(String endpoint, CredentialsProvider credsProvider, String instanceName,
+                      ClientConfiguration config, ResourceManager resourceManager) {
+        internalClient = new InternalClient(endpoint, credsProvider, instanceName, config, resourceManager);
+    }
+
     AsyncClient(InternalClient internalClient) {
         this.internalClient = internalClient;
     }
@@ -187,6 +196,22 @@ public class AsyncClient implements AsyncClientInterface {
     }
 
     @Override
+    public Future<AddDefinedColumnResponse> addDefinedColumn(
+            AddDefinedColumnRequest request,
+            TableStoreCallback<AddDefinedColumnRequest, AddDefinedColumnResponse> callback)
+    {
+        return internalClient.addDefinedColumn(request, callback);
+    }
+
+    @Override
+    public Future<DeleteDefinedColumnResponse> deleteDefinedColumn(
+            DeleteDefinedColumnRequest request,
+            TableStoreCallback<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse> callback)
+    {
+        return internalClient.deleteDefinedColumn(request, callback);
+    }
+
+    @Override
     public Future<GetRowResponse> getRow(GetRowRequest request,
     		TableStoreCallback<GetRowRequest, GetRowResponse> callback)
     {
@@ -239,6 +264,20 @@ public class AsyncClient implements AsyncClientInterface {
     {
         return internalClient.getRangeInternal(request, callback);
     }
+
+    @Override
+    public Future<BulkExportResponse> bulkExport(BulkExportRequest request,
+                                             TableStoreCallback<BulkExportRequest, BulkExportResponse> callback)
+    {
+        return internalClient.bulkExportInternal(request, callback);
+    }
+
+    @Override
+    public Future<BulkImportResponse> bulkImport(BulkImportRequest request,
+                                                 TableStoreCallback<BulkImportRequest, BulkImportResponse> callback)
+    {
+        return internalClient.bulkImport(request, callback);
+    }
     
     @Override
     public Future<ComputeSplitsBySizeResponse> computeSplitsBySize(
@@ -273,6 +312,11 @@ public class AsyncClient implements AsyncClientInterface {
     }
 
     @Override
+    public Future<UpdateSearchIndexResponse> updateSearchIndex(UpdateSearchIndexRequest request, TableStoreCallback<UpdateSearchIndexRequest, UpdateSearchIndexResponse> callback) {
+        return internalClient.updateSearchIndex(request, callback);
+    }
+
+    @Override
     public Future<ListSearchIndexResponse> listSearchIndex(ListSearchIndexRequest request, TableStoreCallback<ListSearchIndexRequest, ListSearchIndexResponse> callback) {
         return internalClient.listSearchIndex(request, callback);
     }
@@ -285,6 +329,17 @@ public class AsyncClient implements AsyncClientInterface {
     @Override
     public Future<DescribeSearchIndexResponse> describeSearchIndex(DescribeSearchIndexRequest request, TableStoreCallback<DescribeSearchIndexRequest, DescribeSearchIndexResponse> callback) {
         return internalClient.describeSearchIndex(request, callback);
+    }
+
+    @Override
+    public Future<ComputeSplitsResponse> computeSplits(ComputeSplitsRequest request, TableStoreCallback<ComputeSplitsRequest, ComputeSplitsResponse> callback) {
+        return internalClient.computeSplits(request, callback);
+    }
+
+    @Override
+    public Future<ParallelScanResponse> parallelScan(ParallelScanRequest request,
+        TableStoreCallback<ParallelScanRequest, ParallelScanResponse> callback) {
+        return internalClient.parallelScan(request, callback);
     }
 
     @Override
@@ -308,8 +363,36 @@ public class AsyncClient implements AsyncClientInterface {
     }
 
     @Override
+    public Future<CreateDeliveryTaskResponse> createDeliveryTask(CreateDeliveryTaskRequest request, TableStoreCallback<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse> callback) {
+        return internalClient.createDeliveryTask(request, callback);
+    }
+
+    @Override
+    public Future<DeleteDeliveryTaskResponse> deleteDeliveryTask(DeleteDeliveryTaskRequest request, TableStoreCallback<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse> callback) {
+        return internalClient.deleteDeliveryTask(request, callback);
+    }
+
+    @Override
+    public Future<DescribeDeliveryTaskResponse> describeDeliveryTask(DescribeDeliveryTaskRequest request, TableStoreCallback<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse> callback) {
+        return internalClient.describeDeliveryTask(request, callback);
+    }
+
+    @Override
+    public Future<ListDeliveryTaskResponse> listDeliveryTask(ListDeliveryTaskRequest request, TableStoreCallback<ListDeliveryTaskRequest, ListDeliveryTaskResponse> callback) {
+        return internalClient.listDeliveryTask(request, callback);
+    }
+
+    @Override
     public SyncClientInterface asSyncClient() {
         return new SyncClient(this.internalClient);
+    }
+
+    public TimeseriesClient asTimeseriesClient() {
+        return new TimeseriesClient(this.internalClient);
+    }
+
+    public AsyncTimeseriesClient asAsyncTimeseriesClient() {
+        return new AsyncTimeseriesClient(this.internalClient);
     }
 
     @Override
@@ -320,5 +403,10 @@ public class AsyncClient implements AsyncClientInterface {
     @Override
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider) {
         internalClient.switchCredentialsProvider(newCrdsProvider);
+    }
+
+    @Override
+    public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request, TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback) {
+        return internalClient.sqlQuery(request, callback);
     }
 }

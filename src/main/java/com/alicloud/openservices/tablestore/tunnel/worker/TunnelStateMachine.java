@@ -172,7 +172,7 @@ public class TunnelStateMachine {
     }
 
     public void close() {
-        LOG.info("Begin close tunnel state machine.");
+        LOG.info("Begin close tunnel state machine, channelConnects: {}", channelConnects.size());
         for (IChannelConnect connect : channelConnects.values()) {
             connect.close();
         }

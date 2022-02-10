@@ -8,13 +8,27 @@ import com.google.protobuf.ByteString;
  */
 public class MatchAllQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_MatchAllQuery;
+
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_MatchAllQuery;
+        return queryType;
     }
 
     @Override
     public ByteString serialize() {
         return SearchQueryBuilder.buildMatchAllQuery().toByteString();
+    }
+
+    protected static MatchAllQuery.Builder newBuilder() {
+        return new MatchAllQuery.Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+
+        @Override
+        public Query build() {
+            return new MatchAllQuery();
+        }
     }
 }

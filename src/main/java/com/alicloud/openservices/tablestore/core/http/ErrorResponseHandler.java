@@ -21,7 +21,7 @@ public class ErrorResponseHandler implements ResponseHandler {
             return;
         }
         
-        Map<String, String> headers = responseData.getHeadersMap();
+        Map<String, String> headers = responseData.getLowerCaseHeadersMap();
         int httpStatus = responseData.getStatusCode();
        
         if (httpStatus == Constants.OTS_HTTP_MOVED_PERMANENTLY) {

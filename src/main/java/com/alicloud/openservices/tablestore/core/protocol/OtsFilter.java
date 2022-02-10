@@ -8,6 +8,84 @@ public final class OtsFilter {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public enum VariantType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    VT_INTEGER(0, 0),
+    VT_DOUBLE(1, 1),
+    VT_STRING(2, 3),
+    VT_NULL(3, 6),
+    VT_BLOB(4, 7),
+    ;
+    
+    public static final int VT_INTEGER_VALUE = 0;
+    public static final int VT_DOUBLE_VALUE = 1;
+    public static final int VT_STRING_VALUE = 3;
+    public static final int VT_NULL_VALUE = 6;
+    public static final int VT_BLOB_VALUE = 7;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static VariantType valueOf(int value) {
+      switch (value) {
+        case 0: return VT_INTEGER;
+        case 1: return VT_DOUBLE;
+        case 3: return VT_STRING;
+        case 6: return VT_NULL;
+        case 7: return VT_BLOB;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<VariantType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<VariantType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<VariantType>() {
+            public VariantType findValueByNumber(int number) {
+              return VariantType.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(0);
+    }
+    
+    private static final VariantType[] VALUES = {
+      VT_INTEGER, VT_DOUBLE, VT_STRING, VT_NULL, VT_BLOB, 
+    };
+    
+    public static VariantType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private VariantType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.VariantType)
+  }
+  
   public enum FilterType
       implements com.google.protobuf.ProtocolMessageEnum {
     FT_SINGLE_COLUMN_VALUE(0, 1),
@@ -53,7 +131,7 @@ public final class OtsFilter {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(0);
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(1);
     }
     
     private static final FilterType[] VALUES = {
@@ -88,6 +166,8 @@ public final class OtsFilter {
     CT_GREATER_EQUAL(3, 4),
     CT_LESS_THAN(4, 5),
     CT_LESS_EQUAL(5, 6),
+    CT_EXIST(6, 7),
+    CT_NOT_EXIST(7, 8),
     ;
     
     public static final int CT_EQUAL_VALUE = 1;
@@ -96,6 +176,8 @@ public final class OtsFilter {
     public static final int CT_GREATER_EQUAL_VALUE = 4;
     public static final int CT_LESS_THAN_VALUE = 5;
     public static final int CT_LESS_EQUAL_VALUE = 6;
+    public static final int CT_EXIST_VALUE = 7;
+    public static final int CT_NOT_EXIST_VALUE = 8;
     
     
     public final int getNumber() { return value; }
@@ -108,6 +190,8 @@ public final class OtsFilter {
         case 4: return CT_GREATER_EQUAL;
         case 5: return CT_LESS_THAN;
         case 6: return CT_LESS_EQUAL;
+        case 7: return CT_EXIST;
+        case 8: return CT_NOT_EXIST;
         default: return null;
       }
     }
@@ -134,11 +218,11 @@ public final class OtsFilter {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(1);
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(2);
     }
     
     private static final ComparatorType[] VALUES = {
-      CT_EQUAL, CT_NOT_EQUAL, CT_GREATER_THAN, CT_GREATER_EQUAL, CT_LESS_THAN, CT_LESS_EQUAL, 
+      CT_EQUAL, CT_NOT_EQUAL, CT_GREATER_THAN, CT_GREATER_EQUAL, CT_LESS_THAN, CT_LESS_EQUAL, CT_EXIST, CT_NOT_EXIST, 
     };
     
     public static ComparatorType valueOf(
@@ -206,7 +290,7 @@ public final class OtsFilter {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(2);
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.getDescriptor().getEnumTypes().get(3);
     }
     
     private static final LogicalOperator[] VALUES = {
@@ -233,6 +317,455 @@ public final class OtsFilter {
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.LogicalOperator)
   }
   
+  public interface ValueTransferRuleOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string regex = 1;
+    boolean hasRegex();
+    String getRegex();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VariantType cast_type = 2;
+    boolean hasCastType();
+    com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType getCastType();
+  }
+  public static final class ValueTransferRule extends
+      com.google.protobuf.GeneratedMessage
+      implements ValueTransferRuleOrBuilder {
+    // Use ValueTransferRule.newBuilder() to construct.
+    private ValueTransferRule(Builder builder) {
+      super(builder);
+    }
+    private ValueTransferRule(boolean noInit) {}
+    
+    private static final ValueTransferRule defaultInstance;
+    public static ValueTransferRule getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public ValueTransferRule getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required string regex = 1;
+    public static final int REGEX_FIELD_NUMBER = 1;
+    private java.lang.Object regex_;
+    public boolean hasRegex() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getRegex() {
+      java.lang.Object ref = regex_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          regex_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getRegexBytes() {
+      java.lang.Object ref = regex_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        regex_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VariantType cast_type = 2;
+    public static final int CAST_TYPE_FIELD_NUMBER = 2;
+    private com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType castType_;
+    public boolean hasCastType() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType getCastType() {
+      return castType_;
+    }
+    
+    private void initFields() {
+      regex_ = "";
+      castType_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType.VT_INTEGER;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasRegex()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getRegexBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(2, castType_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getRegexBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, castType_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        regex_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        castType_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType.VT_INTEGER;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule build() {
+        com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule result = new com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.regex_ = regex_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.castType_ = castType_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance()) return this;
+        if (other.hasRegex()) {
+          setRegex(other.getRegex());
+        }
+        if (other.hasCastType()) {
+          setCastType(other.getCastType());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasRegex()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              regex_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType value = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(2, rawValue);
+              } else {
+                bitField0_ |= 0x00000002;
+                castType_ = value;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required string regex = 1;
+      private java.lang.Object regex_ = "";
+      public boolean hasRegex() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getRegex() {
+        java.lang.Object ref = regex_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          regex_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setRegex(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        regex_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearRegex() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        regex_ = getDefaultInstance().getRegex();
+        onChanged();
+        return this;
+      }
+      void setRegex(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        regex_ = value;
+        onChanged();
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.VariantType cast_type = 2;
+      private com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType castType_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType.VT_INTEGER;
+      public boolean hasCastType() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType getCastType() {
+        return castType_;
+      }
+      public Builder setCastType(com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        castType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearCastType() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        castType_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.VariantType.VT_INTEGER;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.ValueTransferRule)
+    }
+    
+    static {
+      defaultInstance = new ValueTransferRule(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.ValueTransferRule)
+  }
+  
   public interface SingleColumnValueFilterOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -255,6 +788,11 @@ public final class OtsFilter {
     // required bool latest_version_only = 5;
     boolean hasLatestVersionOnly();
     boolean getLatestVersionOnly();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ValueTransferRule value_trans_rule = 6;
+    boolean hasValueTransRule();
+    com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule getValueTransRule();
+    com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder getValueTransRuleOrBuilder();
   }
   public static final class SingleColumnValueFilter extends
       com.google.protobuf.GeneratedMessage
@@ -357,12 +895,26 @@ public final class OtsFilter {
       return latestVersionOnly_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ValueTransferRule value_trans_rule = 6;
+    public static final int VALUE_TRANS_RULE_FIELD_NUMBER = 6;
+    private com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule valueTransRule_;
+    public boolean hasValueTransRule() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule getValueTransRule() {
+      return valueTransRule_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder getValueTransRuleOrBuilder() {
+      return valueTransRule_;
+    }
+    
     private void initFields() {
       comparator_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ComparatorType.CT_EQUAL;
       columnName_ = "";
       columnValue_ = com.google.protobuf.ByteString.EMPTY;
       filterIfMissing_ = false;
       latestVersionOnly_ = false;
+      valueTransRule_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -389,6 +941,12 @@ public final class OtsFilter {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (hasValueTransRule()) {
+        if (!getValueTransRule().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -410,6 +968,9 @@ public final class OtsFilter {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBool(5, latestVersionOnly_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeMessage(6, valueTransRule_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -439,6 +1000,10 @@ public final class OtsFilter {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, latestVersionOnly_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, valueTransRule_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -556,6 +1121,7 @@ public final class OtsFilter {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getValueTransRuleFieldBuilder();
         }
       }
       private static Builder create() {
@@ -574,6 +1140,12 @@ public final class OtsFilter {
         bitField0_ = (bitField0_ & ~0x00000008);
         latestVersionOnly_ = false;
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (valueTransRuleBuilder_ == null) {
+          valueTransRule_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance();
+        } else {
+          valueTransRuleBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       
@@ -632,6 +1204,14 @@ public final class OtsFilter {
           to_bitField0_ |= 0x00000010;
         }
         result.latestVersionOnly_ = latestVersionOnly_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        if (valueTransRuleBuilder_ == null) {
+          result.valueTransRule_ = valueTransRule_;
+        } else {
+          result.valueTransRule_ = valueTransRuleBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -663,6 +1243,9 @@ public final class OtsFilter {
         if (other.hasLatestVersionOnly()) {
           setLatestVersionOnly(other.getLatestVersionOnly());
         }
+        if (other.hasValueTransRule()) {
+          mergeValueTransRule(other.getValueTransRule());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -687,6 +1270,12 @@ public final class OtsFilter {
         if (!hasLatestVersionOnly()) {
           
           return false;
+        }
+        if (hasValueTransRule()) {
+          if (!getValueTransRule().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -743,6 +1332,15 @@ public final class OtsFilter {
             case 40: {
               bitField0_ |= 0x00000010;
               latestVersionOnly_ = input.readBool();
+              break;
+            }
+            case 50: {
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.newBuilder();
+              if (hasValueTransRule()) {
+                subBuilder.mergeFrom(getValueTransRule());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setValueTransRule(subBuilder.buildPartial());
               break;
             }
           }
@@ -875,6 +1473,96 @@ public final class OtsFilter {
         latestVersionOnly_ = false;
         onChanged();
         return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.ValueTransferRule value_trans_rule = 6;
+      private com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule valueTransRule_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder> valueTransRuleBuilder_;
+      public boolean hasValueTransRule() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule getValueTransRule() {
+        if (valueTransRuleBuilder_ == null) {
+          return valueTransRule_;
+        } else {
+          return valueTransRuleBuilder_.getMessage();
+        }
+      }
+      public Builder setValueTransRule(com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule value) {
+        if (valueTransRuleBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          valueTransRule_ = value;
+          onChanged();
+        } else {
+          valueTransRuleBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder setValueTransRule(
+          com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder builderForValue) {
+        if (valueTransRuleBuilder_ == null) {
+          valueTransRule_ = builderForValue.build();
+          onChanged();
+        } else {
+          valueTransRuleBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder mergeValueTransRule(com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule value) {
+        if (valueTransRuleBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              valueTransRule_ != com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance()) {
+            valueTransRule_ =
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.newBuilder(valueTransRule_).mergeFrom(value).buildPartial();
+          } else {
+            valueTransRule_ = value;
+          }
+          onChanged();
+        } else {
+          valueTransRuleBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      public Builder clearValueTransRule() {
+        if (valueTransRuleBuilder_ == null) {
+          valueTransRule_ = com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.getDefaultInstance();
+          onChanged();
+        } else {
+          valueTransRuleBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder getValueTransRuleBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getValueTransRuleFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder getValueTransRuleOrBuilder() {
+        if (valueTransRuleBuilder_ != null) {
+          return valueTransRuleBuilder_.getMessageOrBuilder();
+        } else {
+          return valueTransRule_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder> 
+          getValueTransRuleFieldBuilder() {
+        if (valueTransRuleBuilder_ == null) {
+          valueTransRuleBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRuleOrBuilder>(
+                  valueTransRule_,
+                  getParentForChildren(),
+                  isClean());
+          valueTransRule_ = null;
+        }
+        return valueTransRuleBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SingleColumnValueFilter)
@@ -2363,6 +3051,11 @@ public final class OtsFilter {
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleColumnValueFilter_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2392,45 +3085,61 @@ public final class OtsFilter {
   static {
     java.lang.String[] descriptorData = {
       "\n\020ots_filter.proto\0222com.alicloud.openser" +
-      "vices.tablestore.core.protocol\"\324\001\n\027Singl" +
+      "vices.tablestore.core.protocol\"v\n\021ValueT" +
+      "ransferRule\022\r\n\005regex\030\001 \002(\t\022R\n\tcast_type\030" +
+      "\002 \001(\0162?.com.alicloud.openservices.tables" +
+      "tore.core.protocol.VariantType\"\265\002\n\027Singl" +
       "eColumnValueFilter\022V\n\ncomparator\030\001 \002(\0162B" +
       ".com.alicloud.openservices.tablestore.co" +
       "re.protocol.ComparatorType\022\023\n\013column_nam" +
       "e\030\002 \002(\t\022\024\n\014column_value\030\003 \002(\014\022\031\n\021filter_" +
-      "if_missing\030\004 \002(\010\022\033\n\023latest_version_only\030" +
-      "\005 \002(\010\"\306\001\n\032CompositeColumnValueFilter\022W\n\n" +
-      "combinator\030\001 \002(\0162C.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.LogicalOpe",
-      "rator\022O\n\013sub_filters\030\002 \003(\0132:.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "Filter\"7\n\026ColumnPaginationFilter\022\016\n\006offs" +
-      "et\030\001 \002(\005\022\r\n\005limit\030\002 \002(\005\"f\n\006Filter\022L\n\004typ" +
-      "e\030\001 \002(\0162>.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.FilterType\022\016\n\006filte" +
-      "r\030\002 \002(\014*a\n\nFilterType\022\032\n\026FT_SINGLE_COLUM" +
-      "N_VALUE\020\001\022\035\n\031FT_COMPOSITE_COLUMN_VALUE\020\002" +
-      "\022\030\n\024FT_COLUMN_PAGINATION\020\003*\200\001\n\016Comparato" +
-      "rType\022\014\n\010CT_EQUAL\020\001\022\020\n\014CT_NOT_EQUAL\020\002\022\023\n",
-      "\017CT_GREATER_THAN\020\003\022\024\n\020CT_GREATER_EQUAL\020\004" +
-      "\022\020\n\014CT_LESS_THAN\020\005\022\021\n\rCT_LESS_EQUAL\020\006*4\n" +
-      "\017LogicalOperator\022\n\n\006LO_NOT\020\001\022\n\n\006LO_AND\020\002" +
-      "\022\t\n\005LO_OR\020\003"
+      "if_missing\030\004 \002(\010\022\033\n\023latest_version_only\030",
+      "\005 \002(\010\022_\n\020value_trans_rule\030\006 \001(\0132E.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.ValueTransferRule\"\306\001\n\032CompositeColu" +
+      "mnValueFilter\022W\n\ncombinator\030\001 \002(\0162C.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.LogicalOperator\022O\n\013sub_filters\030\002 " +
+      "\003(\0132:.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.Filter\"7\n\026ColumnPaginat" +
+      "ionFilter\022\016\n\006offset\030\001 \002(\005\022\r\n\005limit\030\002 \002(\005" +
+      "\"f\n\006Filter\022L\n\004type\030\001 \002(\0162>.com.alicloud.",
+      "openservices.tablestore.core.protocol.Fi" +
+      "lterType\022\016\n\006filter\030\002 \002(\014*U\n\013VariantType\022" +
+      "\016\n\nVT_INTEGER\020\000\022\r\n\tVT_DOUBLE\020\001\022\r\n\tVT_STR" +
+      "ING\020\003\022\013\n\007VT_NULL\020\006\022\013\n\007VT_BLOB\020\007*a\n\nFilte" +
+      "rType\022\032\n\026FT_SINGLE_COLUMN_VALUE\020\001\022\035\n\031FT_" +
+      "COMPOSITE_COLUMN_VALUE\020\002\022\030\n\024FT_COLUMN_PA" +
+      "GINATION\020\003*\240\001\n\016ComparatorType\022\014\n\010CT_EQUA" +
+      "L\020\001\022\020\n\014CT_NOT_EQUAL\020\002\022\023\n\017CT_GREATER_THAN" +
+      "\020\003\022\024\n\020CT_GREATER_EQUAL\020\004\022\020\n\014CT_LESS_THAN" +
+      "\020\005\022\021\n\rCT_LESS_EQUAL\020\006\022\014\n\010CT_EXIST\020\007\022\020\n\014C",
+      "T_NOT_EXIST\020\010*4\n\017LogicalOperator\022\n\n\006LO_N" +
+      "OT\020\001\022\n\n\006LO_AND\020\002\022\t\n\005LO_OR\020\003"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleColumnValueFilter_descriptor =
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_descriptor =
             getDescriptor().getMessageTypes().get(0);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_ValueTransferRule_descriptor,
+              new java.lang.String[] { "Regex", "CastType", },
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.class,
+              com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ValueTransferRule.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleColumnValueFilter_descriptor =
+            getDescriptor().getMessageTypes().get(1);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleColumnValueFilter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleColumnValueFilter_descriptor,
-              new java.lang.String[] { "Comparator", "ColumnName", "ColumnValue", "FilterIfMissing", "LatestVersionOnly", },
+              new java.lang.String[] { "Comparator", "ColumnName", "ColumnValue", "FilterIfMissing", "LatestVersionOnly", "ValueTransRule", },
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.SingleColumnValueFilter.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.SingleColumnValueFilter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CompositeColumnValueFilter_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CompositeColumnValueFilter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_CompositeColumnValueFilter_descriptor,
@@ -2438,7 +3147,7 @@ public final class OtsFilter {
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.CompositeColumnValueFilter.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.CompositeColumnValueFilter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnPaginationFilter_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnPaginationFilter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnPaginationFilter_descriptor,
@@ -2446,7 +3155,7 @@ public final class OtsFilter {
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ColumnPaginationFilter.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsFilter.ColumnPaginationFilter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Filter_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Filter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Filter_descriptor,

@@ -19,7 +19,8 @@
 
 package com.alicloud.openservices.tablestore.core.auth;
 
-import java.io.*;
+import com.alicloud.openservices.tablestore.core.Constants;
+import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 
 public class AuthUtils {
 
@@ -84,4 +85,13 @@ public class AuthUtils {
 
     /** System property name for the TableStore session token */
     public static final String SESSION_TOKEN_SYSTEM_PROPERTY = "tablestore.sessionToken";
+
+    /**
+     * Check if accessKeyId is in valid format.
+     * @param accessKeyId value to check
+     * @return true if it is valid, else false.
+     */
+    public static boolean checkAccessKeyIdFormat(String accessKeyId) {
+        return StringUtils.matchRegexPattern(Constants.ACCESSKEYID_REGEX, accessKeyId);
+    }
 }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class OTSAPIBehaviorTest {
 
@@ -249,6 +250,56 @@ public class OTSAPIBehaviorTest {
                             + ", version" + formatter.format(versionNum - 1 - ver)), versionNum - 1 - ver));
         }
         Utils.checkColumns(result.getSucceedRows().get(0).getRow().getColumns(), expect);
+    }
+
+    /**
+     * 当在同一张表格上的批量原子写的分区键相同时，写入成功。
+     */
+    @Test
+    public void testAtomicBatchWriteRowWithSamePartKey() {
+        // createTable
+        createTable(100);
+        int rowNum = 10;
+        BatchWriteRowRequest batchWriteRowRequest = new BatchWriteRowRequest();
+        batchWriteRowRequest.setAtomic(true);
+        for (int row = 0; row < rowNum; row++) {
+            RowPutChange rowPutChange = new RowPutChange(tableName, getPrimaryKey());
+            batchWriteRowRequest.addRowChange(rowPutChange);
+        }
+        BatchWriteRowResponse result = ots.batchWriteRow(batchWriteRowRequest);
+        List<BatchWriteRowResponse.RowResult> successRows = result.getSucceedRows();
+        List<BatchWriteRowResponse.RowResult> failedRows = result.getFailedRows();
+        assertEquals(rowNum, successRows.size());
+        assertEquals(0, failedRows.size());
+        for (BatchWriteRowResponse.RowResult rowResult : successRows) {
+            assertTrue(rowResult.isSucceed());
+        }
+    }
+
+    /**
+     * 当在同一张表格上的批量原子写的分区键不同时，在这张表格上的所有写入均失败。
+     * Note: 需要修改后端flag sqlonline_worker_ForbidAtomicBatchModify为false
+     */
+    @Test
+    public void testAtomicBatchWriteRowWithDiffPartKey() {
+        // createTable
+        createTable(100);
+        int rowNum = 10;
+        BatchWriteRowRequest batchWriteRowRequest = new BatchWriteRowRequest();
+        batchWriteRowRequest.setAtomic(true);
+        for (int row = 0; row < rowNum; row++) {
+            RowPutChange rowPutChange = new RowPutChange(tableName, getPrimaryKey(String.valueOf(row)));
+            batchWriteRowRequest.addRowChange(rowPutChange);
+        }
+        BatchWriteRowResponse result = ots.batchWriteRow(batchWriteRowRequest);
+        List<BatchWriteRowResponse.RowResult> successRows = result.getSucceedRows();
+        List<BatchWriteRowResponse.RowResult> failedRows = result.getFailedRows();
+        assertEquals(0, successRows.size());
+        assertEquals(rowNum, failedRows.size());
+        for (BatchWriteRowResponse.RowResult rowResult : failedRows) {
+            assertEquals("OTSDataOutOfRange", rowResult.getError().getCode());
+            assertEquals("Data out of scope of atomic. Atomic PartKey:0. Data PartKey:1", rowResult.getError().getMessage());
+        }
     }
 
     /**

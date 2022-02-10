@@ -3,15 +3,13 @@ package com.alicloud.openservices.tablestore.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class ServiceSettings {
 
     private static final String SETTINGS_FILE_NAME = "src/test/resources/conf.properties";
+    private static final String LOCAL_SETTINGS_FILE_NAME = "src/test/resources/local_conf.properties";
 
     private static final Log log = LogFactory.getLog(ServiceSettings.class);
 
@@ -69,6 +67,18 @@ public class ServiceSettings {
         properties.setProperty("ots.instancename", otsInstanceName);
     }
 
+    public void setOTSInstanceNameInternal(String otsInstanceName) {
+        properties.setProperty("ots.instancenameinternal", otsInstanceName);
+    }
+
+    public String getOTSInstanceNameInternal() {
+        String instanceName =  properties.getProperty("ots.instancenameinternal");
+        if (instanceName.isEmpty()) {
+            instanceName = System.getenv("instancenameinternal");
+        }
+        return instanceName;
+    }
+
     public String getProxyHost() {
         return properties.getProperty("proxy.host");
     }
@@ -103,21 +113,21 @@ public class ServiceSettings {
      * </p>
      * @return
      */
-    public static ServiceSettings load() {
+    public static ServiceSettings load(String settingFile) {
         ServiceSettings ss = new ServiceSettings();
 
         InputStream is = null;
         try {
-            is = new FileInputStream(SETTINGS_FILE_NAME);
+            is = new FileInputStream(settingFile);
             Properties pr = new Properties();
             pr.load(is);
 
             ss.properties = pr;
 
         } catch (FileNotFoundException e) {
-            log.warn("The settings file '" + SETTINGS_FILE_NAME + "' does not exist.");
+            log.warn("The settings file '" + settingFile + "' does not exist.");
         } catch (IOException e) {
-            log.warn("Failed to load the settings from the file: " + SETTINGS_FILE_NAME);
+            log.warn("Failed to load the settings from the file: " + settingFile);
         } finally {
             if (is != null) {
                 try {
@@ -127,6 +137,14 @@ public class ServiceSettings {
         }
 
         return ss;
+    }
+
+    public static ServiceSettings load() {
+        if (new File(LOCAL_SETTINGS_FILE_NAME).isFile()) {
+            return load(LOCAL_SETTINGS_FILE_NAME);
+        } else {
+            return load(SETTINGS_FILE_NAME);
+        }
     }
 }
 

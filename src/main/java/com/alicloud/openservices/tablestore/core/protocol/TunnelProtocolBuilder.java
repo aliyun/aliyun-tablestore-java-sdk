@@ -1,24 +1,15 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import com.alicloud.openservices.tablestore.model.tunnel.*;
+import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
+import com.alicloud.openservices.tablestore.tunnel.worker.TunnelClientConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alicloud.openservices.tablestore.model.tunnel.ChannelStatus;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelType;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.Channel;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointRequest;
-import com.alicloud.openservices.tablestore.tunnel.worker.TunnelClientConfig;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ConnectTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelRequest;
-
 public class TunnelProtocolBuilder {
+    public static final int MILLIS_TO_NANO = 1000000;
+
     public static TunnelServiceApi.TunnelType buildTunnelType(TunnelType tunnelType) {
         switch (tunnelType) {
             case BaseData:
@@ -32,17 +23,44 @@ public class TunnelProtocolBuilder {
         }
     }
 
-    public static TunnelServiceApi.Tunnel buildTunnel(String tableName, String tunnelName, TunnelType tunnelType) {
+    public static TunnelServiceApi.StreamTunnelConfig buildStreamTunnelConfig(StreamTunnelConfig config) {
+        TunnelServiceApi.StreamTunnelConfig.Builder builder = TunnelServiceApi.StreamTunnelConfig.newBuilder();
+        if (config.getStartOffset() != 0) {
+            // MillSecond to NanoSecond
+            builder.setStartOffset(config.getStartOffset() * MILLIS_TO_NANO);
+        } else {
+            switch (config.getFlag()) {
+                case EARLIEST:
+                    builder.setFlag(TunnelServiceApi.StartOffsetFlag.EARLIEST);
+                    break;
+                case LATEST:
+                    builder.setFlag(TunnelServiceApi.StartOffsetFlag.LATEST);
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (config.getEndOffset() != 0) {
+            // MillSecond to NanoSecond
+            builder.setEndOffset(config.getEndOffset() * MILLIS_TO_NANO);
+        }
+        return builder.build();
+    }
+
+    public static TunnelServiceApi.Tunnel buildTunnel(String tableName, String tunnelName, TunnelType tunnelType, StreamTunnelConfig streamConfig) {
         TunnelServiceApi.Tunnel.Builder builder = TunnelServiceApi.Tunnel.newBuilder();
         builder.setTableName(tableName);
         builder.setTunnelName(tunnelName);
         builder.setTunnelType(buildTunnelType(tunnelType));
+        if (streamConfig != null) {
+            builder.setStreamTunnelConfig(buildStreamTunnelConfig(streamConfig));
+        }
         return builder.build();
     }
 
     public static TunnelServiceApi.CreateTunnelRequest buildCreateTunnelRequest(CreateTunnelRequest request) {
         TunnelServiceApi.CreateTunnelRequest.Builder builder = TunnelServiceApi.CreateTunnelRequest.newBuilder();
-        builder.setTunnel(buildTunnel(request.getTableName(), request.getTunnelName(), request.getTunnelType()));
+        builder.setTunnel(buildTunnel(request.getTableName(), request.getTunnelName(), request.getTunnelType(), request.getStreamTunnelConfig()));
         return builder.build();
     }
 
@@ -127,11 +145,11 @@ public class TunnelProtocolBuilder {
     }
 
     public static TunnelServiceApi.GetCheckpointRequest buildGetCheckpointRequest(GetCheckpointRequest request) {
-       TunnelServiceApi.GetCheckpointRequest.Builder builder = TunnelServiceApi.GetCheckpointRequest.newBuilder();
-       builder.setTunnelId(request.getTunnelId());
-       builder.setClientId(request.getClientId());
-       builder.setChannelId(request.getChannelId());
-       return builder.build();
+        TunnelServiceApi.GetCheckpointRequest.Builder builder = TunnelServiceApi.GetCheckpointRequest.newBuilder();
+        builder.setTunnelId(request.getTunnelId());
+        builder.setClientId(request.getClientId());
+        builder.setChannelId(request.getChannelId());
+        return builder.build();
     }
 
     public static TunnelServiceApi.ReadRecordsRequest buildReadRecordsRequest(ReadRecordsRequest request) {
@@ -144,12 +162,12 @@ public class TunnelProtocolBuilder {
     }
 
     public static TunnelServiceApi.CheckpointRequest buildCheckpointRequest(CheckpointRequest request) {
-       TunnelServiceApi.CheckpointRequest.Builder builder = TunnelServiceApi.CheckpointRequest.newBuilder();
-       builder.setTunnelId(request.getTunnelId());
-       builder.setClientId(request.getClientId());
-       builder.setChannelId(request.getChannelId());
-       builder.setCheckpoint(request.getCheckpoint());
-       builder.setSequenceNumber(request.getSequenceNumber());
-       return builder.build();
+        TunnelServiceApi.CheckpointRequest.Builder builder = TunnelServiceApi.CheckpointRequest.newBuilder();
+        builder.setTunnelId(request.getTunnelId());
+        builder.setClientId(request.getClientId());
+        builder.setChannelId(request.getChannelId());
+        builder.setCheckpoint(request.getCheckpoint());
+        builder.setSequenceNumber(request.getSequenceNumber());
+        return builder.build();
     }
 }

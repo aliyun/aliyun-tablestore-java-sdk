@@ -1,8 +1,10 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.core.Constants;
+import com.alicloud.openservices.tablestore.model.ColumnType;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -100,5 +102,26 @@ public class SearchVariantType {
             default:
                 throw  new IllegalArgumentException("unsupported type:" + value.getType().name());
         }
+    }
+
+    public static ColumnValue forceConvertToDestColumnValue(byte[] data) throws IOException {
+
+        if (data.length == 0) {
+            throw new IOException("data is null");
+        }
+        ColumnValue columnValue = null;
+        if (data[0] == VT_INTEGER) {
+            columnValue = new ColumnValue(asLong(data), ColumnType.INTEGER);
+        } else if (data[0] == VT_DOUBLE) {
+            columnValue = new ColumnValue(asDouble(data), ColumnType.DOUBLE);
+        } else if (data[0] == VT_STRING) {
+            columnValue = new ColumnValue(asString(data), ColumnType.STRING);
+        } else if (data[0] == VT_BOOLEAN) {
+            columnValue = new ColumnValue(asBoolean(data), ColumnType.BOOLEAN);
+        } else {
+            throw new IOException("Bug: unsupported data type");
+        }
+
+        return columnValue;
     }
 }

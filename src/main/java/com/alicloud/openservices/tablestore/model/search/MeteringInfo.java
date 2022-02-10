@@ -17,7 +17,7 @@ public class MeteringInfo {
     /**
      * 索引表的总行数，该行数为上一次计量时(通过timestamp获取计量时间)统计到的值，并非当前时刻的值。
      */
-    private long docCount;
+    private long rowCount;
 
     /**
      * 索引表上一次计量的时间。
@@ -40,12 +40,12 @@ public class MeteringInfo {
         this.storageSize = storageSize;
     }
 
-    public long getDocCount() {
-        return docCount;
+    public long getRowCount() {
+        return rowCount;
     }
 
-    public void setDocCount(long docCount) {
-        this.docCount = docCount;
+    public void setRowCount(long rowCount) {
+        this.rowCount = rowCount;
     }
 
     public long getTimestamp() {

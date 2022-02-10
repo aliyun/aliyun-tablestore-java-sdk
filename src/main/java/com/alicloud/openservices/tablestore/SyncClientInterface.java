@@ -11,7 +11,11 @@ import java.util.Iterator;
 
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
+import com.alicloud.openservices.tablestore.model.iterator.RowIterator;
 import com.alicloud.openservices.tablestore.model.search.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 
 /**
  * 阿里云表格存储（TableStore, 原OTS）的访问接口。
@@ -108,12 +112,32 @@ public interface SyncClientInterface {
      * 删除用户指定的某张表下的某张索引表
      * <p>注意：索引表被成功删除后该索引表下所有的数据都将被清空，无法恢复，请谨慎操作！</p>
      *
-     * @param deleteIndexRequest 招待DeleteIndex所需的参数
+     * @param deleteIndexRequest 执行DeleteIndex所需的参数
      * @return TableStore服务返回的结果
      * @throws TableStoreException TableStore服务返回的异常
      * @throws ClientException 请求的返回结果无效、或遇到网络异常
      */
     public DeleteIndexResponse deleteIndex(DeleteIndexRequest deleteIndexRequest)
+        throws TableStoreException, ClientException;
+
+    /**
+     * 为一张表添加预定义列^M
+     * @param addDefinedColumnRequest 执行AddDefinedColumn所需的参数^M
+     * @return TableStore服务返回的结果^M
+     * @throws TableStoreException TableStore服务返回的异常^M
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常^M
+     */
+    public AddDefinedColumnResponse addDefinedColumn(AddDefinedColumnRequest addDefinedColumnRequest)
+        throws TableStoreException, ClientException;
+
+    /**
+     * 为一张表删除预定义列
+     * @param deleteDefinedColumnRequest 执行DeleteDefinedColumn所需的参数
+     * @return TableStore服务返回的结果
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public DeleteDefinedColumnResponse deleteDefinedColumn(DeleteDefinedColumnRequest deleteDefinedColumnRequest)
         throws TableStoreException, ClientException;
 
     /**
@@ -194,6 +218,19 @@ public interface SyncClientInterface {
     		throws TableStoreException, ClientException;
 
     /**
+     * 单张表中对多行执行更新或者删除操作，离线服务接口。
+     * <p>BulkImport 操作可视为多个PutRow、UpdateRow、DeleteRow 操作的集合，各个操作独立执行，独立返回结果，独立计算消费单元。</p>
+     * <p>执行 BulkImport 操作后，需要逐个检查子请求的状态，来判断写入结果，并选择对失败的行进行重试。</p>
+     *
+     * @param bulkImportRequest 执行BatchWriteRow操作所需的参数。
+     * @return TableStore服务返回的结果
+     * @throws TableStoreException    TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public BulkImportResponse bulkImport(BulkImportRequest bulkImportRequest)
+            throws TableStoreException, ClientException;
+
+    /**
      * 从表中查询一个范围内的多行数据。
      *
      * @param getRangeRequest 执行GetRange操作所需的参数。
@@ -202,6 +239,17 @@ public interface SyncClientInterface {
      * @throws ClientException 请求的返回结果无效、或遇到网络异常
      */
     public GetRangeResponse getRange(GetRangeRequest getRangeRequest)
+            throws TableStoreException, ClientException;
+
+    /**
+     * 从表中查询一个范围内的多行数据，离线服务接口。
+     *
+     * @param bulkExportRequest 执行GetRange操作所需的参数。
+     * @return TableStore服务返回的结果
+     * @throws TableStoreException    TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public BulkExportResponse bulkExport(BulkExportRequest bulkExportRequest)
             throws TableStoreException, ClientException;
     
     /**
@@ -224,6 +272,10 @@ public interface SyncClientInterface {
      * @throws ClientException 请求的返回结果无效、或遇到网络异常
      */
     public Iterator<Row> createRangeIterator(
+            RangeIteratorParameter rangeIteratorParameter) throws TableStoreException,
+            ClientException;
+
+    public Iterator<Row> createBulkExportIterator(
             RangeIteratorParameter rangeIteratorParameter) throws TableStoreException,
             ClientException;
 
@@ -285,6 +337,16 @@ public interface SyncClientInterface {
             throws TableStoreException, ClientException;
 
     /**
+     * 更新SearchIndex（用户索引交换，或设置索引查询权重）
+     * @param request  更新SearchIndex所需的参数，详见{@link UpdateSearchIndexRequest}
+     * @return SearchIndex服务返回的创建结果
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public UpdateSearchIndexResponse updateSearchIndex(UpdateSearchIndexRequest request)
+            throws TableStoreException, ClientException;
+
+    /**
      * 获取表下的SearchIndex列表
      * <p>一个table下面，可以存在多个SearchIndex表，通过该函数，将能够获取一个table下面的所有SearchIndex信息</p>
      * @param request  获取SearchIndex列表所需的参数
@@ -316,6 +378,50 @@ public interface SyncClientInterface {
      */
     public DescribeSearchIndexResponse describeSearchIndex(DescribeSearchIndexRequest request)
             throws TableStoreException, ClientException;
+
+    /**
+     * Get the partition information of the data.
+     *
+     * @param request Parameters required to perform the computeSplits operation.
+     * @return Results returned by the Tablestore service
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     */
+    public ComputeSplitsResponse computeSplits(ComputeSplitsRequest request)
+        throws TableStoreException, ClientException;
+
+    /**
+     * Scan data form SearchIndex.
+     *
+     * @param request Parameters required to perform the parallelScan operation.
+     * @return Results returned by the Tablestore service
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     */
+    public ParallelScanResponse parallelScan(ParallelScanRequest request)
+        throws TableStoreException, ClientException;
+
+    /**
+     * Get the Iterator for ParallelScan.
+     * @param request Parameters required to perform ParallelScan operation.
+     * @return Iterator for ParallelScan.
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     *
+     */
+    public RowIterator createParallelScanIterator(ParallelScanRequest request) throws TableStoreException, ClientException;
+
+
+    /**
+     * Get the Iterator for Search.
+     * <p>Note: If your searchIndex has a nested field and you want to search data, please specify the Sort. </p>
+     * @param request Parameters required to perform searchRequest operation.
+     * @return Iterator for SearchQuery.
+     * @throws TableStoreException   Exception returned by Tablestore service.
+     * @throws ClientException The return result of the request is invalid or a network exception was encountered.
+     *
+     */
+    public RowIterator createSearchIterator(SearchRequest request) throws TableStoreException, ClientException;
 
     /**
      * 搜索功能
@@ -388,4 +494,53 @@ public interface SyncClientInterface {
      * @param newCrdsProvider new CredentialsProvider, see {@link com.alicloud.openservices.tablestore.core.auth.CredentialsProviderFactory}.
      */
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider);
+
+    /**
+     * 创建数据投递任务
+     * @param request 创建投递任务所需的参数
+     * @return
+     * @throws TableStoreException TableStore服务返回的异常
+     * @throws ClientException 请求的返回结果无效、或遇到网络异常
+     */
+    public CreateDeliveryTaskResponse createDeliveryTask(CreateDeliveryTaskRequest request)
+            throws TableStoreException, ClientException;
+
+    /**
+     * 删除投递任务
+     * @param request 删除投递任务所需的参数
+     * @return
+     * @throws TableStoreException  Tablestore服务返回的异常
+     * @throws ClientException  请求的结果无效、或遇到网络异常
+     */
+    public DeleteDeliveryTaskResponse deleteDeliveryTask(DeleteDeliveryTaskRequest request)
+            throws TableStoreException, ClientException;
+
+    /**
+     * 投递任务描述函数
+     * @param request 描述投递任务所需的参数
+     * @return
+     * @throws TableStoreException  Tablestore服务返回的异常
+     * @throws ClientException  请求的结果无效、或遇到网络异常
+     */
+    public DescribeDeliveryTaskResponse describeDeliveryTask(DescribeDeliveryTaskRequest request)
+            throws TableStoreException, ClientException;
+
+    /**
+     * 列出用户表下所有投递任务列表
+     * @param request 获取投递任务列表所需参数
+     * @return
+     * @throws TableStoreException  Tablestore服务返回的异常
+     * @throws ClientException  请求的结果无效、或遇到网络异常
+     */
+    public ListDeliveryTaskResponse listDeliveryTask(ListDeliveryTaskRequest request)
+            throws TableStoreException, ClientException;
+
+    /**
+     * SQL query 请求
+     * @param request sql query的参数
+     * @return
+     * @throws TableStoreException  Tablestore服务返回的异常
+     * @throws ClientException  请求的结果无效、或遇到网络异常
+     */
+    public SQLQueryResponse sqlQuery(SQLQueryRequest request) throws TableStoreException, ClientException;
 }

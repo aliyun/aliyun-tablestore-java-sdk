@@ -25,6 +25,8 @@ public class GlobalIndexSample {
     private static final String PRIMARY_KEY_NAME_2 = "pk2";
     private static final String DEFINED_COL_NAME_1 = "col1";
     private static final String DEFINED_COL_NAME_2 = "col2";
+    private static final String ADD_COL_NAME_0 = "c0";
+    private static final String ADD_COL_NAME_1 = "c1";
 
     public static void main(String[] args) {
         final String endPoint = "";
@@ -101,6 +103,23 @@ public class GlobalIndexSample {
             // 从索引表2中读取，验证索引表中的索引已经被删除
             scanFromIndex2(client);
 
+            // 为表添加预定义列
+            addDefCol(client);
+            // 查看添加预定义列后的表schema
+            describeTable(client, TABLE_NAME);
+            try {
+                Thread.sleep(1 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            updateRow(client, pk);
+            scanFromIndex(client);
+            // 删除预定义列
+            delDefCol(client);
+            // 查看删除预定义列后的表schema
+            describeTable(client, TABLE_NAME);
+
             // 删除索引表
             deleteIndex(client);
 
@@ -117,6 +136,24 @@ public class GlobalIndexSample {
             // deleteTable(client);
         }
         client.shutdown();
+    }
+
+    private static void addDefCol(SyncClient client) {
+        ArrayList<DefinedColumnSchema> defCols = new ArrayList<DefinedColumnSchema>();
+
+        AddDefinedColumnRequest request = new AddDefinedColumnRequest();
+            request.setTableName(TABLE_NAME);
+            request.addDefinedColumn(ADD_COL_NAME_0, DefinedColumnType.STRING);
+            request.addDefinedColumn(ADD_COL_NAME_1, DefinedColumnType.STRING);
+            client.addDefinedColumn(request);
+    }
+
+    private static void delDefCol(SyncClient client) {
+        DeleteDefinedColumnRequest request = new DeleteDefinedColumnRequest();
+        request.setTableName(TABLE_NAME);
+        request.addDefinedColumn(ADD_COL_NAME_0);
+        request.addDefinedColumn(ADD_COL_NAME_1);
+        client.deleteDefinedColumn(request);
     }
 
     private static void createTable(SyncClient client) {

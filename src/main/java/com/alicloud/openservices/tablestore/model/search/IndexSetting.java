@@ -51,15 +51,12 @@ public class IndexSetting implements Jsonizable {
         sb.append('{');
         if (routingFields != null) {
             sb.append("\"RoutingFields\": [");
-            boolean first = true;
-            for (String field : routingFields) {
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",");
-                    sb.append(newline + " ");
+            for (int i = 0; i < routingFields.size(); i++) {
+                String sourceField = routingFields.get(i);
+                sb.append("\"").append(sourceField).append("\"");
+                if (i != routingFields.size() - 1) {
+                    sb.append(", ");
                 }
-                sb.append(field);
             }
             sb.append("]");
         }

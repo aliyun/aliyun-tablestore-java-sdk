@@ -4,9 +4,12 @@ import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.*;
 import com.google.protobuf.ByteString;
 
+/**
+ * {@link Query} serialization tool class. For deserialization, please refer to {@link SearchQueryParser}
+ */
 public class SearchQueryBuilder {
 
-    public static Search.QueryType buildQueryType(QueryType type) {
+    private static Search.QueryType buildQueryType(QueryType type) {
         switch (type) {
             case QueryType_MatchQuery:
                 return Search.QueryType.MATCH_QUERY;
@@ -38,6 +41,8 @@ public class SearchQueryBuilder {
                 return Search.QueryType.GEO_DISTANCE_QUERY;
             case QueryType_GeoPolygonQuery:
                 return Search.QueryType.GEO_POLYGON_QUERY;
+            case QueryType_ExistsQuery:
+                return Search.QueryType.EXISTS_QUERY;
             default:
                 throw new IllegalArgumentException("unknown queryType: " + type.name());
         }
@@ -50,6 +55,10 @@ public class SearchQueryBuilder {
         return builder.build();
     }
 
+    public static byte[] buildQueryToBytes(Query query) {
+        return buildQuery(query).toByteArray();
+    }
+
     public static Search.MatchAllQuery buildMatchAllQuery() {
         Search.MatchAllQuery.Builder builder = Search.MatchAllQuery.newBuilder();
         return builder.build();
@@ -59,6 +68,7 @@ public class SearchQueryBuilder {
         Search.MatchQuery.Builder builder = Search.MatchQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.setText(query.getText());
+        builder.setWeight(query.getWeight());
         if (query.getMinimumShouldMatch() != null) {
             builder.setMinimumShouldMatch(query.getMinimumShouldMatch());
         }
@@ -81,6 +91,7 @@ public class SearchQueryBuilder {
         Search.MatchPhraseQuery.Builder builder = Search.MatchPhraseQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.setText(query.getText());
+        builder.setWeight(query.getWeight());
         return builder.build();
     }
 
@@ -88,6 +99,7 @@ public class SearchQueryBuilder {
         Search.TermQuery.Builder builder = Search.TermQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.setTerm(ByteString.copyFrom(SearchVariantType.toVariant(query.getTerm())));
+        builder.setWeight(query.getWeight());
         return builder.build();
     }
 
@@ -100,6 +112,7 @@ public class SearchQueryBuilder {
         for (ColumnValue term : query.getTerms()) {
             builder.addTerms(ByteString.copyFrom(SearchVariantType.toVariant(term)));
         }
+        builder.setWeight(query.getWeight());
         return builder.build();
     }
 
@@ -121,6 +134,7 @@ public class SearchQueryBuilder {
         Search.PrefixQuery.Builder builder = Search.PrefixQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.setPrefix(query.getPrefix());
+        builder.setWeight(query.getWeight());
         return builder.build();
     }
 
@@ -128,6 +142,7 @@ public class SearchQueryBuilder {
         Search.WildcardQuery.Builder builder = Search.WildcardQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.setValue(query.getValue());
+        builder.setWeight(query.getWeight());
         return builder.build();
     }
 
@@ -165,7 +180,7 @@ public class SearchQueryBuilder {
         return builder.build();
     }
 
-    public static Search.FieldValueFactor buildFieldValueFactor(FieldValueFactor fieldValueFactor) {
+    private static Search.FieldValueFactor buildFieldValueFactor(FieldValueFactor fieldValueFactor) {
         Search.FieldValueFactor.Builder builder = Search.FieldValueFactor.newBuilder();
         builder.setFieldName(fieldValueFactor.getFieldName());
         return builder.build();
@@ -178,7 +193,7 @@ public class SearchQueryBuilder {
         return builder.build();
     }
 
-    public static Search.ScoreMode buildScoreMode(ScoreMode scoreMode) {
+    private static Search.ScoreMode buildScoreMode(ScoreMode scoreMode) {
         switch (scoreMode) {
             case Max:
                 return Search.ScoreMode.SCORE_MODE_MAX;
@@ -199,6 +214,10 @@ public class SearchQueryBuilder {
         Search.NestedQuery.Builder builder = Search.NestedQuery.newBuilder();
         builder.setQuery(SearchQueryBuilder.buildQuery(query.getQuery()));
         builder.setPath(query.getPath());
+        builder.setWeight(query.getWeight());
+        if (query.getScoreMode() == null) {
+            throw new IllegalArgumentException("nestedQuery must set score mode.");
+        }
         builder.setScoreMode(buildScoreMode(query.getScoreMode()));
         return builder.build();
     }
@@ -223,6 +242,12 @@ public class SearchQueryBuilder {
         Search.GeoPolygonQuery.Builder builder = Search.GeoPolygonQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
         builder.addAllPoints(query.getPoints());
+        return builder.build();
+    }
+
+    public static Search.ExistsQuery buildExistsQuery(ExistsQuery query) {
+        Search.ExistsQuery.Builder builder = Search.ExistsQuery.newBuilder();
+        builder.setFieldName(query.getFieldName());
         return builder.build();
     }
 }

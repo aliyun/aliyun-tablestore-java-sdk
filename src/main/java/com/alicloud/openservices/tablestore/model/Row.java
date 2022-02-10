@@ -27,14 +27,31 @@ public class Row implements IRow {
      *
      * @param primaryKey 行的主键，不能为null或者为空
      * @param columns    该行的属性列，不能为null
+     * @param needSortColumns 属性列是否需要顺序
+     */
+    public Row(PrimaryKey primaryKey, List<Column> columns, boolean needSortColumns) {
+        this(primaryKey, columns.toArray(new Column[columns.size()]), needSortColumns);
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param primaryKey 行的主键，不能为null或者为空
+     * @param columns    该行的属性列，不能为null
      */
     public Row(PrimaryKey primaryKey, Column[] columns) {
+        this(primaryKey, columns, true);
+    }
+
+    public Row(PrimaryKey primaryKey, Column[] columns, boolean needSortColumns) {
         Preconditions.checkArgument(primaryKey != null, "The primary key of row should not be null.");
         Preconditions.checkNotNull(columns, "The columns of row should not be null.");
 
         this.primaryKey = primaryKey;
         this.columns = columns;
-        sortColumns(); // it may not been sorted, so we should sort it first
+        if (needSortColumns) {
+            sortColumns(); // it may not been sorted, so we should sort it first
+        }
     }
 
     /**

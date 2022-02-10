@@ -21,7 +21,7 @@ public class DataGetter extends DataQuery {
         this.identifier = identifier;
     }
 
-    /**
+	/**
      * 设置数据行的过滤条件，仅支持对数据行的fields进行过滤
      * @param filter
      * @return
@@ -62,7 +62,7 @@ public class DataGetter extends DataQuery {
         return this;
     }
 
-    /**
+	/**
      * 按照数据点的时间戳进行逆序排序，默认正序
      * @return
      */

@@ -9,12 +9,15 @@ import com.google.protobuf.ByteString;
  */
 public class WildcardQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_WildcardQuery;
+
     private String fieldName;
     private String value;
+    private float weight = 1.0f;
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_WildcardQuery;
+        return queryType;
     }
 
     @Override
@@ -36,5 +39,49 @@ public class WildcardQuery implements Query {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String fieldName;
+        private String value;
+        private float weight = 1.0f;
+
+        public Builder weight(float weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        private Builder() {}
+
+        public Builder field(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder value(String value) {
+            this.value = value;
+            return this;
+        }
+
+        @Override
+        public WildcardQuery build() {
+            WildcardQuery wildcardQuery = new WildcardQuery();
+            wildcardQuery.setFieldName(this.fieldName);
+            wildcardQuery.setValue(this.value);
+            wildcardQuery.setWeight(this.weight);
+            return wildcardQuery;
+        }
     }
 }

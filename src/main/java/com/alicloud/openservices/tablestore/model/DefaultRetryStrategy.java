@@ -41,7 +41,7 @@ public class DefaultRetryStrategy implements RetryStrategy {
         return retries;
     }
 
-    private boolean isIdempotent(String action) {
+    protected boolean isIdempotent(String action) {
         /**
          * all read operations are idempotent
          */
@@ -55,7 +55,7 @@ public class DefaultRetryStrategy implements RetryStrategy {
         }
     }
 
-    private boolean retryNotMatterActions(String errorCode, String errorMessage) {
+    protected boolean retryNotMatterActions(String errorCode, String errorMessage) {
         if (errorCode.equals(ErrorCode.ROW_OPERATION_CONFLICT) || errorCode.equals(ErrorCode.NOT_ENOUGH_CAPACITY_UNIT)
             || errorCode.equals(ErrorCode.TABLE_NOT_READY) || errorCode.equals(ErrorCode.PARTITION_UNAVAILABLE)
             || errorCode.equals(ErrorCode.SERVER_BUSY)
@@ -66,7 +66,7 @@ public class DefaultRetryStrategy implements RetryStrategy {
         }
     }
 
-    private boolean shouldRetryWithOTSException(String action, boolean isIdempotent, String errorCode,
+    protected boolean shouldRetryWithOTSException(String action, boolean isIdempotent, String errorCode,
                                                 String errorMessage, int httpStatus) {
         if (retryNotMatterActions(errorCode, errorMessage)) {
             return true;

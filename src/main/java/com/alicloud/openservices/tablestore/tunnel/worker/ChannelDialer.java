@@ -20,6 +20,7 @@ public class ChannelDialer implements IChannelDialer {
     private final TunnelClientInterface client;
     private final TunnelWorkerConfig config;
     private final ExecutorService channelHelperExecutor;
+    private boolean isInnerConstruct = true;
 
     public ChannelDialer(TunnelClientInterface client, TunnelWorkerConfig config) {
         Preconditions.checkNotNull(client, "Tunnel client cannot be null.");
@@ -27,14 +28,20 @@ public class ChannelDialer implements IChannelDialer {
 
         this.client = client;
         this.config = config;
-        this.channelHelperExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
-            private final AtomicInteger counter = new AtomicInteger(0);
+        if (config.getChannelHelperExecutor() != null) {
+            this.channelHelperExecutor = config.getChannelHelperExecutor();
+            this.isInnerConstruct = false;
+        } else {
+            this.channelHelperExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
+                private final AtomicInteger counter = new AtomicInteger(0);
 
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "channel-helper-executor-" + counter.getAndIncrement());
-            }
-        });
+                @Override
+                public Thread newThread(Runnable r) {
+                    return new Thread(r, "channel-helper-executor-" + counter.getAndIncrement());
+                }
+            });
+        }
+
     }
 
     @Override
@@ -52,10 +59,18 @@ public class ChannelDialer implements IChannelDialer {
         channelConnect.setStateMachine(stateMachine);
         channelConnect.setFinished(new AtomicBoolean(false));
         channelConnect.setStreamChannel(Utils.isStreamToken(token));
-        channelConnect.setProcessPipeline(new ProcessDataPipeline(channelConnect, channelHelperExecutor,
-            config.getReadRecordsExecutor(), config.getProcessRecordsExecutor()));
+        ProcessDataPipeline pipeline = new ProcessDataPipeline(channelConnect, channelHelperExecutor,
+                config.getReadRecordsExecutor(), config.getProcessRecordsExecutor());
+        if (config.getMaxChannelSemaphore() != null) {
+            pipeline.setSemaphore(config.getMaxChannelSemaphore());
+        }
+        pipeline.setReadMaxBytesPerRound(config.getReadMaxBytesPerRound());
+        pipeline.setReadMaxTimesPerRound(config.getReadMaxTimesPerRound());
+        channelConnect.setProcessPipeline(pipeline);
+
         if (channelConnect.isStreamChannel()) {
-            channelConnect.getProcessPipeline().setBackoff(new ProcessDataBackoff());
+            channelConnect.getProcessPipeline().setBackoff(
+                new ProcessDataBackoff(config.getMaxRetryIntervalInMillis()));
         }
         channelConnect.setChannelExecutorService(channelHelperExecutor);
         return channelConnect;
@@ -64,6 +79,9 @@ public class ChannelDialer implements IChannelDialer {
     @Override
     public void shutdown() {
         LOG.info("Shutdown pipeline helper executor.");
-        channelHelperExecutor.shutdownNow();
+        if (isInnerConstruct) {
+            LOG.info("Shutdown channel helper executor.");
+            channelHelperExecutor.shutdownNow();
+        }
     }
 }

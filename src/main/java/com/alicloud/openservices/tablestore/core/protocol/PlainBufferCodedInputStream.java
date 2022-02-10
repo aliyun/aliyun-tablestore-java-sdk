@@ -167,16 +167,21 @@ public class PlainBufferCodedInputStream {
   
           return extension;
     }
-
     public PlainBufferRow readRow() throws IOException {
+        return readRow(true);
+    }
+
+    public PlainBufferRow readRow(Boolean shouldContainsPk)  throws IOException {
         List<PlainBufferCell> columns = new ArrayList<PlainBufferCell>();
         List<PlainBufferCell> primaryKey = new ArrayList<PlainBufferCell>();
         boolean hasDeleteMarker = false;
 
         if (checkLastTagWas(TAG_ROW_PK)) {
             primaryKey = readRowPK();
-            if (primaryKey.isEmpty()) {
-                throw new IOException("The primary key of row is empty.");
+            if (shouldContainsPk) {
+                if (primaryKey.isEmpty()) {
+                    throw new IOException("The primary key of row is empty.");
+                }
             }
         }
 
@@ -246,6 +251,26 @@ public class PlainBufferCodedInputStream {
         readTag();
         while (!input.isAtEnd()) {
             PlainBufferRow row = readRow();
+            rows.add(row);
+        }
+
+        if (!input.isAtEnd()) {
+            throw new IOException("");
+        }
+
+        return rows;
+    }
+
+    public List<PlainBufferRow> readRowsWithoutPk() throws IOException {
+        List<PlainBufferRow> rows = new ArrayList<PlainBufferRow>();
+        if (readHeader() != PlainBufferConsts.HEADER) {
+            logger.error("Invalid header from plain buffer: " + input.toString());
+            throw new IOException("Invalid header from plain buffer.");
+        }
+
+        readTag();
+        while (!input.isAtEnd()) {
+            PlainBufferRow row = readRow(false);
             rows.add(row);
         }
 

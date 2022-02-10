@@ -3,17 +3,7 @@ package com.alicloud.openservices.tablestore.tunnel.functiontest;
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.TunnelClient;
-import com.alicloud.openservices.tablestore.model.tunnel.ChannelInfo;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelInfo;
-import com.alicloud.openservices.tablestore.model.tunnel.TunnelType;
+import com.alicloud.openservices.tablestore.model.tunnel.*;
 
 public class TestTunnel {
     private static final String Endpoint = "";
@@ -30,7 +20,8 @@ public class TestTunnel {
 
             //  create tunnel
             System.out.println("Begin CreateTunnel");
-            createTunnel(client, tunnelName);
+//            createTunnel(client, tunnelName);
+            createTunnelWithBackFill(client, tunnelName);
             System.out.println("++++++++++++++++++++++++++++++++++++");
 
             //  list tunnel
@@ -58,6 +49,17 @@ public class TestTunnel {
 
     static void createTunnel(TunnelClient client, String tunnelName) {
         CreateTunnelRequest request = new CreateTunnelRequest(TableName, tunnelName, TunnelType.BaseData);
+        CreateTunnelResponse resp = client.createTunnel(request);
+        System.out.println("RequestId: " + resp.getRequestId());
+        System.out.println("TunnelId: " + resp.getTunnelId());
+    }
+
+    static void createTunnelWithBackFill(TunnelClient client, String tunnelName) {
+        CreateTunnelRequest request = new CreateTunnelRequest(TableName, tunnelName, TunnelType.BaseData);
+        StreamTunnelConfig streamTunnelConfig = new StreamTunnelConfig();
+        streamTunnelConfig.setFlag(StartOffsetFlag.EARLIEST);
+        streamTunnelConfig.setEndOffset(System.currentTimeMillis());
+        request.setStreamTunnelConfig(streamTunnelConfig);
         CreateTunnelResponse resp = client.createTunnel(request);
         System.out.println("RequestId: " + resp.getRequestId());
         System.out.println("TunnelId: " + resp.getTunnelId());
@@ -94,6 +96,8 @@ public class TestTunnel {
         System.out.println("\tInstanceName: " + ti.getInstanceName());
         System.out.println("\tStage: " + ti.getStage());
         System.out.println("\tExpired: " + ti.isExpired());
+        System.out.println("\tStreamTunnelConfig: " + ti.getStreamTunnelConfig());
+        System.out.println("\tCreateTime: " + ti.getCreateTime());
         for (ChannelInfo ci : resp.getChannelInfos()) {
             System.out.println("ChannelInfo::::::");
             System.out.println("\tChannelId: " + ci.getChannelId());
@@ -102,7 +106,6 @@ public class TestTunnel {
             System.out.println("\tChannelRpo: " + ci.getChannelRpo() + "ms");
             System.out.println("\tChannelConsumePoint: " + ci.getChannelConsumePoint());
         }
-
     }
 
     static void deleteTunnel(TunnelClient client, String tunnelName) {

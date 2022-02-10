@@ -22,6 +22,8 @@ public class GetRangeResponse extends Response {
 
     private byte[] nextToken;
 
+    private long bodyBytes;
+
     /**
      * internal use
      */
@@ -83,5 +85,13 @@ public class GetRangeResponse extends Response {
 
     public boolean hasNextToken() {
         return (nextToken != null) && (nextToken.length > 0);
+    }
+
+    public long getBodyBytes() {
+        return bodyBytes;
+    }
+
+    public void setBodyBytes(long bodyBytes) {
+        this.bodyBytes = bodyBytes;
     }
 }

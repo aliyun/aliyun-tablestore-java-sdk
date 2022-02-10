@@ -2,7 +2,12 @@ package com.alicloud.openservices.tablestore.model.search;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
+import com.alicloud.openservices.tablestore.model.search.analysis.AnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,9 +17,12 @@ public class FieldSchema implements Jsonizable {
 
     public enum Analyzer {
         SingleWord("single_word"),
-        MaxWord("max_word");
+        MaxWord("max_word"),
+        MinWord("min_word"),
+        Split("split"),
+        Fuzzy("fuzzy");
 
-        private String value;
+        private final String value;
         Analyzer(String value) {
             this.value = value;
         }
@@ -28,6 +36,12 @@ public class FieldSchema implements Jsonizable {
                 return SingleWord;
             } else if (value.equals(MaxWord.toString())) {
                 return MaxWord;
+            } else if (value.equals(MinWord.toString())) {
+                return MinWord;
+            } else if (value.equals(Split.toString())) {
+                return Split;
+            } else if (value.equals(Fuzzy.toString())) {
+                return Fuzzy;
             } else {
                 throw new ClientException("Unknown analyzer");
             }
@@ -51,9 +65,14 @@ public class FieldSchema implements Jsonizable {
      */
     private IndexOptions indexOptions;
     /**
-     * 分词器设置
+     * analyzer
      */
     private Analyzer analyzer;
+    /**
+     * analyzer parameter
+     */
+    private AnalyzerParameter analyzerParameter;
+
     /**
      * 是否开启排序和聚合功能
      */
@@ -74,6 +93,17 @@ public class FieldSchema implements Jsonizable {
      * 如果 FiledType 是 NESTED ，则可使用该字段，声明一个嵌套的FieldSchema
      */
     private List<FieldSchema> subFieldSchemas;
+
+    /**
+     * 是否是虚拟字段
+     */
+    private Boolean isVirtualField;
+
+    /**
+     * 虚拟字段对应的原始字段。
+     * 当前仅支持设置一个原始字段。
+     */
+    private List<String> sourceFieldNames;
 
     public FieldSchema(String fieldName, FieldType fieldType) {
         this.fieldName = fieldName;
@@ -125,6 +155,15 @@ public class FieldSchema implements Jsonizable {
         return this;
     }
 
+    public AnalyzerParameter getAnalyzerParameter() {
+        return analyzerParameter;
+    }
+
+    public FieldSchema setAnalyzerParameter(AnalyzerParameter analyzerParameter) {
+        this.analyzerParameter = analyzerParameter;
+        return this;
+    }
+
     public Boolean isEnableSortAndAgg() {
         return enableSortAndAgg;
     }
@@ -158,6 +197,29 @@ public class FieldSchema implements Jsonizable {
 
     public FieldSchema setSubFieldSchemas(List<FieldSchema> subFieldSchemas) {
         this.subFieldSchemas = subFieldSchemas;
+        return this;
+    }
+
+    public Boolean isVirtualField() {
+        return isVirtualField;
+    }
+
+    public FieldSchema setVirtualField(Boolean virtualField) {
+        isVirtualField = virtualField;
+        return this;
+    }
+
+    public List<String> getSourceFieldNames() {
+        return sourceFieldNames;
+    }
+
+    public FieldSchema setSourceFieldName(String sourceFieldName) {
+        this.sourceFieldNames = Collections.singletonList(sourceFieldName);
+        return this;
+    }
+
+    public FieldSchema setSourceFieldNames(List<String> sourceFieldNames) {
+        this.sourceFieldNames = sourceFieldNames;
         return this;
     }
 
@@ -197,10 +259,37 @@ public class FieldSchema implements Jsonizable {
             sb.append(newline);
         }
         if (analyzer != null) {
-            sb.append("\"Analyzer\": ");
+            sb.append("\"Analyzer\": \"");
             sb.append(analyzer.toString());
-            sb.append(",");
+            sb.append("\",");
             sb.append(newline);
+
+            if (analyzerParameter != null) {
+                if (analyzer == Analyzer.SingleWord && analyzerParameter instanceof SingleWordAnalyzerParameter) {
+                    sb.append("\"AnalyzerParameter\": {");
+                    sb.append("\"CaseSensitive\": ");
+                    sb.append(((SingleWordAnalyzerParameter)analyzerParameter).isCaseSensitive());
+                    sb.append(", \"DelimitWord\": ");
+                    sb.append(((SingleWordAnalyzerParameter)analyzerParameter).isDelimitWord());
+                    sb.append("},");
+                    sb.append(newline);
+                } else if (analyzer == Analyzer.Split && analyzerParameter instanceof SplitAnalyzerParameter) {
+                    String delimiter = ((SplitAnalyzerParameter)analyzerParameter).getDelimiter();
+                    sb.append("\"AnalyzerParameter\": {");
+                    sb.append("\"Delimiter\": ");
+                    sb.append(delimiter == null ? "null" : "\"" + delimiter + "\"");
+                    sb.append("},");
+                    sb.append(newline);
+                } else if (analyzer == Analyzer.Fuzzy && analyzerParameter instanceof FuzzyAnalyzerParameter) {
+                    sb.append("\"AnalyzerParameter\": {");
+                    sb.append("\"MinChars\": ");
+                    sb.append(((FuzzyAnalyzerParameter)analyzerParameter).getMinChars());
+                    sb.append(", \"MaxChars\": ");
+                    sb.append(((FuzzyAnalyzerParameter)analyzerParameter).getMaxChars());
+                    sb.append("},");
+                    sb.append(newline);
+                }
+            }
         }
         if (enableSortAndAgg != null) {
             sb.append("\"EnableSortAndAgg\": ");
@@ -221,18 +310,37 @@ public class FieldSchema implements Jsonizable {
             sb.append(newline);
         }
         sb.append("\"SubFieldSchemas\": [");
-        boolean first = true;
-        for (FieldSchema schema : subFieldSchemas) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append(",");
-                sb.append(newline + " ");
+        if (subFieldSchemas != null) {
+            for (int i = 0; i < subFieldSchemas.size(); i++) {
+                FieldSchema schema = subFieldSchemas.get(i);
+                schema.jsonize(sb, newline);
+                if (i != subFieldSchemas.size() - 1) {
+                    sb.append(", ");
+                    sb.append(newline);
+                }
             }
-            schema.jsonize(sb, newline + " ");
         }
         sb.append("]");
-        sb.append(newline.substring(0, newline.length() - 2));
+        if (isVirtualField != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"IsVirtualField\": ");
+            sb.append(isVirtualField);
+        }
+        if (sourceFieldNames != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"SourceFieldNames\": [");
+            for (int i = 0; i < sourceFieldNames.size(); i++) {
+                String sourceField = sourceFieldNames.get(i);
+                sb.append("\"").append(sourceField).append("\"");
+                if (i != sourceFieldNames.size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append("]");
+        }
+        sb.append(newline);
         sb.append("}");
     }
 }

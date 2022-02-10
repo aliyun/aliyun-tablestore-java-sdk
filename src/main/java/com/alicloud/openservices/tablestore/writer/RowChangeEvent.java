@@ -4,8 +4,6 @@ import com.alicloud.openservices.tablestore.model.RowChange;
 import com.lmax.disruptor.EventFactory;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class RowChangeEvent {
     public enum EventType {
@@ -15,14 +13,16 @@ public class RowChangeEvent {
     public EventType type;
     public RowChange rowChange;
     public CountDownLatch latch;
+    public Group group;
 
     private RowChangeEvent() {
 
     }
 
-    public void setValue(RowChange rowChange) {
+    public void setValue(RowChange rowChange, Group group) {
         this.type = EventType.DATA;
         this.rowChange = rowChange;
+        this.group = group;
     }
 
     public void setValue(CountDownLatch latch) {

@@ -3,6 +3,8 @@ package com.alicloud.openservices.tablestore.core.http;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import org.apache.http.HttpHost;
 import org.apache.http.client.utils.URIUtils;
 
@@ -26,6 +28,9 @@ public class OTSUri {
         }
 
         endpoint = endpoint.substring(0, index + 1);
+
+        // for SSRF check
+        Preconditions.checkArgument(HttpUtil.validateEndpointArgs(endpoint), "The endpoint is invalid: " + endpoint);
 
         try {
             this.uri = new URI(endpoint + action);

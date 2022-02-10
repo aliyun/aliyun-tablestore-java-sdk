@@ -10,7 +10,7 @@ import org.apache.http.HttpResponse;
 
 public class ResponseMessage {
     private HttpResponse response;
-    private Map<String, String> headers;
+    private Map<String, String> lowerCaseHeaders;
 
     private static final int HTTP_SUCCESS_STATUS_CODE = 200;
 
@@ -25,12 +25,12 @@ public class ResponseMessage {
     public String getHeader(String header) {
         initHeaderMap();
 
-        return headers.get(header);
+        return lowerCaseHeaders.get(header.toLowerCase());
     }
 
-    public Map<String, String> getHeadersMap() {
+    public Map<String, String> getLowerCaseHeadersMap() {
         initHeaderMap();
-        return headers;
+        return lowerCaseHeaders;
     }
 
     public HttpResponse getResponse() {
@@ -38,10 +38,10 @@ public class ResponseMessage {
     }
 
     private void initHeaderMap() {
-        if (headers == null) {
-            headers = new HashMap<String, String>(response.getAllHeaders().length);
+        if (lowerCaseHeaders == null) {
+            lowerCaseHeaders = new HashMap<String, String>(response.getAllHeaders().length);
             for (Header header : response.getAllHeaders()) {
-                headers.put(header.getName(), header.getValue());
+                lowerCaseHeaders.put(header.getName().toLowerCase(), header.getValue());
             }
         }
     }

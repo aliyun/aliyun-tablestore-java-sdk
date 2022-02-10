@@ -4,9 +4,11 @@ import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.RowChange;
 import com.alicloud.openservices.tablestore.writer.RowWriteResult;
 import com.alicloud.openservices.tablestore.writer.WriterConfig;
+import com.alicloud.openservices.tablestore.writer.WriterResult;
 import com.alicloud.openservices.tablestore.writer.WriterStatistics;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * TableStore提供了BatchWriteRow接口让用户能够向TableStore批量导入数据，但是在实际使用过程中，BatchWriteRow接口的使用方式对开发者并不友好。例如用户
@@ -61,6 +63,15 @@ public interface TableStoreWriter {
     void addRowChange(RowChange rowChange) throws ClientException;
 
     /**
+     * 接口功能同 {@link com.alicloud.openservices.tablestore.TableStoreWriter#addRowChange}一致，
+     * 但会返回写入结果的Future，返回该行的写入成功、失败状态
+     *
+     * @param rowChange 要写入的行
+     * @throws com.alicloud.openservices.tablestore.ClientException 若该行被判定为脏数据
+     */
+    Future<WriterResult> addRowChangeWithFuture(RowChange rowChange) throws ClientException;
+
+    /**
      * Same with {@link #addRowChange(RowChange)}, but it won't be blocked if the buffer is full.
      *
      * @param rowChange
@@ -80,6 +91,17 @@ public interface TableStoreWriter {
      * @throws ClientException 若存在脏数据
      */
     void addRowChange(List<RowChange> rowChanges, List<RowChange> dirtyRows) throws ClientException;
+
+
+    /**
+     * 向本地缓冲区批量写入行。
+     *
+     * 批量写入的每一行会做与{@link #addRowChange(RowChange)}一样的检查;脏数据会直接更新到WriterResponse中统计
+
+     * @param rowChanges 批量写入的行
+     * @throws ClientException 若存在脏数据
+     */
+    Future<WriterResult> addRowChangeWithFuture(List<RowChange> rowChanges) throws ClientException;
 
     /**
      * @see  #setResultCallback(TableStoreCallback)
@@ -126,6 +148,7 @@ public interface TableStoreWriter {
      * @return 数据导入的统计信息
      */
     WriterStatistics getWriterStatistics();
+
 
     /**
      * 主动flush缓冲区中的数据，该函数会等待缓冲区中的所有数据被flush完毕。

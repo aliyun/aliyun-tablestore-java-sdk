@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.model;
 
+import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
 public class ComputeSplitsBySizeRequest implements Request {
@@ -8,6 +9,7 @@ public class ComputeSplitsBySizeRequest implements Request {
 
     private long splitUnitCount = 0l;
     private long splitUnitSizeInByte = 100 * 1024 * 1024; // default 100M split unit
+    private OptionalValue<Integer> splitPointLimit = new OptionalValue<Integer>("SplitPointLimit");
 
     public ComputeSplitsBySizeRequest() {
         this(null, 0l);
@@ -85,5 +87,37 @@ public class ComputeSplitsBySizeRequest implements Request {
     public void setSplitSizeInByte(long splitUnitCount, long splitUnitSizeInByte) {
         this.splitUnitCount = splitUnitCount;
         this.splitUnitSizeInByte = splitUnitSizeInByte;
+    }
+
+    /**
+     * 设置splitPointLimit
+     *
+     * @param splitPointLimit
+     */
+    public void setSplitPointLimit(int splitPointLimit) {
+        Preconditions.checkArgument(splitPointLimit > 0, "The value of SplitPointLimit must be greater than 0.");
+        this.splitPointLimit.setValue(splitPointLimit);
+    }
+
+    /**
+     * 获取设置过的splitPointLimit。
+     *
+     * @return splitPointLimit
+     * @throws java.lang.IllegalStateException 若没有配置该参数
+     */
+    public int getSplitPointLimit() {
+        if (!this.splitPointLimit.isValueSet()) {
+            throw new IllegalStateException("The value of SplitPointLimit is not set.");
+        }
+        return this.splitPointLimit.getValue();
+    }
+
+    /**
+     * 查询是否设置了splitPointLimit。
+     *
+     * @return 若设置过splitPointLimit，则返回true，否则返回false。
+     */
+    public boolean hasSetSplitPointLimit() {
+        return splitPointLimit.isValueSet();
     }
 }

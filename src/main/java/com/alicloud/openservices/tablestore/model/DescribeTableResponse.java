@@ -32,9 +32,19 @@ public class DescribeTableResponse extends Response implements Jsonizable {
     private StreamDetails streamDetails;
 
     /**
+     * 表的服务器端加密信息。
+     */
+    private SSEDetails sseDetails;
+
+    /**
      * 索引表信息
      */
     private List<IndexMeta> indexMeta = new ArrayList<IndexMeta>();
+
+    /**
+     * 建表时间，单位微秒
+     */
+    private long creationTime;
 
     /*
      * 内部接口。请勿使用。
@@ -111,6 +121,19 @@ public class DescribeTableResponse extends Response implements Jsonizable {
     }
 
     /**
+     * 获取表的服务器端加密信息。
+     *
+     * @return 表的服务器端加密信息。
+     */
+    public SSEDetails getSseDetails() {
+        return sseDetails;
+    }
+
+    public void setSseDetails(SSEDetails sseDetails) {
+        this.sseDetails = sseDetails;
+    }
+
+    /**
      * 获取索引表的信息
      *
      * @return 索引表的信息
@@ -127,6 +150,19 @@ public class DescribeTableResponse extends Response implements Jsonizable {
         this.tableOptions = tableOptions;
     }
 
+    /**
+     * 获取建表时间，单位微秒
+     *
+     * @return long 建表时间
+     * */
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -137,6 +173,10 @@ public class DescribeTableResponse extends Response implements Jsonizable {
     @Override
     public void jsonize(StringBuilder sb, String newline) {
         sb.append('{');
+        sb.append(newline);
+        sb.append("\"CreationTime\": ");
+        sb.append(creationTime);
+        sb.append(",");
         sb.append(newline);
         sb.append("\"TableMeta\": ");
         tableMeta.jsonize(sb, newline + "  ");

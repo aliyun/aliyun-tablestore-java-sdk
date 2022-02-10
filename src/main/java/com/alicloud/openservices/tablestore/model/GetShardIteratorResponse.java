@@ -8,6 +8,8 @@ public class GetShardIteratorResponse extends Response {
      */
     private String shardIterator;
 
+    private String nextToken;
+
     public GetShardIteratorResponse() {
 
     }
@@ -26,5 +28,13 @@ public class GetShardIteratorResponse extends Response {
 
     public void setShardIterator(String shardIterator) {
         this.shardIterator = shardIterator;
+    }
+
+    public String getNextToken() {
+        return nextToken;
+    }
+
+    public void setNextToken(String nextToken) {
+        this.nextToken = nextToken;
     }
 }

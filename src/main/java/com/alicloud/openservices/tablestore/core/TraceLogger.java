@@ -8,7 +8,7 @@ import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.core.utils.LogUtil;
 
 public class TraceLogger {
-    private String traceId;
+    private final String traceId;
     private List<Pair<String, Long>> eventTimeRecord;
     private List<Pair<String, String>> requestInfoRecord;
     private static Logger logger = LoggerFactory.getLogger(TraceLogger.class);

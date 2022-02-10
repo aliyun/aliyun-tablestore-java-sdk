@@ -1,12 +1,5 @@
 package com.alicloud.openservices.tablestore.tunnel.pipeline;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.alicloud.openservices.tablestore.model.StreamRecord;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsRequest;
@@ -17,6 +10,12 @@ import com.alicloud.openservices.tablestore.tunnel.worker.IChannelProcessor;
 import com.alicloud.openservices.tablestore.tunnel.worker.ProcessRecordsInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.alicloud.openservices.tablestore.core.protocol.ResponseFactory.FINISH_TAG;
 
@@ -33,6 +32,10 @@ public class ProcessDataPipeline implements Runnable {
     private volatile boolean started = false;
     private final ThreadPoolExecutor readRecordsExecutor;
     private final ThreadPoolExecutor processRecordsExecutor;
+    private Semaphore semaphore;
+    private int readMaxTimesPerRound = 1;
+    private int readMaxBytesPerRound = 4 * 1024 * 1024; // 4M bytes
+
     /**
      * pipelineHelperExecutor用于pipeline初始化，运行中的错误处理等。
      */
@@ -52,22 +55,44 @@ public class ProcessDataPipeline implements Runnable {
         this.processRecordsExecutor = processRecordsExecutor;
     }
 
+    public ProcessDataPipeline(ChannelConnect connect, ExecutorService helperExecutor,
+                               ThreadPoolExecutor readRecordsExecutor, ThreadPoolExecutor processRecordsExecutor,
+                               Semaphore semaphore) {
+        this.connect = connect;
+        this.pipelineHelperExecutor = helperExecutor;
+        this.readRecordsExecutor = readRecordsExecutor;
+        this.processRecordsExecutor = processRecordsExecutor;
+        this.semaphore = semaphore;
+    }
+
     @Override
     public void run() {
+        // 若信号量存在，则先检查信号量再运行。
+        if (semaphore != null) {
+            try {
+                semaphore.acquire();
+                LOG.info("Tunnel {}, Channel {} acquire semaphore succeed, permits remaining: {}",
+                        connect.getTunnelId(), connect.getChannelId(), semaphore.availablePermits());
+                LOG.debug("Semaphore permits remaining {}, queued {}", semaphore.availablePermits(), semaphore.getQueueLength());
+            } catch (InterruptedException e) {
+                LOG.warn("Acquire semaphore failed: {}, ChannelId: {}", e.toString(), connect.getChannelId());
+                semaphore.release();
+            }
+        }
         // 第一次运行Pipeline的时候，进行初始化操作，单个Pipeline实例的运行是串行的，不会存在竞态。
         if (!started) {
             LOG.info("Initial process data pipeline.");
             this.pipeline = buildPipeline();
-            pipeline.init(new ProcessDataPipelineContext(connect));
+            pipeline.init(new ProcessDataPipelineContext(connect, semaphore));
             started = true;
         }
         this.pipeline.process(new ReadRecordsRequest(connect.getTunnelId(), connect.getClientId(),
-            connect.getChannelId(), connect.getToken()));
+                connect.getChannelId(), connect.getToken()));
     }
 
     private Pipeline<ReadRecordsRequest, CheckpointResponse> buildPipeline() {
         final Pipeline<ReadRecordsRequest, CheckpointResponse> pipeline =
-            new Pipeline<ReadRecordsRequest, CheckpointResponse>(pipelineHelperExecutor);
+                new Pipeline<ReadRecordsRequest, CheckpointResponse>(pipelineHelperExecutor);
 
         // 依次插入任务的两个Stage
         Stage<ReadRecordsRequest, ProcessRecordsInput> readRecordsStage = createReadRecordsStage();
@@ -88,21 +113,40 @@ public class ProcessDataPipeline implements Runnable {
                         try {
                             LOG.debug("Begin read records, connect: {}", connect);
                             long beginTs = System.currentTimeMillis();
-                            ReadRecordsResponse resp = connect.getClient().readRecords(readRecordsRequest);
-                            List<StreamRecord> records = resp.getRecords();
-                            LOG.info("GetRecords, Num: {}, Channel connect: {}, Latency: {} ms, Next Token: {}",
-                                records.size(), connect, System.currentTimeMillis() - beginTs, resp.getNextToken());
-                            if (backoff != null) {
-                                if (checkDataEnough(resp.getRecords().size(), resp.getMemoizedSerializedSize())) {
-                                    LOG.debug("Backoff is reset");
-                                    backoff.reset();
-                                } else {
-                                    long sleepMills = backoff.nextBackOffMillis();
-                                    LOG.debug("Data is not full, sleep {} msec.", sleepMills);
-                                    Thread.sleep(backoff.nextBackOffMillis());
+                            ReadRecordsResponse resp = null;
+                            List<StreamRecord> totalRecords = new LinkedList<StreamRecord>();
+                            int totalBytes = 0, times = 0, totalRecordsCount = 0;
+                            while (totalBytes < readMaxBytesPerRound && times < readMaxTimesPerRound) {
+                                resp = connect.getClient().readRecords(readRecordsRequest);
+                                totalRecords.addAll(resp.getRecords());
+                                totalRecordsCount += resp.getRecords().size();
+                                totalBytes += resp.getMemoizedSerializedSize();
+                                times++;
+
+                                if (resp.getNextToken() == null || FINISH_TAG.equals(resp.getNextToken())) {
+                                    LOG.info("Channel {} next token is null", connect.getChannelId());
+                                    break;
+                                }
+                                if (backoff != null) {
+                                    if (checkDataEnough(resp.getRecords().size(), resp.getMemoizedSerializedSize())) {
+                                        LOG.debug("Backoff is reset");
+                                        backoff.reset();
+                                    } else {
+                                        long sleepMills = backoff.nextBackOffMillis();
+                                        LOG.debug("Data is not full, sleep {} msec.", sleepMills);
+                                        Thread.sleep(backoff.nextBackOffMillis());
+                                        break;
+                                    }
                                 }
                             }
-                            return new ProcessRecordsInput(resp.getRecords(), resp.getNextToken(), resp.getRequestId());
+                            if (resp == null) {
+                                LOG.info("ReadRecordsResponse is null, channelId: {}", connect.getChannelId());
+                                return new ProcessRecordsInput(totalRecords, null, null);
+                            } else {
+                                LOG.info("GetRecords, Num: {}, LoopTimes: {}, TotalBytes: {}, Channel connect: {}, Latency: {} ms, Next Token: {}",
+                                        totalRecordsCount, times, totalBytes, connect, System.currentTimeMillis() - beginTs, resp.getNextToken());
+                                return new ProcessRecordsInput(totalRecords, resp.getNextToken(), resp.getRequestId());
+                            }
                         } catch (Exception e) {
                             throw new StageException(this, readRecordsRequest, e.getMessage(), e);
                         }
@@ -131,6 +175,11 @@ public class ProcessDataPipeline implements Runnable {
                         connect.setToken(processRecordsInput.getNextToken());
                         LOG.info("Continue run pipeline, connect: {}", connect);
                         connect.getChannelExecutorService().submit(connect.getProcessPipeline());
+                        if (semaphore != null) {
+                            semaphore.release();
+                            LOG.info("Channel {} release semaphore succeed", connect.getChannelId());
+                            LOG.debug("Semaphore permits remaining {}, queued {}", semaphore.availablePermits(), semaphore.getQueueLength());
+                        }
                         return true;
                     } catch (Exception e) {
                         throw new StageException(this, processRecordsInput, e.getMessage(), e);
@@ -159,5 +208,21 @@ public class ProcessDataPipeline implements Runnable {
 
     public void setBackoff(ProcessDataBackoff backoff) {
         this.backoff = backoff;
+    }
+
+    public Semaphore getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
+    }
+
+    public void setReadMaxTimesPerRound(int readMaxTimesPerRound) {
+        this.readMaxTimesPerRound = readMaxTimesPerRound;
+    }
+
+    public void setReadMaxBytesPerRound(int readMaxBytesPerRound) {
+        this.readMaxBytesPerRound = readMaxBytesPerRound;
     }
 }

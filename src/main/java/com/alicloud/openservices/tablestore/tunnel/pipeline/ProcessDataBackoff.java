@@ -17,6 +17,11 @@ public class ProcessDataBackoff implements IBackoff {
         reset();
     }
 
+    public ProcessDataBackoff(int maxIntervalMillis) {
+        reset();
+        this.maxIntervalMillis = maxIntervalMillis;
+    }
+
     @Override
     public void reset() {
         currentIntervalMillis = initialIntervalMillis;
@@ -44,9 +49,7 @@ public class ProcessDataBackoff implements IBackoff {
         double minInterval = currentIntervalMillis - delta;
         double maxInterval = currentIntervalMillis + delta;
 
-        long randomValue = (long) (minInterval + (random * (maxInterval - minInterval + 1)));
+        long randomValue = (long)(minInterval + (random * (maxInterval - minInterval + 1)));
         return randomValue;
     }
-
-
 }

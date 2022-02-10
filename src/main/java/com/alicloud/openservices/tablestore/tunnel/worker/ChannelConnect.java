@@ -114,7 +114,7 @@ public class ChannelConnect implements IChannelConnect {
 
     public void close(boolean finish) {
         if (status.get() != ChannelConnectStatus.CLOSED) {
-            LOG.info("Shutdown Channel connect.");
+            LOG.info("Begin Shutdown Channel connect {}", channelId);
             if (processor != null) {
                 processor.shutdown();
             }
@@ -122,7 +122,7 @@ public class ChannelConnect implements IChannelConnect {
                 finished.set(true);
             }
             status.set(ChannelConnectStatus.CLOSED);
-            LOG.info("After close, ChannelConnectStatus: {}", status.get());
+            LOG.info("After close channel {}, ChannelConnectStatus: {}", channelId, status.get());
         }
     }
 

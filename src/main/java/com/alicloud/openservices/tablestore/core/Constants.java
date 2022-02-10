@@ -3,8 +3,9 @@ package com.alicloud.openservices.tablestore.core;
 import java.nio.charset.Charset;
 
 public class Constants {
+    // ALL HTTP HEADERS SHOULD BE DEFINED IN LOWERCASE
     // request headers
-    public static final String USER_AGENT = "ots-java-sdk 4.1.0";
+    public static final String USER_AGENT = "ots-java-sdk 5.8.7";
     public static final String OTS_HEADER_API_VERSION = "x-ots-apiversion";
     public static final String OTS_HEADER_ACCESS_KEY_ID = "x-ots-accesskeyid";
     public static final String OTS_HEADER_OTS_CONTENT_MD5 = "x-ots-contentmd5";
@@ -18,20 +19,20 @@ public class Constants {
     // response headers
     public static final String OTS_HEADER_PREFIX = "x-ots-";
     public static final String OTS_HEADER_OTS_CONTENT_TYPE = "x-ots-contenttype";
-    public static final String OTS_HEADER_AUTHORIZATION = "Authorization";
+    public static final String OTS_HEADER_AUTHORIZATION = "authorization";
     public static final String OTS_HEADER_REQUEST_ID = "x-ots-requestid";
-    public static final String OTS_MOVED_PERMANENTLY_LOCATION = "Location";
+    public static final String OTS_MOVED_PERMANENTLY_LOCATION = "location";
     public static final String OTS_HEADER_TRACE_INFO = "x-ots-traceinfo";
-    
+
     // request/response compress headers
     public final static String OTS_HEADER_REQUEST_COMPRESS_TYPE = "x-ots-request-compress-type";
     public final static String OTS_HEADER_REQUEST_COMPRESS_SIZE = "x-ots-request-compress-size";
     public final static String OTS_HEADER_RESPONSE_COMPRESS_TYPE = "x-ots-response-compress-type";
     public final static String OTS_HEADER_RESPONSE_COMPRESS_SIZE = "x-ots-response-compress-size";
-    
+
     // compression type
     public final static String OTS_COMPRESS_TYPE = "deflate";
-    
+
     // http status code
     public final static int OTS_HTTP_MOVED_PERMANENTLY = 301;
     public final static int OTS_HTTP_ENTITY_TOO_LARGE = 413;
@@ -47,4 +48,8 @@ public class Constants {
     public static final String UTF8_ENCODING = "utf-8";
     public static final String HTTP_HEADER_ENCODING = "iso-8859-1";
     public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+
+    public static final String ENDPOINT_REGEX = "^(?i)http(s)?(?-i)://[a-zA-Z0-9._-]+(:\\d{1,5})?(/)?$";
+    public static final String SSRF_CHECK_REGEX = "^[a-zA-Z0-9_-]+$";
+    public static final String ACCESSKEYID_REGEX = "^[a-zA-Z0-9+\\./_-]+$";
 }

@@ -4,16 +4,20 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProviderFactory;
+import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
 import com.alicloud.openservices.tablestore.core.*;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
+import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.timeseries.*;
 import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
@@ -34,12 +38,14 @@ import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsReq
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelResponse;
+import com.google.common.cache.Cache;
 
 public class InternalClient {
     private static int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
     private String endpoint; // TableStore endpoint
     private String instanceName; // 实例的名称
     private CredentialsProvider crdsProvider; // 用户身份信息。
+    private ResourceManager resourceManager;
     private AsyncServiceClient httpClient;
     private ScheduledExecutorService retryExecutor;
     private ExecutorService callbackExecutor; // 用于执行Callback
@@ -47,6 +53,7 @@ public class InternalClient {
     private RetryStrategy retryStrategy;
     private LauncherFactory launcherFactory;
     private Random random = new Random();
+    private Cache<String, Long> timeseriesMetaCache;
 
     /**
      * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link AsyncClient}实例。
@@ -125,19 +132,18 @@ public class InternalClient {
     public InternalClient(String endpoint, String accessKeyId, String accessKeySecret, String instanceName,
                           ClientConfiguration config, ExecutorService callbackExecutor, String stsToken) {
         this(endpoint, CredentialsProviderFactory.newDefaultCredentialProvider(accessKeyId, accessKeySecret, stsToken),
-                instanceName, config, callbackExecutor);
-
-
+                instanceName, config, new ResourceManager(config, callbackExecutor));
     }
 
     public InternalClient(String endpoint, CredentialsProvider credsProvider, String instanceName,
-                          ClientConfiguration config, ExecutorService callbackExecutor) {
+                          ClientConfiguration config, ResourceManager resourceManager) {
         Preconditions.checkArgument(endpoint != null && !endpoint.isEmpty(),
                 "The end point should not be null or empty.");
         Preconditions.checkArgument(instanceName != null && !instanceName.isEmpty(),
                 "The name of instance should not be null or empty.");
         Preconditions.checkArgument(instanceName.length() == instanceName.getBytes(Constants.UTF8_CHARSET).length,
                 "InstanceName should not have multibyte character.");
+        Preconditions.checkArgument(HttpUtil.checkSSRF(instanceName), "The instance name is invalid: " + instanceName);
 
         if (!endpoint.startsWith("http://") && !endpoint.startsWith("https://")) {
             throw new IllegalArgumentException("the endpoint must start with \"http://\" or \"https://\".");
@@ -152,33 +158,21 @@ public class InternalClient {
 
         this.clientConfig = config;
 
-        this.httpClient = new AsyncServiceClient(config);
-
-        this.retryExecutor = Executors.newScheduledThreadPool(config.getRetryThreadCount(),
-                new ThreadFactory() {
-                    private final AtomicInteger counter = new AtomicInteger(1);
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        return new Thread(r, "tablestore-retry-scheduled-" + counter.getAndIncrement());
-                    }
-                });
-
         this.retryStrategy = config.getRetryStrategy();
 
         this.instanceName = instanceName;
 
-        if (callbackExecutor != null) {
-            this.callbackExecutor = callbackExecutor;
+        if (resourceManager != null) {
+            this.resourceManager = resourceManager;
         } else {
-            this.callbackExecutor = Executors.newFixedThreadPool(AVAILABLE_PROCESSORS,
-                    new ThreadFactory() {
-                        private final AtomicInteger counter = new AtomicInteger(1);
-                        @Override
-                        public Thread newThread(Runnable r) {
-                            return new Thread(r, "tablestore-callback-" + counter.getAndIncrement());
-                        }
-                    });
+            this.resourceManager = new ResourceManager(this.clientConfig);
         }
+
+        this.httpClient = this.resourceManager.getResources().getHttpClient();
+
+        this.retryExecutor = this.resourceManager.getResources().getRetryExecutor();
+
+        this.callbackExecutor = this.resourceManager.getResources().getCallbackExecutor();
 
         this.launcherFactory = new LauncherFactory(endpoint, instanceName, httpClient, crdsProvider, config);
     }
@@ -212,6 +206,14 @@ public class InternalClient {
      */
     public ClientConfiguration getClientConfig() {
         return clientConfig;
+    }
+
+    protected void setTimeseriesMetaCache(Cache<String, Long> cache) {
+        timeseriesMetaCache = cache;
+    }
+
+    protected Cache<String, Long> getTimeseriesMetaCache() {
+        return this.timeseriesMetaCache;
     }
 
     private TraceLogger getTraceLogger() {
@@ -252,6 +254,29 @@ public class InternalClient {
         AsyncCompletion<CreateTableRequest, CreateTableResponse> completion = new AsyncCompletion<CreateTableRequest, CreateTableResponse>(
                 launcher, request, tracer, callbackExecutor, retry, retryExecutor);
         CallbackImpledFuture<CreateTableRequest, CreateTableResponse> f = new CallbackImpledFuture<CreateTableRequest, CreateTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<CreateTableResponse> createTableEx(CreateTableRequestEx request,
+                                                   TableStoreCallback<CreateTableRequestEx, CreateTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateTableExLauncher launcher = launcherFactory.createTableEx(tracer, retry, request);
+
+        AsyncCompletion<CreateTableRequestEx, CreateTableResponse> completion = new AsyncCompletion<CreateTableRequestEx, CreateTableResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateTableRequestEx, CreateTableResponse> f = new CallbackImpledFuture<CreateTableRequestEx, CreateTableResponse>();
         completion.watchBy(f);
         if (callback != null) {
             // user callback must be triggered after completion of the return
@@ -370,6 +395,51 @@ public class InternalClient {
         AsyncCompletion<DeleteIndexRequest, DeleteIndexResponse> completion = new AsyncCompletion<DeleteIndexRequest, DeleteIndexResponse>(
                 launcher, request, tracer, callbackExecutor, retry, retryExecutor);
         CallbackImpledFuture<DeleteIndexRequest, DeleteIndexResponse> f = new CallbackImpledFuture<DeleteIndexRequest, DeleteIndexResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<AddDefinedColumnResponse> addDefinedColumn(AddDefinedColumnRequest request,
+                                                             TableStoreCallback<AddDefinedColumnRequest, AddDefinedColumnResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        AddDefinedColumnLauncher launcher = launcherFactory.addDefinedColumn(tracer, retry, request);
+
+        AsyncCompletion<AddDefinedColumnRequest, AddDefinedColumnResponse> completion = new AsyncCompletion<AddDefinedColumnRequest, AddDefinedColumnResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<AddDefinedColumnRequest, AddDefinedColumnResponse> f = new CallbackImpledFuture<AddDefinedColumnRequest, AddDefinedColumnResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+        f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteDefinedColumnResponse> deleteDefinedColumn(DeleteDefinedColumnRequest request,
+                                                                   TableStoreCallback<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteDefinedColumnLauncher launcher = launcherFactory.deleteDefinedColumn(tracer, retry, request);
+        AsyncCompletion<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse> completion = new AsyncCompletion<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse> f = new CallbackImpledFuture<DeleteDefinedColumnRequest, DeleteDefinedColumnResponse>();
         completion.watchBy(f);
         if (callback != null) {
             // user callback must be triggered after completion of the return
@@ -566,6 +636,28 @@ public class InternalClient {
         return f;
     }
 
+    public Future<BulkImportResponse> bulkImport(BulkImportRequest request,
+                                                       TableStoreCallback<BulkImportRequest, BulkImportResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        BulkImportLauncher launcher = launcherFactory.bulkImport(tracer, retry, request);
+        AsyncCompletion<BulkImportRequest, BulkImportResponse> completion = new AsyncCompletion<BulkImportRequest, BulkImportResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<BulkImportRequest, BulkImportResponse> f = new CallbackImpledFuture<BulkImportRequest, BulkImportResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public Future<GetRangeResponse> getRangeInternal(GetRangeRequest request,
             TableStoreCallback<GetRangeRequest, GetRangeResponse> callback) {
         Preconditions.checkNotNull(request);
@@ -577,6 +669,29 @@ public class InternalClient {
         AsyncCompletion<GetRangeRequest, GetRangeResponse> completion = new AsyncCompletion<GetRangeRequest, GetRangeResponse>(
                 launcher, request, tracer, callbackExecutor, retry, retryExecutor);
         CallbackImpledFuture<GetRangeRequest, GetRangeResponse> f = new CallbackImpledFuture<GetRangeRequest, GetRangeResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<BulkExportResponse> bulkExportInternal(BulkExportRequest request,
+                                                     TableStoreCallback<BulkExportRequest, BulkExportResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        BulkExportLauncher launcher = launcherFactory.bulkExport(tracer, retry, request);
+
+        AsyncCompletion<BulkExportRequest, BulkExportResponse> completion = new AsyncCompletion<BulkExportRequest, BulkExportResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<BulkExportRequest, BulkExportResponse> f = new CallbackImpledFuture<BulkExportRequest, BulkExportResponse>();
         completion.watchBy(f);
         if (callback != null) {
             // user callback must be triggered after completion of the return
@@ -612,10 +727,33 @@ public class InternalClient {
         return f;
     }
 
+    public Future<BulkExportResponse> bulkExport(BulkExportRequest request,
+                                             TableStoreCallback<BulkExportRequest, BulkExportResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        BulkExportLauncher launcher = launcherFactory.bulkExport(tracer, retry, request);
+
+        AsyncCompletion<BulkExportRequest, BulkExportResponse> completion = new AsyncCompletion(launcher, request, tracer, callbackExecutor,
+                retry, retryExecutor);
+        CallbackImpledFuture<BulkExportRequest, BulkExportResponse> f = new CallbackImpledFuture<BulkExportRequest, BulkExportResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public Future<ComputeSplitsBySizeResponse> computeSplitsBySize(ComputeSplitsBySizeRequest request,
             TableStoreCallback<ComputeSplitsBySizeRequest, ComputeSplitsBySizeResponse> callback) {
         Preconditions.checkNotNull(request);
-        Preconditions.checkStringNotNullAndEmpty(request.getTableName(), 
+        Preconditions.checkStringNotNullAndEmpty(request.getTableName(),
                 "The table name for ComputeSplitsBySize should not be null or empty.");
 
         TraceLogger tracer = getTraceLogger();
@@ -638,9 +776,7 @@ public class InternalClient {
     }
 
     public void shutdown() {
-        this.retryExecutor.shutdownNow();
-        this.callbackExecutor.shutdownNow();
-        this.httpClient.shutdown();
+        this.resourceManager.shutdown();
     }
 
     public Future<ListStreamResponse> listStream(ListStreamRequest request,
@@ -829,6 +965,31 @@ public class InternalClient {
         return f;
     }
 
+    public Future<UpdateSearchIndexResponse> updateSearchIndex(UpdateSearchIndexRequest request,
+                                                               TableStoreCallback<UpdateSearchIndexRequest, UpdateSearchIndexResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateSearchIndexLauncher launcher = launcherFactory.updateSearchIndex(tracer, retry, request);
+
+        AsyncCompletion<UpdateSearchIndexRequest, UpdateSearchIndexResponse> completion =
+                new AsyncCompletion<UpdateSearchIndexRequest, UpdateSearchIndexResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateSearchIndexRequest, UpdateSearchIndexResponse> f =
+                new CallbackImpledFuture<UpdateSearchIndexRequest, UpdateSearchIndexResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public Future<ListSearchIndexResponse> listSearchIndex(ListSearchIndexRequest request,
                                                            TableStoreCallback<ListSearchIndexRequest, ListSearchIndexResponse> callback) {
         Preconditions.checkNotNull(request);
@@ -892,6 +1053,50 @@ public class InternalClient {
                         launcher, request, tracer, callbackExecutor, retry, retryExecutor);
         CallbackImpledFuture<DescribeSearchIndexRequest, DescribeSearchIndexResponse> f =
                 new CallbackImpledFuture<DescribeSearchIndexRequest, DescribeSearchIndexResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ComputeSplitsResponse> computeSplits(ComputeSplitsRequest request, TableStoreCallback<ComputeSplitsRequest, ComputeSplitsResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ComputeSplitsLauncher launcher = launcherFactory.computeSplits(tracer, retry, request);
+
+        AsyncCompletion<ComputeSplitsRequest, ComputeSplitsResponse> completion =
+            new AsyncCompletion<ComputeSplitsRequest, ComputeSplitsResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ComputeSplitsRequest, ComputeSplitsResponse> f = new CallbackImpledFuture<ComputeSplitsRequest, ComputeSplitsResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ParallelScanResponse> parallelScan(ParallelScanRequest request, TableStoreCallback<ParallelScanRequest, ParallelScanResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ParallelScanLauncher launcher = launcherFactory.parallelScan(tracer, retry, request);
+
+        AsyncCompletion<ParallelScanRequest, ParallelScanResponse> completion =
+            new AsyncCompletion<ParallelScanRequest, ParallelScanResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ParallelScanRequest, ParallelScanResponse> f = new CallbackImpledFuture<ParallelScanRequest, ParallelScanResponse>();
         completion.watchBy(f);
         if (callback != null) {
             // user callback must be triggered after completion of the return
@@ -1199,6 +1404,347 @@ public class InternalClient {
         return f;
     }
 
+
+    public Future<CreateDeliveryTaskResponse> createDeliveryTask(CreateDeliveryTaskRequest request,
+                                                                 TableStoreCallback<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateDeliveryTaskLauncher launcher = launcherFactory.createDeliveryTask(tracer, retry, request);
+
+        AsyncCompletion<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse> completion = new AsyncCompletion<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse> f = new CallbackImpledFuture<CreateDeliveryTaskRequest, CreateDeliveryTaskResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteDeliveryTaskResponse> deleteDeliveryTask(DeleteDeliveryTaskRequest request,
+                                                                 TableStoreCallback<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteDeliveryTaskLauncher launcher = launcherFactory.deleteDeliveryTask(tracer, retry, request);
+
+        AsyncCompletion<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse> completion = new AsyncCompletion<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse> f = new CallbackImpledFuture<DeleteDeliveryTaskRequest, DeleteDeliveryTaskResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DescribeDeliveryTaskResponse> describeDeliveryTask(DescribeDeliveryTaskRequest request,
+                                                                     TableStoreCallback<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DescribeDeliveryTaskLauncher launcher = launcherFactory.describeDeliveryTask(tracer, retry, request);
+
+        AsyncCompletion<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse> completion = new AsyncCompletion<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse> f = new CallbackImpledFuture<DescribeDeliveryTaskRequest, DescribeDeliveryTaskResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ListDeliveryTaskResponse> listDeliveryTask(ListDeliveryTaskRequest request,
+                                                             TableStoreCallback<ListDeliveryTaskRequest, ListDeliveryTaskResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ListDeliveryTaskLauncher launcher = launcherFactory.listDeliveryTask(tracer, retry, request);
+
+        AsyncCompletion<ListDeliveryTaskRequest, ListDeliveryTaskResponse> completion = new AsyncCompletion<ListDeliveryTaskRequest, ListDeliveryTaskResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ListDeliveryTaskRequest, ListDeliveryTaskResponse> f = new CallbackImpledFuture<ListDeliveryTaskRequest, ListDeliveryTaskResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<CreateTimeseriesTableResponse> createTimeseriesTable(CreateTimeseriesTableRequest request,
+                                                               TableStoreCallback<CreateTimeseriesTableRequest, CreateTimeseriesTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateTimeseriesTableLauncher launcher = launcherFactory.createTimeseriesTable(tracer, retry, request);
+
+        AsyncCompletion<CreateTimeseriesTableRequest, CreateTimeseriesTableResponse> completion =
+                new AsyncCompletion<CreateTimeseriesTableRequest, CreateTimeseriesTableResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateTimeseriesTableRequest, CreateTimeseriesTableResponse> f =
+                new CallbackImpledFuture<CreateTimeseriesTableRequest, CreateTimeseriesTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteTimeseriesTableResponse> deleteTimeseriesTable(DeleteTimeseriesTableRequest request,
+                                                                       TableStoreCallback<DeleteTimeseriesTableRequest, DeleteTimeseriesTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteTimeseriesTableLauncher launcher = launcherFactory.deleteTimeseriesTable(tracer, retry, request);
+
+        AsyncCompletion<DeleteTimeseriesTableRequest, DeleteTimeseriesTableResponse> completion =
+                new AsyncCompletion<DeleteTimeseriesTableRequest, DeleteTimeseriesTableResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteTimeseriesTableRequest, DeleteTimeseriesTableResponse> f =
+                new CallbackImpledFuture<DeleteTimeseriesTableRequest, DeleteTimeseriesTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DescribeTimeseriesTableResponse> describeTimeseriesTable(DescribeTimeseriesTableRequest request,
+                                                                       TableStoreCallback<DescribeTimeseriesTableRequest, DescribeTimeseriesTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DescribeTimeseriesTableLauncher launcher = launcherFactory.describeTimeseriesTable(tracer, retry, request);
+
+        AsyncCompletion<DescribeTimeseriesTableRequest, DescribeTimeseriesTableResponse> completion =
+                new AsyncCompletion<DescribeTimeseriesTableRequest, DescribeTimeseriesTableResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DescribeTimeseriesTableRequest, DescribeTimeseriesTableResponse> f =
+                new CallbackImpledFuture<DescribeTimeseriesTableRequest, DescribeTimeseriesTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<UpdateTimeseriesTableResponse> updateTimeseriesTable(UpdateTimeseriesTableRequest request,
+                                                                           TableStoreCallback<UpdateTimeseriesTableRequest, UpdateTimeseriesTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateTimeseriesTableLauncher launcher = launcherFactory.updateTimeseriesTable(tracer, retry, request);
+
+        AsyncCompletion<UpdateTimeseriesTableRequest, UpdateTimeseriesTableResponse> completion =
+                new AsyncCompletion<UpdateTimeseriesTableRequest, UpdateTimeseriesTableResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateTimeseriesTableRequest, UpdateTimeseriesTableResponse> f =
+                new CallbackImpledFuture<UpdateTimeseriesTableRequest, UpdateTimeseriesTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<PutTimeseriesDataResponse> putTimeseriesData(PutTimeseriesDataRequest request,
+                                                               TableStoreCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        PutTimeseriesDataLauncher launcher = launcherFactory.putTimeseriesData(tracer, retry, request, timeseriesMetaCache);
+
+        AsyncCompletion<PutTimeseriesDataRequest, PutTimeseriesDataResponse> completion =
+                new AsyncCompletion<PutTimeseriesDataRequest, PutTimeseriesDataResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<PutTimeseriesDataRequest, PutTimeseriesDataResponse> f =
+                new CallbackImpledFuture<PutTimeseriesDataRequest, PutTimeseriesDataResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<GetTimeseriesDataResponse> getTimeseriesData(GetTimeseriesDataRequest request,
+                                                               TableStoreCallback<GetTimeseriesDataRequest, GetTimeseriesDataResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        GetTimeseriesDataLauncher launcher = launcherFactory.getTimeseriesData(tracer, retry, request);
+
+        AsyncCompletion<GetTimeseriesDataRequest, GetTimeseriesDataResponse> completion =
+            new AsyncCompletion<GetTimeseriesDataRequest, GetTimeseriesDataResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<GetTimeseriesDataRequest, GetTimeseriesDataResponse> f =
+            new CallbackImpledFuture<GetTimeseriesDataRequest, GetTimeseriesDataResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ListTimeseriesTableResponse> listTimeseriesTable(TableStoreCallback<ListTimeseriesTableRequest, ListTimeseriesTableResponse> callback) {
+        ListTimeseriesTableRequest request = new ListTimeseriesTableRequest();
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ListTimeseriesTableLauncher launcher = launcherFactory.listTimeseriesTable(tracer, retry, request);
+
+        AsyncCompletion<ListTimeseriesTableRequest, ListTimeseriesTableResponse> completion =
+                new AsyncCompletion<ListTimeseriesTableRequest, ListTimeseriesTableResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ListTimeseriesTableRequest, ListTimeseriesTableResponse> f =
+                new CallbackImpledFuture<ListTimeseriesTableRequest, ListTimeseriesTableResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<QueryTimeseriesMetaResponse> queryTimeseriesMeta(QueryTimeseriesMetaRequest request,
+                                                                   TableStoreCallback<QueryTimeseriesMetaRequest, QueryTimeseriesMetaResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        QueryTimeseriesMetaLauncher launcher = launcherFactory.queryTimeseriesMeta(tracer, retry, request);
+
+        AsyncCompletion<QueryTimeseriesMetaRequest, QueryTimeseriesMetaResponse> completion =
+            new AsyncCompletion<QueryTimeseriesMetaRequest, QueryTimeseriesMetaResponse>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<QueryTimeseriesMetaRequest, QueryTimeseriesMetaResponse> f =
+            new CallbackImpledFuture<QueryTimeseriesMetaRequest, QueryTimeseriesMetaResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<UpdateTimeseriesMetaResponse> updateTimeseriesMeta(UpdateTimeseriesMetaRequest request,
+                                                                     TableStoreCallback<UpdateTimeseriesMetaRequest, UpdateTimeseriesMetaResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateTimeseriesMetaLauncher launcher = launcherFactory.updateTimeseriesMeta(tracer, retry, request);
+
+        AsyncCompletion<UpdateTimeseriesMetaRequest, UpdateTimeseriesMetaResponse> completion =
+                new AsyncCompletion<UpdateTimeseriesMetaRequest, UpdateTimeseriesMetaResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateTimeseriesMetaRequest, UpdateTimeseriesMetaResponse> f =
+                new CallbackImpledFuture<UpdateTimeseriesMetaRequest, UpdateTimeseriesMetaResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteTimeseriesMetaResponse> deleteTimeseriesMeta(DeleteTimeseriesMetaRequest request,
+                                                                     TableStoreCallback<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteTimeseriesMetaLauncher launcher = launcherFactory.deleteTimeseriesMeta(tracer, retry, request);
+
+        AsyncCompletion<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse> completion =
+                new AsyncCompletion<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse> f =
+                new CallbackImpledFuture<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public void setCredentials(ServiceCredentials credentials) {
         CredentialsProvider newCrdsProvider = CredentialsProviderFactory.newDefaultCredentialProvider(credentials.getAccessKeyId(),
                 credentials.getAccessKeySecret(), credentials.getSecurityToken());
@@ -1208,5 +1754,28 @@ public class InternalClient {
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider) {
         this.crdsProvider = newCrdsProvider;
         this.launcherFactory.setCredentialsProvider(newCrdsProvider);
+    }
+
+    public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request,
+                                             TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        SQLQueryLauncher launcher = launcherFactory.sqlQuery(tracer, retry, request);
+
+        AsyncCompletion<SQLQueryRequest, SQLQueryResponse> completion =
+                                new AsyncCompletion<SQLQueryRequest, SQLQueryResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<SQLQueryRequest, SQLQueryResponse> f = new CallbackImpledFuture<SQLQueryRequest, SQLQueryResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
     }
 }

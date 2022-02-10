@@ -249,35 +249,14 @@ public class UnifiedConditionalUpdateTest {
     public void testLimits() throws Exception {
         CreateTable();
 
-        // column condition count <= 10
+        // column condition count <= 32
         CompositeColumnValueCondition cond = new CompositeColumnValueCondition(CompositeColumnValueCondition.LogicOperator.OR);
-        cond.addCondition(new SingleColumnValueCondition(
-                "ColX1", SingleColumnValueCondition.CompareOperator.EQUAL,
-                ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX2", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX3", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX4", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX5", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX6", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX7", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX8", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")))
-                .addCondition(new SingleColumnValueCondition(
-                        "ColX9", SingleColumnValueCondition.CompareOperator.EQUAL,
-                        ColumnValue.fromString("ValueX")));
+        for (int i = 0; i < 31; i++) {
+            cond.addCondition(new SingleColumnValueCondition(
+                    "ColX" + i, SingleColumnValueCondition.CompareOperator.EQUAL,
+                    ColumnValue.fromString("ValueX")
+            ));
+        }
 
         boolean success = putRow(23, "Col1", ColumnValue.fromString("Value1"), cond);
         assertTrue(success);

@@ -1,69 +1,217 @@
 package com.alicloud.openservices.tablestore;
 
-import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.utils.ParamChecker;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.writer.*;
-import com.lmax.disruptor.InsufficientCapacityException;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.dsl.Disruptor;
+import com.alicloud.openservices.tablestore.writer.config.BucketConfig;
+import com.alicloud.openservices.tablestore.writer.dispatch.*;
+import com.alicloud.openservices.tablestore.writer.Group;
+import com.alicloud.openservices.tablestore.writer.handle.WriterHandleStatistics;
+import com.alicloud.openservices.tablestore.writer.retry.CertainCodeNotRetryStrategy;
+import com.alicloud.openservices.tablestore.writer.retry.CertainCodeRetryStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultTableStoreWriter implements TableStoreWriter {
     private Logger logger = LoggerFactory.getLogger(TableStoreWriter.class);
 
-    private AsyncClientInterface ots;
+    private static final int SCHEDULED_CORE_POOL_SIZE = 2;
 
-    private Executor executor;
+    private final AsyncClientInterface ots;
 
-    private WriterConfig writerConfig;
+    private final Executor executor;
+
+    private final WriterConfig writerConfig;
 
     private TableStoreCallback<RowChange, ConsumedCapacity> callback;
 
     private TableStoreCallback<RowChange, RowWriteResult> resultCallback;
 
-    private String tableName;
+    private final String tableName;
 
     private TableMeta tableMeta;
 
-    private Timer flushTimer;
+    private Bucket[] buckets;
 
-    private Disruptor<RowChangeEvent> disruptor;
+    private final WriterHandleStatistics writerStatistics;
 
-    private RingBuffer<RowChangeEvent> ringBuffer;
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private RowChangeEventHandler eventHandler;
+    private BaseDispatcher dispatcher;
 
-    private ExecutorService disruptorExecutor;
+    private final Semaphore semaphore;
 
-    private DefaultWriterStatistics writerStatistics;
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(SCHEDULED_CORE_POOL_SIZE, new ThreadFactory() {
+        private final AtomicInteger counter = new AtomicInteger(0);
 
-    private AtomicBoolean closed = new AtomicBoolean(false);
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "writer-scheduled-pool-%d" + counter.getAndIncrement());
+        }
+    });
+
+    private final boolean isInnerConstruct;
+
+
+    /**
+     * 二级索引：不允许批量请求中PrimaryKey重复
+     * */
+    private boolean allowDuplicatePkInBatchRequest = true;
 
     public DefaultTableStoreWriter(AsyncClientInterface ots, String tableName, WriterConfig config, TableStoreCallback<RowChange, ConsumedCapacity> callback, Executor executor) {
         Preconditions.checkNotNull(ots, "The ots client can not be null.");
         Preconditions.checkArgument(tableName != null && !tableName.isEmpty(), "The table name can not be null or empty.");
         Preconditions.checkNotNull(executor, "The executor service can not be null.");
-        this.writerStatistics = new DefaultWriterStatistics();
+        this.writerStatistics = new WriterHandleStatistics();
         this.ots = ots;
         this.tableName = tableName;
         this.writerConfig = config;
         this.callback = callback;
         this.resultCallback = createResultCallback(callback);
         this.executor = executor;
-        flushTimer = new Timer();
+        this.allowDuplicatePkInBatchRequest = writerConfig.isAllowDuplicatedRowInBatchRequest();
+        semaphore = new Semaphore(writerConfig.getConcurrency());
+        isInnerConstruct = false;
 
         initialize();
         closed.set(false);
+    }
+
+    public DefaultTableStoreWriter(
+            String endpoint,
+            ServiceCredentials credentials,
+            String instanceName,
+            String tableName,
+            WriterConfig config,
+            TableStoreCallback<RowChange, RowWriteResult> resultCallback) {
+        Preconditions.checkArgument(tableName != null && !tableName.isEmpty(), "The table name can not be null or empty.");
+        this.writerStatistics = new WriterHandleStatistics();
+
+        ClientConfiguration cc = new ClientConfiguration();
+        cc.setMaxConnections(config.getClientMaxConnections());
+        switch (config.getWriterRetryStrategy()) {
+            case CERTAIN_ERROR_CODE_NOT_RETRY:
+                cc.setRetryStrategy(new CertainCodeNotRetryStrategy());
+                break;
+            case CERTAIN_ERROR_CODE_RETRY:
+            default:
+                cc.setRetryStrategy(new CertainCodeRetryStrategy());
+        }
+        this.ots = new AsyncClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.tableName = tableName;
+        this.writerConfig = config;
+        this.callback = null;
+        this.resultCallback = resultCallback;
+        this.executor = createThreadPool(config);
+        this.allowDuplicatePkInBatchRequest = writerConfig.isAllowDuplicatedRowInBatchRequest();
+        semaphore = new Semaphore(writerConfig.getConcurrency());
+        isInnerConstruct = true;
+
+        initialize();
+        closed.set(false);
+    }
+
+    public DefaultTableStoreWriter(
+            String endpoint,
+            ServiceCredentials credentials,
+            String instanceName,
+            String tableName,
+            WriterConfig config,
+            ClientConfiguration cc,
+            TableStoreCallback<RowChange, RowWriteResult> resultCallback) {
+        Preconditions.checkArgument(tableName != null && !tableName.isEmpty(), "The table name can not be null or empty.");
+        this.writerStatistics = new WriterHandleStatistics();
+        this.ots = new AsyncClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.tableName = tableName;
+        this.writerConfig = config;
+        this.callback = null;
+        this.resultCallback = resultCallback;
+        this.executor = createThreadPool(config);
+        this.allowDuplicatePkInBatchRequest = writerConfig.isAllowDuplicatedRowInBatchRequest();
+        semaphore = new Semaphore(writerConfig.getConcurrency());
+        isInnerConstruct = true;
+
+        initialize();
+        closed.set(false);
+    }
+
+
+    private void initialize() {
+        logger.info("Start initialize ots writer, table name: {}.", tableName);
+        DescribeTableRequest request = new DescribeTableRequest();
+        request.setTableName(tableName);
+        Future<DescribeTableResponse> result = ots.describeTable(request, null);
+        DescribeTableResponse res = null;
+        try {
+            res = result.get();
+        } catch (Exception e) {
+            throw new ClientException(e);
+        }
+        if (res.getIndexMeta() != null && res.getIndexMeta().size() > 0) {
+            allowDuplicatePkInBatchRequest = false;
+            logger.info("Table [{}] has globalIndex, allowDuplicatePkInBatchRequest will be overwrite by [false]", tableName);
+        }
+        this.tableMeta = res.getTableMeta();
+        logger.info("End initialize with table meta: {}.", tableMeta);
+
+        buckets = new Bucket[writerConfig.getBucketCount()];
+        for (int i = 0; i < writerConfig.getBucketCount(); i++) {
+            BucketConfig bucketConfig = new BucketConfig(
+                    i,
+                    this.tableMeta.getTableName(),
+                    this.writerConfig.getWriteMode(),
+                    this.allowDuplicatePkInBatchRequest);
+
+            buckets[i] = new Bucket(bucketConfig, ots, writerConfig, resultCallback, executor, writerStatistics, semaphore);
+        }
+
+        switch (writerConfig.getDispatchMode()) {
+            case HASH_PARTITION_KEY:
+                dispatcher = new HashPartitionKeyDispatcher(writerConfig.getBucketCount());
+                break;
+            case ROUND_ROBIN:
+                dispatcher = new RoundRobinDispatcher(writerConfig.getBucketCount());
+                break;
+            case HASH_PRIMARY_KEY:
+                dispatcher = new HashPrimaryKeyDispatcher(writerConfig.getBucketCount());
+                break;
+            default:
+                throw new ClientException(String.format("The dispatch mode [%s] not supported", writerConfig.getDispatchMode()));
+        }
+
+        startFlushTimer(writerConfig.getFlushInterval());
+        startLogTimer(writerConfig.getLogInterval());
+    }
+
+    /**
+     * 基于用户机器核数，内部构建合适的线程池（N为机器核数）
+     * core/max:    支持用户配置，默认：核数+1
+     * blockQueue:  支持用户配置，1024
+     * Reject:      CallerRunsPolicy
+     */
+    private ExecutorService createThreadPool (WriterConfig config) {
+        int coreThreadCount = config.getCallbackThreadCount();
+        int maxThreadCount = coreThreadCount;
+        int queueSize = config.getCallbackThreadPoolQueueSize();
+
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private final AtomicInteger counter = new AtomicInteger(1);
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "writer-callback-" + counter.getAndIncrement());
+            }
+        };
+
+        return new ThreadPoolExecutor(coreThreadCount, maxThreadCount, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue(queueSize), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     private TableStoreCallback<RowChange,RowWriteResult> createResultCallback(final TableStoreCallback<RowChange,ConsumedCapacity> callback) {
@@ -84,55 +232,15 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
         }
     }
 
-    private void initialize() {
-        logger.info("Start initialize ots writer, table name: {}.", tableName);
-        DescribeTableRequest request = new DescribeTableRequest();
-        request.setTableName(tableName);
-        Future<DescribeTableResponse> result = ots.describeTable(request, null);
-        DescribeTableResponse res = null;
-        try {
-            res = result.get();
-        } catch (Exception e) {
-            throw new ClientException(e);
-        }
-        this.tableMeta = res.getTableMeta();
-        logger.info("End initialize with table meta: {}.", tableMeta);
-
-        RowChangeEvent.RowChangeEventFactory factory = new RowChangeEvent.RowChangeEventFactory();
-
-        // start flush thread, we only need one event handler, so we just set a thread pool with fixed size 1.
-        disruptorExecutor = Executors.newFixedThreadPool(1);
-        disruptor = new Disruptor<RowChangeEvent>(factory, writerConfig.getBufferSize(), disruptorExecutor);
-        ringBuffer = disruptor.getRingBuffer();
-        eventHandler = new RowChangeEventHandler(ots, writerConfig, resultCallback, executor, writerStatistics);
-        disruptor.handleEventsWith(eventHandler);
-        disruptor.start();
-
-        // start flush timer
-        startFlushTimer(writerConfig.getFlushInterval());
-    }
-
-    public void startFlushTimer(int flushInterval) {
-
-        this.flushTimer.cancel();
-
-        this.flushTimer = new Timer();
-        this.flushTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                triggerFlush();
-            }
-        }, flushInterval, flushInterval);
-    }
-
     @Override
     public void addRowChange(RowChange rowChange) {
         if (writerConfig.isEnableSchemaCheck()) {
             ParamChecker.checkRowChange(tableMeta, rowChange, writerConfig);
         }
 
+        Group group = new Group(1);
         while (true) {
-            if (!addRowChangeInternal(rowChange)) {
+            if (!addRowChangeInternal(rowChange, group)) {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException exp) {
@@ -144,45 +252,74 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
     }
 
     @Override
+    public Future<WriterResult> addRowChangeWithFuture(RowChange rowChange) {
+        if (writerConfig.isEnableSchemaCheck()) {
+            ParamChecker.checkRowChange(tableMeta, rowChange, writerConfig);
+        }
+
+        Group group = new Group(1);
+        while (true) {
+            if (!addRowChangeInternal(rowChange, group)) {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException exp) {
+                }
+            } else {
+                break;
+            }
+        }
+
+        return group.getFuture();
+    }
+
+    @Override
     public boolean tryAddRowChange(RowChange rowChange) {
         if (writerConfig.isEnableSchemaCheck()) {
             ParamChecker.checkRowChange(tableMeta, rowChange, writerConfig);
         }
 
-        return addRowChangeInternal(rowChange);
+        Group group = new Group(1);
+        return addRowChangeInternal(rowChange, group);
     }
 
-    public boolean addRowChangeInternal(RowChange rowChange) {
+    private boolean addRowChangeInternal(RowChange rowChange, final Group group) {
         if (closed.get()) {
             throw new ClientException("The writer has been closed.");
         }
 
-        try {
-            long sequence = ringBuffer.tryNext();
-            RowChangeEvent event = ringBuffer.get(sequence);
-            event.setValue(rowChange);
-            ringBuffer.publish(sequence);
-            return true;
-        } catch (InsufficientCapacityException e) {
-            return false;
-        }
+        int targetBucketIndex = dispatcher.getDispatchIndex(rowChange);
+
+        return buckets[targetBucketIndex].addRowChange(rowChange, group);
     }
 
-    private void addSignal(CountDownLatch latch) {
-        while (true) {
-            try {
-                long sequence = ringBuffer.tryNext();
-                RowChangeEvent event = ringBuffer.get(sequence);
-                event.setValue(latch);
-                ringBuffer.publish(sequence);
-                return;
-            } catch (InsufficientCapacityException e) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException exp) {
-                }
+    public void startFlushTimer(int flushInterval) {
+        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                triggerFlush();
             }
-        }
+        }, 0, flushInterval, TimeUnit.MILLISECONDS);
+    }
+
+    private void startLogTimer(int interval) {
+        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder ringBufferRemain = new StringBuilder("RingBuffer Remain: ");
+                for (Bucket bucket : buckets) {
+                    ringBufferRemain.append(bucket.getRingBuffer().remainingCapacity());
+                    ringBufferRemain.append(", ");
+                }
+                logger.debug(ringBufferRemain.toString());
+
+                StringBuilder dispatcherCount = new StringBuilder("Dispatcher Count: ");
+                for (AtomicLong count : dispatcher.getBucketDispatchRowCount()) {
+                    dispatcherCount.append(count.get());
+                    dispatcherCount.append(", ");
+                }
+                logger.debug(dispatcherCount.toString());
+            }
+        }, 0, interval, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -201,17 +338,48 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
     }
 
     @Override
+    public Future<WriterResult> addRowChangeWithFuture(List<RowChange> rowChanges) throws ClientException {
+        Group group = new Group(rowChanges.size());
+        for (RowChange rowChange : rowChanges) {
+            if (writerConfig.isEnableSchemaCheck()) {
+                ParamChecker.checkRowChange(tableMeta, rowChange, writerConfig);
+            }
+
+            try {
+                while (true) {
+                    if (!addRowChangeInternal(rowChange, group)) {
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException exp) {
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } catch (ClientException e) {
+                group.failedOneRow(rowChange, e);
+            }
+        }
+
+        return group.getFuture();
+    }
+
+    @Override
     public void setCallback(final TableStoreCallback<RowChange, ConsumedCapacity> callback) {
         this.callback = callback;
         this.resultCallback = createResultCallback(callback);
-        eventHandler.setCallback(resultCallback);
+        for (Bucket bucket : buckets) {
+            bucket.setResultCallback(resultCallback);
+        }
     }
 
     @Override
     public void setResultCallback(TableStoreCallback<RowChange, RowWriteResult> resultCallback) {
         this.callback = null;
         this.resultCallback = resultCallback;
-        eventHandler.setCallback(resultCallback);
+        for (Bucket bucket : buckets) {
+            bucket.setResultCallback(resultCallback);
+        }
     }
 
     @Override
@@ -236,8 +404,11 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
     }
 
     private CountDownLatch triggerFlush() {
-        CountDownLatch latch = new CountDownLatch(1);
-        addSignal(latch);
+        CountDownLatch latch = new CountDownLatch(writerConfig.getBucketCount());
+        for (Bucket bucket : buckets) {
+            bucket.addSignal(latch);
+        }
+        logger.info("WriterStatistics: " + writerStatistics);
         return latch;
     }
 
@@ -263,11 +434,20 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
             throw new ClientException("The writer has already been closed.");
         }
 
-        flushTimer.cancel();
         flush();
-        disruptor.shutdown();
-        disruptorExecutor.shutdown();
+        scheduledExecutorService.shutdown();
+        for (Bucket bucket : buckets) {
+            bucket.close();
+            logger.debug(String.format("bucket [%d] is closed.", bucket.getId()));
+        }
 
+        /**
+         * 内部构建的client与executor需要内部shutdown，用户无感知
+         */
+        if (isInnerConstruct) {
+            ots.shutdown();
+            ((ExecutorService)executor).shutdown();
+        }
         closed.set(true);
     }
 }

@@ -9,6 +9,10 @@ import java.util.List;
 
 public class PlainBufferConversion {
     public static Row toRow(PlainBufferRow plainBufferRow) throws IOException {
+       return toRow(plainBufferRow, true);
+    }
+
+    public static Row toRow(PlainBufferRow plainBufferRow, boolean needSortColumns) throws IOException {
         if (plainBufferRow.hasDeleteMarker()) {
             throw new IOException("Row could not has delete marker: " + plainBufferRow);
         }
@@ -23,7 +27,7 @@ public class PlainBufferConversion {
             columns.add(toColumn(cell));
         }
 
-        return new Row(toPrimaryKey(plainBufferRow.getPrimaryKey()), columns);
+        return new Row(toPrimaryKey(plainBufferRow.getPrimaryKey()), columns, needSortColumns);
     }
 
     public static Column toColumn(PlainBufferCell cell) throws IOException {

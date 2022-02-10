@@ -25,6 +25,7 @@ import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Utilities for converting objects to strings.
@@ -291,5 +292,16 @@ public class StringUtils {
      */
     public static boolean beginsWithIgnoreCase(final String data, final String seq) {
       return data.regionMatches(true, 0, seq, 0, seq.length());
+    }
+
+    /**
+     * Check if 'value' match the regex pattern.
+     *
+     * @param regex the pattern
+     * @param value the value to check
+     * @return true if matched, else false.
+     */
+    public static boolean matchRegexPattern(String regex, String value) {
+        return Pattern.compile(regex).matcher(value).matches();
     }
 }

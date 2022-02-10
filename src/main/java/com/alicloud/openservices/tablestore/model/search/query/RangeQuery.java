@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model.search.query;
 
 import com.alicloud.openservices.tablestore.core.protocol.SearchQueryBuilder;
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.google.protobuf.ByteString;
 
@@ -9,6 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class RangeQuery implements Query {
 
+    private QueryType queryType = QueryType.QueryType_RangeQuery;
     /**
      * 字段名
      */
@@ -66,7 +68,7 @@ public class RangeQuery implements Query {
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.QueryType_RangeQuery;
+        return queryType;
     }
 
     @Override
@@ -104,5 +106,60 @@ public class RangeQuery implements Query {
 
     public void setIncludeUpper(boolean includeUpper) {
         this.includeUpper = includeUpper;
+    }
+
+    protected static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder implements QueryBuilder {
+        private String fieldName;
+        private ColumnValue from;
+        private ColumnValue to;
+        private boolean includeLower;
+        private boolean includeUpper;
+
+        private Builder() {}
+
+        public Builder field(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder greaterThanOrEqual(Object value) {
+            this.from = ValueUtil.toColumnValue(value);
+            this.includeLower = true;
+            return this;
+        }
+
+        public Builder greaterThan(Object value) {
+            this.from = ValueUtil.toColumnValue(value);
+            this.includeLower = false;
+            return this;
+        }
+
+        public Builder lessThanOrEqual(Object value) {
+            this.to = ValueUtil.toColumnValue(value);
+            this.includeUpper = true;
+            return this;
+        }
+
+        public Builder lessThan(Object value) {
+            this.to = ValueUtil.toColumnValue(value);
+            this.includeUpper = false;
+            return this;
+        }
+
+        @Override
+        public RangeQuery build() {
+            RangeQuery rangeQuery = new RangeQuery();
+            rangeQuery.setFieldName(this.fieldName);
+            rangeQuery.setFrom(this.from);
+            rangeQuery.setTo(this.to);
+            rangeQuery.setIncludeLower(this.includeLower);
+            rangeQuery.setIncludeUpper(this.includeUpper);
+            return rangeQuery;
+        }
+
     }
 }

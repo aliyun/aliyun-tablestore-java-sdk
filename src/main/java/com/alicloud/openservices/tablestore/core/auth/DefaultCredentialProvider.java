@@ -19,6 +19,9 @@
 
 package com.alicloud.openservices.tablestore.core.auth;
 
+import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+
 /**
  * Default implementation of {@link CredentialsProvider}.
  */
@@ -66,6 +69,8 @@ public class DefaultCredentialProvider implements CredentialsProvider {
         if (secretAccessKey == null || secretAccessKey.equals("")) {
             throw new InvalidCredentialsException("Access key secret should not be null or empty.");
         }
+
+        Preconditions.checkArgument(AuthUtils.checkAccessKeyIdFormat(accessKeyId), "The access key id is invalid: " + accessKeyId);
     }
 
 }

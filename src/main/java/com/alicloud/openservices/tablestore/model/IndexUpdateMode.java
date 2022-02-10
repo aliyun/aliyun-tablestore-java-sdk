@@ -7,5 +7,9 @@ public enum IndexUpdateMode {
     /**
      * 异步更新索引。
      */
-    IUM_ASYNC_INDEX;
+    IUM_ASYNC_INDEX,
+    /**
+     * 同步更新索引
+     */
+    IUM_SYNC_INDEX
 }
