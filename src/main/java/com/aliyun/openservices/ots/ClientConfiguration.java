@@ -23,8 +23,11 @@ public class ClientConfiguration {
     private int ioThreadCount = AVAILABLE_PROCESSORS;
     private int maxConnections = 300;
     private int socketTimeoutInMillisecond = 15 * 1000;
+    // default value = 5 000, but will be reset to default value if > 15 000
+    private int idleConnectionClosePeriodInMillisecond = 5 * 1000;
     private int connectionTimeoutInMillisecond = 15 * 1000;
     private int retryThreadCount = 1;
+    private int selectInterval = 1000;
     
     
     /**
@@ -258,4 +261,24 @@ public class ClientConfiguration {
         this.retryThreadCount = retryThreadCount;
     }
 
+    /**
+     * 设置底层异步IO层被唤醒去检查连接或请求超时的时间间隔，这个值若比设置的 connectionTimeout 或 socketTimeout 大，将导致实际超时时间比设置的阈值更高。
+     *
+     * @param selectInterval
+     */
+    public void setSelectInterval(int selectInterval) {
+        this.selectInterval = selectInterval;
+    }
+
+    public int getSelectInterval() {
+        return this.selectInterval;
+    }
+
+    public int getIdleConnectionClosePeriodInMillisecond() {
+        return idleConnectionClosePeriodInMillisecond;
+    }
+
+    public void setIdleConnectionClosePeriodInMillisecond(int idleConnectionClosePeriodInMillisecond) {
+        this.idleConnectionClosePeriodInMillisecond = idleConnectionClosePeriodInMillisecond;
+    }
 }

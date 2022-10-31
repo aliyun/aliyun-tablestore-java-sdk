@@ -35,8 +35,6 @@ public class DefaultOTSWriter implements OTSWriter {
 
     private Timer flushTimer;
 
-    private ReentrantLock lock;
-
     private Disruptor<RowChangeEvent> disruptor;
 
     private RingBuffer<RowChangeEvent> ringBuffer;
@@ -55,7 +53,6 @@ public class DefaultOTSWriter implements OTSWriter {
         this.callback = callback;
         this.executor = executor;
         flushTimer = new Timer();
-        lock = new ReentrantLock();
 
         initialize();
     }
@@ -119,12 +116,12 @@ public class DefaultOTSWriter implements OTSWriter {
         }
     }
 
-    private void addSignal(ReentrantLock lock, Condition condition) {
+    private void addSignal(CountDownLatch latch) {
         while (true) {
             try {
                 long sequence = ringBuffer.tryNext();
                 RowChangeEvent event = ringBuffer.get(sequence);
-                event.setValue(lock, condition);
+                event.setValue(latch);
                 ringBuffer.publish(sequence);
                 return;
             } catch (InsufficientCapacityException e) {
@@ -167,23 +164,20 @@ public class DefaultOTSWriter implements OTSWriter {
         return writerConfig;
     }
 
-    private void triggerFlush() {
-        Condition cond = lock.newCondition();
-        addSignal(lock, cond);
+    private CountDownLatch triggerFlush() {
+        CountDownLatch latch = new CountDownLatch(1);
+        addSignal(latch);
+        return latch;
     }
 
     @Override
     public synchronized void flush() throws ClientException {
         logger.debug("trigger flush and waiting.");
-        Condition cond = lock.newCondition();
-        lock.lock();
+        CountDownLatch latch = triggerFlush();
         try {
-            addSignal(lock, cond);
-            cond.await();
+            latch.await();
         } catch (InterruptedException e) {
             throw new ClientException(e);
-        } finally {
-            lock.unlock();
         }
         logger.debug("user trigger flush finished.");
     }

@@ -31,6 +31,7 @@ public class AsyncServiceClient extends ServiceClient {
         super(config);
         try {
             IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
+                    .setSelectInterval(config.getSelectInterval())
                     .setIoThreadCount(config.getIoThreadCount()).build();
             ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(
                     ioReactorConfig);
@@ -40,18 +41,11 @@ public class AsyncServiceClient extends ServiceClient {
             cm.setDefaultMaxPerRoute(config.getMaxConnections());
             httpClient = new HttpFactory().createHttpAsyncClient(config, cm);
 
-            /*
-             * socketTimeout的值限制了closeIdleConnections执行的周期。
-             * 如果周期相对socketTimeout的值过长，有可能一个请求分配到一个即将socketTimeout的连接，
-             * 在请求发送之前即抛出SocketTimeoutException。
-             * 现在让closeIdleConnections的执行周期为socketTimeout / 2.5。
-             */
-            long closePeriod = 5000;
-            if (config.getSocketTimeoutInMillisecond() > 0) {
-                closePeriod = (long) (config.getSocketTimeoutInMillisecond() / 2.5);
-            }
-            closePeriod = closePeriod < 5000 ? closePeriod : 5000;
-            connEvictor = new IdleConnectionEvictor(cm, closePeriod);
+            // idleConnectionClosePeriod support use defined value, but should <= 15000,
+            // which will be reset to default value (5 000) if > 15 000
+            long idleConnectionClosePeriod = config.getIdleConnectionClosePeriodInMillisecond();
+            connEvictor = new IdleConnectionEvictor(cm,
+                    idleConnectionClosePeriod <= 15 * 1000 ? idleConnectionClosePeriod : 5 * 1000);
             httpClient.start();
             connEvictor.start();
         } catch (IOReactorException ex) {

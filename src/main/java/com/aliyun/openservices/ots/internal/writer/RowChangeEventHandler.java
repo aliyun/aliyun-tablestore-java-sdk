@@ -9,6 +9,7 @@ import com.lmax.disruptor.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,8 +43,7 @@ public class RowChangeEventHandler implements EventHandler<RowChangeEvent> {
         BatchWriteRowRequest request = null;
 
         boolean shouldWaitFlush = false;
-        ReentrantLock lock = null;
-        Condition flushCond = null;
+        CountDownLatch latch = null;
 
         if (rowChangeEvent.type == RowChangeEvent.EventType.FLUSH) {
             logger.debug("FlushSignal with QueueSize: {}", buffer.getTotalRowsCount());
@@ -53,8 +53,7 @@ public class RowChangeEventHandler implements EventHandler<RowChangeEvent> {
             }
 
             shouldWaitFlush = true;
-            lock = rowChangeEvent.lock;
-            flushCond = rowChangeEvent.condition;
+            latch = rowChangeEvent.latch;
         } else {
             final RowChange rowChange = rowChangeEvent.rowChange;
             boolean succeed = buffer.appendRowChange(rowChange);
@@ -92,12 +91,7 @@ public class RowChangeEventHandler implements EventHandler<RowChangeEvent> {
 
         if (shouldWaitFlush) {
             waitFlush();
-            lock.lock();
-            try {
-                flushCond.signal();
-            } finally {
-                lock.unlock();
-            }
+            latch.countDown();
         }
     }
 
