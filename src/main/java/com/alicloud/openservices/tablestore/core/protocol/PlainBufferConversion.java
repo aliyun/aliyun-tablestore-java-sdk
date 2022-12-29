@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.alicloud.openservices.tablestore.core.Constants.TIMESERIES_HIDDEN_PK;
+
 public class PlainBufferConversion {
     public static Row toRow(PlainBufferRow plainBufferRow) throws IOException {
-       return toRow(plainBufferRow, true);
+        return toRow(plainBufferRow, true);
     }
 
     public static Row toRow(PlainBufferRow plainBufferRow, boolean needSortColumns) throws IOException {
@@ -36,7 +38,7 @@ public class PlainBufferConversion {
         }
 
         if (cell.hasCellType() &&
-            cell.getCellType() != PlainBufferConsts.INCREMENT) {
+                cell.getCellType() != PlainBufferConsts.INCREMENT) {
             throw new IOException("The cell should not has type: " + cell);
         }
 
@@ -76,15 +78,15 @@ public class PlainBufferConversion {
                 case PlainBufferConsts.DELETE_ONE_VERSION:
                     if (cell.hasCellValue() || !cell.hasCellTimestamp()) {
                         throw new IOException(
-                            "The cell with type DELETE_ONE_VERSION should not have value but should have timestamp: "
-                                + cell);
+                                "The cell with type DELETE_ONE_VERSION should not have value but should have timestamp: "
+                                        + cell);
                     }
                     columnType = RecordColumn.ColumnType.DELETE_ONE_VERSION;
                     break;
                 case PlainBufferConsts.DELETE_ALL_VERSION:
                     if (cell.hasCellValue() || cell.hasCellTimestamp()) {
                         throw new IOException(
-                            "The cell with type DELETE_ALL_VERSION should not have value and timestamp: " + cell);
+                                "The cell with type DELETE_ALL_VERSION should not have value and timestamp: " + cell);
                     }
                     columnType = RecordColumn.ColumnType.DELETE_ALL_VERSION;
                     break;
@@ -96,11 +98,40 @@ public class PlainBufferConversion {
         return new RecordColumn(column, columnType);
     }
 
+    public static RecordColumn toTimeseriesRecordColumn(PlainBufferCell cell) throws IOException {
+        RecordColumn recordColumn = toRecordColumn(cell);
+        Column column = recordColumn.getColumn();
+        Column timeseriesFormatColumn;
+
+        if (column.hasSetTimestamp()){
+            timeseriesFormatColumn = new Column(column.getName().split(":")[0], column.getValue(), column.getTimestamp());
+        } else {
+            timeseriesFormatColumn = new Column(column.getName().split(":")[0], column.getValue());
+        }
+        recordColumn.setColumn(timeseriesFormatColumn);
+
+        return recordColumn;
+    }
+
     public static PrimaryKey toPrimaryKey(List<PlainBufferCell> pkCells) throws IOException {
         List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<PrimaryKeyColumn>();
         for (PlainBufferCell cell : pkCells) {
             primaryKeyColumns.add(
-                new PrimaryKeyColumn(cell.getCellName(), PrimaryKeyValue.fromColumn(cell.getCellValue())));
+                    new PrimaryKeyColumn(cell.getCellName(), PrimaryKeyValue.fromColumn(cell.getCellValue())));
+        }
+        return new PrimaryKey(primaryKeyColumns);
+    }
+
+    public static PrimaryKey toTimeseriesPrimaryKey(List<PlainBufferCell> pkCells) throws IOException {
+        List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<PrimaryKeyColumn>();
+        for (int i = 0; i < pkCells.size(); i++) {
+            if (i == 0 && !pkCells.get(i).getCellName().equals(TIMESERIES_HIDDEN_PK)) {
+                throw new IOException(
+                        "The expected primary key name is '_#h'. Actually : " + pkCells.get(i).getCellName() + ".");
+            } else if (i > 0) {
+                primaryKeyColumns.add(
+                        new PrimaryKeyColumn(pkCells.get(i).getCellName(), PrimaryKeyValue.fromColumn(pkCells.get(i).getCellValue())));
+            }
         }
         return new PrimaryKey(primaryKeyColumns);
     }
@@ -130,8 +161,9 @@ public class PlainBufferConversion {
         return cell;
     }
 
-    public static StreamRecord toStreamRecord(PlainBufferRow pbRow, OtsInternalApi.ActionType actionType)
-        throws IOException {
+
+    public static StreamRecord toStreamRecord(PlainBufferRow pbRow, PlainBufferRow pbOriginRow, OtsInternalApi.ActionType actionType, boolean parseInTimeseriesDataFormat)
+            throws IOException {
         StreamRecord record = new StreamRecord();
         switch (actionType) {
             case PUT_ROW:
@@ -146,26 +178,51 @@ public class PlainBufferConversion {
             default:
                 throw new IOException("Unknown stream record action type:" + actionType.name());
         }
+        if (parseInTimeseriesDataFormat) {
+            record.setPrimaryKey(toTimeseriesPrimaryKey(pbRow.getPrimaryKey()));
 
-        record.setPrimaryKey(toPrimaryKey(pbRow.getPrimaryKey()));
+            List<RecordColumn> columns = new ArrayList<RecordColumn>();
+            for (PlainBufferCell cell : pbRow.getCells()) {
+                columns.add(toTimeseriesRecordColumn(cell));
+            }
+            record.setColumns(columns);
 
-        List<RecordColumn> columns = new ArrayList<RecordColumn>();
-        for (PlainBufferCell cell : pbRow.getCells()) {
-            columns.add(toRecordColumn(cell));
+            if (pbOriginRow != null) {
+                List<RecordColumn> originColumns = new ArrayList<RecordColumn>();
+                for (PlainBufferCell cell : pbOriginRow.getCells()) {
+                    originColumns.add(toTimeseriesRecordColumn(cell));
+                }
+                record.setOriginColumns(originColumns);
+            }
+        } else {
+            record.setPrimaryKey(toPrimaryKey(pbRow.getPrimaryKey()));
+
+            List<RecordColumn> columns = new ArrayList<RecordColumn>();
+            for (PlainBufferCell cell : pbRow.getCells()) {
+                columns.add(toRecordColumn(cell));
+            }
+            record.setColumns(columns);
+
+            if (pbOriginRow != null) {
+                List<RecordColumn> originColumns = new ArrayList<RecordColumn>();
+                for (PlainBufferCell cell : pbOriginRow.getCells()) {
+                    originColumns.add(toRecordColumn(cell));
+                }
+                record.setOriginColumns(originColumns);
+            }
         }
-        record.setColumns(columns);
+
 
         int epoch = pbRow.getExtension().getSequenceInfo().getEpoch();
         long ts = pbRow.getExtension().getSequenceInfo().getTimestamp();
         int rowIndex = pbRow.getExtension().getSequenceInfo().getRowIndex();
         RecordSequenceInfo seq = new RecordSequenceInfo(epoch, ts, rowIndex);
         record.setSequenceInfo(seq);
-
         return record;
     }
 
-    public static StreamRecord toStreamRecord(PlainBufferRow pbRow, TunnelServiceApi.ActionType actionType)
-        throws IOException {
+    public static StreamRecord toStreamRecord(PlainBufferRow pbRow, PlainBufferRow pbOriginRow, TunnelServiceApi.ActionType actionType, boolean parseInTimeseriesDataFormat)
+            throws IOException {
         OtsInternalApi.ActionType atype;
         switch (actionType) {
             case PUT_ROW:
@@ -180,7 +237,6 @@ public class PlainBufferConversion {
             default:
                 throw new IOException("Unknown stream record action type:" + actionType.name());
         }
-
-        return toStreamRecord(pbRow, atype);
+        return toStreamRecord(pbRow, pbOriginRow, atype, parseInTimeseriesDataFormat);
     }
 }

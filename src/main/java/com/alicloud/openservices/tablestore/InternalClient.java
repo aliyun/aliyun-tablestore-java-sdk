@@ -1745,6 +1745,58 @@ public class InternalClient {
         return f;
     }
 
+    public Future<SplitTimeseriesScanTaskResponse> splitTimeseriesScanTask(
+            SplitTimeseriesScanTaskRequest request,
+            TableStoreCallback<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        SplitTimeseriesScanTaskLauncher launcher = launcherFactory.splitTimeseriesScanTask(tracer, retry, request);
+
+        AsyncCompletion<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse> completion =
+                new AsyncCompletion<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse> f =
+                new CallbackImpledFuture<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ScanTimeseriesDataResponse> scanTimeseriesData(
+            ScanTimeseriesDataRequest request,
+            TableStoreCallback<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ScanTimeseriesDataLauncher launcher = launcherFactory.scanTimeseriesData(tracer, retry, request);
+
+        AsyncCompletion<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> completion =
+                new AsyncCompletion<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> f =
+                new CallbackImpledFuture<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public void setCredentials(ServiceCredentials credentials) {
         CredentialsProvider newCrdsProvider = CredentialsProviderFactory.newDefaultCredentialProvider(credentials.getAccessKeyId(),
                 credentials.getAccessKeySecret(), credentials.getSecurityToken());

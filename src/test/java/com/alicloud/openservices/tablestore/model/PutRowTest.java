@@ -75,7 +75,7 @@ public class PutRowTest extends BaseFT {
         Map<String, ColumnValue> columns = new TreeMap<String, ColumnValue>();
         columns.put("attr", ColumnValue.fromString("hello world"));
         try {
-        	OTSHelper.putRow(client, tableName, pk, columns);
+            OTSHelper.putRow(client, tableName, pk, columns);
         	assertTrue(false);
         } catch (TableStoreException e) {
         	LOG.info(e.toString());

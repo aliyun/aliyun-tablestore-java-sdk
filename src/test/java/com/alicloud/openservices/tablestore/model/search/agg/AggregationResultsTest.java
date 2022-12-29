@@ -1,7 +1,10 @@
 package com.alicloud.openservices.tablestore.model.search.agg;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
@@ -30,6 +33,18 @@ public class AggregationResultsTest extends BaseSearchTest {
         map.put("8h", new PercentilesAggregationResult().setAggName("8h").setPercentilesAggregationItems(Collections.<PercentilesAggregationItem>emptyList()));
 
         aggregationResults.setResultMap(map);
+    }
+
+    @Test
+    public void testQueryBuildersCount() {
+        Method[] methods = AggregationResults.class.getMethods();
+        List<Method> methodList = new ArrayList<Method>();
+        for (Method method : methods) {
+            if (method.getName().startsWith("getAs")) {
+                methodList.add(method);
+            }
+        }
+        assertEquals("AggregationResults is incomplete", AggregationType.values().length, methodList.size());
     }
 
     @Test

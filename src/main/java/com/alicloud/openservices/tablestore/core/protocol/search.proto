@@ -754,6 +754,7 @@ enum FieldType {
     TEXT = 5;
     NESTED = 6;
     GEO_POINT = 7;
+    DATE = 8;
 }
 
 message SingleWordAnalyzerParameter {
@@ -783,6 +784,7 @@ message FieldSchema {
     optional bytes analyzer_parameter = 10;
     optional bool is_virtual_field = 11;
     repeated string source_field_names = 12;
+    repeated string date_formats = 13;
 }
 
 message IndexSchema {

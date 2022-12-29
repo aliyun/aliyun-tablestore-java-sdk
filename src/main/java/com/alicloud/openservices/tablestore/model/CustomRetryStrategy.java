@@ -59,6 +59,7 @@ public class CustomRetryStrategy implements RetryStrategy {
         if (action.equals(OP_BATCH_GET_ROW) || action.equals(OP_DESCRIBE_TABLE) ||
                 action.equals(OP_GET_RANGE) || action.equals(OP_GET_ROW) ||
                 action.equals(OP_LIST_TABLE) || action.equals(OP_LIST_TUNNEL) ||
+                action.equals(OP_SEARCH) || action.equals(OP_DESCRIBE_SEARCH_INDEX) ||
                 action.equals(OP_DESCRIBE_TUNNEL) || action.equals(OP_READRECORDS)) {
             return true;
         } else {

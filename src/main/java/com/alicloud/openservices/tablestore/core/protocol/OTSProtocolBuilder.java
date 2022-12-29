@@ -992,6 +992,11 @@ public class OTSProtocolBuilder {
         if (streamSpecification.getExpirationTime() > 0) {
             builder.setExpirationTime(streamSpecification.getExpirationTime());
         }
+        if (streamSpecification.isEnableStream()) {
+            for (String column : streamSpecification.getOriginColumnsToGet()) {
+                builder.addColumnsToGet(column);
+            }
+        }
         return builder.build();
     }
 
@@ -1188,6 +1193,9 @@ public class OTSProtocolBuilder {
         if (request.getShardLimit() > 0) {
             builder.setShardLimit(request.getShardLimit());
         }
+        if (request.isSupportTimeseriesTable()) {
+            builder.setSupportTimeseriesDataTable(true);
+        }
         return builder.build();
     }
 
@@ -1209,6 +1217,9 @@ public class OTSProtocolBuilder {
         builder.setShardIterator(request.getShardIterator());
         if (request.getLimit() > 0) {
             builder.setLimit(request.getLimit());
+        }
+        if (request.getTableName() != null && !request.getTableName().isEmpty()) {
+            builder.setTableName(request.getTableName());
         }
         return builder.build();
     }

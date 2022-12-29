@@ -596,6 +596,9 @@ public class ResponseFactory {
         if (describeStreamResponse.hasNextShardId()) {
             result.setNextShardId(describeStreamResponse.getNextShardId());
         }
+        if (describeStreamResponse.hasIsTimeseriesDataTable()) {
+            result.setTimeseriesDataTable(describeStreamResponse.getIsTimeseriesDataTable());
+        }
         return result;
     }
 
@@ -612,12 +615,14 @@ public class ResponseFactory {
     }
 
     public static GetStreamRecordResponse createGetStreamRecordResponse(ResponseContentWithMeta response,
-        OtsInternalApi.GetStreamRecordResponse getStreamRecordResponse) {
+        OtsInternalApi.GetStreamRecordResponse getStreamRecordResponse, boolean parseInTimeseriesDataFormat) {
         GetStreamRecordResponse result = new GetStreamRecordResponse(response.getMeta());
         if (getStreamRecordResponse.hasNextShardIterator()) {
             result.setNextShardIterator(getStreamRecordResponse.getNextShardIterator());
         }
-
+        if (getStreamRecordResponse.hasMayMoreRecord()){
+            result.setMayMoreRecord(getStreamRecordResponse.getMayMoreRecord());
+        }
         List<StreamRecord> records = new ArrayList<StreamRecord>();
         for (OtsInternalApi.GetStreamRecordResponse.StreamRecord respRecord : getStreamRecordResponse
             .getStreamRecordsList()) {
@@ -629,7 +634,21 @@ public class ResponseFactory {
                     throw new IOException("Expect only returns one row. Row count: " + rows.size());
                 }
                 PlainBufferRow row = rows.get(0);
-                records.add(PlainBufferConversion.toStreamRecord(row, respRecord.getActionType()));
+
+                if (respRecord.hasOriginRecord()) {
+                    PlainBufferCodedInputStream inputOriginStream = new PlainBufferCodedInputStream(
+                            new PlainBufferInputStream(respRecord.getOriginRecord().asReadOnlyByteBuffer())
+                    );
+                    List<PlainBufferRow> originRows = inputOriginStream.readRowsWithHeader();
+                    if (rows.size() != 1) {
+                        throw new IOException("Expect only returns one row, Row count: " + rows.size());
+                    }
+                    PlainBufferRow originRow = originRows.get(0);
+                    records.add(PlainBufferConversion.toStreamRecord(row, originRow, respRecord.getActionType(), parseInTimeseriesDataFormat));
+                } else {
+                    records.add(PlainBufferConversion.toStreamRecord(row, null, respRecord.getActionType(), parseInTimeseriesDataFormat));
+                }
+
             } catch (Exception e) {
                 throw new ClientException("Failed to parse row", e);
             }
@@ -958,6 +977,10 @@ public class ResponseFactory {
             }
         }
 
+        if (tunnelResponse.hasMayMoreRecord()) {
+            resp.setMayMoreRecord(tunnelResponse.getMayMoreRecord());
+        }
+
         List<StreamRecord> records = new ArrayList<StreamRecord>();
 
         for (TunnelServiceApi.Record record : tunnelResponse.getRecordsList()) {
@@ -970,7 +993,20 @@ public class ResponseFactory {
                     throw new IOException("Expect only returns one row, Row count: " + rows.size());
                 }
                 PlainBufferRow row = rows.get(0);
-                records.add(PlainBufferConversion.toStreamRecord(row, record.getActionType()));
+
+                if (record.hasOriginRecord()) {
+                    PlainBufferCodedInputStream inputOriginStream = new PlainBufferCodedInputStream(
+                            new PlainBufferInputStream(record.getOriginRecord().asReadOnlyByteBuffer())
+                    );
+                    List<PlainBufferRow> originRows = inputOriginStream.readRowsWithoutPk();
+                    if (originRows.size() != 1) {
+                        throw new IOException("Expect only returns one row, Row count: " + rows.size());
+                    }
+                    PlainBufferRow originRow = originRows.get(0);
+                    records.add(PlainBufferConversion.toStreamRecord(row, originRow, record.getActionType(), false));
+                } else {
+                    records.add(PlainBufferConversion.toStreamRecord(row, null, record.getActionType(), false));
+                }
             } catch (Exception e) {
                 throw new ClientException("Failed to parse row", e);
             }

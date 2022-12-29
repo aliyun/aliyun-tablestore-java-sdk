@@ -260,6 +260,9 @@ public class OTSProtocolParser {
         if (streamDetails.hasLastEnableTime()) {
             result.setLastEnableTime(streamDetails.getLastEnableTime());
         }
+        if (!streamDetails.getColumnToGetList().isEmpty()) {
+            result.addOriginColumnsToGet(streamDetails.getColumnToGetList());
+        }
         return result;
     }
 

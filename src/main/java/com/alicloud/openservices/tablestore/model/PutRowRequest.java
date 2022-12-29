@@ -8,7 +8,7 @@ public class PutRowRequest extends TxnRequest {
      * PutRow操作的请求参数。
      */
     private RowPutChange rowChange;
-    
+
     public PutRowRequest() {
         
     }

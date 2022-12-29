@@ -4,6 +4,9 @@ import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
 import com.alicloud.openservices.tablestore.model.search.query.QueryType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +38,8 @@ import com.alicloud.openservices.tablestore.model.search.sort.Sort.Sorter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * SearchQuery Tester.
  *
@@ -43,6 +48,18 @@ import org.junit.Test;
  * @since <pre>9月 29, 2019</pre>
  */
 public class SearchQueryTest extends BaseSearchTest {
+
+    @Test
+    public void testQueryBuildersCount() {
+        Method[] methods = QueryBuilders.class.getMethods();
+        List<Method> methodList = new ArrayList<Method>();
+        for (Method method : methods) {
+            if (method.getReturnType().getName().endsWith("$Builder")) {
+                methodList.add(method);
+            }
+        }
+        assertEquals("QueryBuilders is incomplete", QueryType.values().length - 1, methodList.size());
+    }
 
     /**
      * Method: getAggregationList() setAggregationList(List<Aggregation> aggregationList)

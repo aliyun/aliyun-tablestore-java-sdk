@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 public class Constants {
     // ALL HTTP HEADERS SHOULD BE DEFINED IN LOWERCASE
     // request headers
-    public static final String USER_AGENT = "ots-java-sdk 5.8.7";
+    public static final String USER_AGENT = "ots-java-sdk 5.13.12";
     public static final String OTS_HEADER_API_VERSION = "x-ots-apiversion";
     public static final String OTS_HEADER_ACCESS_KEY_ID = "x-ots-accesskeyid";
     public static final String OTS_HEADER_OTS_CONTENT_MD5 = "x-ots-contentmd5";
@@ -15,6 +15,8 @@ public class Constants {
     public static final String OTS_HEADER_TRACE_THRESHOLD = "x-ots-trace-threshold";
     public static final String OTS_HEADER_DATE = "x-ots-date";
     public static final String OTS_HEADER_STS_TOKEN = "x-ots-ststoken";
+    public static final String OTS_HEADER_REQUEST_PRIORITY = "x-ots-request-priority";
+    public static final String OTS_HEADER_REQUEST_TAG = "x-ots-request-tag";
 
     // response headers
     public static final String OTS_HEADER_PREFIX = "x-ots-";
@@ -52,4 +54,9 @@ public class Constants {
     public static final String ENDPOINT_REGEX = "^(?i)http(s)?(?-i)://[a-zA-Z0-9._-]+(:\\d{1,5})?(/)?$";
     public static final String SSRF_CHECK_REGEX = "^[a-zA-Z0-9_-]+$";
     public static final String ACCESSKEYID_REGEX = "^[a-zA-Z0-9+\\./_-]+$";
+
+    /**
+     * Timeseries隐藏主键数据格式
+     */
+    public static final String TIMESERIES_HIDDEN_PK = "_#h";
 }

@@ -46,6 +46,8 @@ public class SearchProtocolBuilder {
                 return Search.FieldType.NESTED;
             case GEO_POINT:
                 return Search.FieldType.GEO_POINT;
+            case DATE:
+                return Search.FieldType.DATE;
             default:
                 throw new IllegalArgumentException("Unknown fieldType: " + fieldType.name());
         }
@@ -119,6 +121,11 @@ public class SearchProtocolBuilder {
         if (fieldSchema.getSourceFieldNames() != null) {
             for (String sourceField : fieldSchema.getSourceFieldNames()) {
                 builder.addSourceFieldNames(sourceField);
+            }
+        }
+        if (fieldSchema.getDateFormats() != null) {
+            for (String dateFormat : fieldSchema.getDateFormats()) {
+                builder.addDateFormats(dateFormat);
             }
         }
         return builder.build();

@@ -17,7 +17,7 @@ import com.google.protobuf.ByteString;
  */
 public class GroupByField implements GroupBy {
 
-    private GroupByType groupByType = GroupByType.GROUP_BY_FIELD;
+    private final GroupByType groupByType = GroupByType.GROUP_BY_FIELD;
 
     /**
      * GroupBy的名字，之后从GroupBy结果列表中根据该名字拿到GroupBy结果
@@ -199,11 +199,27 @@ public class GroupByField implements GroupBy {
             return this;
         }
 
+        public Builder addSubAggregation(Aggregation aggregation) {
+            if (subAggregations == null) {
+                subAggregations = new ArrayList<Aggregation>();
+            }
+            this.subAggregations.add(aggregation);
+            return this;
+        }
+
         public Builder addSubGroupBy(GroupByBuilder groupByBuilder) {
             if (subGroupBys == null) {
                 subGroupBys = new ArrayList<GroupBy>();
             }
             this.subGroupBys.add(groupByBuilder.build());
+            return this;
+        }
+
+        public Builder addSubGroupBy(GroupBy groupBy) {
+            if (subGroupBys == null) {
+                subGroupBys = new ArrayList<GroupBy>();
+            }
+            this.subGroupBys.add(groupBy);
             return this;
         }
 

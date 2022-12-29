@@ -48,6 +48,7 @@ public class CompressUtil {
         }
         finally{
             output.close();
+            compresser.end();
         }
     }
 
@@ -87,6 +88,7 @@ public class CompressUtil {
         }
         finally{
             output.close();
+            decompresser.end();
         }
     }
 }

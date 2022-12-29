@@ -63,6 +63,11 @@ public class FunctionScoreQuery implements Query {
             return this;
         }
 
+        public Builder query(Query query) {
+            this.query = query;
+            return this;
+        }
+
         public Builder fieldValueFactor(String fieldName) {
             this.fieldValueFactor = new FieldValueFactor(fieldName);
             return this;

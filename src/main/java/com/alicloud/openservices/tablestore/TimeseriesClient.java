@@ -191,6 +191,20 @@ public class TimeseriesClient implements TimeseriesClientInterface {
         return waitForFuture(resp);
     }
 
+    @Override
+    public SplitTimeseriesScanTaskResponse splitTimeseriesScanTask(SplitTimeseriesScanTaskRequest request)
+            throws TableStoreException, ClientException {
+        Future<SplitTimeseriesScanTaskResponse> resp = internalClient.splitTimeseriesScanTask(request, null);
+        return waitForFuture(resp);
+    }
+
+    @Override
+    public ScanTimeseriesDataResponse scanTimeseriesData(ScanTimeseriesDataRequest request)
+            throws TableStoreException, ClientException {
+        Future<ScanTimeseriesDataResponse> resp = internalClient.scanTimeseriesData(request, null);
+        return waitForFuture(resp);
+    }
+
     private <Res> Res waitForFuture(Future<Res> f) {
         try {
             return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);

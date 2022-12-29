@@ -228,4 +228,47 @@ public class TestTunnelStateMachine extends TestCase {
         targetChannelMap = toMap(stateMachine.batchGetChannels());
         channelEquals(new Channel("cid-1", 2, ChannelStatus.CLOSE), targetChannelMap.get("cid-1"));
     }
+
+    public void testClosingChannelsDetector() {
+        stateMachine.setEnableClosingChannelDetect(true);
+        List<Channel> heartbeatChannels = Arrays.asList(
+                new Channel("cid-0", 0, ChannelStatus.OPEN),
+                new Channel("cid-1", 0, ChannelStatus.OPEN),
+                new Channel("cid-2", 0, ChannelStatus.OPEN),
+                new Channel("cid-3", 0, ChannelStatus.OPEN));
+        stateMachine.batchUpdateChannels(heartbeatChannels);
+
+        // 1. cid-0 turn to closing, and begin hang.
+        heartbeatChannels = Arrays.asList(
+                new Channel("cid-0", 1, ChannelStatus.CLOSING),
+                new Channel("cid-1", 0, ChannelStatus.OPEN),
+                new Channel("cid-2", 0, ChannelStatus.OPEN),
+                new Channel("cid-3", 0, ChannelStatus.OPEN));
+        stateMachine.batchUpdateChannels(heartbeatChannels);
+        Map<String, Integer> closingRounds = stateMachine.getChannelClosingRounds();
+        assertEquals(1, closingRounds.size());
+        assertTrue(closingRounds.containsKey("cid-0"));
+        assertEquals(1, (int) closingRounds.get("cid-0"));
+
+        // 2. continue hang
+        heartbeatChannels = Arrays.asList(
+                new Channel("cid-0", 1, ChannelStatus.CLOSING),
+                new Channel("cid-1", 0, ChannelStatus.OPEN),
+                new Channel("cid-2", 0, ChannelStatus.OPEN),
+                new Channel("cid-3", 0, ChannelStatus.OPEN));
+        stateMachine.batchUpdateChannels(heartbeatChannels);
+        closingRounds = stateMachine.getChannelClosingRounds();
+        assertEquals(1, closingRounds.size());
+        assertTrue(closingRounds.containsKey("cid-0"));
+        assertEquals(2, (int) closingRounds.get("cid-0"));
+
+        heartbeatChannels = Arrays.asList(
+                new Channel("cid-0", 1, ChannelStatus.CLOSING),
+                new Channel("cid-1", 0, ChannelStatus.OPEN),
+                new Channel("cid-2", 0, ChannelStatus.OPEN),
+                new Channel("cid-3", 0, ChannelStatus.OPEN));
+        stateMachine.batchUpdateChannels(heartbeatChannels);
+        closingRounds = stateMachine.getChannelClosingRounds();
+        assertEquals(0, closingRounds.size());
+    }
 }

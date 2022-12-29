@@ -280,6 +280,19 @@ public class SearchRequest implements Request {
          * <p>The default is empty, which is not required in most scenarios. If a custom route is used, you can specify the route field.</p>
          * <p>Note: <b>advanced features.</b> If you need to know or use, please submit a ticket or contact the developer.</p>
          */
+        public Builder addRoutingValue(PrimaryKey primaryKey) {
+            if (routingValues == null) {
+                routingValues = new ArrayList<PrimaryKey>();
+            }
+            this.routingValues.add(primaryKey);
+            return this;
+        }
+
+        /**
+         * Routing field.
+         * <p>The default is empty, which is not required in most scenarios. If a custom route is used, you can specify the route field.</p>
+         * <p>Note: <b>advanced features.</b> If you need to know or use, please submit a ticket or contact the developer.</p>
+         */
         public Builder addRoutingValues(List<PrimaryKey> primaryKeys) {
             if (routingValues == null) {
                 routingValues = new ArrayList<PrimaryKey>();

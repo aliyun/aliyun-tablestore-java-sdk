@@ -5,8 +5,12 @@ import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
 import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
-public class StreamSpecification implements Jsonizable {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+public class StreamSpecification implements Jsonizable {
     /**
      * 是否开启Stream
      */
@@ -16,6 +20,12 @@ public class StreamSpecification implements Jsonizable {
      * 当开启Stream时，该参数用于设置数据过期时间，单位为小时。
      */
     private OptionalValue<Integer> expirationTime = new OptionalValue<Integer>("ExpirationTime");
+
+    /**
+     * 设置Stream数据中原始列列表
+     */
+    private Set<String> originColumnsToGet = new HashSet<String>();
+
 
     /**
      * 构造一个StreamSpecification对象。
@@ -86,6 +96,46 @@ public class StreamSpecification implements Jsonizable {
         this.expirationTime.setValue(expirationTime);
     }
 
+    /**
+     * 返回要读取的原始列的名称列表（只读）。
+     *
+     * @return 原始列的名称的列表（只读）。
+     */
+    public Set<String> getOriginColumnsToGet() {
+        return Collections.unmodifiableSet(originColumnsToGet);
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param originColumnName 要返回原始列的名称。
+     */
+    public void addOriginColumnsToGet(String originColumnName) {
+        Preconditions.checkArgument(originColumnName != null && !originColumnName.isEmpty(), "OriginColumn's name should not be null or empty.");
+        this.originColumnsToGet.add(originColumnName);
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param originColumnNames 要返回原始列的名称。
+     */
+    public void addOriginColumnsToGet(String[] originColumnNames) {
+        Preconditions.checkNotNull(originColumnNames, "originColumnNames should not be null.");
+        for (int i = 0; i < originColumnNames.length; ++i) {
+            addOriginColumnsToGet(originColumnNames[i]);
+        }
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param originColumnsToGet
+     */
+    public void addOriginColumnsToGet(Collection<String> originColumnsToGet) {
+        this.originColumnsToGet.addAll(originColumnsToGet);
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -106,6 +156,8 @@ public class StreamSpecification implements Jsonizable {
             sb.append(expirationTime.getValue());
             sb.append(newline);
         }
+        sb.append("\"OriginColumnToGet\": ");
+        sb.append(originColumnsToGet);
         sb.append("}");
     }
 
@@ -118,6 +170,8 @@ public class StreamSpecification implements Jsonizable {
             sb.append(", ExpirationTime: ");
             sb.append(expirationTime.getValue());
         }
+        sb.append(", OriginColumnToGet: ");
+        sb.append(originColumnsToGet);
         return sb.toString();
     }
 }

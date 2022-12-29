@@ -1,7 +1,12 @@
 package com.alicloud.openservices.tablestore.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+
+import static com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesResponseFactory.parseTagsOrAttrs;
 
 public class GetStreamRecordResponse extends Response {
 
@@ -14,6 +19,11 @@ public class GetStreamRecordResponse extends Response {
      * 用于发起下一次请求的ShardIterator
      */
     private String nextShardIterator;
+
+    /**
+     * 是否有更多记录待拉取
+     */
+    private Boolean mayMoreRecord;
 
     public GetStreamRecordResponse() {
 
@@ -31,6 +41,14 @@ public class GetStreamRecordResponse extends Response {
         return records;
     }
 
+    /**
+     * 将时序数据中的tags字段转为Map
+     * @return Map
+     */
+    public static Map<String, String> parseTimeseriesTags(String s) {
+        return parseTagsOrAttrs(s);
+    }
+
     public void setRecords(List<StreamRecord> records) {
         this.records = records;
     }
@@ -45,5 +63,13 @@ public class GetStreamRecordResponse extends Response {
 
     public void setNextShardIterator(String nextShardIterator) {
         this.nextShardIterator = nextShardIterator;
+    }
+
+    public Boolean getMayMoreRecord() {
+        return mayMoreRecord;
+    }
+
+    public void setMayMoreRecord(Boolean mayMoreRecord) {
+        this.mayMoreRecord = mayMoreRecord;
     }
 }

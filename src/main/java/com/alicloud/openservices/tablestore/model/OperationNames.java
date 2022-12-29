@@ -119,5 +119,9 @@ public class OperationNames {
 
     public static final String OP_DELETE_TIMESERIES_META = "DeleteTimeseriesMeta";
 
+    public static final String OP_SPLIT_TIMESERIES_SCAN_TASK = "SplitTimeseriesScanTask";
+
+    public static final String OP_SCAN_TIMESERIES_DATA = "ScanTimeseriesData";
+
     public static final String OP_SQL_Query = "SQLQuery";
 }

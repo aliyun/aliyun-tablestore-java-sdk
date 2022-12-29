@@ -15183,6 +15183,10 @@ public final class TunnelServiceApi {
     // required bytes record = 2;
     boolean hasRecord();
     com.google.protobuf.ByteString getRecord();
+    
+    // optional bytes origin_record = 3;
+    boolean hasOriginRecord();
+    com.google.protobuf.ByteString getOriginRecord();
   }
   public static final class Record extends
       com.google.protobuf.GeneratedMessage
@@ -15233,9 +15237,20 @@ public final class TunnelServiceApi {
       return record_;
     }
     
+    // optional bytes origin_record = 3;
+    public static final int ORIGIN_RECORD_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString originRecord_;
+    public boolean hasOriginRecord() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.google.protobuf.ByteString getOriginRecord() {
+      return originRecord_;
+    }
+    
     private void initFields() {
       actionType_ = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ActionType.PUT_ROW;
       record_ = com.google.protobuf.ByteString.EMPTY;
+      originRecord_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -15263,6 +15278,9 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, record_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, originRecord_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -15279,6 +15297,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, record_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, originRecord_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -15408,6 +15430,8 @@ public final class TunnelServiceApi {
         bitField0_ = (bitField0_ & ~0x00000001);
         record_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
+        originRecord_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -15454,6 +15478,10 @@ public final class TunnelServiceApi {
           to_bitField0_ |= 0x00000002;
         }
         result.record_ = record_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.originRecord_ = originRecord_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -15475,6 +15503,9 @@ public final class TunnelServiceApi {
         }
         if (other.hasRecord()) {
           setRecord(other.getRecord());
+        }
+        if (other.hasOriginRecord()) {
+          setOriginRecord(other.getOriginRecord());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -15531,6 +15562,11 @@ public final class TunnelServiceApi {
               record_ = input.readBytes();
               break;
             }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              originRecord_ = input.readBytes();
+              break;
+            }
           }
         }
       }
@@ -15585,6 +15621,30 @@ public final class TunnelServiceApi {
         return this;
       }
       
+      // optional bytes origin_record = 3;
+      private com.google.protobuf.ByteString originRecord_ = com.google.protobuf.ByteString.EMPTY;
+      public boolean hasOriginRecord() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.google.protobuf.ByteString getOriginRecord() {
+        return originRecord_;
+      }
+      public Builder setOriginRecord(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        originRecord_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearOriginRecord() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        originRecord_ = getDefaultInstance().getOriginRecord();
+        onChanged();
+        return this;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.Record)
     }
     
@@ -15612,6 +15672,10 @@ public final class TunnelServiceApi {
     // required string next_token = 2;
     boolean hasNextToken();
     String getNextToken();
+    
+    // optional bool may_more_record = 3;
+    boolean hasMayMoreRecord();
+    boolean getMayMoreRecord();
   }
   public static final class ReadRecordsResponse extends
       com.google.protobuf.GeneratedMessage
@@ -15695,9 +15759,20 @@ public final class TunnelServiceApi {
       }
     }
     
+    // optional bool may_more_record = 3;
+    public static final int MAY_MORE_RECORD_FIELD_NUMBER = 3;
+    private boolean mayMoreRecord_;
+    public boolean hasMayMoreRecord() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public boolean getMayMoreRecord() {
+      return mayMoreRecord_;
+    }
+    
     private void initFields() {
       records_ = java.util.Collections.emptyList();
       nextToken_ = "";
+      mayMoreRecord_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -15727,6 +15802,9 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(2, getNextTokenBytes());
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(3, mayMoreRecord_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -15743,6 +15821,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getNextTokenBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, mayMoreRecord_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -15877,6 +15959,8 @@ public final class TunnelServiceApi {
         }
         nextToken_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        mayMoreRecord_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -15928,6 +16012,10 @@ public final class TunnelServiceApi {
           to_bitField0_ |= 0x00000001;
         }
         result.nextToken_ = nextToken_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.mayMoreRecord_ = mayMoreRecord_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -15972,6 +16060,9 @@ public final class TunnelServiceApi {
         }
         if (other.hasNextToken()) {
           setNextToken(other.getNextToken());
+        }
+        if (other.hasMayMoreRecord()) {
+          setMayMoreRecord(other.getMayMoreRecord());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -16023,6 +16114,11 @@ public final class TunnelServiceApi {
             case 18: {
               bitField0_ |= 0x00000002;
               nextToken_ = input.readBytes();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              mayMoreRecord_ = input.readBool();
               break;
             }
           }
@@ -16251,6 +16347,27 @@ public final class TunnelServiceApi {
         bitField0_ |= 0x00000002;
         nextToken_ = value;
         onChanged();
+      }
+      
+      // optional bool may_more_record = 3;
+      private boolean mayMoreRecord_ ;
+      public boolean hasMayMoreRecord() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public boolean getMayMoreRecord() {
+        return mayMoreRecord_;
+      }
+      public Builder setMayMoreRecord(boolean value) {
+        bitField0_ |= 0x00000004;
+        mayMoreRecord_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearMayMoreRecord() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        mayMoreRecord_ = false;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.ReadRecordsResponse)
@@ -18421,27 +18538,28 @@ public final class TunnelServiceApi {
       "umber\030\005 \002(\003\"\024\n\022CheckpointResponse\"]\n\022Rea" +
       "dRecordsRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tcl" +
       "ient_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\022\r\n\005tok" +
-      "en\030\004 \002(\t\"m\n\006Record\022S\n\013action_type\030\001 \002(\0162" +
-      ">.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.ActionType\022\016\n\006record\030\002 \002(\014\"",
-      "v\n\023ReadRecordsResponse\022K\n\007records\030\001 \003(\0132" +
-      ":.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.Record\022\022\n\nnext_token\030\002 \002(\t\"" +
-      ")\n\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007content\030\002 \002" +
-      "(\014\"H\n\014TokenContent\022\023\n\013primary_key\030\001 \001(\014\022" +
-      "\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"_\n\016" +
-      "TokenContentV2\022\023\n\013primary_key\030\001 \001(\014\022\020\n\010i" +
-      "terator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\022\023\n\013tota" +
-      "l_count\030\004 \001(\003\"\217\001\n\022StreamTunnelConfig\022Q\n\004" +
-      "flag\030\001 \001(\0162C.com.alicloud.openservices.t",
-      "ablestore.core.protocol.StartOffsetFlag\022" +
-      "\023\n\013startOffset\030\002 \001(\004\022\021\n\tendOffset\030\003 \001(\004*" +
-      "9\n\nTunnelType\022\014\n\010BaseData\020\001\022\n\n\006Stream\020\002\022" +
-      "\021\n\rBaseAndStream\020\003*A\n\rChannelStatus\022\010\n\004O" +
-      "PEN\020\001\022\013\n\007CLOSING\020\002\022\t\n\005CLOSE\020\003\022\016\n\nTERMINA" +
-      "TED\020\004*9\n\nActionType\022\013\n\007PUT_ROW\020\001\022\016\n\nUPDA" +
-      "TE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*+\n\017StartOffsetF" +
-      "lag\022\n\n\006LATEST\020\000\022\014\n\010EARLIEST\020\001"
+      "en\030\004 \002(\t\"\204\001\n\006Record\022S\n\013action_type\030\001 \002(\016" +
+      "2>.com.alicloud.openservices.tablestore." +
+      "core.protocol.ActionType\022\016\n\006record\030\002 \002(\014",
+      "\022\025\n\rorigin_record\030\003 \001(\014\"\217\001\n\023ReadRecordsR" +
+      "esponse\022K\n\007records\030\001 \003(\0132:.com.alicloud." +
+      "openservices.tablestore.core.protocol.Re" +
+      "cord\022\022\n\nnext_token\030\002 \002(\t\022\027\n\017may_more_rec" +
+      "ord\030\003 \001(\010\")\n\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007c" +
+      "ontent\030\002 \002(\014\"H\n\014TokenContent\022\023\n\013primary_" +
+      "key\030\001 \001(\014\022\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp" +
+      "\030\003 \001(\003\"_\n\016TokenContentV2\022\023\n\013primary_key\030" +
+      "\001 \001(\014\022\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001" +
+      "(\003\022\023\n\013total_count\030\004 \001(\003\"\217\001\n\022StreamTunnel",
+      "Config\022Q\n\004flag\030\001 \001(\0162C.com.alicloud.open" +
+      "services.tablestore.core.protocol.StartO" +
+      "ffsetFlag\022\023\n\013startOffset\030\002 \001(\004\022\021\n\tendOff" +
+      "set\030\003 \001(\004*9\n\nTunnelType\022\014\n\010BaseData\020\001\022\n\n" +
+      "\006Stream\020\002\022\021\n\rBaseAndStream\020\003*A\n\rChannelS" +
+      "tatus\022\010\n\004OPEN\020\001\022\013\n\007CLOSING\020\002\022\t\n\005CLOSE\020\003\022" +
+      "\016\n\nTERMINATED\020\004*9\n\nActionType\022\013\n\007PUT_ROW" +
+      "\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*+\n\017St" +
+      "artOffsetFlag\022\n\n\006LATEST\020\000\022\014\n\010EARLIEST\020\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18669,7 +18787,7 @@ public final class TunnelServiceApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_descriptor,
-              new java.lang.String[] { "ActionType", "Record", },
+              new java.lang.String[] { "ActionType", "Record", "OriginRecord", },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Record.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.Record.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_descriptor =
@@ -18677,7 +18795,7 @@ public final class TunnelServiceApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_descriptor,
-              new java.lang.String[] { "Records", "NextToken", },
+              new java.lang.String[] { "Records", "NextToken", "MayMoreRecord", },
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.ReadRecordsResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Token_descriptor =

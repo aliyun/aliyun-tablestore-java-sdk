@@ -39,4 +39,12 @@ public interface AsyncTimeseriesClientInterface {
     Future<DeleteTimeseriesMetaResponse> deleteTimeseriesMeta(DeleteTimeseriesMetaRequest request,
                                                               TableStoreCallback<DeleteTimeseriesMetaRequest, DeleteTimeseriesMetaResponse> callback)
             throws TableStoreException, ClientException;
+
+    Future<SplitTimeseriesScanTaskResponse> splitTimeseriesScanTask(SplitTimeseriesScanTaskRequest request,
+                                                                    TableStoreCallback<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse> callback)
+            throws TableStoreException, ClientException;
+
+    Future<ScanTimeseriesDataResponse> scanTimeseriesData(ScanTimeseriesDataRequest request,
+                                                          TableStoreCallback<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> callback)
+            throws TableStoreException, ClientException;
 }

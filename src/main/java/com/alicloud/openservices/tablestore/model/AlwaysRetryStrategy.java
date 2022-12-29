@@ -9,7 +9,7 @@ import com.alicloud.openservices.tablestore.core.utils.Preconditions;
  * {@link AlwaysRetryStrategy}为一个重试逻辑示例, 其在最大重试次数内总是重试.
  */
 public class AlwaysRetryStrategy implements RetryStrategy {
-    private Random rnd = new Random();
+    private final Random rnd = new Random();
     private int base = 4; // in msec
     private int retries = 0;
     private int maxRetryTimes = 3;
@@ -24,6 +24,12 @@ public class AlwaysRetryStrategy implements RetryStrategy {
 
         this.maxRetryTimes = maxRetryTimes;
         this.maxRetryPauseInMillis = maxRetryPauseInMillis;
+    }
+
+    public AlwaysRetryStrategy(int initialPauseInMillis, int maxRetryTimes, int maxRetryPauseInMillis) {
+        this(maxRetryTimes, maxRetryPauseInMillis);
+        Preconditions.checkArgument(initialPauseInMillis > 0);
+        this.base = initialPauseInMillis;
     }
 
     @Override

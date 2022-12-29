@@ -50,14 +50,14 @@ public class GetRowLauncher extends OperationLauncher<GetRowRequest, GetRowRespo
         OtsInternalApi.GetRowResponse defaultResponse =
             OtsInternalApi.GetRowResponse.getDefaultInstance();
         asyncInvokePost(
-            uri,
-            null,
-            OTSProtocolBuilder.buildGetRowRequest(req),
-            tracer,
-            new GetRowResponseConsumer(
-                ResultParserFactory.createFactory().createProtocolBufferResultParser(
-                    defaultResponse, tracer.getTraceId()),
-                tracer, retry, lastResult),
-            cb);
+                uri,
+                null,
+                OTSProtocolBuilder.buildGetRowRequest(req),
+                tracer,
+                new GetRowResponseConsumer(
+                        ResultParserFactory.createFactory().createProtocolBufferResultParser(
+                                defaultResponse, tracer.getTraceId()),
+                        tracer, retry, lastResult),
+                cb);
     }
 }

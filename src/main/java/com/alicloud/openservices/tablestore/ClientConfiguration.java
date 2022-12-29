@@ -37,6 +37,17 @@ public class ClientConfiguration {
     private TimeseriesConfiguration timeseriesConfiguration;
 
     /**
+     * 是否开启链路追踪 默认不开启
+     */
+    private boolean enableRequestTracer = false;
+
+
+    /**
+     * 链路追踪系统接口
+     */
+    private RequestTracer requestTracer;
+
+    /**
      * 构造新实例。
      */
     public ClientConfiguration() {
@@ -45,15 +56,16 @@ public class ClientConfiguration {
 
     /**
      * 设置是否需要对请求数据进行压缩
-     * @param enableRequestCompression
-     *          是否需要压缩(true/false)
+     *
+     * @param enableRequestCompression 是否需要压缩(true/false)
      */
     public void setEnableRequestCompression(boolean enableRequestCompression) {
         this.enableRequestCompression = enableRequestCompression;
-    }    
+    }
 
     /**
      * 返回是否需要对请求数据进行压缩
+     *
      * @return 是否需要对request进行压缩
      */
     public boolean isEnableRequestCompression() {
@@ -62,36 +74,36 @@ public class ClientConfiguration {
 
     /**
      * 是否需要告知TableStore对返回的响应内容进行压缩
-     * @param enableResponseCompression
-     *          是否告知TableStore对返回的响应内容进行压缩
+     *
+     * @param enableResponseCompression 是否告知TableStore对返回的响应内容进行压缩
      */
     public void setEnableResponseCompression(boolean enableResponseCompression) {
         this.enableResponseCompression = enableResponseCompression;
     }
-    
+
     /**
      * 返回是否需要告知TableStore对返回的响应内容进行压缩
-     * @return
-     *      是否需要告知TableStore对返回的响应内容进行压缩
-     */ 
+     *
+     * @return 是否需要告知TableStore对返回的响应内容进行压缩
+     */
     public boolean isEnableResponseCompression() {
         return enableResponseCompression;
     }
-    
+
     /**
      * 返回是否需要对响应进行验证
-     * @return
-     *      是否需要对响应进行验证
+     *
+     * @return 是否需要对响应进行验证
      */
     public boolean isEnableResponseValidation() {
         return enableResponseValidation;
     }
-    
+
     /**
-     * 是否需要对响应进行验证， 如果需要验证， 
+     * 是否需要对响应进行验证， 如果需要验证，
      * Client会验证头信息完整性、结果是否过期、授权信息是否正确
-     * @param enableResponseValidation
-     *          是否需要对响应进行验证
+     *
+     * @param enableResponseValidation 是否需要对响应进行验证
      */
     public void setEnableResponseValidation(boolean enableResponseValidation) {
         this.enableResponseValidation = enableResponseValidation;
@@ -279,7 +291,7 @@ public class ClientConfiguration {
 
     /**
      * 返回代理服务器主机地址。
-     * 
+     *
      * @return 代理服务器主机地址。
      */
     public String getProxyHost() {
@@ -288,9 +300,8 @@ public class ClientConfiguration {
 
     /**
      * 设置代理服务器主机地址。
-     * 
-     * @param proxyHost
-     *            代理服务器主机地址。
+     *
+     * @param proxyHost 代理服务器主机地址。
      */
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
@@ -298,7 +309,7 @@ public class ClientConfiguration {
 
     /**
      * 返回代理服务器端口。
-     * 
+     *
      * @return 代理服务器端口。
      */
     public int getProxyPort() {
@@ -307,9 +318,8 @@ public class ClientConfiguration {
 
     /**
      * 设置代理服务器端口。
-     * 
-     * @param proxyPort
-     *            代理服务器端口。
+     *
+     * @param proxyPort 代理服务器端口。
      */
     public void setProxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
@@ -317,7 +327,7 @@ public class ClientConfiguration {
 
     /**
      * 返回代理服务器验证的用户名。
-     * 
+     *
      * @return 用户名。
      */
     public String getProxyUsername() {
@@ -326,9 +336,8 @@ public class ClientConfiguration {
 
     /**
      * 设置代理服务器验证的用户名。
-     * 
-     * @param proxyUsername
-     *            用户名。
+     *
+     * @param proxyUsername 用户名。
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
@@ -336,7 +345,7 @@ public class ClientConfiguration {
 
     /**
      * 返回代理服务器验证的密码。
-     * 
+     *
      * @return 密码。
      */
     public String getProxyPassword() {
@@ -345,9 +354,8 @@ public class ClientConfiguration {
 
     /**
      * 设置代理服务器验证的密码。
-     * 
-     * @param proxyPassword
-     *            密码。
+     *
+     * @param proxyPassword 密码。
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
@@ -355,7 +363,7 @@ public class ClientConfiguration {
 
     /**
      * 返回访问NTLM验证的代理服务器的Windows域名（可选）。
-     * 
+     *
      * @return 域名。
      */
     public String getProxyDomain() {
@@ -364,9 +372,8 @@ public class ClientConfiguration {
 
     /**
      * 设置访问NTLM验证的代理服务器的Windows域名（可选）。
-     * 
-     * @param proxyDomain
-     *            域名。
+     *
+     * @param proxyDomain 域名。
      */
     public void setProxyDomain(String proxyDomain) {
         this.proxyDomain = proxyDomain;
@@ -374,7 +381,7 @@ public class ClientConfiguration {
 
     /**
      * 返回NTLM代理服务器的Windows工作站名称。
-     * 
+     *
      * @return NTLM代理服务器的Windows工作站名称。
      */
     public String getProxyWorkstation() {
@@ -383,9 +390,8 @@ public class ClientConfiguration {
 
     /**
      * 设置NTLM代理服务器的Windows工作站名称。 （可选，如果代理服务器非NTLM，不需要设置该参数）。
-     * 
-     * @param proxyWorkstation
-     *            NTLM代理服务器的Windows工作站名称。
+     *
+     * @param proxyWorkstation NTLM代理服务器的Windows工作站名称。
      */
     public void setProxyWorkstation(String proxyWorkstation) {
         this.proxyWorkstation = proxyWorkstation;
@@ -393,6 +399,7 @@ public class ClientConfiguration {
 
     /**
      * 获取同步Client内等待异步调用返回的最大超时时间。
+     *
      * @return
      */
     public long getSyncClientWaitFutureTimeoutInMillis() {
@@ -401,6 +408,7 @@ public class ClientConfiguration {
 
     /**
      * 设置同步Client内等待异步调用返回的最大超时时间。
+     *
      * @param syncClientWaitFutureTimeoutInMillis
      */
     public void setSyncClientWaitFutureTimeoutInMillis(long syncClientWaitFutureTimeoutInMillis) {
@@ -409,6 +417,7 @@ public class ClientConfiguration {
 
     /**
      * 获取时序Client的配置。
+     *
      * @return
      */
     public TimeseriesConfiguration getTimeseriesConfiguration() {
@@ -417,6 +426,7 @@ public class ClientConfiguration {
 
     /**
      * 设置时序Client的配置。
+     *
      * @param timeseriesConfiguration
      */
     public void setTimeseriesConfiguration(TimeseriesConfiguration timeseriesConfiguration) {
@@ -429,9 +439,45 @@ public class ClientConfiguration {
 
     /**
      * 设置HttpAsyncClient的ConnectionRequestTimeout配置。
+     *
      * @param connectionRequestTimeoutInMillisecond
      */
     public void setConnectionRequestTimeoutInMillisecond(int connectionRequestTimeoutInMillisecond) {
         this.connectionRequestTimeoutInMillisecond = connectionRequestTimeoutInMillisecond;
+    }
+
+    /**
+     * 获取链路追踪系统开启状态。
+     */
+    public boolean isEnableRequestTracer() {
+        return enableRequestTracer;
+    }
+
+    /**
+     * 设置链路链路追踪系统是否开启
+     *
+     * @param enableRequestTracer
+     */
+    public void setEnableRequestTracer(boolean enableRequestTracer) {
+        this.enableRequestTracer = enableRequestTracer;
+    }
+
+
+    /**
+     * 设置接入链路追踪系统接口
+     *
+     * @param requestTracer 链路追踪系统接口
+     */
+    public void setRequestTracer(RequestTracer requestTracer) {
+        this.requestTracer = requestTracer;
+    }
+
+    /**
+     * 获取链路追踪系统接口
+     *
+     * @return 链路追踪系统接口实现
+     */
+    public RequestTracer getRequestTracer() {
+        return requestTracer;
     }
 }

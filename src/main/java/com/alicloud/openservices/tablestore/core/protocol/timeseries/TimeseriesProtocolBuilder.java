@@ -226,10 +226,6 @@ public class TimeseriesProtocolBuilder {
         crc32c.update(flatbufferRowsData.array(), flatbufferRowsData.position() + flatbufferRowsData.arrayOffset(),
             flatbufferRowsData.remaining());
         int crc = (int) crc32c.getValue();
-        byte[] data = new byte[flatbufferRowsData.remaining()];
-        for (int i = 0; i < flatbufferRowsData.remaining(); i++) {
-            data[i] = flatbufferRowsData.array()[i + flatbufferRowsData.position() + flatbufferRowsData.arrayOffset()];
-        }
         rowsBuilder.setRowsData(ByteString.copyFrom(flatbufferRowsData));
         rowsBuilder.setFlatbufferCrc32C(crc);
         builder.setRowsData(rowsBuilder);
@@ -242,6 +238,39 @@ public class TimeseriesProtocolBuilder {
         tsKeyBuilder.setSource(timeseriesKey.getDataSource());
         tsKeyBuilder.setTags(buildTagsString(timeseriesKey.getTags()));
         return tsKeyBuilder.build();
+    }
+
+    public static Timeseries.TimeseriesFieldsToGet buildFieldsToGet(String name, ColumnType type) {
+        Timeseries.TimeseriesFieldsToGet.Builder fieldsToGet = Timeseries.TimeseriesFieldsToGet.newBuilder();
+        Preconditions.checkStringNotNullAndEmpty(name, "field name is empty");
+        Preconditions.checkNotNull(type);
+        fieldsToGet.setName(name);
+        switch (type) {
+            case INTEGER: {
+                fieldsToGet.setType(DataType.LONG);
+                break;
+            }
+            case DOUBLE: {
+                fieldsToGet.setType(DataType.DOUBLE);
+                break;
+            }
+            case STRING: {
+                fieldsToGet.setType(DataType.STRING);
+                break;
+            }
+            case BINARY: {
+                fieldsToGet.setType(DataType.BINARY);
+                break;
+            }
+            case BOOLEAN: {
+                fieldsToGet.setType(DataType.BOOLEAN);
+                break;
+            }
+            default: {
+                throw new IllegalStateException();
+            }
+        }
+        return fieldsToGet.build();
     }
 
     public static Timeseries.GetTimeseriesDataRequest buildGetTimeseriesDataRequest(GetTimeseriesDataRequest request) {
@@ -262,36 +291,7 @@ public class TimeseriesProtocolBuilder {
         }
         if (!request.getFieldsToGet().isEmpty()) {
             for (Pair<String, ColumnType> field : request.getFieldsToGet()) {
-                Timeseries.TimeseriesFieldsToGet.Builder fieldsToGet = Timeseries.TimeseriesFieldsToGet.newBuilder();
-                Preconditions.checkStringNotNullAndEmpty(field.getFirst(), "field name is empty");
-                Preconditions.checkNotNull(field.getSecond());
-                fieldsToGet.setName(field.getFirst());
-                switch (field.getSecond()) {
-                    case INTEGER: {
-                        fieldsToGet.setType(DataType.LONG);
-                        break;
-                    }
-                    case DOUBLE: {
-                        fieldsToGet.setType(DataType.DOUBLE);
-                        break;
-                    }
-                    case STRING: {
-                        fieldsToGet.setType(DataType.STRING);
-                        break;
-                    }
-                    case BINARY: {
-                        fieldsToGet.setType(DataType.BINARY);
-                        break;
-                    }
-                    case BOOLEAN: {
-                        fieldsToGet.setType(DataType.BOOLEAN);
-                        break;
-                    }
-                    default: {
-                        throw new IllegalStateException();
-                    }
-                }
-                builder.addFieldsToGet(fieldsToGet);
+                builder.addFieldsToGet(buildFieldsToGet(field.getFirst(), field.getSecond()));
             }
         }
         if (request.getNextToken() != null && request.getNextToken().length != 0) {
@@ -395,6 +395,48 @@ public class TimeseriesProtocolBuilder {
         for (TimeseriesKey key : deleteTimeseriesMetaRequest.getTimeseriesKeys()) {
             builder.addTimeseriesKey(buildTimeseriesKey(key));
         }
+        return builder.build();
+    }
+
+    public static Timeseries.SplitTimeseriesScanTaskRequest buildSplitTimeseriesScanTaskRequest(SplitTimeseriesScanTaskRequest splitTimeseriesScanTaskRequest) {
+        Timeseries.SplitTimeseriesScanTaskRequest.Builder builder = Timeseries.SplitTimeseriesScanTaskRequest.newBuilder();
+
+        Preconditions.checkNotNull(splitTimeseriesScanTaskRequest.getTimeseriesTableName());
+        builder.setTableName(splitTimeseriesScanTaskRequest.getTimeseriesTableName());
+        if (splitTimeseriesScanTaskRequest.getMeasurementName() != null) {
+            builder.setMeasurementName(splitTimeseriesScanTaskRequest.getMeasurementName());
+        }
+        Preconditions.checkArgument(splitTimeseriesScanTaskRequest.getSplitCountHint() > 0, "not set splitCountHint in SplitTimeseriesScanTaskRequest");
+        builder.setSplitCountHint(splitTimeseriesScanTaskRequest.getSplitCountHint());
+        return builder.build();
+    }
+
+    public static Timeseries.ScanTimeseriesDataRequest buildScanTimeseriesDataRequest(ScanTimeseriesDataRequest scanTimeseriesDataRequest) {
+        Timeseries.ScanTimeseriesDataRequest.Builder builder = Timeseries.ScanTimeseriesDataRequest.newBuilder();
+
+        Preconditions.checkNotNull(scanTimeseriesDataRequest.getTimeseriesTableName());
+        builder.setTableName(scanTimeseriesDataRequest.getTimeseriesTableName());
+        if (scanTimeseriesDataRequest.getSplitInfo() != null) {
+            builder.setSplitInfo(ByteString.copyFrom(scanTimeseriesDataRequest.getSplitInfo().getSerializedData()));
+        }
+        if (scanTimeseriesDataRequest.getBeginTimeInUs() >= 0) {
+            builder.setStartTimeUs(scanTimeseriesDataRequest.getBeginTimeInUs());
+        }
+        if (scanTimeseriesDataRequest.getEndTimeInUs() >= 0) {
+            Preconditions.checkArgument(scanTimeseriesDataRequest.getBeginTimeInUs() < scanTimeseriesDataRequest.getEndTimeInUs(),
+                    "end time should be large than begin time");
+            builder.setEndTimeUs(scanTimeseriesDataRequest.getEndTimeInUs());
+        }
+        for (Pair<String, ColumnType> field : scanTimeseriesDataRequest.getFieldsToGet()) {
+            builder.addFieldsToGet(buildFieldsToGet(field.getFirst(), field.getSecond()));
+        }
+        if (scanTimeseriesDataRequest.getLimit() > 0) {
+            builder.setLimit(scanTimeseriesDataRequest.getLimit());
+        }
+        if (scanTimeseriesDataRequest.getNextToken() != null && scanTimeseriesDataRequest.getNextToken().length > 0) {
+            builder.setToken(ByteString.copyFrom(scanTimeseriesDataRequest.getNextToken()));
+        }
+        builder.setDataSerializeType(Timeseries.RowsSerializeType.RST_PLAIN_BUFFER);
         return builder.build();
     }
 

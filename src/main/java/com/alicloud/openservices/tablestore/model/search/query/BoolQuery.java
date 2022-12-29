@@ -110,11 +110,27 @@ public class BoolQuery implements Query {
             return this;
         }
 
+        public Builder must(Query query) {
+            if (this.mustQueries == null) {
+                this.mustQueries = new ArrayList<Query>();
+            }
+            this.mustQueries.add(query);
+            return this;
+        }
+
         public Builder mustNot(QueryBuilder queryBuilder) {
             if (this.mustNotQueries == null) {
                 this.mustNotQueries = new ArrayList<Query>();
             }
             this.mustNotQueries.add(queryBuilder.build());
+            return this;
+        }
+
+        public Builder mustNot(Query query) {
+            if (this.mustNotQueries == null) {
+                this.mustNotQueries = new ArrayList<Query>();
+            }
+            this.mustNotQueries.add(query);
             return this;
         }
 
@@ -126,11 +142,27 @@ public class BoolQuery implements Query {
             return this;
         }
 
+        public Builder filter(Query query) {
+            if (this.filterQueries == null) {
+                this.filterQueries = new ArrayList<Query>();
+            }
+            this.filterQueries.add(query);
+            return this;
+        }
+
         public Builder should(QueryBuilder queryBuilder) {
             if (this.shouldQueries == null) {
                 this.shouldQueries = new ArrayList<Query>();
             }
             this.shouldQueries.add(queryBuilder.build());
+            return this;
+        }
+
+        public Builder should(Query query) {
+            if (this.shouldQueries == null) {
+                this.shouldQueries = new ArrayList<Query>();
+            }
+            this.shouldQueries.add(query);
             return this;
         }
 

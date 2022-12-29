@@ -20,7 +20,6 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRangeRes
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByResults;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import static com.alicloud.openservices.tablestore.core.protocol.SearchAggregationResultBuilder.buildAggregationResults;
 
