@@ -7,12 +7,34 @@
   <packaging>jar</packaging>  
   <name>AliCloud TableStore SDK for Java</name>  
   <url>http://www.aliyun.com</url>  
-  <parent> 
-    <groupId>com.taobao</groupId>  
-    <artifactId>parent</artifactId>  
-    <version>1.0.2</version> 
-  </parent>  
   <description>Aliyun Open Services SDK for Java Copyright (C) Alibaba Cloud Computing All rights reserved. 版权所有 （C）阿里云计算有限公司 http://www.aliyun.com</description>  
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <url></url>
+    <connection></connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>aliyunproducts</id>
+      <name>Aliyun SDK</name>
+      <email>aliyunsdk@aliyun.com</email>
+    </developer>
+  </developers>
+  <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+  </distributionManagement>
   <profiles> 
     <profile> 
       <id>java8-doclint-disabled</id>  
@@ -249,6 +271,31 @@
           </execution> 
         </executions> 
       </plugin> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.3</version>
+        <extensions>true</extensions>
+        <configuration>
+                <serverId>sonatype-nexus-staging</serverId>
+                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
     </plugins> 
   </build>  
 </project>
