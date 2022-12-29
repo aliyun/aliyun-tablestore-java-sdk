@@ -188,7 +188,8 @@
         <version>2.8</version>  
         <configuration> 
           <encoding>UTF-8</encoding>  
-          <excludePackageNames>com.aliyun.common.*;*.internal;*.internal.*;*.impl;</excludePackageNames>  
+          <excludePackageNames>com.aliyun.common.*;*.internal;*.internal.*;*.impl;</excludePackageNames>
+          <additionalparam>-Xdoclint:none</additionalparam>
           <tags> 
             <tag> 
               <name>author</name>  
