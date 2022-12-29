@@ -20,6 +20,8 @@ public class DescribeStreamRequest implements Request {
      */
     private OptionalValue<Integer> shardLimit = new OptionalValue<Integer>("ShardLimit");
 
+    private boolean supportTimeseriesTable = false;
+
     public DescribeStreamRequest(String streamId) {
         setStreamId(streamId);
     }
@@ -93,6 +95,14 @@ public class DescribeStreamRequest implements Request {
     public void setShardLimit(int shardLimit) {
         Preconditions.checkArgument(shardLimit > 0, "The limit must be greater than 0.");
         this.shardLimit.setValue(shardLimit);
+    }
+
+    public boolean isSupportTimeseriesTable() {
+        return this.supportTimeseriesTable;
+    }
+
+    public void setSupportTimeseriesTable(boolean isSupport) {
+        this.supportTimeseriesTable = isSupport;
     }
 
     @Override

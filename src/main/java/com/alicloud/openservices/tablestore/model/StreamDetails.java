@@ -2,6 +2,9 @@ package com.alicloud.openservices.tablestore.model;
 
 
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+
+import java.util.*;
 
 public class StreamDetails implements Jsonizable {
 
@@ -26,6 +29,11 @@ public class StreamDetails implements Jsonizable {
      * 上次开启Stream的时间，单位微秒
      */
     private long lastEnableTime;
+
+    /**
+     * 设置Stream数据中原始列列表
+     */
+    private Set<String> originColumnsToGet = new HashSet<String>();
 
     public StreamDetails() {
 
@@ -86,6 +94,46 @@ public class StreamDetails implements Jsonizable {
         this.lastEnableTime = lastEnableTime;
     }
 
+    /**
+     * 返回要读取的原始列的名称列表（只读）。
+     *
+     * @return 原始列的名称的列表（只读）。
+     */
+    public Set<String> getOriginColumnsToGet() {
+        return Collections.unmodifiableSet(originColumnsToGet);
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param OriginColumnName 要返回原始列的名称。
+     */
+    public void addOriginColumnsToGet(String OriginColumnName) {
+        Preconditions.checkArgument(OriginColumnName != null && !OriginColumnName.isEmpty(), "OriginColumn's name should not be null or empty.");
+        this.originColumnsToGet.add(OriginColumnName);
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param originColumnNames 要返回原始列的名称。
+     */
+    public void addOriginColumnsToGet(String[] originColumnNames) {
+        Preconditions.checkNotNull(originColumnNames, "columnNames should not be null.");
+        for (int i = 0; i < originColumnNames.length; ++i) {
+            addOriginColumnsToGet(originColumnNames[i]);
+        }
+    }
+
+    /**
+     * 添加要读取的原始列。
+     *
+     * @param originColumnsToGet
+     */
+    public void addOriginColumnsToGet(Collection<String> originColumnsToGet) {
+        this.originColumnsToGet.addAll(originColumnsToGet);
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -112,6 +160,8 @@ public class StreamDetails implements Jsonizable {
         sb.append("\"LastEnableTime\": ");
         sb.append(lastEnableTime);
         sb.append(newline);
+        sb.append("\"OriginColumnToGet\": ");
+        sb.append(originColumnsToGet);
         sb.append("}");
     }
 
@@ -126,6 +176,8 @@ public class StreamDetails implements Jsonizable {
         sb.append(expirationTime);
         sb.append(", LastEnableTime: ");
         sb.append(lastEnableTime);
+        sb.append(", OriginColumnToGet: ");
+        sb.append(originColumnsToGet);
         return sb.toString();
     }
 }

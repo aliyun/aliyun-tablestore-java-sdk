@@ -6,7 +6,6 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
-import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByType;
@@ -173,8 +172,12 @@ public class SearchGroupByBuilder {
 
     private static Search.FieldRange buildFieldRange(FieldRange groupBy) {
         Search.FieldRange.Builder builder = Search.FieldRange.newBuilder();
-        builder.setMin(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMin())));
-        builder.setMax(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMax())));
+        if (groupBy.getMax() != null) {
+            builder.setMax(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMax())));
+        }
+        if (groupBy.getMin() != null) {
+            builder.setMin(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMin())));
+        }
         return builder.build();
     }
 

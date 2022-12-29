@@ -28,4 +28,10 @@ public interface TimeseriesClientInterface {
 
     DeleteTimeseriesMetaResponse deleteTimeseriesMeta(DeleteTimeseriesMetaRequest request)
             throws TableStoreException, ClientException;
+
+    SplitTimeseriesScanTaskResponse splitTimeseriesScanTask(SplitTimeseriesScanTaskRequest request)
+            throws TableStoreException, ClientException;
+
+    ScanTimeseriesDataResponse scanTimeseriesData(ScanTimeseriesDataRequest request)
+            throws TableStoreException, ClientException;
 }

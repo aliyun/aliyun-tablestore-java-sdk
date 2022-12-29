@@ -13,7 +13,7 @@ public abstract class AbstractStage<INPUT, OUTPUT> implements Stage<INPUT, OUTPU
     @Override
     @SuppressWarnings("unchecked")
     public void setNextStage(Stage<?, ?> stage) {
-        this.nextStage = (Stage<OUTPUT, ?>)stage;
+        this.nextStage = (Stage<OUTPUT, ?>) stage;
     }
 
     @Override
@@ -28,7 +28,7 @@ public abstract class AbstractStage<INPUT, OUTPUT> implements Stage<INPUT, OUTPU
         try {
             OUTPUT output = doProcess(input);
             if (nextStage != null && output != null) {
-               nextStage.process(output);
+                nextStage.process(output);
             }
         } catch (StageException se) {
             context.handleError(se);

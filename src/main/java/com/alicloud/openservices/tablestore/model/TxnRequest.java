@@ -3,7 +3,7 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 
-public abstract class TxnRequest implements Request{
+public abstract class TxnRequest extends ExtensionRequest {
     /**
      * 事务ID。
      */

@@ -7,7 +7,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.zip.Deflater;
 
+import com.alicloud.openservices.tablestore.RequestTracer;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
+import com.alicloud.openservices.tablestore.core.http.*;
+import com.alicloud.openservices.tablestore.core.utils.*;
+import com.alicloud.openservices.tablestore.model.ExtensionRequest;
 import com.google.protobuf.Message;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -17,27 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alicloud.openservices.tablestore.ClientConfiguration;
-import com.alicloud.openservices.tablestore.TableStoreCallback;
 import com.alicloud.openservices.tablestore.ClientException;
-import com.alicloud.openservices.tablestore.core.utils.Preconditions;
-import com.alicloud.openservices.tablestore.core.utils.LogUtil;
-import com.alicloud.openservices.tablestore.core.utils.DateUtil;
-import com.alicloud.openservices.tablestore.core.utils.BinaryUtil;
-import com.alicloud.openservices.tablestore.core.utils.CompressUtil;
-import com.alicloud.openservices.tablestore.core.utils.Base64;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.auth.RequestSigner;
-import com.alicloud.openservices.tablestore.core.http.OTSUri;
-import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
-import com.alicloud.openservices.tablestore.core.http.ExecutionContext;
-import com.alicloud.openservices.tablestore.core.http.ResponseConsumer;
-import com.alicloud.openservices.tablestore.core.http.RequestMessage;
-import com.alicloud.openservices.tablestore.core.http.ErrorResponseHandler;
-import com.alicloud.openservices.tablestore.core.http.ContentMD5ResponseHandler;
-import com.alicloud.openservices.tablestore.core.http.OTSDeflateResponseHandler;
-import com.alicloud.openservices.tablestore.core.http.OTSValidationResponseHandler;
-import com.alicloud.openservices.tablestore.model.BatchGetRowRequest;
-import com.alicloud.openservices.tablestore.model.BatchGetRowResponse;
+import com.alicloud.openservices.tablestore.model.RequestExtension;
 
 import static com.alicloud.openservices.tablestore.core.Constants.*;
 
@@ -50,6 +37,7 @@ public abstract class OperationLauncher<Req, Res> {
     private ClientConfiguration config;
     protected Req originRequest;
     protected Res lastResult;
+    protected RequestExtension requestExtension;
 
     public OperationLauncher(
         String instanceName,
@@ -68,13 +56,18 @@ public abstract class OperationLauncher<Req, Res> {
         this.crdsProvider = crdsProvider;
         this.config = config;
         this.originRequest = originRequest;
+
+        if (originRequest instanceof ExtensionRequest) {
+            requestExtension=((ExtensionRequest) originRequest).getExtension();
+        }
     }
 
     private static ExecutionContext createContext(
         OTSUri uri,
         String instanceName,
         ServiceCredentials credentials,
-        ClientConfiguration config)
+        ClientConfiguration config,
+        Object rpcContext)
     {
         ExecutionContext ec = new ExecutionContext();
         ec.setSigner(new RequestSigner(instanceName, credentials));
@@ -89,6 +82,10 @@ public abstract class OperationLauncher<Req, Res> {
             ec.getResponseHandlers().add(
                 new OTSValidationResponseHandler(credentials, uri));
         }
+        if (config.isEnableRequestTracer()) {
+            ec.getResponseHandlers().add(
+                    new RequestTracerResponseHandler(rpcContext, config.getRequestTracer()));
+        }
         return ec;
     }
 
@@ -99,19 +96,19 @@ public abstract class OperationLauncher<Req, Res> {
     public abstract void fire(Req request, FutureCallback<Res> cb);
 
     protected void asyncInvokePost(
-        OTSUri actionURI,
-        Map<String, String> queryParameters,
-        Message message,
-        TraceLogger traceLogger,
-        ResponseConsumer<Res> consumer,
-        FutureCallback<Res> callback)
+            OTSUri actionURI,
+            Map<String, String> queryParameters,
+            Message message,
+            TraceLogger traceLogger,
+            ResponseConsumer<Res> consumer,
+            FutureCallback<Res> callback)
     {
         URI uri = buildURI(actionURI, queryParameters);
         HttpPost request = new HttpPost(uri);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Operation: {}, PBRequestMessage: {}, TraceId: {}",
-                actionURI, message.toString(), traceLogger.getTraceId());
+                    actionURI, message.toString(), traceLogger.getTraceId());
         }
 
         byte[] content = message.toByteArray();
@@ -120,14 +117,29 @@ public abstract class OperationLauncher<Req, Res> {
             int contentLength = content.length;
             try {
                 content = CompressUtil.compress(
-                    new ByteArrayInputStream(content),
-                    new Deflater());
+                        new ByteArrayInputStream(content),
+                        new Deflater());
                 request.addHeader(OTS_HEADER_REQUEST_COMPRESS_TYPE, OTS_COMPRESS_TYPE);
                 request.addHeader(
-                    OTS_HEADER_REQUEST_COMPRESS_SIZE, Integer.toString(contentLength));
+                        OTS_HEADER_REQUEST_COMPRESS_SIZE, Integer.toString(contentLength));
             } catch (IOException e) {
                 throw new ClientException("RequestCompressFail: " + e.getMessage());
             }
+        }
+        /**
+         * 接入链路追踪系统
+         */
+        Object rpcContext = null;
+        if(config.isEnableRequestTracer()){
+            if(config.getRequestTracer() == null){
+                throw new ClientException("RequestTracer should not be null when enable RequestTracer");
+            }
+            String methodName = request.getMethod();
+            String action = actionURI.getAction();
+            RequestTracer.StartRequestTraceInfo startRequestTraceInfo = new RequestTracer.StartRequestTraceInfo(instanceName, action, methodName);
+
+            config.getRequestTracer().startRequest(startRequestTraceInfo); //标识一次Rpc调用开始，设置服务名和方法名
+            rpcContext = config.getRequestTracer().getRpcContext();
         }
 
         if (content == null) {
@@ -147,10 +159,15 @@ public abstract class OperationLauncher<Req, Res> {
         addRequiredHeaders(requestMessage, contentMd5, traceLogger.getTraceId());
 
         ServiceCredentials credentials = crdsProvider.getCredentials();
+
+
         ExecutionContext ctx = createContext(
-            actionURI, instanceName, credentials, config);
-        client.asyncSendRequest(requestMessage, ctx, consumer, callback, traceLogger);
+                actionURI, instanceName, credentials, config, rpcContext);
+
+        client.asyncSendRequest(requestMessage, ctx, consumer, callback, traceLogger, config.getRequestTracer(), rpcContext);
     }
+
+
 
     private void addRequiredHeaders(RequestMessage request, String contentMd5, String traceId) {
         request.addHeader(OTS_HEADER_SDK_TRACE_ID, traceId);
@@ -158,11 +175,19 @@ public abstract class OperationLauncher<Req, Res> {
         request.addHeader(OTS_HEADER_API_VERSION, API_VERSION);
         request.addHeader(OTS_HEADER_INSTANCE_NAME, instanceName);
         request.addHeader(OTS_HEADER_TRACE_THRESHOLD,
-            Integer.toString(config.getTimeThresholdOfServerTracer()));
+                Integer.toString(config.getTimeThresholdOfServerTracer()));
         request.addHeader(OTS_HEADER_DATE, DateUtil.getCurrentIso8601Date());
+        if (requestExtension != null) {
+            if (requestExtension.getPriority() != null) {
+                request.addHeader(OTS_HEADER_REQUEST_PRIORITY, Long.toString(requestExtension.getPriority().getValue()));
+            }
+            if (requestExtension.getTag() != null) {
+                request.addHeader(OTS_HEADER_REQUEST_TAG, requestExtension.getTag());
+            }
+        }
         if (config.isEnableResponseCompression()) {
             request.addHeader(
-                OTS_HEADER_RESPONSE_COMPRESS_TYPE, OTS_COMPRESS_TYPE);
+                    OTS_HEADER_RESPONSE_COMPRESS_TYPE, OTS_COMPRESS_TYPE);
         }
     }
 

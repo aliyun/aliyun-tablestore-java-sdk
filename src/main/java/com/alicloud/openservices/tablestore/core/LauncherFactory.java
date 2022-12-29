@@ -180,6 +180,10 @@ public class LauncherFactory {
                 new Context(new OTSUri(endpoint, OP_UPDATE_TIMESERIES_META)));
         contexts.put(OP_DELETE_TIMESERIES_META,
                 new Context(new OTSUri(endpoint, OP_DELETE_TIMESERIES_META)));
+        contexts.put(OP_SPLIT_TIMESERIES_SCAN_TASK,
+                new Context(new OTSUri(endpoint, OP_SPLIT_TIMESERIES_SCAN_TASK)));
+        contexts.put(OP_SCAN_TIMESERIES_DATA,
+                new Context(new OTSUri(endpoint, OP_SCAN_TIMESERIES_DATA)));
         contexts.put(OP_SQL_Query,
                 new Context(new OTSUri(endpoint, OP_SQL_Query)));
     }
@@ -597,6 +601,20 @@ public class LauncherFactory {
                                                              DeleteTimeseriesMetaRequest originRequest) {
         Context ctx = contexts.get(OP_DELETE_TIMESERIES_META);
         return new DeleteTimeseriesMetaLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public SplitTimeseriesScanTaskLauncher splitTimeseriesScanTask(TraceLogger tracer, RetryStrategy retry,
+                                                                   SplitTimeseriesScanTaskRequest originRequest) {
+        Context ctx = contexts.get(OP_SPLIT_TIMESERIES_SCAN_TASK);
+        return new SplitTimeseriesScanTaskLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public ScanTimeseriesDataLauncher scanTimeseriesData(TraceLogger tracer, RetryStrategy retry,
+                                                         ScanTimeseriesDataRequest originRequest) {
+        Context ctx = contexts.get(OP_SCAN_TIMESERIES_DATA);
+        return new ScanTimeseriesDataLauncher(
                 ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
     }
 

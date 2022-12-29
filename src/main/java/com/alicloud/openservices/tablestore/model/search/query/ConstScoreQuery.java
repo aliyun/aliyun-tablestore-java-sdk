@@ -46,6 +46,11 @@ public class ConstScoreQuery implements Query {
             return this;
         }
 
+        public Builder filter(Query query) {
+            this.filter = query;
+            return this;
+        }
+
         @Override
         public ConstScoreQuery build() {
             ConstScoreQuery constScoreQuery = new ConstScoreQuery();

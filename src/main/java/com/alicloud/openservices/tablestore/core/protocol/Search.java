@@ -908,6 +908,7 @@ public final class Search {
     TEXT(4, 5),
     NESTED(5, 6),
     GEO_POINT(6, 7),
+    DATE(7, 8),
     ;
     
     public static final int LONG_VALUE = 1;
@@ -917,6 +918,7 @@ public final class Search {
     public static final int TEXT_VALUE = 5;
     public static final int NESTED_VALUE = 6;
     public static final int GEO_POINT_VALUE = 7;
+    public static final int DATE_VALUE = 8;
     
     
     public final int getNumber() { return value; }
@@ -930,6 +932,7 @@ public final class Search {
         case 5: return TEXT;
         case 6: return NESTED;
         case 7: return GEO_POINT;
+        case 8: return DATE;
         default: return null;
       }
     }
@@ -960,7 +963,7 @@ public final class Search {
     }
     
     private static final FieldType[] VALUES = {
-      LONG, DOUBLE, BOOLEAN, KEYWORD, TEXT, NESTED, GEO_POINT, 
+      LONG, DOUBLE, BOOLEAN, KEYWORD, TEXT, NESTED, GEO_POINT, DATE, 
     };
     
     public static FieldType valueOf(
@@ -64914,6 +64917,11 @@ public final class Search {
     java.util.List<String> getSourceFieldNamesList();
     int getSourceFieldNamesCount();
     String getSourceFieldNames(int index);
+    
+    // repeated string date_formats = 13;
+    java.util.List<String> getDateFormatsList();
+    int getDateFormatsCount();
+    String getDateFormats(int index);
   }
   public static final class FieldSchema extends
       com.google.protobuf.GeneratedMessage
@@ -65123,6 +65131,20 @@ public final class Search {
       return sourceFieldNames_.get(index);
     }
     
+    // repeated string date_formats = 13;
+    public static final int DATE_FORMATS_FIELD_NUMBER = 13;
+    private com.google.protobuf.LazyStringList dateFormats_;
+    public java.util.List<String>
+        getDateFormatsList() {
+      return dateFormats_;
+    }
+    public int getDateFormatsCount() {
+      return dateFormats_.size();
+    }
+    public String getDateFormats(int index) {
+      return dateFormats_.get(index);
+    }
+    
     private void initFields() {
       fieldName_ = "";
       fieldType_ = com.alicloud.openservices.tablestore.core.protocol.Search.FieldType.LONG;
@@ -65136,6 +65158,7 @@ public final class Search {
       analyzerParameter_ = com.google.protobuf.ByteString.EMPTY;
       isVirtualField_ = false;
       sourceFieldNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -65184,6 +65207,9 @@ public final class Search {
       }
       for (int i = 0; i < sourceFieldNames_.size(); i++) {
         output.writeBytes(12, sourceFieldNames_.getByteString(i));
+      }
+      for (int i = 0; i < dateFormats_.size(); i++) {
+        output.writeBytes(13, dateFormats_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -65246,6 +65272,15 @@ public final class Search {
         }
         size += dataSize;
         size += 1 * getSourceFieldNamesList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < dateFormats_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(dateFormats_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getDateFormatsList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -65400,6 +65435,8 @@ public final class Search {
         bitField0_ = (bitField0_ & ~0x00000400);
         sourceFieldNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000800);
+        dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00001000);
         return this;
       }
       
@@ -65493,6 +65530,12 @@ public final class Search {
           bitField0_ = (bitField0_ & ~0x00000800);
         }
         result.sourceFieldNames_ = sourceFieldNames_;
+        if (((bitField0_ & 0x00001000) == 0x00001000)) {
+          dateFormats_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              dateFormats_);
+          bitField0_ = (bitField0_ & ~0x00001000);
+        }
+        result.dateFormats_ = dateFormats_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -65572,6 +65615,16 @@ public final class Search {
           } else {
             ensureSourceFieldNamesIsMutable();
             sourceFieldNames_.addAll(other.sourceFieldNames_);
+          }
+          onChanged();
+        }
+        if (!other.dateFormats_.isEmpty()) {
+          if (dateFormats_.isEmpty()) {
+            dateFormats_ = other.dateFormats_;
+            bitField0_ = (bitField0_ & ~0x00001000);
+          } else {
+            ensureDateFormatsIsMutable();
+            dateFormats_.addAll(other.dateFormats_);
           }
           onChanged();
         }
@@ -65677,6 +65730,11 @@ public final class Search {
             case 98: {
               ensureSourceFieldNamesIsMutable();
               sourceFieldNames_.add(input.readBytes());
+              break;
+            }
+            case 106: {
+              ensureDateFormatsIsMutable();
+              dateFormats_.add(input.readBytes());
               break;
             }
           }
@@ -66173,6 +66231,62 @@ public final class Search {
       void addSourceFieldNames(com.google.protobuf.ByteString value) {
         ensureSourceFieldNamesIsMutable();
         sourceFieldNames_.add(value);
+        onChanged();
+      }
+      
+      // repeated string date_formats = 13;
+      private com.google.protobuf.LazyStringList dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureDateFormatsIsMutable() {
+        if (!((bitField0_ & 0x00001000) == 0x00001000)) {
+          dateFormats_ = new com.google.protobuf.LazyStringArrayList(dateFormats_);
+          bitField0_ |= 0x00001000;
+         }
+      }
+      public java.util.List<String>
+          getDateFormatsList() {
+        return java.util.Collections.unmodifiableList(dateFormats_);
+      }
+      public int getDateFormatsCount() {
+        return dateFormats_.size();
+      }
+      public String getDateFormats(int index) {
+        return dateFormats_.get(index);
+      }
+      public Builder setDateFormats(
+          int index, String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureDateFormatsIsMutable();
+        dateFormats_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addDateFormats(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureDateFormatsIsMutable();
+        dateFormats_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllDateFormats(
+          java.lang.Iterable<String> values) {
+        ensureDateFormatsIsMutable();
+        super.addAll(values, dateFormats_);
+        onChanged();
+        return this;
+      }
+      public Builder clearDateFormats() {
+        dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        onChanged();
+        return this;
+      }
+      void addDateFormats(com.google.protobuf.ByteString value) {
+        ensureDateFormatsIsMutable();
+        dateFormats_.add(value);
         onChanged();
       }
       
@@ -78000,7 +78114,7 @@ public final class Search {
       "word\030\002 \001(\010\"+\n\026SplitAnalyzerParameter\022\021\n\t" +
       "delimiter\030\001 \001(\t\">\n\026FuzzyAnalyzerParamete" +
       "r\022\021\n\tmin_chars\030\001 \001(\005\022\021\n\tmax_chars\030\002 \001(\005\"" +
-      "\317\003\n\013FieldSchema\022\022\n\nfield_name\030\001 \001(\t\022Q\n\nf",
+      "\345\003\n\013FieldSchema\022\022\n\nfield_name\030\001 \001(\t\022Q\n\nf",
       "ield_type\030\002 \001(\0162=.com.alicloud.openservi" +
       "ces.tablestore.core.protocol.FieldType\022W" +
       "\n\rindex_options\030\003 \001(\0162@.com.alicloud.ope" +
@@ -78011,107 +78125,108 @@ public final class Search {
       "services.tablestore.core.protocol.FieldS" +
       "chema\022\020\n\010is_array\030\t \001(\010\022\032\n\022analyzer_para" +
       "meter\030\n \001(\014\022\030\n\020is_virtual_field\030\013 \001(\010\022\032\n",
-      "\022source_field_names\030\014 \003(\t\"\214\002\n\013IndexSchem" +
-      "a\022V\n\rfield_schemas\030\001 \003(\0132?.com.alicloud." +
-      "openservices.tablestore.core.protocol.Fi" +
-      "eldSchema\022W\n\rindex_setting\030\002 \001(\0132@.com.a" +
+      "\022source_field_names\030\014 \003(\t\022\024\n\014date_format" +
+      "s\030\r \003(\t\"\214\002\n\013IndexSchema\022V\n\rfield_schemas" +
+      "\030\001 \003(\0132?.com.alicloud.openservices.table" +
+      "store.core.protocol.FieldSchema\022W\n\rindex" +
+      "_setting\030\002 \001(\0132@.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.IndexSetting" +
+      "\022L\n\nindex_sort\030\003 \001(\01328.com.alicloud.open" +
+      "services.tablestore.core.protocol.Sort\"`" +
+      "\n\014IndexSetting\022\030\n\020number_of_shards\030\001 \001(\005" +
+      "\022\026\n\016routing_fields\030\002 \003(\t\022\036\n\026routing_part",
+      "ition_size\030\003 \001(\005\"\304\001\n\030CreateSearchIndexRe" +
+      "quest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nindex_name\030" +
+      "\002 \002(\t\022O\n\006schema\030\003 \001(\0132?.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Index" +
+      "Schema\022\031\n\021source_index_name\030\004 \001(\t\022\024\n\014tim" +
+      "e_to_live\030\005 \001(\005\"\033\n\031CreateSearchIndexResp" +
+      "onse\"5\n\017QueryFlowWeight\022\022\n\nindex_name\030\001 " +
+      "\001(\t\022\016\n\006weight\030\002 \001(\005\"\323\001\n\030UpdateSearchInde" +
+      "xRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_na" +
+      "me\030\002 \001(\t\022\031\n\021switch_index_name\030\003 \001(\t\022^\n\021q",
+      "uery_flow_weight\030\004 \003(\0132C.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Quer" +
+      "yFlowWeight\022\024\n\014time_to_live\030\005 \001(\005\"\033\n\031Upd" +
+      "ateSearchIndexResponse\"3\n\tIndexInfo\022\022\n\nt" +
+      "able_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\",\n\026L" +
+      "istSearchIndexRequest\022\022\n\ntable_name\030\001 \001(" +
+      "\t\"i\n\027ListSearchIndexResponse\022N\n\007indices\030" +
+      "\001 \003(\0132=.com.alicloud.openservices.tables" +
+      "tore.core.protocol.IndexInfo\"B\n\030DeleteSe" +
+      "archIndexRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\n",
+      "index_name\030\002 \001(\t\"\033\n\031DeleteSearchIndexRes" +
+      "ponse\"}\n\010SyncStat\022Q\n\nsync_phase\030\001 \001(\0162=." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.SyncPhase\022\036\n\026current_sync_tim" +
+      "estamp\030\002 \001(\003\"d\n\014MeteringInfo\022\024\n\014storage_" +
+      "size\030\001 \001(\003\022\021\n\trow_count\030\002 \001(\003\022\030\n\020reserve" +
+      "d_read_cu\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"D\n\032De" +
+      "scribeSearchIndexRequest\022\022\n\ntable_name\030\001" +
+      " \001(\t\022\022\n\nindex_name\030\002 \001(\t\"\277\003\n\033DescribeSea" +
+      "rchIndexResponse\022O\n\006schema\030\001 \001(\0132?.com.a",
       "licloud.openservices.tablestore.core.pro" +
-      "tocol.IndexSetting\022L\n\nindex_sort\030\003 \001(\01328" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.Sort\"`\n\014IndexSetting\022\030\n\020numb" +
-      "er_of_shards\030\001 \001(\005\022\026\n\016routing_fields\030\002 \003" +
-      "(\t\022\036\n\026routing_partition_size\030\003 \001(\005\"\304\001\n\030C",
-      "reateSearchIndexRequest\022\022\n\ntable_name\030\001 " +
-      "\002(\t\022\022\n\nindex_name\030\002 \002(\t\022O\n\006schema\030\003 \001(\0132" +
-      "?.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.IndexSchema\022\031\n\021source_index" +
-      "_name\030\004 \001(\t\022\024\n\014time_to_live\030\005 \001(\005\"\033\n\031Cre" +
-      "ateSearchIndexResponse\"5\n\017QueryFlowWeigh" +
-      "t\022\022\n\nindex_name\030\001 \001(\t\022\016\n\006weight\030\002 \001(\005\"\323\001" +
-      "\n\030UpdateSearchIndexRequest\022\022\n\ntable_name" +
-      "\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022\031\n\021switch_ind" +
-      "ex_name\030\003 \001(\t\022^\n\021query_flow_weight\030\004 \003(\013",
-      "2C.com.alicloud.openservices.tablestore." +
-      "core.protocol.QueryFlowWeight\022\024\n\014time_to" +
-      "_live\030\005 \001(\005\"\033\n\031UpdateSearchIndexResponse" +
-      "\"3\n\tIndexInfo\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nind" +
-      "ex_name\030\002 \001(\t\",\n\026ListSearchIndexRequest\022" +
-      "\022\n\ntable_name\030\001 \001(\t\"i\n\027ListSearchIndexRe" +
-      "sponse\022N\n\007indices\030\001 \003(\0132=.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Ind" +
-      "exInfo\"B\n\030DeleteSearchIndexRequest\022\022\n\nta" +
-      "ble_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\"\033\n\031De",
-      "leteSearchIndexResponse\"}\n\010SyncStat\022Q\n\ns" +
-      "ync_phase\030\001 \001(\0162=.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.SyncPhase\022\036" +
-      "\n\026current_sync_timestamp\030\002 \001(\003\"d\n\014Meteri" +
-      "ngInfo\022\024\n\014storage_size\030\001 \001(\003\022\021\n\trow_coun" +
-      "t\030\002 \001(\003\022\030\n\020reserved_read_cu\030\003 \001(\003\022\021\n\ttim" +
-      "estamp\030\004 \001(\003\"D\n\032DescribeSearchIndexReque" +
-      "st\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001" +
-      "(\t\"\277\003\n\033DescribeSearchIndexResponse\022O\n\006sc" +
-      "hema\030\001 \001(\0132?.com.alicloud.openservices.t",
-      "ablestore.core.protocol.IndexSchema\022O\n\ts" +
-      "ync_stat\030\002 \001(\0132<.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.SyncStat\022W\n\r" +
-      "metering_info\030\003 \001(\0132@.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.Meterin" +
-      "gInfo\022\032\n\022brother_index_name\030\004 \001(\t\022^\n\021que" +
-      "ry_flow_weight\030\005 \003(\0132C.com.alicloud.open" +
-      "services.tablestore.core.protocol.QueryF" +
-      "lowWeight\022\023\n\013create_time\030\006 \001(\003\022\024\n\014time_t" +
-      "o_live\030\007 \001(\005\"\272\001\n\tScanQuery\022H\n\005query\030\001 \001(",
-      "\01329.com.alicloud.openservices.tablestore" +
-      ".core.protocol.Query\022\r\n\005limit\030\002 \001(\005\022\022\n\na" +
-      "live_time\030\003 \001(\005\022\r\n\005token\030\004 \001(\014\022\033\n\023curren" +
-      "t_parallel_id\030\005 \001(\005\022\024\n\014max_parallel\030\006 \001(" +
-      "\005\"\222\002\n\023ParallelScanRequest\022\022\n\ntable_name\030" +
-      "\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022X\n\016columns_to_" +
-      "get\030\003 \001(\0132@.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.ColumnsToGet\022\022\n\ns" +
-      "ession_id\030\004 \001(\014\022Q\n\nscan_query\030\005 \001(\0132=.co" +
-      "m.alicloud.openservices.tablestore.core.",
-      "protocol.ScanQuery\022\022\n\ntimeout_ms\030\006 \001(\005\"8" +
-      "\n\024ParallelScanResponse\022\014\n\004rows\030\001 \003(\014\022\022\n\n" +
-      "next_token\030\002 \001(\014*\226\002\n\007AggType\022\013\n\007AVG_AGG\020" +
-      "\001\022\023\n\017CARDINALITY_AGG\020\002\022\013\n\007MAX_AGG\020\003\022\013\n\007M" +
-      "IN_AGG\020\004\022\013\n\007SUM_AGG\020\005\022\r\n\tTERMS_AGG\020\006\022\016\n\n" +
-      "FILTER_AGG\020\007\022\016\n\nNESTED_AGG\020\010\022\022\n\016GEO_BOUN" +
-      "DS_AGG\020\t\022\024\n\020GEO_DISTANCE_AGG\020\n\022\r\n\tSTATS_" +
-      "AGG\020\013\022\026\n\022EXTENDED_STATS_AGG\020\014\022\023\n\017PERCENT" +
-      "ILES_AGG\020\r\022\030\n\024PERCENTILE_RANKS_AGG\020\016\022\023\n\017" +
-      "VALUE_COUNT_AGG\020\017*\223\001\n\017AggregationType\022\013\n",
-      "\007AGG_AVG\020\001\022\026\n\022AGG_DISTINCT_COUNT\020\006\022\013\n\007AG" +
-      "G_MAX\020\002\022\013\n\007AGG_MIN\020\003\022\013\n\007AGG_SUM\020\004\022\r\n\tAGG" +
-      "_COUNT\020\005\022\020\n\014AGG_TOP_ROWS\020\007\022\023\n\017AGG_PERCEN" +
-      "TILES\020\010*}\n\013GroupByType\022\022\n\016GROUP_BY_FIELD" +
-      "\020\001\022\022\n\016GROUP_BY_RANGE\020\002\022\023\n\017GROUP_BY_FILTE" +
-      "R\020\003\022\031\n\025GROUP_BY_GEO_DISTANCE\020\004\022\026\n\022GROUP_" +
-      "BY_HISTOGRAM\020\005*\321\002\n\tQueryType\022\017\n\013MATCH_QU" +
-      "ERY\020\001\022\026\n\022MATCH_PHRASE_QUERY\020\002\022\016\n\nTERM_QU" +
-      "ERY\020\003\022\017\n\013RANGE_QUERY\020\004\022\020\n\014PREFIX_QUERY\020\005" +
-      "\022\016\n\nBOOL_QUERY\020\006\022\025\n\021CONST_SCORE_QUERY\020\007\022",
-      "\030\n\024FUNCTION_SCORE_QUERY\020\010\022\020\n\014NESTED_QUER" +
-      "Y\020\t\022\022\n\016WILDCARD_QUERY\020\n\022\023\n\017MATCH_ALL_QUE" +
-      "RY\020\013\022\032\n\026GEO_BOUNDING_BOX_QUERY\020\014\022\026\n\022GEO_" +
-      "DISTANCE_QUERY\020\r\022\025\n\021GEO_POLYGON_QUERY\020\016\022" +
-      "\017\n\013TERMS_QUERY\020\017\022\020\n\014EXISTS_QUERY\020\020* \n\rQu" +
-      "eryOperator\022\006\n\002OR\020\001\022\007\n\003AND\020\002*r\n\tScoreMod" +
-      "e\022\023\n\017SCORE_MODE_NONE\020\001\022\022\n\016SCORE_MODE_AVG" +
-      "\020\002\022\022\n\016SCORE_MODE_MAX\020\003\022\024\n\020SCORE_MODE_TOT" +
-      "AL\020\004\022\022\n\016SCORE_MODE_MIN\020\005*4\n\tSortOrder\022\022\n" +
-      "\016SORT_ORDER_ASC\020\000\022\023\n\017SORT_ORDER_DESC\020\001*C",
-      "\n\010SortMode\022\021\n\rSORT_MODE_MIN\020\000\022\021\n\rSORT_MO" +
-      "DE_MAX\020\001\022\021\n\rSORT_MODE_AVG\020\002*?\n\017GeoDistan" +
-      "ceType\022\024\n\020GEO_DISTANCE_ARC\020\000\022\026\n\022GEO_DIST" +
-      "ANCE_PLANE\020\001*d\n\020ColumnReturnType\022\016\n\nRETU" +
-      "RN_ALL\020\001\022\024\n\020RETURN_SPECIFIED\020\002\022\017\n\013RETURN" +
-      "_NONE\020\003\022\031\n\025RETURN_ALL_FROM_INDEX\020\004*?\n\014In" +
-      "dexOptions\022\010\n\004DOCS\020\001\022\t\n\005FREQS\020\002\022\r\n\tPOSIT" +
-      "IONS\020\003\022\013\n\007OFFSETS\020\004*`\n\tFieldType\022\010\n\004LONG" +
-      "\020\001\022\n\n\006DOUBLE\020\002\022\013\n\007BOOLEAN\020\003\022\013\n\007KEYWORD\020\004" +
-      "\022\010\n\004TEXT\020\005\022\n\n\006NESTED\020\006\022\r\n\tGEO_POINT\020\007*\037\n",
-      "\tSyncPhase\022\010\n\004FULL\020\001\022\010\n\004INCR\020\002"
+      "tocol.IndexSchema\022O\n\tsync_stat\030\002 \001(\0132<.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.SyncStat\022W\n\rmetering_info\030\003 \001(" +
+      "\0132@.com.alicloud.openservices.tablestore" +
+      ".core.protocol.MeteringInfo\022\032\n\022brother_i" +
+      "ndex_name\030\004 \001(\t\022^\n\021query_flow_weight\030\005 \003" +
+      "(\0132C.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.QueryFlowWeight\022\023\n\013creat" +
+      "e_time\030\006 \001(\003\022\024\n\014time_to_live\030\007 \001(\005\"\272\001\n\tS",
+      "canQuery\022H\n\005query\030\001 \001(\01329.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.Que" +
+      "ry\022\r\n\005limit\030\002 \001(\005\022\022\n\nalive_time\030\003 \001(\005\022\r\n" +
+      "\005token\030\004 \001(\014\022\033\n\023current_parallel_id\030\005 \001(" +
+      "\005\022\024\n\014max_parallel\030\006 \001(\005\"\222\002\n\023ParallelScan" +
+      "Request\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_nam" +
+      "e\030\002 \001(\t\022X\n\016columns_to_get\030\003 \001(\0132@.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.ColumnsToGet\022\022\n\nsession_id\030\004 \001(\014\022Q\n" +
+      "\nscan_query\030\005 \001(\0132=.com.alicloud.openser",
+      "vices.tablestore.core.protocol.ScanQuery" +
+      "\022\022\n\ntimeout_ms\030\006 \001(\005\"8\n\024ParallelScanResp" +
+      "onse\022\014\n\004rows\030\001 \003(\014\022\022\n\nnext_token\030\002 \001(\014*\226" +
+      "\002\n\007AggType\022\013\n\007AVG_AGG\020\001\022\023\n\017CARDINALITY_A" +
+      "GG\020\002\022\013\n\007MAX_AGG\020\003\022\013\n\007MIN_AGG\020\004\022\013\n\007SUM_AG" +
+      "G\020\005\022\r\n\tTERMS_AGG\020\006\022\016\n\nFILTER_AGG\020\007\022\016\n\nNE" +
+      "STED_AGG\020\010\022\022\n\016GEO_BOUNDS_AGG\020\t\022\024\n\020GEO_DI" +
+      "STANCE_AGG\020\n\022\r\n\tSTATS_AGG\020\013\022\026\n\022EXTENDED_" +
+      "STATS_AGG\020\014\022\023\n\017PERCENTILES_AGG\020\r\022\030\n\024PERC" +
+      "ENTILE_RANKS_AGG\020\016\022\023\n\017VALUE_COUNT_AGG\020\017*",
+      "\223\001\n\017AggregationType\022\013\n\007AGG_AVG\020\001\022\026\n\022AGG_" +
+      "DISTINCT_COUNT\020\006\022\013\n\007AGG_MAX\020\002\022\013\n\007AGG_MIN" +
+      "\020\003\022\013\n\007AGG_SUM\020\004\022\r\n\tAGG_COUNT\020\005\022\020\n\014AGG_TO" +
+      "P_ROWS\020\007\022\023\n\017AGG_PERCENTILES\020\010*}\n\013GroupBy" +
+      "Type\022\022\n\016GROUP_BY_FIELD\020\001\022\022\n\016GROUP_BY_RAN" +
+      "GE\020\002\022\023\n\017GROUP_BY_FILTER\020\003\022\031\n\025GROUP_BY_GE" +
+      "O_DISTANCE\020\004\022\026\n\022GROUP_BY_HISTOGRAM\020\005*\321\002\n" +
+      "\tQueryType\022\017\n\013MATCH_QUERY\020\001\022\026\n\022MATCH_PHR" +
+      "ASE_QUERY\020\002\022\016\n\nTERM_QUERY\020\003\022\017\n\013RANGE_QUE" +
+      "RY\020\004\022\020\n\014PREFIX_QUERY\020\005\022\016\n\nBOOL_QUERY\020\006\022\025",
+      "\n\021CONST_SCORE_QUERY\020\007\022\030\n\024FUNCTION_SCORE_" +
+      "QUERY\020\010\022\020\n\014NESTED_QUERY\020\t\022\022\n\016WILDCARD_QU" +
+      "ERY\020\n\022\023\n\017MATCH_ALL_QUERY\020\013\022\032\n\026GEO_BOUNDI" +
+      "NG_BOX_QUERY\020\014\022\026\n\022GEO_DISTANCE_QUERY\020\r\022\025" +
+      "\n\021GEO_POLYGON_QUERY\020\016\022\017\n\013TERMS_QUERY\020\017\022\020" +
+      "\n\014EXISTS_QUERY\020\020* \n\rQueryOperator\022\006\n\002OR\020" +
+      "\001\022\007\n\003AND\020\002*r\n\tScoreMode\022\023\n\017SCORE_MODE_NO" +
+      "NE\020\001\022\022\n\016SCORE_MODE_AVG\020\002\022\022\n\016SCORE_MODE_M" +
+      "AX\020\003\022\024\n\020SCORE_MODE_TOTAL\020\004\022\022\n\016SCORE_MODE" +
+      "_MIN\020\005*4\n\tSortOrder\022\022\n\016SORT_ORDER_ASC\020\000\022",
+      "\023\n\017SORT_ORDER_DESC\020\001*C\n\010SortMode\022\021\n\rSORT" +
+      "_MODE_MIN\020\000\022\021\n\rSORT_MODE_MAX\020\001\022\021\n\rSORT_M" +
+      "ODE_AVG\020\002*?\n\017GeoDistanceType\022\024\n\020GEO_DIST" +
+      "ANCE_ARC\020\000\022\026\n\022GEO_DISTANCE_PLANE\020\001*d\n\020Co" +
+      "lumnReturnType\022\016\n\nRETURN_ALL\020\001\022\024\n\020RETURN" +
+      "_SPECIFIED\020\002\022\017\n\013RETURN_NONE\020\003\022\031\n\025RETURN_" +
+      "ALL_FROM_INDEX\020\004*?\n\014IndexOptions\022\010\n\004DOCS" +
+      "\020\001\022\t\n\005FREQS\020\002\022\r\n\tPOSITIONS\020\003\022\013\n\007OFFSETS\020" +
+      "\004*j\n\tFieldType\022\010\n\004LONG\020\001\022\n\n\006DOUBLE\020\002\022\013\n\007" +
+      "BOOLEAN\020\003\022\013\n\007KEYWORD\020\004\022\010\n\004TEXT\020\005\022\n\n\006NEST",
+      "ED\020\006\022\r\n\tGEO_POINT\020\007\022\010\n\004DATE\020\010*\037\n\tSyncPha" +
+      "se\022\010\n\004FULL\020\001\022\010\n\004INCR\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -79083,7 +79198,7 @@ public final class Search {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_descriptor,
-              new java.lang.String[] { "FieldName", "FieldType", "IndexOptions", "Analyzer", "Index", "SortAndAgg", "Store", "FieldSchemas", "IsArray", "AnalyzerParameter", "IsVirtualField", "SourceFieldNames", },
+              new java.lang.String[] { "FieldName", "FieldType", "IndexOptions", "Analyzer", "Index", "SortAndAgg", "Store", "FieldSchemas", "IsArray", "AnalyzerParameter", "IsVirtualField", "SourceFieldNames", "DateFormats", },
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSchema.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSchema.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSchema_descriptor =

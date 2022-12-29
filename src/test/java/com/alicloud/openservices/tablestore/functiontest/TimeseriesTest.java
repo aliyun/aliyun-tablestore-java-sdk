@@ -23,7 +23,7 @@ public class TimeseriesTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeseriesTest.class);
     private static long waitTableInit = 60 * 1000;
-    private static long waitSearchIndexSync = 20 * 1000;
+    private static long waitSearchIndexSync = 30 * 1000;
     private static boolean createTableBeforeTest = true; // for local test
     private static boolean deleteTableAfterTest = true; // for local test
 

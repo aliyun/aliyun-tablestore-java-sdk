@@ -7941,6 +7941,11 @@ public final class OtsInternalApi {
     // optional int32 expiration_time = 2;
     boolean hasExpirationTime();
     int getExpirationTime();
+    
+    // repeated string columns_to_get = 3;
+    java.util.List<String> getColumnsToGetList();
+    int getColumnsToGetCount();
+    String getColumnsToGet(int index);
   }
   public static final class StreamSpecification extends
       com.google.protobuf.GeneratedMessage
@@ -7991,9 +7996,24 @@ public final class OtsInternalApi {
       return expirationTime_;
     }
     
+    // repeated string columns_to_get = 3;
+    public static final int COLUMNS_TO_GET_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList columnsToGet_;
+    public java.util.List<String>
+        getColumnsToGetList() {
+      return columnsToGet_;
+    }
+    public int getColumnsToGetCount() {
+      return columnsToGet_.size();
+    }
+    public String getColumnsToGet(int index) {
+      return columnsToGet_.get(index);
+    }
+    
     private void initFields() {
       enableStream_ = false;
       expirationTime_ = 0;
+      columnsToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8017,6 +8037,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, expirationTime_);
       }
+      for (int i = 0; i < columnsToGet_.size(); i++) {
+        output.writeBytes(3, columnsToGet_.getByteString(i));
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -8033,6 +8056,15 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, expirationTime_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < columnsToGet_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(columnsToGet_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getColumnsToGetList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8162,6 +8194,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000001);
         expirationTime_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        columnsToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -8208,6 +8242,12 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000002;
         }
         result.expirationTime_ = expirationTime_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          columnsToGet_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              columnsToGet_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.columnsToGet_ = columnsToGet_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8229,6 +8269,16 @@ public final class OtsInternalApi {
         }
         if (other.hasExpirationTime()) {
           setExpirationTime(other.getExpirationTime());
+        }
+        if (!other.columnsToGet_.isEmpty()) {
+          if (columnsToGet_.isEmpty()) {
+            columnsToGet_ = other.columnsToGet_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureColumnsToGetIsMutable();
+            columnsToGet_.addAll(other.columnsToGet_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8273,6 +8323,11 @@ public final class OtsInternalApi {
             case 16: {
               bitField0_ |= 0x00000002;
               expirationTime_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              ensureColumnsToGetIsMutable();
+              columnsToGet_.add(input.readBytes());
               break;
             }
           }
@@ -8323,6 +8378,62 @@ public final class OtsInternalApi {
         return this;
       }
       
+      // repeated string columns_to_get = 3;
+      private com.google.protobuf.LazyStringList columnsToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureColumnsToGetIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          columnsToGet_ = new com.google.protobuf.LazyStringArrayList(columnsToGet_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      public java.util.List<String>
+          getColumnsToGetList() {
+        return java.util.Collections.unmodifiableList(columnsToGet_);
+      }
+      public int getColumnsToGetCount() {
+        return columnsToGet_.size();
+      }
+      public String getColumnsToGet(int index) {
+        return columnsToGet_.get(index);
+      }
+      public Builder setColumnsToGet(
+          int index, String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnsToGetIsMutable();
+        columnsToGet_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addColumnsToGet(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnsToGetIsMutable();
+        columnsToGet_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllColumnsToGet(
+          java.lang.Iterable<String> values) {
+        ensureColumnsToGetIsMutable();
+        super.addAll(values, columnsToGet_);
+        onChanged();
+        return this;
+      }
+      public Builder clearColumnsToGet() {
+        columnsToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      void addColumnsToGet(com.google.protobuf.ByteString value) {
+        ensureColumnsToGetIsMutable();
+        columnsToGet_.add(value);
+        onChanged();
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.StreamSpecification)
     }
     
@@ -8352,6 +8463,11 @@ public final class OtsInternalApi {
     // optional int64 last_enable_time = 4;
     boolean hasLastEnableTime();
     long getLastEnableTime();
+    
+    // repeated string column_to_get = 5;
+    java.util.List<String> getColumnToGetList();
+    int getColumnToGetCount();
+    String getColumnToGet(int index);
   }
   public static final class StreamDetails extends
       com.google.protobuf.GeneratedMessage
@@ -8444,11 +8560,26 @@ public final class OtsInternalApi {
       return lastEnableTime_;
     }
     
+    // repeated string column_to_get = 5;
+    public static final int COLUMN_TO_GET_FIELD_NUMBER = 5;
+    private com.google.protobuf.LazyStringList columnToGet_;
+    public java.util.List<String>
+        getColumnToGetList() {
+      return columnToGet_;
+    }
+    public int getColumnToGetCount() {
+      return columnToGet_.size();
+    }
+    public String getColumnToGet(int index) {
+      return columnToGet_.get(index);
+    }
+    
     private void initFields() {
       enableStream_ = false;
       streamId_ = "";
       expirationTime_ = 0;
       lastEnableTime_ = 0L;
+      columnToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8478,6 +8609,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeInt64(4, lastEnableTime_);
       }
+      for (int i = 0; i < columnToGet_.size(); i++) {
+        output.writeBytes(5, columnToGet_.getByteString(i));
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -8502,6 +8636,15 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(4, lastEnableTime_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < columnToGet_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(columnToGet_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getColumnToGetList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8635,6 +8778,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000004);
         lastEnableTime_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
+        columnToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -8689,6 +8834,12 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000008;
         }
         result.lastEnableTime_ = lastEnableTime_;
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          columnToGet_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              columnToGet_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.columnToGet_ = columnToGet_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8716,6 +8867,16 @@ public final class OtsInternalApi {
         }
         if (other.hasLastEnableTime()) {
           setLastEnableTime(other.getLastEnableTime());
+        }
+        if (!other.columnToGet_.isEmpty()) {
+          if (columnToGet_.isEmpty()) {
+            columnToGet_ = other.columnToGet_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureColumnToGetIsMutable();
+            columnToGet_.addAll(other.columnToGet_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8770,6 +8931,11 @@ public final class OtsInternalApi {
             case 32: {
               bitField0_ |= 0x00000008;
               lastEnableTime_ = input.readInt64();
+              break;
+            }
+            case 42: {
+              ensureColumnToGetIsMutable();
+              columnToGet_.add(input.readBytes());
               break;
             }
           }
@@ -8875,6 +9041,62 @@ public final class OtsInternalApi {
         lastEnableTime_ = 0L;
         onChanged();
         return this;
+      }
+      
+      // repeated string column_to_get = 5;
+      private com.google.protobuf.LazyStringList columnToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureColumnToGetIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          columnToGet_ = new com.google.protobuf.LazyStringArrayList(columnToGet_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+      public java.util.List<String>
+          getColumnToGetList() {
+        return java.util.Collections.unmodifiableList(columnToGet_);
+      }
+      public int getColumnToGetCount() {
+        return columnToGet_.size();
+      }
+      public String getColumnToGet(int index) {
+        return columnToGet_.get(index);
+      }
+      public Builder setColumnToGet(
+          int index, String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnToGetIsMutable();
+        columnToGet_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addColumnToGet(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureColumnToGetIsMutable();
+        columnToGet_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllColumnToGet(
+          java.lang.Iterable<String> values) {
+        ensureColumnToGetIsMutable();
+        super.addAll(values, columnToGet_);
+        onChanged();
+        return this;
+      }
+      public Builder clearColumnToGet() {
+        columnToGet_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      void addColumnToGet(com.google.protobuf.ByteString value) {
+        ensureColumnToGetIsMutable();
+        columnToGet_.add(value);
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.StreamDetails)
@@ -42049,6 +42271,10 @@ public final class OtsInternalApi {
     // optional int32 shard_limit = 3;
     boolean hasShardLimit();
     int getShardLimit();
+    
+    // optional bool support_timeseries_data_table = 4;
+    boolean hasSupportTimeseriesDataTable();
+    boolean getSupportTimeseriesDataTable();
   }
   public static final class DescribeStreamRequest extends
       com.google.protobuf.GeneratedMessage
@@ -42153,10 +42379,21 @@ public final class OtsInternalApi {
       return shardLimit_;
     }
     
+    // optional bool support_timeseries_data_table = 4;
+    public static final int SUPPORT_TIMESERIES_DATA_TABLE_FIELD_NUMBER = 4;
+    private boolean supportTimeseriesDataTable_;
+    public boolean hasSupportTimeseriesDataTable() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public boolean getSupportTimeseriesDataTable() {
+      return supportTimeseriesDataTable_;
+    }
+    
     private void initFields() {
       streamId_ = "";
       inclusiveStartShardId_ = "";
       shardLimit_ = 0;
+      supportTimeseriesDataTable_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -42183,6 +42420,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, shardLimit_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, supportTimeseriesDataTable_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -42203,6 +42443,10 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, shardLimit_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, supportTimeseriesDataTable_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -42334,6 +42578,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000002);
         shardLimit_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        supportTimeseriesDataTable_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -42384,6 +42630,10 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000004;
         }
         result.shardLimit_ = shardLimit_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.supportTimeseriesDataTable_ = supportTimeseriesDataTable_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -42408,6 +42658,9 @@ public final class OtsInternalApi {
         }
         if (other.hasShardLimit()) {
           setShardLimit(other.getShardLimit());
+        }
+        if (other.hasSupportTimeseriesDataTable()) {
+          setSupportTimeseriesDataTable(other.getSupportTimeseriesDataTable());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -42457,6 +42710,11 @@ public final class OtsInternalApi {
             case 24: {
               bitField0_ |= 0x00000004;
               shardLimit_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              supportTimeseriesDataTable_ = input.readBool();
               break;
             }
           }
@@ -42558,6 +42816,27 @@ public final class OtsInternalApi {
         return this;
       }
       
+      // optional bool support_timeseries_data_table = 4;
+      private boolean supportTimeseriesDataTable_ ;
+      public boolean hasSupportTimeseriesDataTable() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public boolean getSupportTimeseriesDataTable() {
+        return supportTimeseriesDataTable_;
+      }
+      public Builder setSupportTimeseriesDataTable(boolean value) {
+        bitField0_ |= 0x00000008;
+        supportTimeseriesDataTable_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSupportTimeseriesDataTable() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        supportTimeseriesDataTable_ = false;
+        onChanged();
+        return this;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.DescribeStreamRequest)
     }
     
@@ -42605,6 +42884,10 @@ public final class OtsInternalApi {
     // optional string next_shard_id = 7;
     boolean hasNextShardId();
     String getNextShardId();
+    
+    // optional bool is_timeseries_data_table = 8;
+    boolean hasIsTimeseriesDataTable();
+    boolean getIsTimeseriesDataTable();
   }
   public static final class DescribeStreamResponse extends
       com.google.protobuf.GeneratedMessage
@@ -42782,6 +43065,16 @@ public final class OtsInternalApi {
       }
     }
     
+    // optional bool is_timeseries_data_table = 8;
+    public static final int IS_TIMESERIES_DATA_TABLE_FIELD_NUMBER = 8;
+    private boolean isTimeseriesDataTable_;
+    public boolean hasIsTimeseriesDataTable() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public boolean getIsTimeseriesDataTable() {
+      return isTimeseriesDataTable_;
+    }
+    
     private void initFields() {
       streamId_ = "";
       expirationTime_ = 0;
@@ -42790,6 +43083,7 @@ public final class OtsInternalApi {
       streamStatus_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.StreamStatus.STREAM_ENABLING;
       shards_ = java.util.Collections.emptyList();
       nextShardId_ = "";
+      isTimeseriesDataTable_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -42850,6 +43144,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(7, getNextShardIdBytes());
       }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBool(8, isTimeseriesDataTable_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -42886,6 +43183,10 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(7, getNextShardIdBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, isTimeseriesDataTable_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -43030,6 +43331,8 @@ public final class OtsInternalApi {
         }
         nextShardId_ = "";
         bitField0_ = (bitField0_ & ~0x00000040);
+        isTimeseriesDataTable_ = false;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       
@@ -43101,6 +43404,10 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000020;
         }
         result.nextShardId_ = nextShardId_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.isTimeseriesDataTable_ = isTimeseriesDataTable_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -43160,6 +43467,9 @@ public final class OtsInternalApi {
         }
         if (other.hasNextShardId()) {
           setNextShardId(other.getNextShardId());
+        }
+        if (other.hasIsTimeseriesDataTable()) {
+          setIsTimeseriesDataTable(other.getIsTimeseriesDataTable());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -43258,6 +43568,11 @@ public final class OtsInternalApi {
             case 58: {
               bitField0_ |= 0x00000040;
               nextShardId_ = input.readBytes();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000080;
+              isTimeseriesDataTable_ = input.readBool();
               break;
             }
           }
@@ -43624,6 +43939,27 @@ public final class OtsInternalApi {
         bitField0_ |= 0x00000040;
         nextShardId_ = value;
         onChanged();
+      }
+      
+      // optional bool is_timeseries_data_table = 8;
+      private boolean isTimeseriesDataTable_ ;
+      public boolean hasIsTimeseriesDataTable() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public boolean getIsTimeseriesDataTable() {
+        return isTimeseriesDataTable_;
+      }
+      public Builder setIsTimeseriesDataTable(boolean value) {
+        bitField0_ |= 0x00000080;
+        isTimeseriesDataTable_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearIsTimeseriesDataTable() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        isTimeseriesDataTable_ = false;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.DescribeStreamResponse)
@@ -44760,6 +45096,10 @@ public final class OtsInternalApi {
     // optional int32 limit = 2;
     boolean hasLimit();
     int getLimit();
+    
+    // optional string table_name = 3;
+    boolean hasTableName();
+    String getTableName();
   }
   public static final class GetStreamRecordRequest extends
       com.google.protobuf.GeneratedMessage
@@ -44832,9 +45172,42 @@ public final class OtsInternalApi {
       return limit_;
     }
     
+    // optional string table_name = 3;
+    public static final int TABLE_NAME_FIELD_NUMBER = 3;
+    private java.lang.Object tableName_;
+    public boolean hasTableName() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public String getTableName() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tableName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTableNameBytes() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tableName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       shardIterator_ = "";
       limit_ = 0;
+      tableName_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -44858,6 +45231,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, limit_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getTableNameBytes());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -44874,6 +45250,10 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, limit_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getTableNameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -45003,6 +45383,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000001);
         limit_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        tableName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -45049,6 +45431,10 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000002;
         }
         result.limit_ = limit_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.tableName_ = tableName_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -45070,6 +45456,9 @@ public final class OtsInternalApi {
         }
         if (other.hasLimit()) {
           setLimit(other.getLimit());
+        }
+        if (other.hasTableName()) {
+          setTableName(other.getTableName());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -45114,6 +45503,11 @@ public final class OtsInternalApi {
             case 16: {
               bitField0_ |= 0x00000002;
               limit_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              tableName_ = input.readBytes();
               break;
             }
           }
@@ -45179,6 +45573,42 @@ public final class OtsInternalApi {
         return this;
       }
       
+      // optional string table_name = 3;
+      private java.lang.Object tableName_ = "";
+      public boolean hasTableName() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getTableName() {
+        java.lang.Object ref = tableName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tableName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTableName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        tableName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTableName() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        tableName_ = getDefaultInstance().getTableName();
+        onChanged();
+        return this;
+      }
+      void setTableName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        tableName_ = value;
+        onChanged();
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.GetStreamRecordRequest)
     }
     
@@ -45206,6 +45636,15 @@ public final class OtsInternalApi {
     // optional string next_shard_iterator = 2;
     boolean hasNextShardIterator();
     String getNextShardIterator();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 3;
+    boolean hasConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder();
+    
+    // optional bool may_more_record = 4;
+    boolean hasMayMoreRecord();
+    boolean getMayMoreRecord();
   }
   public static final class GetStreamRecordResponse extends
       com.google.protobuf.GeneratedMessage
@@ -45245,6 +45684,10 @@ public final class OtsInternalApi {
       // required bytes record = 2;
       boolean hasRecord();
       com.google.protobuf.ByteString getRecord();
+      
+      // optional bytes origin_record = 3;
+      boolean hasOriginRecord();
+      com.google.protobuf.ByteString getOriginRecord();
     }
     public static final class StreamRecord extends
         com.google.protobuf.GeneratedMessage
@@ -45295,9 +45738,20 @@ public final class OtsInternalApi {
         return record_;
       }
       
+      // optional bytes origin_record = 3;
+      public static final int ORIGIN_RECORD_FIELD_NUMBER = 3;
+      private com.google.protobuf.ByteString originRecord_;
+      public boolean hasOriginRecord() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.google.protobuf.ByteString getOriginRecord() {
+        return originRecord_;
+      }
+      
       private void initFields() {
         actionType_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ActionType.PUT_ROW;
         record_ = com.google.protobuf.ByteString.EMPTY;
+        originRecord_ = com.google.protobuf.ByteString.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -45325,6 +45779,9 @@ public final class OtsInternalApi {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBytes(2, record_);
         }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, originRecord_);
+        }
         getUnknownFields().writeTo(output);
       }
       
@@ -45341,6 +45798,10 @@ public final class OtsInternalApi {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(2, record_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, originRecord_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -45470,6 +45931,8 @@ public final class OtsInternalApi {
           bitField0_ = (bitField0_ & ~0x00000001);
           record_ = com.google.protobuf.ByteString.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000002);
+          originRecord_ = com.google.protobuf.ByteString.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
         
@@ -45516,6 +45979,10 @@ public final class OtsInternalApi {
             to_bitField0_ |= 0x00000002;
           }
           result.record_ = record_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.originRecord_ = originRecord_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -45537,6 +46004,9 @@ public final class OtsInternalApi {
           }
           if (other.hasRecord()) {
             setRecord(other.getRecord());
+          }
+          if (other.hasOriginRecord()) {
+            setOriginRecord(other.getOriginRecord());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -45593,6 +46063,11 @@ public final class OtsInternalApi {
                 record_ = input.readBytes();
                 break;
               }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                originRecord_ = input.readBytes();
+                break;
+              }
             }
           }
         }
@@ -45643,6 +46118,30 @@ public final class OtsInternalApi {
         public Builder clearRecord() {
           bitField0_ = (bitField0_ & ~0x00000002);
           record_ = getDefaultInstance().getRecord();
+          onChanged();
+          return this;
+        }
+        
+        // optional bytes origin_record = 3;
+        private com.google.protobuf.ByteString originRecord_ = com.google.protobuf.ByteString.EMPTY;
+        public boolean hasOriginRecord() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public com.google.protobuf.ByteString getOriginRecord() {
+          return originRecord_;
+        }
+        public Builder setOriginRecord(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          originRecord_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearOriginRecord() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          originRecord_ = getDefaultInstance().getOriginRecord();
           onChanged();
           return this;
         }
@@ -45712,9 +46211,34 @@ public final class OtsInternalApi {
       }
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 3;
+    public static final int CONSUMED_FIELD_NUMBER = 3;
+    private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity consumed_;
+    public boolean hasConsumed() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed() {
+      return consumed_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder() {
+      return consumed_;
+    }
+    
+    // optional bool may_more_record = 4;
+    public static final int MAY_MORE_RECORD_FIELD_NUMBER = 4;
+    private boolean mayMoreRecord_;
+    public boolean hasMayMoreRecord() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public boolean getMayMoreRecord() {
+      return mayMoreRecord_;
+    }
+    
     private void initFields() {
       streamRecords_ = java.util.Collections.emptyList();
       nextShardIterator_ = "";
+      consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+      mayMoreRecord_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -45723,6 +46247,12 @@ public final class OtsInternalApi {
       
       for (int i = 0; i < getStreamRecordsCount(); i++) {
         if (!getStreamRecords(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasConsumed()) {
+        if (!getConsumed().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -45740,6 +46270,12 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(2, getNextShardIteratorBytes());
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(3, consumed_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(4, mayMoreRecord_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -45756,6 +46292,14 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getNextShardIteratorBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, consumed_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, mayMoreRecord_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -45874,6 +46418,7 @@ public final class OtsInternalApi {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getStreamRecordsFieldBuilder();
+          getConsumedFieldBuilder();
         }
       }
       private static Builder create() {
@@ -45890,6 +46435,14 @@ public final class OtsInternalApi {
         }
         nextShardIterator_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        if (consumedBuilder_ == null) {
+          consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+        } else {
+          consumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        mayMoreRecord_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -45941,6 +46494,18 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000001;
         }
         result.nextShardIterator_ = nextShardIterator_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (consumedBuilder_ == null) {
+          result.consumed_ = consumed_;
+        } else {
+          result.consumed_ = consumedBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.mayMoreRecord_ = mayMoreRecord_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -45986,6 +46551,12 @@ public final class OtsInternalApi {
         if (other.hasNextShardIterator()) {
           setNextShardIterator(other.getNextShardIterator());
         }
+        if (other.hasConsumed()) {
+          mergeConsumed(other.getConsumed());
+        }
+        if (other.hasMayMoreRecord()) {
+          setMayMoreRecord(other.getMayMoreRecord());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -45993,6 +46564,12 @@ public final class OtsInternalApi {
       public final boolean isInitialized() {
         for (int i = 0; i < getStreamRecordsCount(); i++) {
           if (!getStreamRecords(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasConsumed()) {
+          if (!getConsumed().isInitialized()) {
             
             return false;
           }
@@ -46032,6 +46609,20 @@ public final class OtsInternalApi {
             case 18: {
               bitField0_ |= 0x00000002;
               nextShardIterator_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder();
+              if (hasConsumed()) {
+                subBuilder.mergeFrom(getConsumed());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setConsumed(subBuilder.buildPartial());
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              mayMoreRecord_ = input.readBool();
               break;
             }
           }
@@ -46260,6 +46851,117 @@ public final class OtsInternalApi {
         bitField0_ |= 0x00000002;
         nextShardIterator_ = value;
         onChanged();
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 3;
+      private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> consumedBuilder_;
+      public boolean hasConsumed() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed() {
+        if (consumedBuilder_ == null) {
+          return consumed_;
+        } else {
+          return consumedBuilder_.getMessage();
+        }
+      }
+      public Builder setConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (consumedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          consumed_ = value;
+          onChanged();
+        } else {
+          consumedBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder setConsumed(
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder builderForValue) {
+        if (consumedBuilder_ == null) {
+          consumed_ = builderForValue.build();
+          onChanged();
+        } else {
+          consumedBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (consumedBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              consumed_ != com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance()) {
+            consumed_ =
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder(consumed_).mergeFrom(value).buildPartial();
+          } else {
+            consumed_ = value;
+          }
+          onChanged();
+        } else {
+          consumedBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearConsumed() {
+        if (consumedBuilder_ == null) {
+          consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+          onChanged();
+        } else {
+          consumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder getConsumedBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getConsumedFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder() {
+        if (consumedBuilder_ != null) {
+          return consumedBuilder_.getMessageOrBuilder();
+        } else {
+          return consumed_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> 
+          getConsumedFieldBuilder() {
+        if (consumedBuilder_ == null) {
+          consumedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder>(
+                  consumed_,
+                  getParentForChildren(),
+                  isClean());
+          consumed_ = null;
+        }
+        return consumedBuilder_;
+      }
+      
+      // optional bool may_more_record = 4;
+      private boolean mayMoreRecord_ ;
+      public boolean hasMayMoreRecord() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public boolean getMayMoreRecord() {
+        return mayMoreRecord_;
+      }
+      public Builder setMayMoreRecord(boolean value) {
+        bitField0_ |= 0x00000008;
+        mayMoreRecord_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearMayMoreRecord() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        mayMoreRecord_ = false;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.GetStreamRecordResponse)
@@ -55911,325 +56613,332 @@ public final class OtsInternalApi {
       "ud.openservices.tablestore.core.protocol" +
       ".CapacityUnit\022`\n\022capacity_data_size\030\002 \001(" +
       "\0132D.com.alicloud.openservices.tablestore" +
-      ".core.protocol.CapacityDataSize\"E\n\023Strea" +
+      ".core.protocol.CapacityDataSize\"]\n\023Strea" +
       "mSpecification\022\025\n\renable_stream\030\001 \002(\010\022\027\n" +
-      "\017expiration_time\030\002 \001(\005\"l\n\rStreamDetails\022" +
-      "\025\n\renable_stream\030\001 \002(\010\022\021\n\tstream_id\030\002 \001(",
-      "\t\022\027\n\017expiration_time\030\003 \001(\005\022\030\n\020last_enabl" +
-      "e_time\030\004 \001(\003\"\226\001\n\020SSESpecification\022\016\n\006ena" +
-      "ble\030\001 \002(\010\022P\n\010key_type\030\002 \001(\0162>.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".SSEKeyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010role_arn\030" +
-      "\004 \001(\014\"\220\001\n\nSSEDetails\022\016\n\006enable\030\001 \002(\010\022P\n\010" +
-      "key_type\030\002 \001(\0162>.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.SSEKeyType\022\016" +
-      "\n\006key_id\030\003 \001(\014\022\020\n\010role_arn\030\004 \001(\014\"\241\005\n\022Cre" +
-      "ateTableRequest\022Q\n\ntable_meta\030\001 \002(\0132=.co",
+      "\017expiration_time\030\002 \001(\005\022\026\n\016columns_to_get" +
+      "\030\003 \003(\t\"\203\001\n\rStreamDetails\022\025\n\renable_strea",
+      "m\030\001 \002(\010\022\021\n\tstream_id\030\002 \001(\t\022\027\n\017expiration" +
+      "_time\030\003 \001(\005\022\030\n\020last_enable_time\030\004 \001(\003\022\025\n" +
+      "\rcolumn_to_get\030\005 \003(\t\"\226\001\n\020SSESpecificatio" +
+      "n\022\016\n\006enable\030\001 \002(\010\022P\n\010key_type\030\002 \001(\0162>.co" +
       "m.alicloud.openservices.tablestore.core." +
-      "protocol.TableMeta\022c\n\023reserved_throughpu" +
-      "t\030\002 \002(\0132F.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.ReservedThroughput\022" +
-      "W\n\rtable_options\030\003 \001(\0132@.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Tabl" +
-      "eOptions\022V\n\npartitions\030\004 \003(\0132B.com.alicl" +
-      "oud.openservices.tablestore.core.protoco" +
-      "l.PartitionRange\022\\\n\013stream_spec\030\005 \001(\0132G." +
-      "com.alicloud.openservices.tablestore.cor",
-      "e.protocol.StreamSpecification\022V\n\010sse_sp" +
-      "ec\030\006 \001(\0132D.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.SSESpecification\022R" +
-      "\n\013index_metas\030\007 \003(\0132=.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.IndexMe" +
-      "ta\022\030\n\020enable_local_txn\030\010 \001(\010\"\025\n\023CreateTa" +
-      "bleResponse\"\233\001\n\022CreateIndexRequest\022\027\n\017ma" +
-      "in_table_name\030\001 \002(\t\022Q\n\nindex_meta\030\002 \002(\0132" +
-      "=.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.IndexMeta\022\031\n\021include_base_d",
-      "ata\030\003 \001(\010\"\025\n\023CreateIndexResponse\"?\n\020Drop" +
-      "IndexRequest\022\027\n\017main_table_name\030\001 \002(\t\022\022\n" +
-      "\nindex_name\030\002 \002(\t\"\023\n\021DropIndexResponse\"\207" +
-      "\001\n\027AddDefinedColumnRequest\022\022\n\ntable_name" +
-      "\030\001 \002(\t\022X\n\007columns\030\002 \003(\0132G.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Def" +
-      "inedColumnSchema\"\032\n\030AddDefinedColumnResp" +
-      "onse\"A\n\032DeleteDefinedColumnRequest\022\022\n\nta" +
-      "ble_name\030\001 \002(\t\022\017\n\007columns\030\002 \003(\t\"\035\n\033Delet" +
-      "eDefinedColumnResponse\"\304\002\n\022UpdateTableRe",
-      "quest\022\022\n\ntable_name\030\001 \002(\t\022c\n\023reserved_th" +
-      "roughput\030\002 \001(\0132F.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.ReservedThro" +
-      "ughput\022W\n\rtable_options\030\003 \001(\0132@.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.TableOptions\022\\\n\013stream_spec\030\004 \001(\0132G.c" +
+      "protocol.SSEKeyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010r" +
+      "ole_arn\030\004 \001(\014\"\220\001\n\nSSEDetails\022\016\n\006enable\030\001" +
+      " \002(\010\022P\n\010key_type\030\002 \001(\0162>.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.SSEK" +
+      "eyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010role_arn\030\004 \001(\014",
+      "\"\241\005\n\022CreateTableRequest\022Q\n\ntable_meta\030\001 " +
+      "\002(\0132=.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.TableMeta\022c\n\023reserved_t" +
+      "hroughput\030\002 \002(\0132F.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.ReservedThr" +
+      "oughput\022W\n\rtable_options\030\003 \001(\0132@.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.TableOptions\022V\n\npartitions\030\004 \003(\0132B.c" +
       "om.alicloud.openservices.tablestore.core" +
-      ".protocol.StreamSpecification\"\275\002\n\023Update" +
-      "TableResponse\022r\n\033reserved_throughput_det" +
-      "ails\030\001 \002(\0132M.com.alicloud.openservices.t",
-      "ablestore.core.protocol.ReservedThroughp" +
-      "utDetails\022W\n\rtable_options\030\002 \002(\0132@.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.TableOptions\022Y\n\016stream_details\030\003 \001" +
-      "(\0132A.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.StreamDetails\"*\n\024Describ" +
-      "eTableRequest\022\022\n\ntable_name\030\001 \002(\t\"\350\004\n\025De" +
-      "scribeTableResponse\022Q\n\ntable_meta\030\001 \002(\0132" +
-      "=.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.TableMeta\022r\n\033reserved_throu",
-      "ghput_details\030\002 \002(\0132M.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.Reserve" +
-      "dThroughputDetails\022W\n\rtable_options\030\003 \002(" +
-      "\0132@.com.alicloud.openservices.tablestore" +
-      ".core.protocol.TableOptions\022Y\n\016stream_de" +
-      "tails\030\005 \001(\0132A.com.alicloud.openservices." +
-      "tablestore.core.protocol.StreamDetails\022\024" +
-      "\n\014shard_splits\030\006 \003(\014\022S\n\013sse_details\030\007 \001(" +
-      "\0132>.com.alicloud.openservices.tablestore" +
-      ".core.protocol.SSEDetails\022R\n\013index_metas",
-      "\030\010 \003(\0132=.com.alicloud.openservices.table" +
-      "store.core.protocol.IndexMeta\022\025\n\rcreatio" +
-      "n_time\030\t \001(\003\"\022\n\020ListTableRequest\"(\n\021List" +
-      "TableResponse\022\023\n\013table_names\030\001 \003(\t\"(\n\022De" +
-      "leteTableRequest\022\022\n\ntable_name\030\001 \002(\t\"\025\n\023" +
-      "DeleteTableResponse\"&\n\020LoadTableRequest\022" +
-      "\022\n\ntable_name\030\001 \002(\t\"\023\n\021LoadTableResponse" +
-      "\"(\n\022UnloadTableRequest\022\022\n\ntable_name\030\001 \002" +
-      "(\t\"\025\n\023UnloadTableResponse\"H\n\tTimeRange\022\022" +
-      "\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\025\n\r",
-      "specific_time\030\003 \001(\003\"\201\001\n\rReturnContent\022S\n" +
-      "\013return_type\030\001 \001(\0162>.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.ReturnTy" +
-      "pe\022\033\n\023return_column_names\030\002 \003(\t\"\232\002\n\rGetR" +
-      "owRequest\022\022\n\ntable_name\030\001 \002(\t\022\023\n\013primary" +
-      "_key\030\002 \002(\014\022\026\n\016columns_to_get\030\003 \003(\t\022Q\n\nti" +
-      "me_range\030\004 \001(\0132=.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.TimeRange\022\024\n" +
-      "\014max_versions\030\005 \001(\005\022\016\n\006filter\030\007 \001(\014\022\024\n\014s" +
-      "tart_column\030\010 \001(\t\022\022\n\nend_column\030\t \001(\t\022\r\n",
-      "\005token\030\n \001(\014\022\026\n\016transaction_id\030\013 \001(\t\"\211\001\n" +
-      "\016GetRowResponse\022V\n\010consumed\030\001 \002(\0132D.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.ConsumedCapacity\022\013\n\003row\030\002 \002(\014\022\022\n\n" +
-      "next_token\030\003 \001(\014\"\377\001\n\020UpdateRowRequest\022\022\n" +
-      "\ntable_name\030\001 \002(\t\022\022\n\nrow_change\030\002 \002(\014\022P\n" +
-      "\tcondition\030\003 \002(\0132=.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.Condition\022" +
-      "Y\n\016return_content\030\004 \001(\0132A.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Ret",
-      "urnContent\022\026\n\016transaction_id\030\005 \001(\t\"x\n\021Up" +
-      "dateRowResponse\022V\n\010consumed\030\001 \002(\0132D.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.ConsumedCapacity\022\013\n\003row\030\002 \001(\014\"\365\001\n" +
-      "\rPutRowRequest\022\022\n\ntable_name\030\001 \002(\t\022\013\n\003ro" +
-      "w\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "Condition\022Y\n\016return_content\030\004 \001(\0132A.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.ReturnContent\022\026\n\016transaction_id\030\005",
-      " \001(\t\"u\n\016PutRowResponse\022V\n\010consumed\030\001 \002(\013" +
-      "2D.com.alicloud.openservices.tablestore." +
-      "core.protocol.ConsumedCapacity\022\013\n\003row\030\002 " +
-      "\001(\014\"\200\002\n\020DeleteRowRequest\022\022\n\ntable_name\030\001" +
-      " \002(\t\022\023\n\013primary_key\030\002 \002(\014\022P\n\tcondition\030\003" +
-      " \002(\0132=.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.Condition\022Y\n\016return_co" +
-      "ntent\030\004 \001(\0132A.com.alicloud.openservices." +
-      "tablestore.core.protocol.ReturnContent\022\026" +
-      "\n\016transaction_id\030\005 \001(\t\"x\n\021DeleteRowRespo",
-      "nse\022V\n\010consumed\030\001 \002(\0132D.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.Consu" +
-      "medCapacity\022\013\n\003row\030\002 \001(\014\"\216\002\n\031TableInBatc" +
-      "hGetRowRequest\022\022\n\ntable_name\030\001 \002(\t\022\023\n\013pr" +
-      "imary_key\030\002 \003(\014\022\r\n\005token\030\003 \003(\014\022\026\n\016column" +
-      "s_to_get\030\004 \003(\t\022Q\n\ntime_range\030\005 \001(\0132=.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.TimeRange\022\024\n\014max_versions\030\006 \001(\005\022" +
-      "\016\n\006filter\030\010 \001(\014\022\024\n\014start_column\030\t \001(\t\022\022\n" +
-      "\nend_column\030\n \001(\t\"s\n\022BatchGetRowRequest\022",
-      "]\n\006tables\030\001 \003(\0132M.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.TableInBatc" +
-      "hGetRowRequest\"\354\001\n\030RowInBatchGetRowRespo" +
-      "nse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(\01329.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.Error\022V\n\010consumed\030\003 \001(\0132D.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.ConsumedCapacity\022\013\n\003row\030\004 \001(\014\022\022\n\nnex" +
-      "t_token\030\005 \001(\014\"\214\001\n\032TableInBatchGetRowResp" +
-      "onse\022\022\n\ntable_name\030\001 \002(\t\022Z\n\004rows\030\002 \003(\0132L",
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.RowInBatchGetRowResponse\"u\n\023" +
-      "BatchGetRowResponse\022^\n\006tables\030\001 \003(\0132N.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.TableInBatchGetRowResponse\"\255\002\n\031" +
-      "RowInBatchWriteRowRequest\022O\n\004type\030\001 \002(\0162" +
-      "A.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.OperationType\022\022\n\nrow_change" +
-      "\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.alicloud" +
-      ".openservices.tablestore.core.protocol.C",
-      "ondition\022Y\n\016return_content\030\004 \001(\0132A.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.ReturnContent\"\216\001\n\033TableInBatchWrit" +
-      "eRowRequest\022\022\n\ntable_name\030\001 \002(\t\022[\n\004rows\030" +
-      "\002 \003(\0132M.com.alicloud.openservices.tables" +
-      "tore.core.protocol.RowInBatchWriteRowReq" +
-      "uest\"\242\001\n\024BatchWriteRowRequest\022_\n\006tables\030" +
-      "\001 \003(\0132O.com.alicloud.openservices.tables" +
-      "tore.core.protocol.TableInBatchWriteRowR" +
-      "equest\022\026\n\016transaction_id\030\002 \001(\t\022\021\n\tis_ato",
-      "mic\030\003 \001(\010\"\332\001\n\032RowInBatchWriteRowResponse" +
-      "\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(\01329.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.Error\022V\n\010consumed\030\003 \001(\0132D.com.aliclo" +
+      ".protocol.PartitionRange\022\\\n\013stream_spec\030",
+      "\005 \001(\0132G.com.alicloud.openservices.tables" +
+      "tore.core.protocol.StreamSpecification\022V" +
+      "\n\010sse_spec\030\006 \001(\0132D.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.SSESpecifi" +
+      "cation\022R\n\013index_metas\030\007 \003(\0132=.com.aliclo" +
       "ud.openservices.tablestore.core.protocol" +
-      ".ConsumedCapacity\022\013\n\003row\030\004 \001(\014\"\220\001\n\034Table" +
-      "InBatchWriteRowResponse\022\022\n\ntable_name\030\001 " +
-      "\002(\t\022\\\n\004rows\030\002 \003(\0132N.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.RowInBatc" +
-      "hWriteRowResponse\"y\n\025BatchWriteRowRespon",
-      "se\022`\n\006tables\030\001 \003(\0132P.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.TableInB" +
-      "atchWriteRowResponse\"\260\003\n\017GetRangeRequest" +
-      "\022\022\n\ntable_name\030\001 \002(\t\022P\n\tdirection\030\002 \002(\0162" +
-      "=.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.Direction\022\026\n\016columns_to_get" +
-      "\030\003 \003(\t\022Q\n\ntime_range\030\004 \001(\0132=.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "TimeRange\022\024\n\014max_versions\030\005 \001(\005\022\r\n\005limit" +
-      "\030\006 \001(\005\022#\n\033inclusive_start_primary_key\030\007 ",
-      "\002(\014\022!\n\031exclusive_end_primary_key\030\010 \002(\014\022\016" +
-      "\n\006filter\030\n \001(\014\022\024\n\014start_column\030\013 \001(\t\022\022\n\n" +
-      "end_column\030\014 \001(\t\022\r\n\005token\030\r \001(\014\022\026\n\016trans" +
-      "action_id\030\016 \001(\t\"\254\001\n\020GetRangeResponse\022V\n\010" +
-      "consumed\030\001 \002(\0132D.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.ConsumedCapa" +
-      "city\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_start_primary" +
-      "_key\030\003 \001(\014\022\022\n\nnext_token\030\004 \001(\014\"?\n\034StartL" +
-      "ocalTransactionRequest\022\022\n\ntable_name\030\001 \002" +
-      "(\t\022\013\n\003key\030\002 \002(\014\"7\n\035StartLocalTransaction",
-      "Response\022\026\n\016transaction_id\030\001 \002(\t\"2\n\030Comm" +
-      "itTransactionRequest\022\026\n\016transaction_id\030\001" +
-      " \002(\t\"\033\n\031CommitTransactionResponse\"1\n\027Abo" +
-      "rtTransactionRequest\022\026\n\016transaction_id\030\001" +
-      " \002(\t\"\032\n\030AbortTransactionResponse\"\'\n\021List" +
-      "StreamRequest\022\022\n\ntable_name\030\001 \001(\t\"F\n\006Str" +
-      "eam\022\021\n\tstream_id\030\001 \002(\t\022\022\n\ntable_name\030\002 \002" +
-      "(\t\022\025\n\rcreation_time\030\003 \002(\003\"a\n\022ListStreamR" +
-      "esponse\022K\n\007streams\030\001 \003(\0132:.com.alicloud." +
-      "openservices.tablestore.core.protocol.St",
-      "ream\"M\n\013StreamShard\022\020\n\010shard_id\030\001 \002(\t\022\021\n" +
-      "\tparent_id\030\002 \001(\t\022\031\n\021parent_sibling_id\030\003 " +
-      "\001(\t\"a\n\025DescribeStreamRequest\022\021\n\tstream_i" +
-      "d\030\001 \002(\t\022 \n\030inclusive_start_shard_id\030\002 \001(" +
-      "\t\022\023\n\013shard_limit\030\003 \001(\005\"\260\002\n\026DescribeStrea" +
-      "mResponse\022\021\n\tstream_id\030\001 \002(\t\022\027\n\017expirati" +
-      "on_time\030\002 \002(\005\022\022\n\ntable_name\030\003 \002(\t\022\025\n\rcre" +
-      "ation_time\030\004 \002(\003\022W\n\rstream_status\030\005 \002(\0162" +
-      "@.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.StreamStatus\022O\n\006shards\030\006 \003(",
-      "\0132?.com.alicloud.openservices.tablestore" +
-      ".core.protocol.StreamShard\022\025\n\rnext_shard" +
-      "_id\030\007 \001(\t\"`\n\027GetShardIteratorRequest\022\021\n\t" +
-      "stream_id\030\001 \002(\t\022\020\n\010shard_id\030\002 \002(\t\022\021\n\ttim" +
-      "estamp\030\003 \001(\003\022\r\n\005token\030\004 \001(\t\"F\n\030GetShardI" +
-      "teratorResponse\022\026\n\016shard_iterator\030\001 \002(\t\022" +
-      "\022\n\nnext_token\030\002 \001(\t\"?\n\026GetStreamRecordRe" +
-      "quest\022\026\n\016shard_iterator\030\001 \002(\t\022\r\n\005limit\030\002" +
-      " \001(\005\"\235\002\n\027GetStreamRecordResponse\022p\n\016stre" +
-      "am_records\030\001 \003(\0132X.com.alicloud.openserv",
-      "ices.tablestore.core.protocol.GetStreamR" +
-      "ecordResponse.StreamRecord\022\033\n\023next_shard" +
-      "_iterator\030\002 \001(\t\032s\n\014StreamRecord\022S\n\013actio" +
-      "n_type\030\001 \002(\0162>.com.alicloud.openservices" +
-      ".tablestore.core.protocol.ActionType\022\016\n\006" +
-      "record\030\002 \002(\014\"\205\001\n\037ComputeSplitPointsBySiz" +
-      "eRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_si" +
-      "ze\030\002 \002(\003\022\037\n\027split_size_unit_in_byte\030\003 \001(" +
-      "\003\022\031\n\021split_point_limit\030\004 \001(\005\"\220\003\n Compute" +
-      "SplitPointsBySizeResponse\022V\n\010consumed\030\001 ",
-      "\002(\0132D.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.ConsumedCapacity\022T\n\006sch" +
-      "ema\030\002 \003(\0132D.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.PrimaryKeySchema\022" +
-      "\024\n\014split_points\030\003 \003(\014\022u\n\tlocations\030\004 \003(\013" +
-      "2b.com.alicloud.openservices.tablestore." +
-      "core.protocol.ComputeSplitPointsBySizeRe" +
-      "sponse.SplitLocation\0321\n\rSplitLocation\022\020\n" +
-      "\010location\030\001 \002(\t\022\016\n\006repeat\030\002 \002(\022\"\217\002\n\021Bulk" +
-      "ExportRequest\022\022\n\ntable_name\030\001 \002(\t\022\026\n\016col",
-      "umns_to_get\030\002 \003(\t\022#\n\033inclusive_start_pri" +
-      "mary_key\030\003 \002(\014\022!\n\031exclusive_end_primary_" +
-      "key\030\004 \002(\014\022\016\n\006filter\030\005 \001(\014\022v\n\024data_block_" +
-      "type_hint\030\006 \001(\0162A.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.DataBlockTy" +
-      "pe:\025DBT_SIMPLE_ROW_MATRIX\"\366\001\n\022BulkExport" +
-      "Response\022V\n\010consumed\030\001 \002(\0132D.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "ConsumedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_s" +
-      "tart_primary_key\030\003 \001(\014\022Z\n\017data_block_typ",
-      "e\030\004 \001(\0162A.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.DataBlockType\"\201\001\n\021B" +
-      "ulkImportRequest\022\022\n\ntable_name\030\001 \002(\t\022X\n\004" +
-      "rows\030\002 \003(\0132J.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.RowInBulkImportR" +
-      "equest\"}\n\026RowInBulkImportRequest\022O\n\004type" +
-      "\030\001 \002(\0162A.com.alicloud.openservices.table" +
-      "store.core.protocol.OperationType\022\022\n\nrow" +
-      "_change\030\002 \002(\014\"\203\001\n\022BulkImportResponse\022\022\n\n" +
-      "table_name\030\001 \002(\t\022Y\n\004rows\030\002 \003(\0132K.com.ali",
-      "cloud.openservices.tablestore.core.proto" +
-      "col.RowInBulkImportResponse\"\312\001\n\027RowInBul" +
-      "kImportResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030" +
-      "\002 \001(\01329.com.alicloud.openservices.tables" +
-      "tore.core.protocol.Error\022V\n\010consumed\030\003 \001" +
-      "(\0132D.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.ConsumedCapacity\"\235\001\n\024Com" +
-      "puteSplitsRequest\022\022\n\ntable_name\030\001 \001(\t\022q\n" +
-      "\033search_index_splits_options\030\002 \001(\0132L.com" +
-      ".alicloud.openservices.tablestore.core.p",
-      "rotocol.SearchIndexSplitsOptions\".\n\030Sear" +
-      "chIndexSplitsOptions\022\022\n\nindex_name\030\001 \001(\t" +
-      "\"@\n\025ComputeSplitsResponse\022\022\n\nsession_id\030" +
-      "\001 \001(\014\022\023\n\013splits_size\030\002 \001(\005\"x\n\017SQLQueryRe" +
-      "quest\022\r\n\005query\030\001 \002(\t\022V\n\007version\030\002 \001(\0162E." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.SQLPayloadVersion\"\350\001\n\025TableCo" +
-      "nsumedCapacity\022\022\n\ntable_name\030\001 \001(\t\022V\n\010co" +
-      "nsumed\030\002 \001(\0132D.com.alicloud.openservices" +
-      ".tablestore.core.protocol.ConsumedCapaci",
-      "ty\022c\n\023reserved_throughput\030\003 \001(\0132F.com.al" +
+      ".IndexMeta\022\030\n\020enable_local_txn\030\010 \001(\010\"\025\n\023" +
+      "CreateTableResponse\"\233\001\n\022CreateIndexReque" +
+      "st\022\027\n\017main_table_name\030\001 \002(\t\022Q\n\nindex_met" +
+      "a\030\002 \002(\0132=.com.alicloud.openservices.tabl",
+      "estore.core.protocol.IndexMeta\022\031\n\021includ" +
+      "e_base_data\030\003 \001(\010\"\025\n\023CreateIndexResponse" +
+      "\"?\n\020DropIndexRequest\022\027\n\017main_table_name\030" +
+      "\001 \002(\t\022\022\n\nindex_name\030\002 \002(\t\"\023\n\021DropIndexRe" +
+      "sponse\"\207\001\n\027AddDefinedColumnRequest\022\022\n\nta" +
+      "ble_name\030\001 \002(\t\022X\n\007columns\030\002 \003(\0132G.com.al" +
       "icloud.openservices.tablestore.core.prot" +
-      "ocol.ReservedThroughput\"\251\002\n\020SQLQueryResp" +
-      "onse\022[\n\010consumes\030\001 \003(\0132I.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Tabl" +
-      "eConsumedCapacity\022\014\n\004rows\030\002 \001(\014\022V\n\007versi" +
-      "on\030\003 \001(\0162E.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.SQLPayloadVersion\022" +
-      "R\n\004type\030\004 \001(\0162D.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.SQLStatementT",
-      "ype*5\n\016PrimaryKeyType\022\013\n\007INTEGER\020\001\022\n\n\006ST" +
-      "RING\020\002\022\n\n\006BINARY\020\003*c\n\021DefinedColumnType\022" +
-      "\017\n\013DCT_INTEGER\020\001\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_" +
-      "BOOLEAN\020\003\022\016\n\nDCT_STRING\020\004\022\014\n\010DCT_BLOB\020\007*" +
-      "&\n\020PrimaryKeyOption\022\022\n\016AUTO_INCREMENT\020\001*" +
-      ":\n\017IndexUpdateMode\022\023\n\017IUM_ASYNC_INDEX\020\000\022" +
-      "\022\n\016IUM_SYNC_INDEX\020\001*4\n\tIndexType\022\023\n\017IT_G" +
-      "LOBAL_INDEX\020\000\022\022\n\016IT_LOCAL_INDEX\020\001*M\n\027Row" +
-      "ExistenceExpectation\022\n\n\006IGNORE\020\000\022\020\n\014EXPE" +
-      "CT_EXIST\020\001\022\024\n\020EXPECT_NOT_EXIST\020\002*/\n\nSSEK",
-      "eyType\022\023\n\017SSE_KMS_SERVICE\020\001\022\014\n\010SSE_BYOK\020" +
-      "\002*9\n\nReturnType\022\013\n\007RT_NONE\020\000\022\t\n\005RT_PK\020\001\022" +
-      "\023\n\017RT_AFTER_MODIFY\020\002*0\n\rOperationType\022\007\n" +
-      "\003PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DELETE\020\003*&\n\tDirect" +
-      "ion\022\013\n\007FORWARD\020\000\022\014\n\010BACKWARD\020\001*6\n\014Stream" +
-      "Status\022\023\n\017STREAM_ENABLING\020\001\022\021\n\rSTREAM_AC" +
-      "TIVE\020\002*9\n\nActionType\022\013\n\007PUT_ROW\020\001\022\016\n\nUPD" +
-      "ATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*@\n\rDataBlockTy" +
-      "pe\022\024\n\020DBT_PLAIN_BUFFER\020\000\022\031\n\025DBT_SIMPLE_R" +
-      "OW_MATRIX\020\001*?\n\021SQLPayloadVersion\022\024\n\020SQL_",
-      "PLAIN_BUFFER\020\001\022\024\n\020SQL_FLAT_BUFFERS\020\002*\215\001\n" +
-      "\020SQLStatementType\022\016\n\nSQL_SELECT\020\001\022\024\n\020SQL" +
-      "_CREATE_TABLE\020\002\022\022\n\016SQL_SHOW_TABLE\020\003\022\026\n\022S" +
-      "QL_DESCRIBE_TABLE\020\004\022\022\n\016SQL_DROP_TABLE\020\005\022" +
-      "\023\n\017SQL_ALTER_TABLE\020\006"
+      "ocol.DefinedColumnSchema\"\032\n\030AddDefinedCo" +
+      "lumnResponse\"A\n\032DeleteDefinedColumnReque" +
+      "st\022\022\n\ntable_name\030\001 \002(\t\022\017\n\007columns\030\002 \003(\t\"",
+      "\035\n\033DeleteDefinedColumnResponse\"\304\002\n\022Updat" +
+      "eTableRequest\022\022\n\ntable_name\030\001 \002(\t\022c\n\023res" +
+      "erved_throughput\030\002 \001(\0132F.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Rese" +
+      "rvedThroughput\022W\n\rtable_options\030\003 \001(\0132@." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.TableOptions\022\\\n\013stream_spec\030\004" +
+      " \001(\0132G.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.StreamSpecification\"\275\002" +
+      "\n\023UpdateTableResponse\022r\n\033reserved_throug",
+      "hput_details\030\001 \002(\0132M.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Reserved" +
+      "ThroughputDetails\022W\n\rtable_options\030\002 \002(\013" +
+      "2@.com.alicloud.openservices.tablestore." +
+      "core.protocol.TableOptions\022Y\n\016stream_det" +
+      "ails\030\003 \001(\0132A.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.StreamDetails\"*\n" +
+      "\024DescribeTableRequest\022\022\n\ntable_name\030\001 \002(" +
+      "\t\"\350\004\n\025DescribeTableResponse\022Q\n\ntable_met" +
+      "a\030\001 \002(\0132=.com.alicloud.openservices.tabl",
+      "estore.core.protocol.TableMeta\022r\n\033reserv" +
+      "ed_throughput_details\030\002 \002(\0132M.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".ReservedThroughputDetails\022W\n\rtable_opti" +
+      "ons\030\003 \002(\0132@.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.TableOptions\022Y\n\016s" +
+      "tream_details\030\005 \001(\0132A.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.StreamD" +
+      "etails\022\024\n\014shard_splits\030\006 \003(\014\022S\n\013sse_deta" +
+      "ils\030\007 \001(\0132>.com.alicloud.openservices.ta",
+      "blestore.core.protocol.SSEDetails\022R\n\013ind" +
+      "ex_metas\030\010 \003(\0132=.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.IndexMeta\022\025\n" +
+      "\rcreation_time\030\t \001(\003\"\022\n\020ListTableRequest" +
+      "\"(\n\021ListTableResponse\022\023\n\013table_names\030\001 \003" +
+      "(\t\"(\n\022DeleteTableRequest\022\022\n\ntable_name\030\001" +
+      " \002(\t\"\025\n\023DeleteTableResponse\"&\n\020LoadTable" +
+      "Request\022\022\n\ntable_name\030\001 \002(\t\"\023\n\021LoadTable" +
+      "Response\"(\n\022UnloadTableRequest\022\022\n\ntable_" +
+      "name\030\001 \002(\t\"\025\n\023UnloadTableResponse\"H\n\tTim",
+      "eRange\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002" +
+      " \001(\003\022\025\n\rspecific_time\030\003 \001(\003\"\201\001\n\rReturnCo" +
+      "ntent\022S\n\013return_type\030\001 \001(\0162>.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "ReturnType\022\033\n\023return_column_names\030\002 \003(\t\"" +
+      "\232\002\n\rGetRowRequest\022\022\n\ntable_name\030\001 \002(\t\022\023\n" +
+      "\013primary_key\030\002 \002(\014\022\026\n\016columns_to_get\030\003 \003" +
+      "(\t\022Q\n\ntime_range\030\004 \001(\0132=.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Time" +
+      "Range\022\024\n\014max_versions\030\005 \001(\005\022\016\n\006filter\030\007 ",
+      "\001(\014\022\024\n\014start_column\030\010 \001(\t\022\022\n\nend_column\030" +
+      "\t \001(\t\022\r\n\005token\030\n \001(\014\022\026\n\016transaction_id\030\013" +
+      " \001(\t\"\211\001\n\016GetRowResponse\022V\n\010consumed\030\001 \002(" +
+      "\0132D.com.alicloud.openservices.tablestore" +
+      ".core.protocol.ConsumedCapacity\022\013\n\003row\030\002" +
+      " \002(\014\022\022\n\nnext_token\030\003 \001(\014\"\377\001\n\020UpdateRowRe" +
+      "quest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nrow_change\030" +
+      "\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.alicloud." +
+      "openservices.tablestore.core.protocol.Co" +
+      "ndition\022Y\n\016return_content\030\004 \001(\0132A.com.al",
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.ReturnContent\022\026\n\016transaction_id\030\005 \001" +
+      "(\t\"x\n\021UpdateRowResponse\022V\n\010consumed\030\001 \002(" +
+      "\0132D.com.alicloud.openservices.tablestore" +
+      ".core.protocol.ConsumedCapacity\022\013\n\003row\030\002" +
+      " \001(\014\"\365\001\n\rPutRowRequest\022\022\n\ntable_name\030\001 \002" +
+      "(\t\022\013\n\003row\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.Condition\022Y\n\016return_content\030\004 \001(" +
+      "\0132A.com.alicloud.openservices.tablestore",
+      ".core.protocol.ReturnContent\022\026\n\016transact" +
+      "ion_id\030\005 \001(\t\"u\n\016PutRowResponse\022V\n\010consum" +
+      "ed\030\001 \002(\0132D.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.ConsumedCapacity\022\013" +
+      "\n\003row\030\002 \001(\014\"\200\002\n\020DeleteRowRequest\022\022\n\ntabl" +
+      "e_name\030\001 \002(\t\022\023\n\013primary_key\030\002 \002(\014\022P\n\tcon" +
+      "dition\030\003 \002(\0132=.com.alicloud.openservices" +
+      ".tablestore.core.protocol.Condition\022Y\n\016r" +
+      "eturn_content\030\004 \001(\0132A.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.ReturnC",
+      "ontent\022\026\n\016transaction_id\030\005 \001(\t\"x\n\021Delete" +
+      "RowResponse\022V\n\010consumed\030\001 \002(\0132D.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.ConsumedCapacity\022\013\n\003row\030\002 \001(\014\"\216\002\n\031Tab" +
+      "leInBatchGetRowRequest\022\022\n\ntable_name\030\001 \002" +
+      "(\t\022\023\n\013primary_key\030\002 \003(\014\022\r\n\005token\030\003 \003(\014\022\026" +
+      "\n\016columns_to_get\030\004 \003(\t\022Q\n\ntime_range\030\005 \001" +
+      "(\0132=.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.TimeRange\022\024\n\014max_version" +
+      "s\030\006 \001(\005\022\016\n\006filter\030\010 \001(\014\022\024\n\014start_column\030",
+      "\t \001(\t\022\022\n\nend_column\030\n \001(\t\"s\n\022BatchGetRow" +
+      "Request\022]\n\006tables\030\001 \003(\0132M.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.Tab" +
+      "leInBatchGetRowRequest\"\354\001\n\030RowInBatchGet" +
+      "RowResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(" +
+      "\01329.com.alicloud.openservices.tablestore" +
+      ".core.protocol.Error\022V\n\010consumed\030\003 \001(\0132D" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.ConsumedCapacity\022\013\n\003row\030\004 \001(" +
+      "\014\022\022\n\nnext_token\030\005 \001(\014\"\214\001\n\032TableInBatchGe",
+      "tRowResponse\022\022\n\ntable_name\030\001 \002(\t\022Z\n\004rows" +
+      "\030\002 \003(\0132L.com.alicloud.openservices.table" +
+      "store.core.protocol.RowInBatchGetRowResp" +
+      "onse\"u\n\023BatchGetRowResponse\022^\n\006tables\030\001 " +
+      "\003(\0132N.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.TableInBatchGetRowRespo" +
+      "nse\"\255\002\n\031RowInBatchWriteRowRequest\022O\n\004typ" +
+      "e\030\001 \002(\0162A.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.OperationType\022\022\n\nro" +
+      "w_change\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.",
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.Condition\022Y\n\016return_content\030\004 \001(\013" +
+      "2A.com.alicloud.openservices.tablestore." +
+      "core.protocol.ReturnContent\"\216\001\n\033TableInB" +
+      "atchWriteRowRequest\022\022\n\ntable_name\030\001 \002(\t\022" +
+      "[\n\004rows\030\002 \003(\0132M.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.RowInBatchWri" +
+      "teRowRequest\"\242\001\n\024BatchWriteRowRequest\022_\n" +
+      "\006tables\030\001 \003(\0132O.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.TableInBatchW",
+      "riteRowRequest\022\026\n\016transaction_id\030\002 \001(\t\022\021" +
+      "\n\tis_atomic\030\003 \001(\010\"\332\001\n\032RowInBatchWriteRow" +
+      "Response\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(\01329" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.Error\022V\n\010consumed\030\003 \001(\0132D.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.ConsumedCapacity\022\013\n\003row\030\004 \001(\014\"\220" +
+      "\001\n\034TableInBatchWriteRowResponse\022\022\n\ntable" +
+      "_name\030\001 \002(\t\022\\\n\004rows\030\002 \003(\0132N.com.alicloud" +
+      ".openservices.tablestore.core.protocol.R",
+      "owInBatchWriteRowResponse\"y\n\025BatchWriteR" +
+      "owResponse\022`\n\006tables\030\001 \003(\0132P.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "TableInBatchWriteRowResponse\"\260\003\n\017GetRang" +
+      "eRequest\022\022\n\ntable_name\030\001 \002(\t\022P\n\tdirectio" +
+      "n\030\002 \002(\0162=.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.Direction\022\026\n\016column" +
+      "s_to_get\030\003 \003(\t\022Q\n\ntime_range\030\004 \001(\0132=.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.TimeRange\022\024\n\014max_versions\030\005 \001(\005\022",
+      "\r\n\005limit\030\006 \001(\005\022#\n\033inclusive_start_primar" +
+      "y_key\030\007 \002(\014\022!\n\031exclusive_end_primary_key" +
+      "\030\010 \002(\014\022\016\n\006filter\030\n \001(\014\022\024\n\014start_column\030\013" +
+      " \001(\t\022\022\n\nend_column\030\014 \001(\t\022\r\n\005token\030\r \001(\014\022" +
+      "\026\n\016transaction_id\030\016 \001(\t\"\254\001\n\020GetRangeResp" +
+      "onse\022V\n\010consumed\030\001 \002(\0132D.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Cons" +
+      "umedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_start" +
+      "_primary_key\030\003 \001(\014\022\022\n\nnext_token\030\004 \001(\014\"?" +
+      "\n\034StartLocalTransactionRequest\022\022\n\ntable_",
+      "name\030\001 \002(\t\022\013\n\003key\030\002 \002(\014\"7\n\035StartLocalTra" +
+      "nsactionResponse\022\026\n\016transaction_id\030\001 \002(\t" +
+      "\"2\n\030CommitTransactionRequest\022\026\n\016transact" +
+      "ion_id\030\001 \002(\t\"\033\n\031CommitTransactionRespons" +
+      "e\"1\n\027AbortTransactionRequest\022\026\n\016transact" +
+      "ion_id\030\001 \002(\t\"\032\n\030AbortTransactionResponse" +
+      "\"\'\n\021ListStreamRequest\022\022\n\ntable_name\030\001 \001(" +
+      "\t\"F\n\006Stream\022\021\n\tstream_id\030\001 \002(\t\022\022\n\ntable_" +
+      "name\030\002 \002(\t\022\025\n\rcreation_time\030\003 \002(\003\"a\n\022Lis" +
+      "tStreamResponse\022K\n\007streams\030\001 \003(\0132:.com.a",
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.Stream\"M\n\013StreamShard\022\020\n\010shard_id\030" +
+      "\001 \002(\t\022\021\n\tparent_id\030\002 \001(\t\022\031\n\021parent_sibli" +
+      "ng_id\030\003 \001(\t\"\210\001\n\025DescribeStreamRequest\022\021\n" +
+      "\tstream_id\030\001 \002(\t\022 \n\030inclusive_start_shar" +
+      "d_id\030\002 \001(\t\022\023\n\013shard_limit\030\003 \001(\005\022%\n\035suppo" +
+      "rt_timeseries_data_table\030\004 \001(\010\"\322\002\n\026Descr" +
+      "ibeStreamResponse\022\021\n\tstream_id\030\001 \002(\t\022\027\n\017" +
+      "expiration_time\030\002 \002(\005\022\022\n\ntable_name\030\003 \002(" +
+      "\t\022\025\n\rcreation_time\030\004 \002(\003\022W\n\rstream_statu",
+      "s\030\005 \002(\0162@.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.StreamStatus\022O\n\006sha" +
+      "rds\030\006 \003(\0132?.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.StreamShard\022\025\n\rne" +
+      "xt_shard_id\030\007 \001(\t\022 \n\030is_timeseries_data_" +
+      "table\030\010 \001(\010\"`\n\027GetShardIteratorRequest\022\021" +
+      "\n\tstream_id\030\001 \002(\t\022\020\n\010shard_id\030\002 \002(\t\022\021\n\tt" +
+      "imestamp\030\003 \001(\003\022\r\n\005token\030\004 \001(\t\"F\n\030GetShar" +
+      "dIteratorResponse\022\026\n\016shard_iterator\030\001 \002(" +
+      "\t\022\022\n\nnext_token\030\002 \001(\t\"S\n\026GetStreamRecord",
+      "Request\022\026\n\016shard_iterator\030\001 \002(\t\022\r\n\005limit" +
+      "\030\002 \001(\005\022\022\n\ntable_name\030\003 \001(\t\"\246\003\n\027GetStream" +
+      "RecordResponse\022p\n\016stream_records\030\001 \003(\0132X" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.GetStreamRecordResponse.Stre" +
+      "amRecord\022\033\n\023next_shard_iterator\030\002 \001(\t\022V\n" +
+      "\010consumed\030\003 \001(\0132D.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.ConsumedCap" +
+      "acity\022\027\n\017may_more_record\030\004 \001(\010\032\212\001\n\014Strea" +
+      "mRecord\022S\n\013action_type\030\001 \002(\0162>.com.alicl",
+      "oud.openservices.tablestore.core.protoco" +
+      "l.ActionType\022\016\n\006record\030\002 \002(\014\022\025\n\rorigin_r" +
+      "ecord\030\003 \001(\014\"\205\001\n\037ComputeSplitPointsBySize" +
+      "Request\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_siz" +
+      "e\030\002 \002(\003\022\037\n\027split_size_unit_in_byte\030\003 \001(\003" +
+      "\022\031\n\021split_point_limit\030\004 \001(\005\"\220\003\n ComputeS" +
+      "plitPointsBySizeResponse\022V\n\010consumed\030\001 \002" +
+      "(\0132D.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.ConsumedCapacity\022T\n\006sche" +
+      "ma\030\002 \003(\0132D.com.alicloud.openservices.tab",
+      "lestore.core.protocol.PrimaryKeySchema\022\024" +
+      "\n\014split_points\030\003 \003(\014\022u\n\tlocations\030\004 \003(\0132" +
+      "b.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.ComputeSplitPointsBySizeRes" +
+      "ponse.SplitLocation\0321\n\rSplitLocation\022\020\n\010" +
+      "location\030\001 \002(\t\022\016\n\006repeat\030\002 \002(\022\"\217\002\n\021BulkE" +
+      "xportRequest\022\022\n\ntable_name\030\001 \002(\t\022\026\n\016colu" +
+      "mns_to_get\030\002 \003(\t\022#\n\033inclusive_start_prim" +
+      "ary_key\030\003 \002(\014\022!\n\031exclusive_end_primary_k" +
+      "ey\030\004 \002(\014\022\016\n\006filter\030\005 \001(\014\022v\n\024data_block_t",
+      "ype_hint\030\006 \001(\0162A.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.DataBlockTyp" +
+      "e:\025DBT_SIMPLE_ROW_MATRIX\"\366\001\n\022BulkExportR" +
+      "esponse\022V\n\010consumed\030\001 \002(\0132D.com.alicloud" +
+      ".openservices.tablestore.core.protocol.C" +
+      "onsumedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_st" +
+      "art_primary_key\030\003 \001(\014\022Z\n\017data_block_type" +
+      "\030\004 \001(\0162A.com.alicloud.openservices.table" +
+      "store.core.protocol.DataBlockType\"\201\001\n\021Bu" +
+      "lkImportRequest\022\022\n\ntable_name\030\001 \002(\t\022X\n\004r",
+      "ows\030\002 \003(\0132J.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.RowInBulkImportRe" +
+      "quest\"}\n\026RowInBulkImportRequest\022O\n\004type\030" +
+      "\001 \002(\0162A.com.alicloud.openservices.tables" +
+      "tore.core.protocol.OperationType\022\022\n\nrow_" +
+      "change\030\002 \002(\014\"\203\001\n\022BulkImportResponse\022\022\n\nt" +
+      "able_name\030\001 \002(\t\022Y\n\004rows\030\002 \003(\0132K.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.RowInBulkImportResponse\"\312\001\n\027RowInBulk" +
+      "ImportResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002",
+      " \001(\01329.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.Error\022V\n\010consumed\030\003 \001(" +
+      "\0132D.com.alicloud.openservices.tablestore" +
+      ".core.protocol.ConsumedCapacity\"\235\001\n\024Comp" +
+      "uteSplitsRequest\022\022\n\ntable_name\030\001 \001(\t\022q\n\033" +
+      "search_index_splits_options\030\002 \001(\0132L.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.SearchIndexSplitsOptions\".\n\030Searc" +
+      "hIndexSplitsOptions\022\022\n\nindex_name\030\001 \001(\t\"" +
+      "@\n\025ComputeSplitsResponse\022\022\n\nsession_id\030\001",
+      " \001(\014\022\023\n\013splits_size\030\002 \001(\005\"x\n\017SQLQueryReq" +
+      "uest\022\r\n\005query\030\001 \002(\t\022V\n\007version\030\002 \001(\0162E.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.SQLPayloadVersion\"\350\001\n\025TableCon" +
+      "sumedCapacity\022\022\n\ntable_name\030\001 \001(\t\022V\n\010con" +
+      "sumed\030\002 \001(\0132D.com.alicloud.openservices." +
+      "tablestore.core.protocol.ConsumedCapacit" +
+      "y\022c\n\023reserved_throughput\030\003 \001(\0132F.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.ReservedThroughput\"\251\002\n\020SQLQueryRespo",
+      "nse\022[\n\010consumes\030\001 \003(\0132I.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Table" +
+      "ConsumedCapacity\022\014\n\004rows\030\002 \001(\014\022V\n\007versio" +
+      "n\030\003 \001(\0162E.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.SQLPayloadVersion\022R" +
+      "\n\004type\030\004 \001(\0162D.com.alicloud.openservices" +
+      ".tablestore.core.protocol.SQLStatementTy" +
+      "pe*5\n\016PrimaryKeyType\022\013\n\007INTEGER\020\001\022\n\n\006STR" +
+      "ING\020\002\022\n\n\006BINARY\020\003*c\n\021DefinedColumnType\022\017" +
+      "\n\013DCT_INTEGER\020\001\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_B",
+      "OOLEAN\020\003\022\016\n\nDCT_STRING\020\004\022\014\n\010DCT_BLOB\020\007*&" +
+      "\n\020PrimaryKeyOption\022\022\n\016AUTO_INCREMENT\020\001*:" +
+      "\n\017IndexUpdateMode\022\023\n\017IUM_ASYNC_INDEX\020\000\022\022" +
+      "\n\016IUM_SYNC_INDEX\020\001*4\n\tIndexType\022\023\n\017IT_GL" +
+      "OBAL_INDEX\020\000\022\022\n\016IT_LOCAL_INDEX\020\001*M\n\027RowE" +
+      "xistenceExpectation\022\n\n\006IGNORE\020\000\022\020\n\014EXPEC" +
+      "T_EXIST\020\001\022\024\n\020EXPECT_NOT_EXIST\020\002*/\n\nSSEKe" +
+      "yType\022\023\n\017SSE_KMS_SERVICE\020\001\022\014\n\010SSE_BYOK\020\002" +
+      "*9\n\nReturnType\022\013\n\007RT_NONE\020\000\022\t\n\005RT_PK\020\001\022\023" +
+      "\n\017RT_AFTER_MODIFY\020\002*0\n\rOperationType\022\007\n\003",
+      "PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DELETE\020\003*&\n\tDirecti" +
+      "on\022\013\n\007FORWARD\020\000\022\014\n\010BACKWARD\020\001*6\n\014StreamS" +
+      "tatus\022\023\n\017STREAM_ENABLING\020\001\022\021\n\rSTREAM_ACT" +
+      "IVE\020\002*9\n\nActionType\022\013\n\007PUT_ROW\020\001\022\016\n\nUPDA" +
+      "TE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*@\n\rDataBlockTyp" +
+      "e\022\024\n\020DBT_PLAIN_BUFFER\020\000\022\031\n\025DBT_SIMPLE_RO" +
+      "W_MATRIX\020\001*?\n\021SQLPayloadVersion\022\024\n\020SQL_P" +
+      "LAIN_BUFFER\020\001\022\024\n\020SQL_FLAT_BUFFERS\020\002*\215\001\n\020" +
+      "SQLStatementType\022\016\n\nSQL_SELECT\020\001\022\024\n\020SQL_" +
+      "CREATE_TABLE\020\002\022\022\n\016SQL_SHOW_TABLE\020\003\022\026\n\022SQ",
+      "L_DESCRIBE_TABLE\020\004\022\022\n\016SQL_DROP_TABLE\020\005\022\023" +
+      "\n\017SQL_ALTER_TABLE\020\006"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -56345,7 +57054,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamSpecification_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamSpecification_descriptor,
-              new java.lang.String[] { "EnableStream", "ExpirationTime", },
+              new java.lang.String[] { "EnableStream", "ExpirationTime", "ColumnsToGet", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.StreamSpecification.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.StreamSpecification.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamDetails_descriptor =
@@ -56353,7 +57062,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamDetails_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamDetails_descriptor,
-              new java.lang.String[] { "EnableStream", "StreamId", "ExpirationTime", "LastEnableTime", },
+              new java.lang.String[] { "EnableStream", "StreamId", "ExpirationTime", "LastEnableTime", "ColumnToGet", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.StreamDetails.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.StreamDetails.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SSESpecification_descriptor =
@@ -56817,7 +57526,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeStreamRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeStreamRequest_descriptor,
-              new java.lang.String[] { "StreamId", "InclusiveStartShardId", "ShardLimit", },
+              new java.lang.String[] { "StreamId", "InclusiveStartShardId", "ShardLimit", "SupportTimeseriesDataTable", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.DescribeStreamRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.DescribeStreamRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeStreamResponse_descriptor =
@@ -56825,7 +57534,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeStreamResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeStreamResponse_descriptor,
-              new java.lang.String[] { "StreamId", "ExpirationTime", "TableName", "CreationTime", "StreamStatus", "Shards", "NextShardId", },
+              new java.lang.String[] { "StreamId", "ExpirationTime", "TableName", "CreationTime", "StreamStatus", "Shards", "NextShardId", "IsTimeseriesDataTable", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.DescribeStreamResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.DescribeStreamResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetShardIteratorRequest_descriptor =
@@ -56849,7 +57558,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordRequest_descriptor,
-              new java.lang.String[] { "ShardIterator", "Limit", },
+              new java.lang.String[] { "ShardIterator", "Limit", "TableName", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_descriptor =
@@ -56857,7 +57566,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_descriptor,
-              new java.lang.String[] { "StreamRecords", "NextShardIterator", },
+              new java.lang.String[] { "StreamRecords", "NextShardIterator", "Consumed", "MayMoreRecord", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_StreamRecord_descriptor =
@@ -56865,7 +57574,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_StreamRecord_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GetStreamRecordResponse_StreamRecord_descriptor,
-              new java.lang.String[] { "ActionType", "Record", },
+              new java.lang.String[] { "ActionType", "Record", "OriginRecord", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordResponse.StreamRecord.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.GetStreamRecordResponse.StreamRecord.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ComputeSplitPointsBySizeRequest_descriptor =

@@ -190,6 +190,20 @@ public class AsyncTimeseriesClient implements AsyncTimeseriesClientInterface {
         return internalClient.deleteTimeseriesMeta(request, callback);
     }
 
+    @Override
+    public Future<SplitTimeseriesScanTaskResponse> splitTimeseriesScanTask(SplitTimeseriesScanTaskRequest request,
+                                                                           TableStoreCallback<SplitTimeseriesScanTaskRequest, SplitTimeseriesScanTaskResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.splitTimeseriesScanTask(request, callback);
+    }
+
+    @Override
+    public Future<ScanTimeseriesDataResponse> scanTimeseriesData(ScanTimeseriesDataRequest request,
+                                                                 TableStoreCallback<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.scanTimeseriesData(request, callback);
+    }
+
     public void shutdown() {
         this.internalClient.shutdown();
     }

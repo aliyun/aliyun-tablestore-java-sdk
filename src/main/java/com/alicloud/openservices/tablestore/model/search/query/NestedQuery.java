@@ -96,6 +96,11 @@ public class NestedQuery implements Query {
             return this;
         }
 
+        public Builder query(Query query) {
+            this.query = query;
+            return this;
+        }
+
         public Builder scoreMode(ScoreMode scoreMode) {
             this.scoreMode = scoreMode;
             return this;

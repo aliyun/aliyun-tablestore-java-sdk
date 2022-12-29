@@ -39,6 +39,8 @@ public class DescribeStreamResponse extends Response {
      */
     private String nextShardId;
 
+    private boolean isTimeseriesDataTable;
+
     public DescribeStreamResponse() {
 
     }
@@ -129,6 +131,14 @@ public class DescribeStreamResponse extends Response {
 
     public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public boolean isTimeseriesDataTable() {
+        return isTimeseriesDataTable;
+    }
+
+    public void setTimeseriesDataTable(boolean timeseriesDataTable) {
+        isTimeseriesDataTable = timeseriesDataTable;
     }
 }
 

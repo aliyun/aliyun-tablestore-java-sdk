@@ -56,27 +56,39 @@ public class OTSHelper {
 
     public static PutRowResponse putRow(SyncClientInterface ots, String tableName, PrimaryKey pk,
                                         Map<String, ColumnValue> columns) {
+        RequestExtension extension = null;
+        return putRow(ots, tableName, pk, columns, extension);
+    }
+
+    public static PutRowResponse putRow(SyncClientInterface ots, String tableName, PrimaryKey pk,
+                                        Map<String, ColumnValue> columns, RequestExtension extension) {
         RowPutChange rowChange = new RowPutChange(tableName);
         rowChange.setPrimaryKey(pk);
         for (Map.Entry<String, ColumnValue> col : columns.entrySet()) {
             rowChange.addColumn(col.getKey(), col.getValue());
         }
-        return putRow(ots, rowChange);
+        return putRow(ots, rowChange, extension);
     }
 
     public static PutRowResponse putRow(SyncClientInterface ots, String tableName, PrimaryKey pk,
-                                        Map<String, ColumnValue> columns, RowExistenceExpectation rowExist) {
+                                        Map<String, ColumnValue> columns, RowExistenceExpectation rowExist,
+                                        RequestExtension extension) {
         RowPutChange rowChange = new RowPutChange(tableName);
         rowChange.setPrimaryKey(pk);
         for (Map.Entry<String, ColumnValue> col : columns.entrySet()) {
             rowChange.addColumn(col.getKey(), col.getValue());
         }
         if (rowExist != null) {
-        	Condition condition = new Condition();
-        	condition.setRowExistenceExpectation(rowExist);
-        	rowChange.setCondition(condition);
+            Condition condition = new Condition();
+            condition.setRowExistenceExpectation(rowExist);
+            rowChange.setCondition(condition);
         }
-        return putRow(ots, rowChange);
+        return putRow(ots, rowChange, extension);
+    }
+
+    public static PutRowResponse putRow(SyncClientInterface ots, String tableName, PrimaryKey pk,
+                                        Map<String, ColumnValue> columns, RowExistenceExpectation rowExist) {
+        return putRow(ots, tableName, pk, columns, rowExist, null);
     }
 
     public static GetRowResponse getRow(SyncClientInterface ots, String tableName, PrimaryKey pk) {
@@ -200,10 +212,15 @@ public class OTSHelper {
     }
 
     public static PutRowResponse putRow(SyncClientInterface ots, RowPutChange rowChange) {
+        return putRow(ots, rowChange, null);
+    }
+
+    public static PutRowResponse putRow(SyncClientInterface ots, RowPutChange rowChange, RequestExtension extension) {
         PutRowRequest putRowRequest = new PutRowRequest(rowChange);
+        putRowRequest.setExtension(extension);
         return ots.putRow(putRowRequest);
     }
-    
+
     public static GetRowResponse getRowForAll(SyncClientInterface ots, String tableName, PrimaryKey pk) {
         return getRow(ots, tableName, pk, null, Integer.MAX_VALUE);
     }
@@ -242,7 +259,14 @@ public class OTSHelper {
 
     public static GetRowResponse getRow(SyncClientInterface ots,
                                         SingleRowQueryCriteria rowQueryCriteria) {
+        return getRow(ots, rowQueryCriteria, null);
+    }
+
+    public static GetRowResponse getRow(SyncClientInterface ots,
+                                        SingleRowQueryCriteria rowQueryCriteria,
+                                        RequestExtension extension) {
         GetRowRequest getRowRequest = new GetRowRequest(rowQueryCriteria);
+        getRowRequest.setExtension(extension);
         GetRowResponse result = ots.getRow(getRowRequest);
         if (result.getRow() != null && !result.getRow().getPrimaryKey().equals(rowQueryCriteria.getPrimaryKey())) {
             throw new RuntimeException("Wrong result.");
@@ -403,8 +427,10 @@ public class OTSHelper {
             SyncClientInterface ots,
             List<RowPutChange> puts,
             List<RowUpdateChange> updates,
-            List<RowDeleteChange> deletes) {
+            List<RowDeleteChange> deletes,
+            RequestExtension extension) {
         BatchWriteRowRequest batchWriteRowRequest = new BatchWriteRowRequest();
+        batchWriteRowRequest.setExtension(extension);
         if (puts != null) {
             for (RowPutChange put : puts) {
                 batchWriteRowRequest.addRowChange(put);
@@ -421,6 +447,14 @@ public class OTSHelper {
             }
         }
         return ots.batchWriteRow(batchWriteRowRequest);
+    }
+
+    public static BatchWriteRowResponse batchWriteRow(
+            SyncClientInterface ots,
+            List<RowPutChange> puts,
+            List<RowUpdateChange> updates,
+            List<RowDeleteChange> deletes) {
+        return batchWriteRow(ots, puts, updates, deletes, null);
     }
     
     public static void batchWriteRowNoLimit(
@@ -521,11 +555,18 @@ public class OTSHelper {
 
     public static GetRangeResponse getRange(SyncClientInterface ots,
                                             RangeRowQueryCriteria rangeRowQueryCriteria) {
+        return getRange(ots, rangeRowQueryCriteria, null);
+    }
+
+    public static GetRangeResponse getRange(SyncClientInterface ots,
+                                            RangeRowQueryCriteria rangeRowQueryCriteria,
+                                            RequestExtension extension) {
         GetRangeRequest getRangeRequest = new GetRangeRequest(
                 rangeRowQueryCriteria);
+        getRangeRequest.setExtension(extension);
         return ots.getRange(getRangeRequest);
     }
-    
+
     public static List<Row> getRangeForAll(SyncClientInterface ots,
                                            RangeRowQueryCriteria rangeRowQueryCriteria) {
         List<Row> result = new ArrayList<Row>();

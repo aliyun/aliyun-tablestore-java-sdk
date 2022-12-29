@@ -509,4 +509,55 @@ public class APITest {
         }
         OTSHelper.deleteAllTable(ots);
     }
+
+
+
+
+    @Test
+    public void testStreamWithMayMoreRecord() throws Exception {
+        String longTableName = "test" + System.currentTimeMillis();
+        List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
+        scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
+        OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
+        UpdateTableRequest updateTableRequest = new UpdateTableRequest(longTableName);
+        updateTableRequest.setStreamSpecification(new StreamSpecification(true, 168));
+        ots.updateTable(updateTableRequest);
+
+        Utils.waitForPartitionLoad("");
+
+        int number = 10;
+
+        for (int i = 0; i < number; i++) {
+            OTSHelper.putRow(ots, longTableName, PrimaryKeyBuilder.createPrimaryKeyBuilder().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i)).build(),
+                    Arrays.asList(new Column("col", ColumnValue.fromLong(i))));
+        }
+        ListStreamRequest listStreamRequest = new ListStreamRequest(longTableName);
+        String streamId = ots.listStream(listStreamRequest).getStreams().get(0).getStreamId();
+        DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest(streamId);
+        String shardId = ots.describeStream(describeStreamRequest).getShards().get(0).getShardId();
+        GetShardIteratorRequest getShardIteratorRequest = new GetShardIteratorRequest(streamId, shardId);
+        String shardIterator = ots.getShardIterator(getShardIteratorRequest).getShardIterator();
+        GetStreamRecordRequest getStreamRecordRequest = new GetStreamRecordRequest(shardIterator);
+        getStreamRecordRequest.setTableName(longTableName);
+        getStreamRecordRequest.setLimit(1);
+
+        for (int i = 0; i < number; i++) {
+            GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
+            assertEquals(1, getStreamRecordResponse.getRecords().size());
+            if (getStreamRecordResponse.getMayMoreRecord() != null) {
+                // cluster that support table group
+                assertEquals(true, getStreamRecordResponse.getMayMoreRecord());
+            }
+
+            getStreamRecordRequest.setShardIterator(getStreamRecordResponse.getNextShardIterator());
+        }
+        GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
+        if (getStreamRecordResponse.getMayMoreRecord() != null) {
+            assertEquals(false, getStreamRecordResponse.getMayMoreRecord());
+        }
+
+        OTSHelper.deleteAllTable(ots);
+    }
+
+
 }

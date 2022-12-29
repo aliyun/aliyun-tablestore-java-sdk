@@ -33,7 +33,6 @@ public class GroupByResults {
                     "the result with this groupByName can't cast to GroupByFieldResult.");
             }
         }
-
     }
 
     public GroupByGeoDistanceResult getAsGroupByGeoDistanceResult(String groupByName) {
@@ -49,7 +48,6 @@ public class GroupByResults {
                     "the result with this groupByName can't cast to GroupByGeoDistanceResult.");
             }
         }
-
     }
 
     public GroupByFilterResult getAsGroupByFilterResult(String groupByName) {
@@ -65,7 +63,6 @@ public class GroupByResults {
                     "the result with this groupByName can't cast to GroupByFilterResult.");
             }
         }
-
     }
 
     public GroupByRangeResult getAsGroupByRangeResult(String groupByName) {
@@ -81,7 +78,6 @@ public class GroupByResults {
                     "the result with this groupByName can't cast to GroupByRangeResult.");
             }
         }
-
     }
 
     public GroupByHistogramResult getAsGroupByHistogramResult(String groupByName) {
@@ -91,13 +87,12 @@ public class GroupByResults {
             assert groupByResultMap != null;
             GroupByResult result = groupByResultMap.get(groupByName);
             if (result.getGroupByType() == GroupByType.GROUP_BY_HISTOGRAM) {
-                return (GroupByHistogramResult)result;
+                return (GroupByHistogramResult) result;
             } else {
                 throw new IllegalArgumentException(
-                    "the result with this groupByName can't cast to GroupByHistogramResult.");
+                        "the result with this groupByName can't cast to GroupByHistogramResult.");
             }
         }
-
     }
 
 }

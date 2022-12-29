@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.alicloud.openservices.tablestore.RequestTracer;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.concurrent.FutureCallback;
@@ -22,6 +23,7 @@ import com.alicloud.openservices.tablestore.ClientConfiguration;
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.TraceLogger;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+
 import static com.alicloud.openservices.tablestore.core.utils.LogUtil.*;
 
 public class AsyncServiceClient {
@@ -32,11 +34,11 @@ public class AsyncServiceClient {
     public AsyncServiceClient(ClientConfiguration config) {
         try {
             IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
-                .setIoThreadCount(config.getIoThreadCount()).build();
+                    .setIoThreadCount(config.getIoThreadCount()).build();
             ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(
-                ioReactorConfig);
+                    ioReactorConfig);
             PoolingNHttpClientConnectionManager cm =
-                new PoolingNHttpClientConnectionManager(ioReactor);
+                    new PoolingNHttpClientConnectionManager(ioReactor);
             cm.setMaxTotal(config.getMaxConnections());
             cm.setDefaultMaxPerRoute(config.getMaxConnections());
             httpClient = HttpFactory.createHttpAsyncClient(config, cm);
@@ -75,9 +77,8 @@ public class AsyncServiceClient {
         private long closePeriod;
 
         public IdleConnectionEvictor(
-            NHttpClientConnectionManager connMgr,
-            long closePeriod)
-        {
+                NHttpClientConnectionManager connMgr,
+                long closePeriod) {
             this.connMgr = connMgr;
             this.closePeriod = closePeriod;
         }
@@ -90,7 +91,7 @@ public class AsyncServiceClient {
                         wait(closePeriod);
                         connMgr.closeExpiredConnections();
                         connMgr.closeIdleConnections(
-                            closePeriod, TimeUnit.MILLISECONDS);
+                                closePeriod, TimeUnit.MILLISECONDS);
                     }
                 }
             } catch (InterruptedException ex) {
@@ -108,14 +109,21 @@ public class AsyncServiceClient {
 
     static class OTSRequestProducer extends BasicAsyncRequestProducer {
         private TraceLogger traceLogger;
+        private RequestMessage requestMessage;
+        private Object rpcContext;
+        private RequestTracer requestTracer;
 
         public OTSRequestProducer(
-            final HttpHost target,
-            final HttpRequest request,
-            TraceLogger traceLogger)
-        {
-            super(target, request);
+                final HttpHost target,
+                final RequestMessage request,
+                TraceLogger traceLogger,
+                RequestTracer requestTracer,
+                Object rpcContext) {
+            super(target, request.getRequest());
             this.traceLogger = traceLogger;
+            this.requestMessage = request;
+            this.requestTracer = requestTracer;
+            this.rpcContext = rpcContext;
         }
 
         public void requestCompleted(final HttpContext context) {
@@ -123,17 +131,26 @@ public class AsyncServiceClient {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(TRACE_ID_WITH_COLON + traceLogger.getTraceId() + DELIMITER + REQUEST_SENT);
             }
+            if (requestTracer != null) {
+                RequestTracer.RequestSendTraceInfo requestSendTraceInfo =
+                        new RequestTracer.RequestSendTraceInfo(
+                                requestMessage.getContentLength(),
+                                requestMessage.getActionUri().getHost().getHostName(),
+                                rpcContext);
+                requestTracer.requestSend(requestSendTraceInfo);
+            }
             traceLogger.addEventTime(REQUEST_SENT, System.currentTimeMillis());
         }
     }
 
     public <Res> void asyncSendRequest(
-        RequestMessage request,
-        ExecutionContext context,
-        ResponseConsumer<Res> consumer,
-        FutureCallback<Res> callback,
-        TraceLogger traceLogger)
-    {
+            RequestMessage request,
+            ExecutionContext context,
+            ResponseConsumer<Res> consumer,
+            FutureCallback<Res> callback,
+            TraceLogger traceLogger,
+            RequestTracer requestTracer,
+            Object rpcContext) {
         Preconditions.checkNotNull(request);
         Preconditions.checkNotNull(context);
 
@@ -148,12 +165,11 @@ public class AsyncServiceClient {
         }
         traceLogger.addEventTime(INTO_HTTP_ASYNC_CLIENT, System.currentTimeMillis());
         httpClient.execute(
-            new OTSRequestProducer(target, request.getRequest(), traceLogger),
-            consumer, callback);
+                new OTSRequestProducer(target, request, traceLogger, requestTracer, rpcContext),
+                consumer, callback);
     }
 
-    private void addExtraHeaders(RequestMessage request)
-    {
+    private void addExtraHeaders(RequestMessage request) {
         if (extraHeaders == null) {
             return;
         }
@@ -163,10 +179,9 @@ public class AsyncServiceClient {
     }
 
     private void handleRequest(
-        RequestMessage message,
-        List<RequestHandler> requestHandlers)
-        throws ClientException
-    {
+            RequestMessage message,
+            List<RequestHandler> requestHandlers)
+            throws ClientException {
         for (RequestHandler h : requestHandlers) {
             h.handle(message);
         }

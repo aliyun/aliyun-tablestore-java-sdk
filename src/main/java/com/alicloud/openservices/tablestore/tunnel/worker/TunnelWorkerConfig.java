@@ -73,11 +73,13 @@ public class TunnelWorkerConfig {
     /**
      * Tunnel ReadRecords阶段每一轮的相关配置, 包括最大的读取轮数和最大的读取数据量。
      */
-    private int readMaxTimesPerRound= 1;
+    private int readMaxTimesPerRound = 1;
     private int readMaxBytesPerRound = 4 * 1024 * 1024; // 4M bytes
     // TODO: Add max limit
     private static final int READ_MAX_TIMES_PER_ROUND = 50;
     private static final int READ_MAX_BYTES_PER_ROUND = 64 * 1024 * 1024;
+
+    private boolean enableClosingChannelDetect;
 
     public TunnelWorkerConfig() {
         this(
@@ -273,5 +275,13 @@ public class TunnelWorkerConfig {
             channelHelperExecutor.shutdownNow();
             LOG.info("shutdown channel helper executor");
         }
+    }
+
+    public void setEnableClosingChannelDetect(boolean enableClosingChannelDetect) {
+        this.enableClosingChannelDetect = enableClosingChannelDetect;
+    }
+
+    public boolean isEnableClosingChannelDetect() {
+        return enableClosingChannelDetect;
     }
 }

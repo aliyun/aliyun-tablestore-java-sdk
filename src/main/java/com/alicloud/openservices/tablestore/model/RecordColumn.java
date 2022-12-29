@@ -48,6 +48,13 @@ public class RecordColumn implements Jsonizable {
     }
 
     /**
+     * 设置列的相关数据
+     */
+    public void setColumn(Column column) {
+        this.column = column;
+    }
+
+    /**
      * 获取列的类型
      * @return 列的类型
      */

@@ -21,6 +21,8 @@ public class ReadRecordsResponse extends Response {
      */
     private int memoizedSerializedSize;
 
+    private Boolean mayMoreRecord;
+
     public ReadRecordsResponse() {
 
     }
@@ -56,5 +58,13 @@ public class ReadRecordsResponse extends Response {
 
     public void setMemoizedSerializedSize(int memoizedSerializedSize) {
         this.memoizedSerializedSize = memoizedSerializedSize;
+    }
+
+    public Boolean getMayMoreRecord() {
+        return mayMoreRecord;
+    }
+
+    public void setMayMoreRecord(Boolean mayMoreRecord) {
+        this.mayMoreRecord = mayMoreRecord;
     }
 }

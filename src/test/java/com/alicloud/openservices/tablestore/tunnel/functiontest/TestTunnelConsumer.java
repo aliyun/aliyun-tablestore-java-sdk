@@ -11,8 +11,11 @@ import com.alicloud.openservices.tablestore.tunnel.worker.IChannelProcessor;
 import com.alicloud.openservices.tablestore.tunnel.worker.ProcessRecordsInput;
 import com.alicloud.openservices.tablestore.tunnel.worker.TunnelWorker;
 import com.alicloud.openservices.tablestore.tunnel.worker.TunnelWorkerConfig;
+import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import org.junit.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +34,8 @@ public class TestTunnelConsumer {
     // For Assert
     private static ConcurrentHashMap<PrimaryKey, StreamRecord> totalRecords =
             new ConcurrentHashMap<PrimaryKey, StreamRecord>();
+    private static ArrayList<StreamRecord> totalStreamRecordsWithOrigin =
+            new ArrayList<StreamRecord>();
     private static AtomicLong consumeRound = new AtomicLong(0);
 
     @BeforeClass
@@ -62,6 +67,7 @@ public class TestTunnelConsumer {
     @Before
     public void setUp() throws Exception {
         totalRecords.clear();
+        totalStreamRecordsWithOrigin.clear();
         workerConfig.setMaxChannelParallel(-1);
         workerConfig.setReadMaxTimesPerRound(1);
         workerConfig.setReadMaxBytesPerRound(4 * 1024 * 1024);
@@ -117,6 +123,14 @@ public class TestTunnelConsumer {
         client.createTable(request);
     }
 
+    private void updateTableWithSetOriginColumn(SyncClient client, String column) {
+        UpdateTableRequest request = new UpdateTableRequest(TABLE_NAME);
+        StreamSpecification streamSpecification = new StreamSpecification(true, 168);
+        streamSpecification.addOriginColumnsToGet(column);
+        request.setStreamSpecification(streamSpecification);
+        client.updateTable(request);
+    }
+
     private void prepareTable(SyncClient client, int rowCount) {
         // prepare via BatchWriteRow
         BatchWriteRowRequest batchWriteRowRequest = new BatchWriteRowRequest();
@@ -136,11 +150,26 @@ public class TestTunnelConsumer {
         }
     }
 
+    private void putAndUpdateRow(SyncClient client, String column) {
+        PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
+        primaryKeyBuilder.addPrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("PK1"));
+        primaryKeyBuilder.addPrimaryKeyColumn("PK2", PrimaryKeyValue.fromLong(1));
+        RowPutChange putRowChange = new RowPutChange(TABLE_NAME, primaryKeyBuilder.build());
+        PutRowRequest putRowRequest = new PutRowRequest(putRowChange);
+        putRowChange.addColumn(new Column(column, ColumnValue.fromString(column + "ori")));
+        client.putRow(putRowRequest);
+
+        RowUpdateChange rowUpdateChange = new RowUpdateChange(TABLE_NAME, primaryKeyBuilder.build());
+        rowUpdateChange.put(new Column(column, ColumnValue.fromString(column + "tar")));
+        client.updateRow(new UpdateRowRequest(rowUpdateChange));
+    }
+
     static class SimpleProcessor implements IChannelProcessor {
         @Override
         public void process(ProcessRecordsInput input) {
             for (StreamRecord streamRecord : input.getRecords()) {
                 totalRecords.put(streamRecord.getPrimaryKey(), streamRecord);
+                totalStreamRecordsWithOrigin.add(streamRecord);
             }
             consumeRound.addAndGet(1);
         }
@@ -261,6 +290,77 @@ public class TestTunnelConsumer {
             primaryKeyBuilder.addPrimaryKeyColumn("PK2", PrimaryKeyValue.fromLong(i));
             PrimaryKey pk = primaryKeyBuilder.build();
             assertTrue(totalRecords.containsKey(pk));
+        }
+    }
+
+    @Test
+    public void testConsumeOriginColumn() throws Exception {
+        String column = "col1";
+        //1. 为表设置原始列
+        updateTableWithSetOriginColumn(syncClient, column);
+        Random rand = new Random(System.currentTimeMillis());
+
+        // 2. 创建增量类型的Tunnel开始消费，Tunnel读出来数据后assert
+        workerConfig.setReadMaxTimesPerRound(rand.nextInt(10) + 1);
+        workerConfig.setReadMaxBytesPerRound((rand.nextInt(50) + 4) * 1024 * 1024);
+        workerConfig.setHeartbeatIntervalInSec(10);
+        String tunnelId = createTunnel(tunnelClient, TunnelType.Stream);
+        TunnelWorker tunnelWorker = new TunnelWorker(tunnelId, tunnelClient, workerConfig);
+        try {
+            tunnelWorker.connectAndWorking();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 3. 写入一条数据后再做更新
+        putAndUpdateRow(syncClient, column);
+
+        // 4. 等待数据消费完毕
+        long beginTs = System.currentTimeMillis();
+        long count = consumeRound.get();
+        long cost = 0;
+
+        for(;;) {
+            if (consumeRound.get() - count > 0) {
+                break;
+            }
+            if (cost > 2 * 60 * 1000) {
+                break;
+            }
+            Thread.sleep(5000);
+            cost = System.currentTimeMillis() - beginTs;
+        }
+
+        // 5. Assert with totalStreamRecordsWithOrigin
+        assertEquals(2, totalStreamRecordsWithOrigin.size());
+        long  pk2Val = 1;
+        for (int i = 0; i < totalStreamRecordsWithOrigin.size(); i++) {
+            StreamRecord streamRecord = totalStreamRecordsWithOrigin.get(i);
+            //assert pk equal
+            PrimaryKeyColumn[] primaryKeyColumns = streamRecord.getPrimaryKey().getPrimaryKeyColumns();
+            assertEquals(primaryKeyColumns.length, 2);
+            assertEquals("PK1", primaryKeyColumns[0].getName());
+            assertEquals("PK1", primaryKeyColumns[0].getValue().asString());
+            assertEquals("PK2", primaryKeyColumns[1].getName());
+            assertEquals(pk2Val, primaryKeyColumns[1].getValue().asLong());
+
+            //assert column and originColumn equal
+            List<RecordColumn> recordColumns = streamRecord.getColumns();
+            List<RecordColumn> originRecordColumns = streamRecord.getOriginColumns();
+            if (i == 0) {
+                assertEquals(StreamRecord.RecordType.PUT, streamRecord.getRecordType());
+                assertEquals(1, recordColumns.size());
+                assertEquals(0, originRecordColumns.size());
+                assertEquals("col1", recordColumns.get(0).getColumn().getName());
+                assertEquals("col1ori", recordColumns.get(0).getColumn().getValue().asString());
+            } else {
+                assertEquals(StreamRecord.RecordType.UPDATE, streamRecord.getRecordType());
+                assertEquals(1, recordColumns.size());
+                assertEquals(1, originRecordColumns.size());
+                assertEquals("col1", recordColumns.get(0).getColumn().getName());
+                assertEquals("col1tar", recordColumns.get(0).getColumn().getValue().asString());
+                assertEquals("col1", originRecordColumns.get(0).getColumn().getName());
+                assertEquals("col1ori", originRecordColumns.get(0).getColumn().getValue().asString());
+            }
         }
     }
 

@@ -13,7 +13,9 @@ import com.alicloud.openservices.tablestore.model.PrimaryKeyColumn;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest.ColumnsToGet;
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders;
+import com.alicloud.openservices.tablestore.model.search.agg.SumAggregation;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.query.MatchAllQuery;
 import com.alicloud.openservices.tablestore.model.search.query.QueryBuilders;
 import com.alicloud.openservices.tablestore.model.search.query.RangeQuery;
@@ -246,6 +248,10 @@ public class SearchRequestTest extends BaseSearchTest {
             .searchQuery(
                 SearchQuery.newBuilder()
                     .query(QueryBuilders.bool()
+                        .should(new MatchAllQuery())
+                        .filter(new MatchAllQuery())
+                        .mustNot(new MatchAllQuery())
+                        .must(new MatchAllQuery())
                         .mustNot(QueryBuilders.range("f1").lessThan(9990))
                         .must(QueryBuilders.terms("f2"))
                         .must(QueryBuilders.exists("f3"))
@@ -259,13 +265,16 @@ public class SearchRequestTest extends BaseSearchTest {
                     .addAggregation(AggregationBuilders.sum("3", "col_long"))
                     .addAggregation(AggregationBuilders.avg("4", "col_long"))
                     .addAggregation(AggregationBuilders.distinctCount("5", "col_long"))
+                    .addGroupBy(new GroupByField())
                     .addGroupBy(GroupByBuilders
                         .groupByField("field", "col_keyword")
                         .addSubAggregation(AggregationBuilders.min("1", "col_long"))
                         .addSubAggregation(AggregationBuilders.count("2", "col_long"))
                         .addSubAggregation(AggregationBuilders.sum("3", "col_long"))
+                        .addSubAggregation(new SumAggregation())
                         .addSubAggregation(AggregationBuilders.max("4", "col_long"))
                         .addSubAggregation(AggregationBuilders.avg("5", "col_long").missing(13))
+                        .addSubGroupBy(new GroupByField())
                         .addSubGroupBy(GroupByBuilders
                             .groupByGeoDistance("123", "col_geo")
                             .origin(12, 23)

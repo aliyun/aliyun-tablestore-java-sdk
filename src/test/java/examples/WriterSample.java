@@ -21,6 +21,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 
 public class WriterSample {
+
     private static String endpoint = "https://[instanceName].cn-hangzhou.ots.aliyuncs.com";
     private static String instanceName = "instanceName";
     private static String accessKeyId = "XXXXXXXXXX";

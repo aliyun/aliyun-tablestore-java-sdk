@@ -21,6 +21,10 @@ public class TimeseriesKey {
         this(measurementName, dataSource, null);
     }
 
+    public TimeseriesKey(String measurementName, Map<String, String> tags) {
+        this(measurementName, "", tags);
+    }
+
     public TimeseriesKey(String measurementName, String dataSource, Map<String, String> tags) {
         Preconditions.checkStringNotNullAndEmpty(measurementName, "measurement should not be null or empty");
         this.measurementName = measurementName;

@@ -174,11 +174,13 @@ enum ActionType {
 message Record {
     required ActionType action_type = 1;
     required bytes record = 2;
+    optional bytes origin_record = 3;
 }
 
 message ReadRecordsResponse {
     repeated Record records = 1;
     required string next_token = 2;
+    optional bool may_more_record = 3;
 }
 
 message Token {

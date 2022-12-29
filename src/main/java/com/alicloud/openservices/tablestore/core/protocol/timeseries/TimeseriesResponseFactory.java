@@ -260,4 +260,51 @@ public class TimeseriesResponseFactory {
         }
         return result;
     }
+
+    public static SplitTimeseriesScanTaskResponse createSplitTimeseriesScanTaskResponse(
+            ResponseContentWithMeta response, Timeseries.SplitTimeseriesScanTaskResponse pbResponse) {
+        SplitTimeseriesScanTaskResponse result = new SplitTimeseriesScanTaskResponse(response.getMeta());
+        List<TimeseriesScanSplitInfo> splitInfos = new ArrayList<TimeseriesScanSplitInfo>(pbResponse.getSplitInfosCount());
+        for (int i = 0; i < pbResponse.getSplitInfosCount(); i++) {
+            splitInfos.add(new TimeseriesScanSplitInfo(pbResponse.getSplitInfos(i).toByteArray()));
+        }
+        result.setSplitInfos(splitInfos);
+        return result;
+    }
+
+    public static ScanTimeseriesDataResponse createScanTimeseriesDataResponse(
+            ResponseContentWithMeta meta, Timeseries.ScanTimeseriesDataResponse pbResponse) {
+        ScanTimeseriesDataResponse response = new ScanTimeseriesDataResponse(meta.getMeta());
+        if (!pbResponse.hasDataSerializeType()) {
+            throw new ClientException("missing data serialize type in response");
+        }
+        if (!pbResponse.getDataSerializeType().equals(Timeseries.RowsSerializeType.RST_PLAIN_BUFFER)) {
+            throw new ClientException("unsupported data serialize type");
+        }
+        if (pbResponse.hasData() && !pbResponse.getData().isEmpty()) {
+            try {
+                PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(
+                        new PlainBufferInputStream(pbResponse.getData().asReadOnlyByteBuffer()));
+                List<PlainBufferRow> pbRows = inputStream.readRowsWithHeader();
+                List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>(pbRows.size());
+                for (int i = 0; i < pbRows.size(); i++) {
+                    if (i > 0) {
+                        // reuse timeseries key
+                        rows.add(parseRowFromPlainbuffer(pbRows.get(i), rows.get(0).getTimeseriesKey()));
+                    } else {
+                        rows.add(parseRowFromPlainbuffer(pbRows.get(i)));
+                    }
+                }
+                response.setRows(rows);
+            } catch (IOException e) {
+                throw new ClientException("Failed to parse get timeseries data response.", e);
+            }
+        } else {
+            response.setRows(new ArrayList<TimeseriesRow>());
+        }
+        if (pbResponse.hasNextToken() && !pbResponse.getNextToken().isEmpty()) {
+            response.setNextToken(pbResponse.getNextToken().toByteArray());
+        }
+        return response;
+    }
 }

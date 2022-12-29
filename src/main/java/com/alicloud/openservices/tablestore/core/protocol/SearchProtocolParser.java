@@ -51,8 +51,10 @@ public class SearchProtocolParser {
                 return FieldType.NESTED;
             case GEO_POINT:
                 return FieldType.GEO_POINT;
+            case DATE:
+                return FieldType.DATE;
             default:
-                throw new IllegalArgumentException("Unknown fieldType: " + fieldType.name());
+                return FieldType.UNKNOWN;
         }
     }
 
@@ -158,6 +160,7 @@ public class SearchProtocolParser {
             result.setVirtualField(fieldSchema.getIsVirtualField());
         }
         result.setSourceFieldNames(fieldSchema.getSourceFieldNamesList());
+        result.setDateFormats(fieldSchema.getDateFormatsList());
         return result;
     }
 

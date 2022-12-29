@@ -62,6 +62,11 @@ public class SearchQuery {
         return aggregationList;
     }
 
+
+    /**
+     * 设置统计聚合中的agg参数。
+     * @param aggregationList 使用{@link com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders}进行构建
+     */
     public void setAggregationList(
         List<Aggregation> aggregationList) {
         this.aggregationList = aggregationList;
@@ -71,6 +76,10 @@ public class SearchQuery {
         return groupByList;
     }
 
+    /**
+     * 设置统计聚合中的groupby参数。
+     * @param groupByList 使用{@link com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders}进行构建
+     */
     public void setGroupByList(List<GroupBy> groupByList) {
         this.groupByList = groupByList;
     }
@@ -197,6 +206,11 @@ public class SearchQuery {
             return this;
         }
 
+        public Builder query(Query query) {
+            this.query = query;
+            return this;
+        }
+
         /**
          * 字段折叠
          * 能够实现某个字段的结果去重。
@@ -219,6 +233,10 @@ public class SearchQuery {
             return this;
         }
 
+        /**
+         * 添加一个统计聚合中的Agg
+         * @param aggregationBuilder 使用{@link com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders}进行构建
+         */
         public Builder addAggregation(AggregationBuilder aggregationBuilder) {
             if (aggregationList == null) {
                 aggregationList = new ArrayList<Aggregation>();
@@ -227,11 +245,39 @@ public class SearchQuery {
             return this;
         }
 
+        /**
+         * 添加一个统计聚合中的Agg
+         * @param aggregation 使用{@link com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders}进行构建
+         */
+        public Builder addAggregation(Aggregation aggregation) {
+            if (aggregationList == null) {
+                aggregationList = new ArrayList<Aggregation>();
+            }
+            aggregationList.add(aggregation);
+            return this;
+        }
+
+        /**
+         * 添加一个统计聚合中的GroupBy
+         * @param groupByBuilder 使用{@link com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders}进行构建
+         */
         public Builder addGroupBy(GroupByBuilder groupByBuilder) {
             if (groupByList == null) {
                 groupByList = new ArrayList<GroupBy>();
             }
             groupByList.add(groupByBuilder.build());
+            return this;
+        }
+
+        /**
+         * 添加一个统计聚合中的GroupBy
+         * @param groupBy 使用{@link com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders}进行构建
+         */
+        public Builder addGroupBy(GroupBy groupBy) {
+            if (groupByList == null) {
+                groupByList = new ArrayList<GroupBy>();
+            }
+            groupByList.add(groupBy);
             return this;
         }
 

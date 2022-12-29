@@ -105,6 +105,11 @@ public class FieldSchema implements Jsonizable {
      */
     private List<String> sourceFieldNames;
 
+    /**
+     * 当字段类型是{@link FieldType#DATE}日期类型时候，可以定义该日期支持的格式。
+     */
+    private List<String> dateFormats;
+
     public FieldSchema(String fieldName, FieldType fieldType) {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
@@ -223,6 +228,15 @@ public class FieldSchema implements Jsonizable {
         return this;
     }
 
+    public List<String> getDateFormats() {
+        return dateFormats;
+    }
+
+    public FieldSchema setDateFormats(List<String> dateFormats) {
+        this.dateFormats = dateFormats;
+        return this;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -335,6 +349,19 @@ public class FieldSchema implements Jsonizable {
                 String sourceField = sourceFieldNames.get(i);
                 sb.append("\"").append(sourceField).append("\"");
                 if (i != sourceFieldNames.size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append("]");
+        }
+        if (dateFormats != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"DateFormats\": [");
+            for (int i = 0; i < dateFormats.size(); i++) {
+                String sourceField = dateFormats.get(i);
+                sb.append("\"").append(sourceField).append("\"");
+                if (i != dateFormats.size() - 1) {
                     sb.append(", ");
                 }
             }

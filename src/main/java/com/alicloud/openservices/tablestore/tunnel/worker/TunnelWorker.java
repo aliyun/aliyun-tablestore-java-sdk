@@ -138,6 +138,7 @@ public class TunnelWorker implements ITunnelWorker {
                         channelDialer,
                         factory,
                         client);
+                stateMachine.setEnableClosingChannelDetect(workerConfig.isEnableClosingChannelDetect());
                 LOG.info("Connect tunnel success, RequestId: {}, clientId: {}, tunnelId: {}", resp.getRequestId(), clientId, tunnelId);
                 break;
             } catch (TableStoreException te) {

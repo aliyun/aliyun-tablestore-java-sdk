@@ -338,4 +338,41 @@ public class TestFieldSchema extends BaseSearchTest {
         assertEquals(isVirtualField, fieldSchemaMap.get("IsVirtualField"));
         assertEquals(sourceFieldNames, fieldSchemaMap.get("SourceFieldNames"));
     }
+
+    @Test
+    public void testDateFormats() {
+        List<String> formats =
+                random().nextBoolean() ? Collections.singletonList(randomString(random().nextInt(5) + 1)) :
+                        randomList(new Supplier<String>() {
+                            @Override
+                            public String get() {
+                                return randomString(random().nextInt(5) + 1);
+                            }
+                        });
+        FieldType fieldType = randomFrom(FieldType.values());
+        FieldSchema fieldSchema = new FieldSchema("f1", fieldType);
+        assertNull(fieldSchema.getDateFormats());
+        fieldSchema.setDateFormats(formats);
+        assertArrayEquals(fieldSchema.getDateFormats().toArray(new String[0]), formats.toArray(new String[0]));
+    }
+
+    @Test
+    public void testDateFormatsJsonize() {
+        List<String> formats = random().nextBoolean() ?
+                (random().nextBoolean() ? null : Collections.singletonList(randomString(random().nextInt(5) + 1))) :
+                randomList(new Supplier<String>() {
+                    @Override
+                    public String get() {
+                        return randomString(random().nextInt(5) + 1);
+                    }
+                });
+        FieldType fieldType = randomFrom(FieldType.values());
+
+        FieldSchema fieldSchema = new FieldSchema("f1", fieldType);
+        fieldSchema.setDateFormats(formats);
+        String jsonString = fieldSchema.jsonize();
+        Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertEquals("f1", fieldSchemaMap.get("FieldName"));
+        assertEquals(formats, fieldSchemaMap.get("DateFormats"));
+    }
 }

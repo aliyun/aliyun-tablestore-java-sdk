@@ -19,7 +19,7 @@ import com.google.protobuf.ByteString;
  */
 public class GroupByHistogram implements GroupBy {
 
-    private GroupByType groupByType = GroupByType.GROUP_BY_HISTOGRAM;
+    private final GroupByType groupByType = GroupByType.GROUP_BY_HISTOGRAM;
 
     /**
      * GroupBy的名字，之后从GroupBy结果列表中根据该名字拿到GroupBy结果
@@ -146,11 +146,6 @@ public class GroupByHistogram implements GroupBy {
         return this;
     }
 
-    public GroupByHistogram setGroupByType(GroupByType groupByType) {
-        this.groupByType = groupByType;
-        return this;
-    }
-
     public GroupByHistogram setInterval(ColumnValue interval) {
         this.interval = interval;
         return this;
@@ -251,11 +246,27 @@ public class GroupByHistogram implements GroupBy {
             return this;
         }
 
+        public Builder addSubAggregation(Aggregation aggregation) {
+            if (subAggregations == null) {
+                subAggregations = new ArrayList<Aggregation>();
+            }
+            this.subAggregations.add(aggregation);
+            return this;
+        }
+
         public Builder addSubGroupBy(GroupByBuilder builder) {
             if (subGroupBys == null) {
                 subGroupBys = new ArrayList<GroupBy>();
             }
             this.subGroupBys.add(builder.build());
+            return this;
+        }
+
+        public Builder addSubGroupBy(GroupBy groupBy) {
+            if (subGroupBys == null) {
+                subGroupBys = new ArrayList<GroupBy>();
+            }
+            this.subGroupBys.add(groupBy);
             return this;
         }
 

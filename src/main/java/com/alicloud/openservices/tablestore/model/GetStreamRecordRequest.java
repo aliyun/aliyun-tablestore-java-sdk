@@ -16,6 +16,16 @@ public class GetStreamRecordRequest implements Request {
      */
     private OptionalValue<Integer> limit = new OptionalValue<Integer>("Limit");
 
+    /**
+     * 若表为TableGroup中的表，则需要传入tableName。非TableGroup表，此字段填不填都可以（建议不填）。
+     */
+    private String tableName;
+
+    /**
+     * 是否将数据按照时序数据的格式解析，默认为false。
+     */
+    private boolean parseInTimeseriesDataFormat = false;
+
     public GetStreamRecordRequest(String shardIterator) {
         setShardIterator(shardIterator);
     }
@@ -59,8 +69,35 @@ public class GetStreamRecordRequest implements Request {
         this.limit.setValue(limit);
     }
 
+    /**
+     * 获取parseInTimeseriesDataFormat参数
+     * @return parseInTimeseriesDataFormat
+     */
+    public boolean isParseInTimeseriesDataFormat() {
+        return parseInTimeseriesDataFormat;
+    }
+
+    /**
+     * 设置parseInTimeseriesDataFormat参数
+     * @param parseInTimeseriesDataFormat
+     */
+    public void setParseInTimeseriesDataFormat(boolean parseInTimeseriesDataFormat) {
+        this.parseInTimeseriesDataFormat = parseInTimeseriesDataFormat;
+    }
+
     @Override
     public String getOperationName() {
         return OperationNames.OP_GET_STREAM_RECORD;
+    }
+
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        Preconditions.checkArgument(tableName != null && !tableName.isEmpty(),
+                "The table name is null or empty.");
+        this.tableName = tableName;
     }
 }

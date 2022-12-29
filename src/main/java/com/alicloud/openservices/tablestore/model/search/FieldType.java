@@ -16,5 +16,10 @@ public enum FieldType {
      */
     TEXT,
     NESTED,
-    GEO_POINT
+    GEO_POINT,
+    DATE,
+    /**
+     * 未知的类型，遇到该类型请升级到最新SDK版本
+     */
+    UNKNOWN,
 }

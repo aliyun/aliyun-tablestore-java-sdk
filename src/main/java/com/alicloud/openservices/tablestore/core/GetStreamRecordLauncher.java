@@ -56,7 +56,7 @@ public class GetStreamRecordLauncher extends OperationLauncher<GetStreamRecordRe
             new GetStreamRecordResponseConsumer(
                 ResultParserFactory.createFactory().createProtocolBufferResultParser(
                     defaultResponse, tracer.getTraceId()),
-                tracer, retry, lastResult),
+                tracer, retry, lastResult, req.isParseInTimeseriesDataFormat()),
             cb);
     }
 }

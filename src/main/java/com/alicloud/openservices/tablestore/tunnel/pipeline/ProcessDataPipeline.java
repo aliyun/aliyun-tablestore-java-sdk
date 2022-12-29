@@ -128,7 +128,7 @@ public class ProcessDataPipeline implements Runnable {
                                     break;
                                 }
                                 if (backoff != null) {
-                                    if (checkDataEnough(resp.getRecords().size(), resp.getMemoizedSerializedSize())) {
+                                    if (needResetBackoff(resp.getRecords().size(), resp.getMemoizedSerializedSize(), resp.getMayMoreRecord())) {
                                         LOG.debug("Backoff is reset");
                                         backoff.reset();
                                     } else {
@@ -190,6 +190,15 @@ public class ProcessDataPipeline implements Runnable {
             }
         };
     }
+
+
+    private boolean needResetBackoff(int numRec, int size, Boolean mayMoreRecord) {
+        if (mayMoreRecord != null) {
+            return mayMoreRecord;
+        }
+        return checkDataEnough(numRec, size);
+    }
+
 
     /**
      * 判断当次的数据是否拉取的足够多，用于数据拉取的休眠策略。

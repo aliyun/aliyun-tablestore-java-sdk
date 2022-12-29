@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.alicloud.openservices.tablestore.TunnelClientInterface;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.model.tunnel.ChannelStatus;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.Channel;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointResponse;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * 状态的Channel类似，当有TunnelClient重新调用heartbeat接口时，CLOSE状态的Channel会被重新分配到新的TunnelClient, 状态也会变成OPEN.
  * 5. TERMINATED: 结束状态，当Channel上的数据消费完成后，会进入此状态。全量类型的Channel最终都会被消费完成，转入此状态，而增量状态的Channel则
  * 不会进入此状态(流式数据无尽头)。
- *
+ * <p>
  * ChannelConnect和Channel对应，有WAIT, RUNNING, CLOSING, CLOSE四种状态, 相关说明如下:
  * 1. WAIT: 等待状态，ChannelConnect被创建出来的初始状态。
  * 2. RUNNING: 运行中，此状态代表ChannelConnect工作良好，正在不断的拉取数据，处理数据和记录消费位点。
@@ -51,12 +52,17 @@ public class TunnelStateMachine {
     private volatile ConcurrentHashMap<String, IChannelConnect> channelConnects;
     private volatile ConcurrentHashMap<String, Channel> currentChannels;
 
+    // 某些极端场景下，可能分区会处于closing状态，此时可以开启CLOSING分区的检测
+    private boolean enableClosingChannelDetect;
+    private int channelClosingRoundThreshold = 3;
+    private ConcurrentHashMap<String, Integer> channelClosingRounds;
+
     public TunnelStateMachine(String tunnelId, String clientId, IChannelDialer dialer,
                               IChannelProcessorFactory processorFactory, TunnelClientInterface client) {
         Preconditions.checkArgument(tunnelId != null && !tunnelId.isEmpty(),
-            "The tunnel id should not be null or empty.");
+                "The tunnel id should not be null or empty.");
         Preconditions.checkArgument(clientId != null && !clientId.isEmpty(),
-            "The client id should not be null or empty.");
+                "The client id should not be null or empty.");
         Preconditions.checkNotNull(dialer, "Channel dialer cannot be null.");
         Preconditions.checkNotNull(processorFactory, "Channel process factory cannot be null.");
         Preconditions.checkNotNull(client, "Tunnel client cannot be null.");
@@ -68,6 +74,7 @@ public class TunnelStateMachine {
         this.client = client;
         this.channelConnects = new ConcurrentHashMap<String, IChannelConnect>();
         this.currentChannels = new ConcurrentHashMap<String, Channel>();
+        this.channelClosingRounds = new ConcurrentHashMap<String, Integer>();
     }
 
     /**
@@ -86,7 +93,7 @@ public class TunnelStateMachine {
         LOG.debug("CurrentChannel: {}, UpdateChannel: {}", currentChannel, channel);
         if (currentChannel.getVersion() >= channel.getVersion()) {
             LOG.info("Expired channel version, channelId: {}, current version: {}, old version: {}",
-                channelId, currentChannel.getVersion(), channel.getVersion());
+                    channelId, currentChannel.getVersion(), channel.getVersion());
             return;
         }
         currentChannels.put(channelId, channel);
@@ -118,15 +125,15 @@ public class TunnelStateMachine {
             if (channelConnect == null) {
                 try {
                     GetCheckpointResponse resp = client.getCheckpoint(
-                        new GetCheckpointRequest(tunnelId, clientId, channelId));
+                            new GetCheckpointRequest(tunnelId, clientId, channelId));
                     LOG.info("Get checkpoint response, channelId: {}, checkpoint: {}, sequenceNumber: {}",
-                        channelId, resp.getCheckpoint(), resp.getSequenceNumber());
+                            channelId, resp.getCheckpoint(), resp.getSequenceNumber());
                     // 根据用户传入的处理数据的Callback和TunnelWorkerConfig中CheckpointInterval(向服务端记数据位点的间隔)
                     // 包装出一个带自动记Checkpoint功能的数据处理器
                     IChannelProcessor channelProcessor = processorFactory.createProcessor(tunnelId, clientId, channelId,
-                        new Checkpointer(client, tunnelId, clientId, channelId, resp.getSequenceNumber() + 1));
+                            new Checkpointer(client, tunnelId, clientId, channelId, resp.getSequenceNumber() + 1));
                     channelConnect = dialer.channelDial(tunnelId, clientId, channelId, resp.getCheckpoint(),
-                        channelProcessor, this);
+                            channelProcessor, this);
                     channelConnects.put(channelId, channelConnect);
                 } catch (Exception e) {
                     LOG.warn("Failed to update channel, error detail: {}", e.toString());
@@ -150,11 +157,15 @@ public class TunnelStateMachine {
             }
         }
 
+        if (enableClosingChannelDetect) {
+            handleHangedClosingChannels();
+        }
+
     }
 
     private ConcurrentHashMap<String, Channel> mergeChannels(List<Channel> batchChannels) {
         ConcurrentHashMap<String, Channel> updatedChannels = new ConcurrentHashMap<String, Channel>(
-            batchChannels.size());
+                batchChannels.size());
         for (Channel channel : batchChannels) {
             String channelId = channel.getChannelId();
             Channel oldChannel = currentChannels.get(channelId);
@@ -177,5 +188,53 @@ public class TunnelStateMachine {
             connect.close();
         }
         LOG.info("Tunnel state machine is closed");
+    }
+
+    public void handleHangedClosingChannels() {
+        LOG.info("Current closing channel detector, size: {}, detail: {}", channelClosingRounds.size(), channelClosingRounds);
+        // 根据当前活跃的Channel连接来清除无效的closing channel统计
+        for (Map.Entry<String, Integer> entry : channelClosingRounds.entrySet()) {
+            String channelId = entry.getKey();
+            if (currentChannels.get(channelId) == null) {
+                LOG.info("Clear redundant closing channel connect, channelId: {}", channelId);
+                channelClosingRounds.remove(channelId);
+            }
+        }
+
+        // 当channel连续多个周期都为closing状态，则执行channel的主动关闭
+        for (Map.Entry<String, Channel> entry : currentChannels.entrySet()) {
+            if (entry.getValue().getStatus() == ChannelStatus.CLOSING) {
+                String channelId = entry.getKey();
+                Integer rounds = channelClosingRounds.get(channelId);
+                if (rounds == null) {
+                    LOG.info("Add closing channel to detector, channelId: {}", channelId);
+                    channelClosingRounds.put(channelId, 1);
+                } else {
+                    channelClosingRounds.put(channelId, rounds + 1);
+                }
+                if (channelClosingRounds.get(channelId) >= channelClosingRoundThreshold) {
+                    LOG.info("Begin close closing channel via detector, channelId: {}, closing rounds: {}", channelId, rounds);
+                    IChannelConnect channelConnect = channelConnects.get(channelId);
+                    if (channelConnect != null && !channelConnect.closed()) {
+                        LOG.info("Close closing channel via detector, channelId: {}", channelId);
+                        channelConnect.close();
+                        LOG.info("Finish closing channel via detector, channelId: {}", channelId);
+                    }
+                    channelClosingRounds.remove(channelId);
+                }
+            }
+        }
+    }
+
+    public void setEnableClosingChannelDetect(boolean enableClosingChannelDetect) {
+        this.enableClosingChannelDetect = enableClosingChannelDetect;
+    }
+
+    public void setChannelClosingRoundThreshold(int channelClosingRoundThreshold) {
+        this.channelClosingRoundThreshold = channelClosingRoundThreshold;
+    }
+
+    public ConcurrentHashMap<String, Integer> getChannelClosingRounds() {
+        return channelClosingRounds;
     }
 }

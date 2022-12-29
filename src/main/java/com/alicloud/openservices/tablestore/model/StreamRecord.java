@@ -46,6 +46,11 @@ public class StreamRecord {
     private List<RecordColumn> columns;
 
     /**
+    * 该Record包含的原始属性列，为RecordColumn类型
+    */
+    private List<RecordColumn> originColumns;
+
+    /**
      * 获取Record的类型
      * @return Record的类型
      */
@@ -96,6 +101,22 @@ public class StreamRecord {
         this.columns = columns;
     }
 
+    /**
+     * 获取该Record包含的原始属性列列表
+     * @return 该Record包含的原始属性列列表
+     */
+    public List<RecordColumn> getOriginColumns() {
+        if (originColumns != null) {
+            return originColumns;
+        } else {
+            return new ArrayList<RecordColumn>();
+        }
+    }
+
+    public void setOriginColumns(List<RecordColumn> originColumns) {
+        this.originColumns = originColumns;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -109,6 +130,12 @@ public class StreamRecord {
         for (RecordColumn column : this.getColumns()) {
             sb.append("(");
             sb.append(column);
+            sb.append(")");
+        }
+        sb.append("\n[originColumns:]");
+        for (RecordColumn originColumn : this.getOriginColumns()) {
+            sb.append("(");
+            sb.append(originColumn);
             sb.append(")");
         }
         return sb.toString();

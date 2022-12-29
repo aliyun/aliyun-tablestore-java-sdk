@@ -111,6 +111,7 @@ message ConsumedCapacity {
 message StreamSpecification {
     required bool enable_stream = 1;
     optional int32 expiration_time = 2;
+    repeated string columns_to_get = 3;
 }
 
 message StreamDetails {
@@ -118,6 +119,7 @@ message StreamDetails {
     optional string stream_id = 2;
     optional int32 expiration_time = 3;
     optional int64 last_enable_time = 4;
+    repeated string column_to_get = 5;
 }
 
 enum SSEKeyType {
@@ -461,6 +463,7 @@ message DescribeStreamRequest {
     required string stream_id = 1;
     optional string inclusive_start_shard_id = 2;
     optional int32 shard_limit = 3;
+    optional bool support_timeseries_data_table = 4;
 }
 
 message DescribeStreamResponse {
@@ -471,6 +474,7 @@ message DescribeStreamResponse {
     required StreamStatus stream_status = 5;
     repeated StreamShard shards = 6;
     optional string next_shard_id = 7;
+    optional bool is_timeseries_data_table = 8;
 }
 
 message GetShardIteratorRequest {
@@ -488,6 +492,7 @@ message GetShardIteratorResponse {
 message GetStreamRecordRequest {
     required string shard_iterator = 1;
     optional int32 limit = 2;
+    optional string table_name = 3;
 }
 
 enum ActionType {
@@ -500,9 +505,12 @@ message GetStreamRecordResponse {
     message StreamRecord {
         required ActionType action_type = 1;
         required bytes record = 2;
+        optional bytes origin_record = 3;
     }
     repeated StreamRecord stream_records = 1;
     optional string next_shard_iterator = 2;
+    optional ConsumedCapacity consumed = 3;
+    optional bool may_more_record = 4;
 }
 
 message ComputeSplitPointsBySizeRequest {

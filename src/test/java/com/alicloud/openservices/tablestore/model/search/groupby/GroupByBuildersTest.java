@@ -6,7 +6,11 @@ import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField.Builder;
@@ -25,6 +29,18 @@ import org.junit.Test;
  * @since <pre>9月 30, 2019</pre>
  */
 public class GroupByBuildersTest extends BaseSearchTest {
+
+    @Test
+    public void testGroupByBuildersCount() {
+        Method[] methods = GroupByBuilders.class.getMethods();
+        List<Method> methodList = new ArrayList<Method>();
+        for (Method method : methods) {
+            if (method.getName().startsWith("groupBy")) {
+                methodList.add(method);
+            }
+        }
+        assertEquals("GroupByBuilders is incomplete", GroupByType.values().length, methodList.size());
+    }
 
     @Test
     public void testType() {
