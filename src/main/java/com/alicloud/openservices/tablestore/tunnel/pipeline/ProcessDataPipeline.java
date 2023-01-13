@@ -145,7 +145,7 @@ public class ProcessDataPipeline implements Runnable {
                             } else {
                                 LOG.info("GetRecords, Num: {}, LoopTimes: {}, TotalBytes: {}, Channel connect: {}, Latency: {} ms, Next Token: {}",
                                         totalRecordsCount, times, totalBytes, connect, System.currentTimeMillis() - beginTs, resp.getNextToken());
-                                return new ProcessRecordsInput(totalRecords, resp.getNextToken(), resp.getRequestId());
+                                return new ProcessRecordsInput(totalRecords, resp.getNextToken(), resp.getRequestId(), connect.getChannelId());
                             }
                         } catch (Exception e) {
                             throw new StageException(this, readRecordsRequest, e.getMessage(), e);
