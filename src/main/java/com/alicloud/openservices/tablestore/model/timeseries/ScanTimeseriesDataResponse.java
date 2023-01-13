@@ -7,6 +7,8 @@ import java.util.List;
 
 public class ScanTimeseriesDataResponse extends Response {
 
+    public static String _VERSION_ = "20230111";
+
     private List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>();
     private byte[] nextToken;
 

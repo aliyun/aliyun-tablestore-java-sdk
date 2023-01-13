@@ -288,12 +288,7 @@ public class TimeseriesResponseFactory {
                 List<PlainBufferRow> pbRows = inputStream.readRowsWithHeader();
                 List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>(pbRows.size());
                 for (int i = 0; i < pbRows.size(); i++) {
-                    if (i > 0) {
-                        // reuse timeseries key
-                        rows.add(parseRowFromPlainbuffer(pbRows.get(i), rows.get(0).getTimeseriesKey()));
-                    } else {
-                        rows.add(parseRowFromPlainbuffer(pbRows.get(i)));
-                    }
+                    rows.add(parseRowFromPlainbuffer(pbRows.get(i)));
                 }
                 response.setRows(rows);
             } catch (IOException e) {
