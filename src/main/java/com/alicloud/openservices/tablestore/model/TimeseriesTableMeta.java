@@ -14,9 +14,14 @@ public class TimeseriesTableMeta implements Jsonizable {
     private String timeseriesTableName;
 
     /**
-     * 表的配置项, 目前只包括TTL。
+     * 表的配置项, 包括数据的TTL等。
      */
     private TimeseriesTableOptions timeseriesTableOptions;
+
+    /**
+     * 时间线元数据相关配置项，包括元数据的TTL等。
+     */
+    private TimeseriesMetaOptions timeseriesMetaOptions;
 
     /**
      * 表的状态。
@@ -72,7 +77,7 @@ public class TimeseriesTableMeta implements Jsonizable {
      * @param timeseriesTableOptions 表的配置。
      */
     public void setTimeseriesTableOptions(TimeseriesTableOptions timeseriesTableOptions) {
-        Preconditions.checkNotNull(timeseriesTableOptions, "TimeseriesTableOptionsEx should not be null.");
+        Preconditions.checkNotNull(timeseriesTableOptions, "TimeseriesTableOptions should not be null.");
         this.timeseriesTableOptions = timeseriesTableOptions;
     }
 
@@ -83,7 +88,15 @@ public class TimeseriesTableMeta implements Jsonizable {
      */
     public TimeseriesTableOptions getTimeseriesTableOptions() {
         return timeseriesTableOptions;
+    }
 
+    public TimeseriesMetaOptions getTimeseriesMetaOptions() {
+        return timeseriesMetaOptions;
+    }
+
+    public void setTimeseriesMetaOptions(TimeseriesMetaOptions timeseriesMetaOptions) {
+        Preconditions.checkNotNull(timeseriesMetaOptions, "TimeseriesMetaOptions should not be null.");
+        this.timeseriesMetaOptions = timeseriesMetaOptions;
     }
 
     /**

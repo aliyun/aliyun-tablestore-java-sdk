@@ -9,7 +9,7 @@
  - 阿里云表格存储是阿里云自主研发的NoSQL数据存储服务，提供海量结构化数据的存储和实时访问。
 
 ## 版本
- - 当前版本：5.13.13
+ - 当前版本：5.13.14
 
 ## 运行环境
  - JDK 6及其以上
@@ -21,7 +21,7 @@
 <dependency>
   <groupId>com.aliyun.openservices</groupId>
   <artifactId>tablestore</artifactId>
-  <version>5.13.13</version>
+  <version>5.13.14</version>
 </dependency>
 ```
 

@@ -77,10 +77,10 @@ public class WriterSample {
     private TableStoreWriter createTablesStoreWriter() {
 
         WriterConfig config = new WriterConfig();
-        config.setWriteMode(WriteMode.SEQUENTIAL);                      // 串行写（每个筒内串行写）
+        config.setWriteMode(WriteMode.SEQUENTIAL);                      // 串行写（每个桶内串行写）
         config.setBatchRequestType(BatchRequestType.BULK_IMPORT);       // 底层构建BulkImportRequest做批量写
-        config.setDispatchMode(DispatchMode.HASH_PRIMARY_KEY);          // 基于主键哈希值做分筒，保证同主键落在一个桶内，有序写
-        config.setBucketCount(100);                                     // 分筒数，提升串行写并发，未达机器瓶颈时与写入速率正相关
+        config.setDispatchMode(DispatchMode.HASH_PRIMARY_KEY);          // 基于主键哈希值做分桶，保证同主键落在一个桶内，有序写
+        config.setBucketCount(100);                                     // 分桶数，提升串行写并发，未达机器瓶颈时与写入速率正相关
         config.setCallbackThreadCount(16);                              // 设置Writer内部Callback运行的线程池线程数
         config.setAllowDuplicatedRowInBatchRequest(false);              // 底层构建的批量请求内，不允许有重复行（主要针对二级索引，如果含有忽略用户设置，false覆盖）
 

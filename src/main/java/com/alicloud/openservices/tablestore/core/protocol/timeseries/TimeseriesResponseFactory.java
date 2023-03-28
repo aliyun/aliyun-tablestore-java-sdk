@@ -7,6 +7,7 @@ import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCodedInputS
 import com.alicloud.openservices.tablestore.core.protocol.PlainBufferInputStream;
 import com.alicloud.openservices.tablestore.core.protocol.PlainBufferRow;
 import com.alicloud.openservices.tablestore.model.Error;
+import com.alicloud.openservices.tablestore.model.TimeseriesMetaOptions;
 import com.alicloud.openservices.tablestore.model.TimeseriesTableMeta;
 import com.alicloud.openservices.tablestore.model.TimeseriesTableOptions;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
@@ -222,8 +223,19 @@ public class TimeseriesResponseFactory {
 
         _meta.setStatus((meta.getStatus()));
 
-        result.setTimeseriesTableMeta(_meta);
+        if (meta.hasMetaOptions()) {
+            Timeseries.TimeseriesMetaOptions pbMetaOptions = meta.getMetaOptions();
+            TimeseriesMetaOptions metaOptions = new TimeseriesMetaOptions();
+            if (pbMetaOptions.hasMetaTimeToLive()) {
+                metaOptions.setMetaTimeToLive(pbMetaOptions.getMetaTimeToLive());
+            }
+            if (pbMetaOptions.hasAllowUpdateAttributes()) {
+                metaOptions.setAllowUpdateAttributes(pbMetaOptions.getAllowUpdateAttributes());
+            }
+            _meta.setTimeseriesMetaOptions(metaOptions);
+        }
 
+        result.setTimeseriesTableMeta(_meta);
         return result;
     }
 

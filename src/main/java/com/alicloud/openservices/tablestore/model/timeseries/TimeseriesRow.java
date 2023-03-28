@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.model.timeseries;
 
+import com.alicloud.openservices.tablestore.core.utils.CalculateHelper;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.google.common.base.Objects;
@@ -22,6 +23,18 @@ public class TimeseriesRow {
     public TimeseriesRow(TimeseriesKey timeseriesKey, long timeInUs) {
         this.timeseriesKey = timeseriesKey;
         this.timeInUs = timeInUs;
+    }
+
+    public int getTimeseriesRowDataSize() {
+        int totalSize = 0;
+        totalSize += 8;     // time size
+        totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.getMeasurementName());
+        totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.getDataSource());
+        totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.buildTagsString());
+        for (Map.Entry<String, ColumnValue> entry : fields.entrySet()) {
+            totalSize += entry.getValue().getDataSize() + CalculateHelper.calcStringSizeInBytes(entry.getKey());
+        }
+        return totalSize;
     }
 
     public TimeseriesKey getTimeseriesKey() {

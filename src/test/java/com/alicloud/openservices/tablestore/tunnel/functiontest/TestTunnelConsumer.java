@@ -11,7 +11,7 @@ import com.alicloud.openservices.tablestore.tunnel.worker.IChannelProcessor;
 import com.alicloud.openservices.tablestore.tunnel.worker.ProcessRecordsInput;
 import com.alicloud.openservices.tablestore.tunnel.worker.TunnelWorker;
 import com.alicloud.openservices.tablestore.tunnel.worker.TunnelWorkerConfig;
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
+//import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import org.junit.*;
 
 import java.util.ArrayList;

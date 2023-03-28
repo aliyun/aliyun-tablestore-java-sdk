@@ -20,7 +20,7 @@ public abstract class BaseDispatcher implements Dispatcher {
 
 
     /**
-     * 分筒写入统计
+     * 分桶写入统计
      * */
     public AtomicLong[] getBucketDispatchRowCount() {
         return bucketDispatchRowCount;

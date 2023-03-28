@@ -170,13 +170,23 @@ public class TimeseriesProtocolBuilder {
     }
 
     private static Timeseries.TimeseriesTableOptions buildTimeseriesTableOptions(TimeseriesTableOptions timeseriesTableOptions) {
-
         Timeseries.TimeseriesTableOptions.Builder builder = Timeseries.TimeseriesTableOptions.newBuilder();
 
         if (timeseriesTableOptions.hasSetTimeToLive()) {
             builder.setTimeToLive(timeseriesTableOptions.getTimeToLive());
         }
+        return builder.build();
+    }
 
+    public static Timeseries.TimeseriesMetaOptions buildTimeseriesMetaOptions(TimeseriesMetaOptions timeseriesMetaOptions) {
+        Timeseries.TimeseriesMetaOptions.Builder builder = Timeseries.TimeseriesMetaOptions.newBuilder();
+
+        if (timeseriesMetaOptions.hasSetMetaTimeToLive()) {
+            builder.setMetaTimeToLive(timeseriesMetaOptions.getMetaTimeToLive());
+        }
+        if (timeseriesMetaOptions.hasSetAllowUpdateAttributes()) {
+            builder.setAllowUpdateAttributes(timeseriesMetaOptions.getAllowUpdateAttributes());
+        }
         return builder.build();
     }
 
@@ -189,6 +199,10 @@ public class TimeseriesProtocolBuilder {
         // optional TimeseriesTableOptions table_options = 2;
         builder.setTableOptions(buildTimeseriesTableOptions(timeseriesTableMeta.getTimeseriesTableOptions()));
 
+        // optional TimeseriesMetaOptions meta_options = 4;
+        if (timeseriesTableMeta.getTimeseriesMetaOptions() != null) {
+            builder.setMetaOptions(buildTimeseriesMetaOptions(timeseriesTableMeta.getTimeseriesMetaOptions()));
+        }
         return builder.build();
     }
 
@@ -357,10 +371,14 @@ public class TimeseriesProtocolBuilder {
         builder.setTableName(updateTimeseriesTableRequest.getTimeseriesTableName());
 
         // optional TimeseriesTableOptions table_options = 2;
-        if (updateTimeseriesTableRequest.getTimeseriesTableOptions().hasSetTimeToLive()) {
+        if (updateTimeseriesTableRequest.getTimeseriesTableOptions() != null) {
             builder.setTableOptions(buildTimeseriesTableOptions(updateTimeseriesTableRequest.getTimeseriesTableOptions()));
         }
 
+        // optional TimeseriesMetaOptions meta_options = 3;
+        if (updateTimeseriesTableRequest.getTimeseriesMetaOptions() != null) {
+            builder.setMetaOptions(buildTimeseriesMetaOptions(updateTimeseriesTableRequest.getTimeseriesMetaOptions()));
+        }
         return builder.build();
     }
 

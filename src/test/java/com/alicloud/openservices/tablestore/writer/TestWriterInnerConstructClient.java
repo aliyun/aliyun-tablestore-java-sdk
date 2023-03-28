@@ -655,7 +655,7 @@ public class TestWriterInnerConstructClient {
         assertEquals(writer.getWriterStatistics().getTotalSucceedRowsCount(), rowCount);
         assertEquals(writer.getWriterStatistics().getTotalFailedRowsCount(), 0);
         assertEquals(writer.getWriterStatistics().getTotalSingleRowRequestCount(), 0);
-        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 1); // 101行 单筒下请求1次
+        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 1); // 101行 单桶下请求1次
     }
 
     @Test
@@ -717,7 +717,7 @@ public class TestWriterInnerConstructClient {
         assertEquals(writer.getWriterStatistics().getTotalSucceedRowsCount(), batchCount * rowCount);
         assertEquals(writer.getWriterStatistics().getTotalFailedRowsCount(), 0);
         assertEquals(writer.getWriterStatistics().getTotalSingleRowRequestCount(), 0);
-        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 6); // 1010行 单筒下请求6次
+        assertEquals(writer.getWriterStatistics().getTotalRequestCount(), 6); // 1010行 单桶下请求6次
     }
 
 
