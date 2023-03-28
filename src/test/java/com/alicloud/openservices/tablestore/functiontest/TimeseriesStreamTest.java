@@ -24,7 +24,7 @@ public class TimeseriesStreamTest {
     static SyncClient client = null;
 
     @BeforeClass
-    public static void beforClass() {
+    public static void beforeClass() {
         ServiceSettings settings = ServiceSettings.load();
         final String endPoint = settings.getOTSEndpoint();
         final String accessId = settings.getOTSAccessKeyId();
@@ -33,7 +33,6 @@ public class TimeseriesStreamTest {
 
         client = new SyncClient(endPoint, accessId, accessKey, instanceName);
         prepareTimeseriesTable();
-
     }
 
     @AfterClass

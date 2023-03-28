@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.model.timeseries;
 
 import com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesProtocolBuilder;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class TimeseriesKey {
+public class TimeseriesKey implements Comparable<TimeseriesKey> {
 
     private final String measurementName;
     private final String dataSource;
@@ -60,7 +61,7 @@ public class TimeseriesKey {
 
     public String buildMetaCacheKey(String tableName) {
         StringBuilder sb = new StringBuilder(tableName.length() + measurementName.length() +
-                                            dataSource.length() + buildTagsString().length() + 3);
+                dataSource.length() + buildTagsString().length() + 3);
         sb.append(tableName);
         sb.append('\t');
         sb.append(measurementName);
@@ -87,5 +88,21 @@ public class TimeseriesKey {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+
+    @Override
+    public int compareTo(TimeseriesKey target) {
+
+        int ret = this.measurementName.compareTo(target.measurementName);
+        if (ret != 0) {
+            return ret;
+        }
+        ret = this.dataSource.compareTo(target.dataSource);
+        if (ret != 0) {
+            return ret;
+        }
+        ret = this.tagsString.compareTo(target.tagsString);
+        return ret;
     }
 }

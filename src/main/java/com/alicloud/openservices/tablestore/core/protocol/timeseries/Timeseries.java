@@ -718,6 +718,401 @@ public final class Timeseries {
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesTableOptions)
   }
   
+  public interface TimeseriesMetaOptionsOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional bool allow_update_attributes = 1;
+    boolean hasAllowUpdateAttributes();
+    boolean getAllowUpdateAttributes();
+    
+    // optional int32 meta_time_to_live = 2;
+    boolean hasMetaTimeToLive();
+    int getMetaTimeToLive();
+  }
+  public static final class TimeseriesMetaOptions extends
+      com.google.protobuf.GeneratedMessage
+      implements TimeseriesMetaOptionsOrBuilder {
+    // Use TimeseriesMetaOptions.newBuilder() to construct.
+    private TimeseriesMetaOptions(Builder builder) {
+      super(builder);
+    }
+    private TimeseriesMetaOptions(boolean noInit) {}
+    
+    private static final TimeseriesMetaOptions defaultInstance;
+    public static TimeseriesMetaOptions getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public TimeseriesMetaOptions getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional bool allow_update_attributes = 1;
+    public static final int ALLOW_UPDATE_ATTRIBUTES_FIELD_NUMBER = 1;
+    private boolean allowUpdateAttributes_;
+    public boolean hasAllowUpdateAttributes() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public boolean getAllowUpdateAttributes() {
+      return allowUpdateAttributes_;
+    }
+    
+    // optional int32 meta_time_to_live = 2;
+    public static final int META_TIME_TO_LIVE_FIELD_NUMBER = 2;
+    private int metaTimeToLive_;
+    public boolean hasMetaTimeToLive() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getMetaTimeToLive() {
+      return metaTimeToLive_;
+    }
+    
+    private void initFields() {
+      allowUpdateAttributes_ = false;
+      metaTimeToLive_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, allowUpdateAttributes_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, metaTimeToLive_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, allowUpdateAttributes_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, metaTimeToLive_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        allowUpdateAttributes_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        metaTimeToLive_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.allowUpdateAttributes_ = allowUpdateAttributes_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.metaTimeToLive_ = metaTimeToLive_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance()) return this;
+        if (other.hasAllowUpdateAttributes()) {
+          setAllowUpdateAttributes(other.getAllowUpdateAttributes());
+        }
+        if (other.hasMetaTimeToLive()) {
+          setMetaTimeToLive(other.getMetaTimeToLive());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              allowUpdateAttributes_ = input.readBool();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              metaTimeToLive_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional bool allow_update_attributes = 1;
+      private boolean allowUpdateAttributes_ ;
+      public boolean hasAllowUpdateAttributes() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public boolean getAllowUpdateAttributes() {
+        return allowUpdateAttributes_;
+      }
+      public Builder setAllowUpdateAttributes(boolean value) {
+        bitField0_ |= 0x00000001;
+        allowUpdateAttributes_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAllowUpdateAttributes() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        allowUpdateAttributes_ = false;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 meta_time_to_live = 2;
+      private int metaTimeToLive_ ;
+      public boolean hasMetaTimeToLive() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getMetaTimeToLive() {
+        return metaTimeToLive_;
+      }
+      public Builder setMetaTimeToLive(int value) {
+        bitField0_ |= 0x00000002;
+        metaTimeToLive_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearMetaTimeToLive() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        metaTimeToLive_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions)
+    }
+    
+    static {
+      defaultInstance = new TimeseriesMetaOptions(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions)
+  }
+  
   public interface TimeseriesTableMetaOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -733,6 +1128,11 @@ public final class Timeseries {
     // optional string status = 3;
     boolean hasStatus();
     String getStatus();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 4;
+    boolean hasMetaOptions();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder();
   }
   public static final class TimeseriesTableMeta extends
       com.google.protobuf.GeneratedMessage
@@ -840,10 +1240,24 @@ public final class Timeseries {
       }
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 4;
+    public static final int META_OPTIONS_FIELD_NUMBER = 4;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions metaOptions_;
+    public boolean hasMetaOptions() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions() {
+      return metaOptions_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder() {
+      return metaOptions_;
+    }
+    
     private void initFields() {
       tableName_ = "";
       tableOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptions.getDefaultInstance();
       status_ = "";
+      metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -870,6 +1284,9 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(3, getStatusBytes());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(4, metaOptions_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -890,6 +1307,10 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, getStatusBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, metaOptions_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1008,6 +1429,7 @@ public final class Timeseries {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTableOptionsFieldBuilder();
+          getMetaOptionsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -1026,6 +1448,12 @@ public final class Timeseries {
         bitField0_ = (bitField0_ & ~0x00000002);
         status_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+        } else {
+          metaOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -1080,6 +1508,14 @@ public final class Timeseries {
           to_bitField0_ |= 0x00000004;
         }
         result.status_ = status_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (metaOptionsBuilder_ == null) {
+          result.metaOptions_ = metaOptions_;
+        } else {
+          result.metaOptions_ = metaOptionsBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1104,6 +1540,9 @@ public final class Timeseries {
         }
         if (other.hasStatus()) {
           setStatus(other.getStatus());
+        }
+        if (other.hasMetaOptions()) {
+          mergeMetaOptions(other.getMetaOptions());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1157,6 +1596,15 @@ public final class Timeseries {
             case 26: {
               bitField0_ |= 0x00000004;
               status_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.newBuilder();
+              if (hasMetaOptions()) {
+                subBuilder.mergeFrom(getMetaOptions());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setMetaOptions(subBuilder.buildPartial());
               break;
             }
           }
@@ -1325,6 +1773,96 @@ public final class Timeseries {
         bitField0_ |= 0x00000004;
         status_ = value;
         onChanged();
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 4;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder> metaOptionsBuilder_;
+      public boolean hasMetaOptions() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions() {
+        if (metaOptionsBuilder_ == null) {
+          return metaOptions_;
+        } else {
+          return metaOptionsBuilder_.getMessage();
+        }
+      }
+      public Builder setMetaOptions(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions value) {
+        if (metaOptionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          metaOptions_ = value;
+          onChanged();
+        } else {
+          metaOptionsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder setMetaOptions(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder builderForValue) {
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = builderForValue.build();
+          onChanged();
+        } else {
+          metaOptionsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder mergeMetaOptions(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions value) {
+        if (metaOptionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              metaOptions_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance()) {
+            metaOptions_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.newBuilder(metaOptions_).mergeFrom(value).buildPartial();
+          } else {
+            metaOptions_ = value;
+          }
+          onChanged();
+        } else {
+          metaOptionsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder clearMetaOptions() {
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+          onChanged();
+        } else {
+          metaOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder getMetaOptionsBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getMetaOptionsFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder() {
+        if (metaOptionsBuilder_ != null) {
+          return metaOptionsBuilder_.getMessageOrBuilder();
+        } else {
+          return metaOptions_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder> 
+          getMetaOptionsFieldBuilder() {
+        if (metaOptionsBuilder_ == null) {
+          metaOptionsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder>(
+                  metaOptions_,
+                  getParentForChildren(),
+                  isClean());
+          metaOptions_ = null;
+        }
+        return metaOptionsBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesTableMeta)
@@ -3563,6 +4101,11 @@ public final class Timeseries {
     boolean hasTableOptions();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptions getTableOptions();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptionsOrBuilder getTableOptionsOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 3;
+    boolean hasMetaOptions();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder();
   }
   public static final class UpdateTimeseriesTableRequest extends
       com.google.protobuf.GeneratedMessage
@@ -3638,9 +4181,23 @@ public final class Timeseries {
       return tableOptions_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 3;
+    public static final int META_OPTIONS_FIELD_NUMBER = 3;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions metaOptions_;
+    public boolean hasMetaOptions() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions() {
+      return metaOptions_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder() {
+      return metaOptions_;
+    }
+    
     private void initFields() {
       tableName_ = "";
       tableOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptions.getDefaultInstance();
+      metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3664,6 +4221,9 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(2, tableOptions_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(3, metaOptions_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -3680,6 +4240,10 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, tableOptions_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, metaOptions_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3798,6 +4362,7 @@ public final class Timeseries {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTableOptionsFieldBuilder();
+          getMetaOptionsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -3814,6 +4379,12 @@ public final class Timeseries {
           tableOptionsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+        } else {
+          metaOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -3864,6 +4435,14 @@ public final class Timeseries {
         } else {
           result.tableOptions_ = tableOptionsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (metaOptionsBuilder_ == null) {
+          result.metaOptions_ = metaOptions_;
+        } else {
+          result.metaOptions_ = metaOptionsBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3885,6 +4464,9 @@ public final class Timeseries {
         }
         if (other.hasTableOptions()) {
           mergeTableOptions(other.getTableOptions());
+        }
+        if (other.hasMetaOptions()) {
+          mergeMetaOptions(other.getMetaOptions());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3933,6 +4515,15 @@ public final class Timeseries {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setTableOptions(subBuilder.buildPartial());
+              break;
+            }
+            case 26: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.newBuilder();
+              if (hasMetaOptions()) {
+                subBuilder.mergeFrom(getMetaOptions());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setMetaOptions(subBuilder.buildPartial());
               break;
             }
           }
@@ -4065,6 +4656,96 @@ public final class Timeseries {
           tableOptions_ = null;
         }
         return tableOptionsBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesMetaOptions meta_options = 3;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder> metaOptionsBuilder_;
+      public boolean hasMetaOptions() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions getMetaOptions() {
+        if (metaOptionsBuilder_ == null) {
+          return metaOptions_;
+        } else {
+          return metaOptionsBuilder_.getMessage();
+        }
+      }
+      public Builder setMetaOptions(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions value) {
+        if (metaOptionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          metaOptions_ = value;
+          onChanged();
+        } else {
+          metaOptionsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder setMetaOptions(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder builderForValue) {
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = builderForValue.build();
+          onChanged();
+        } else {
+          metaOptionsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeMetaOptions(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions value) {
+        if (metaOptionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              metaOptions_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance()) {
+            metaOptions_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.newBuilder(metaOptions_).mergeFrom(value).buildPartial();
+          } else {
+            metaOptions_ = value;
+          }
+          onChanged();
+        } else {
+          metaOptionsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearMetaOptions() {
+        if (metaOptionsBuilder_ == null) {
+          metaOptions_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.getDefaultInstance();
+          onChanged();
+        } else {
+          metaOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder getMetaOptionsBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getMetaOptionsFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder getMetaOptionsOrBuilder() {
+        if (metaOptionsBuilder_ != null) {
+          return metaOptionsBuilder_.getMessageOrBuilder();
+        } else {
+          return metaOptions_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder> 
+          getMetaOptionsFieldBuilder() {
+        if (metaOptionsBuilder_ == null) {
+          metaOptionsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptionsOrBuilder>(
+                  metaOptions_,
+                  getParentForChildren(),
+                  isClean());
+          metaOptions_ = null;
+        }
+        return metaOptionsBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.UpdateTimeseriesTableRequest)
@@ -20972,6 +21653,11 @@ public final class Timeseries {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableOptions_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableMeta_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -21174,152 +21860,160 @@ public final class Timeseries {
       "ore/protocol/timeseries/timeseries.proto" +
       "\022=com.alicloud.openservices.tablestore.c" +
       "ore.protocol.timeseries\".\n\026TimeseriesTab" +
-      "leOptions\022\024\n\014time_to_live\030\001 \001(\005\"\247\001\n\023Time" +
-      "seriesTableMeta\022\022\n\ntable_name\030\001 \002(\t\022l\n\rt" +
-      "able_options\030\002 \001(\0132U.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.timeseri" +
-      "es.TimeseriesTableOptions\022\016\n\006status\030\003 \001(" +
-      "\t\"\206\001\n\034CreateTimeseriesTableRequest\022f\n\nta",
-      "ble_meta\030\001 \002(\0132R.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.timeseries.T" +
-      "imeseriesTableMeta\"\037\n\035CreateTimeseriesTa" +
-      "bleResponse\"\034\n\032ListTimeseriesTableReques" +
-      "t\"\206\001\n\033ListTimeseriesTableResponse\022g\n\013tab" +
-      "le_metas\030\001 \003(\0132R.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.timeseries.T" +
-      "imeseriesTableMeta\"2\n\034DeleteTimeseriesTa" +
-      "bleRequest\022\022\n\ntable_name\030\001 \002(\t\"\037\n\035Delete" +
-      "TimeseriesTableResponse\"\240\001\n\034UpdateTimese",
-      "riesTableRequest\022\022\n\ntable_name\030\001 \002(\t\022l\n\r" +
-      "table_options\030\002 \001(\0132U.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.timeser" +
-      "ies.TimeseriesTableOptions\"\037\n\035UpdateTime" +
-      "seriesTableResponse\"4\n\036DescribeTimeserie" +
-      "sTableRequest\022\022\n\ntable_name\030\001 \002(\t\"\211\001\n\037De" +
-      "scribeTimeseriesTableResponse\022f\n\ntable_m" +
-      "eta\030\001 \002(\0132R.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.timeseries.Timese" +
-      "riesTableMeta\"\215\001\n\022MetaQueryCondition\022c\n\004",
-      "type\030\001 \002(\0162U.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.timeseries.MetaQ" +
-      "ueryConditionType\022\022\n\nproto_data\030\002 \002(\014\"\357\001" +
-      "\n\033MetaQueryCompositeCondition\022e\n\002op\030\001 \002(" +
-      "\0162Y.com.alicloud.openservices.tablestore" +
-      ".core.protocol.timeseries.MetaQueryCompo" +
-      "siteOperator\022i\n\016sub_conditions\030\002 \003(\0132Q.c" +
-      "om.alicloud.openservices.tablestore.core" +
-      ".protocol.timeseries.MetaQueryCondition\"" +
-      "\222\001\n\035MetaQueryMeasurementCondition\022b\n\002op\030",
-      "\001 \002(\0162V.com.alicloud.openservices.tables" +
-      "tore.core.protocol.timeseries.MetaQueryS" +
-      "ingleOperator\022\r\n\005value\030\002 \002(\t\"\215\001\n\030MetaQue" +
-      "rySourceCondition\022b\n\002op\030\001 \002(\0162V.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.timeseries.MetaQuerySingleOperator\022\r\n" +
-      "\005value\030\002 \002(\t\"\234\001\n\025MetaQueryTagCondition\022b" +
+      "leOptions\022\024\n\014time_to_live\030\001 \001(\005\"S\n\025Times" +
+      "eriesMetaOptions\022\037\n\027allow_update_attribu" +
+      "tes\030\001 \001(\010\022\031\n\021meta_time_to_live\030\002 \001(\005\"\223\002\n" +
+      "\023TimeseriesTableMeta\022\022\n\ntable_name\030\001 \002(\t" +
+      "\022l\n\rtable_options\030\002 \001(\0132U.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.tim",
+      "eseries.TimeseriesTableOptions\022\016\n\006status" +
+      "\030\003 \001(\t\022j\n\014meta_options\030\004 \001(\0132T.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.timeseries.TimeseriesMetaOptions\"\206\001\n\034C" +
+      "reateTimeseriesTableRequest\022f\n\ntable_met" +
+      "a\030\001 \002(\0132R.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.timeseries.Timeseri" +
+      "esTableMeta\"\037\n\035CreateTimeseriesTableResp" +
+      "onse\"\034\n\032ListTimeseriesTableRequest\"\206\001\n\033L" +
+      "istTimeseriesTableResponse\022g\n\013table_meta",
+      "s\030\001 \003(\0132R.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.timeseries.Timeseri" +
+      "esTableMeta\"2\n\034DeleteTimeseriesTableRequ" +
+      "est\022\022\n\ntable_name\030\001 \002(\t\"\037\n\035DeleteTimeser" +
+      "iesTableResponse\"\214\002\n\034UpdateTimeseriesTab" +
+      "leRequest\022\022\n\ntable_name\030\001 \002(\t\022l\n\rtable_o" +
+      "ptions\030\002 \001(\0132U.com.alicloud.openservices" +
+      ".tablestore.core.protocol.timeseries.Tim" +
+      "eseriesTableOptions\022j\n\014meta_options\030\003 \001(" +
+      "\0132T.com.alicloud.openservices.tablestore",
+      ".core.protocol.timeseries.TimeseriesMeta" +
+      "Options\"\037\n\035UpdateTimeseriesTableResponse" +
+      "\"4\n\036DescribeTimeseriesTableRequest\022\022\n\nta" +
+      "ble_name\030\001 \002(\t\"\211\001\n\037DescribeTimeseriesTab" +
+      "leResponse\022f\n\ntable_meta\030\001 \002(\0132R.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.timeseries.TimeseriesTableMeta\"\215\001\n\022M" +
+      "etaQueryCondition\022c\n\004type\030\001 \002(\0162U.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.timeseries.MetaQueryConditionType\022\022",
+      "\n\nproto_data\030\002 \002(\014\"\357\001\n\033MetaQueryComposit" +
+      "eCondition\022e\n\002op\030\001 \002(\0162Y.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.time" +
+      "series.MetaQueryCompositeOperator\022i\n\016sub" +
+      "_conditions\030\002 \003(\0132Q.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.timeserie" +
+      "s.MetaQueryCondition\"\222\001\n\035MetaQueryMeasur" +
+      "ementCondition\022b\n\002op\030\001 \002(\0162V.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "timeseries.MetaQuerySingleOperator\022\r\n\005va",
+      "lue\030\002 \002(\t\"\215\001\n\030MetaQuerySourceCondition\022b" +
       "\n\002op\030\001 \002(\0162V.com.alicloud.openservices.t" +
       "ablestore.core.protocol.timeseries.MetaQ" +
-      "uerySingleOperator\022\020\n\010tag_name\030\002 \002(\t\022\r\n\005",
-      "value\030\003 \002(\t\"\243\001\n\033MetaQueryAttributeCondit" +
-      "ion\022b\n\002op\030\001 \002(\0162V.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.timeseries." +
-      "MetaQuerySingleOperator\022\021\n\tattr_name\030\002 \002" +
-      "(\t\022\r\n\005value\030\003 \002(\t\"\221\001\n\034MetaQueryUpdateTim" +
-      "eCondition\022b\n\002op\030\001 \002(\0162V.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.time" +
-      "series.MetaQuerySingleOperator\022\r\n\005value\030" +
-      "\002 \002(\003\"B\n\rTimeseriesKey\022\023\n\013measurement\030\001 " +
-      "\002(\t\022\016\n\006source\030\002 \002(\t\022\014\n\004tags\030\003 \002(\t\"\240\001\n\016Ti",
-      "meseriesMeta\022e\n\017time_series_key\030\001 \002(\0132L." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.timeseries.TimeseriesKey\022\022\n\na" +
-      "ttributes\030\002 \001(\t\022\023\n\013update_time\030\003 \001(\003\"\313\001\n" +
-      "\032QueryTimeseriesMetaRequest\022\022\n\ntable_nam" +
-      "e\030\001 \002(\t\022d\n\tcondition\030\002 \001(\0132Q.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "timeseries.MetaQueryCondition\022\025\n\rget_tot" +
-      "al_hit\030\003 \001(\010\022\r\n\005token\030\004 \001(\014\022\r\n\005limit\030\005 \001" +
-      "(\005\"\255\001\n\033QueryTimeseriesMetaResponse\022g\n\020ti",
-      "meseries_metas\030\001 \003(\0132M.com.alicloud.open" +
-      "services.tablestore.core.protocol.timese" +
-      "ries.TimeseriesMeta\022\021\n\ttotal_hit\030\002 \001(\003\022\022" +
-      "\n\nnext_token\030\003 \001(\014\"\236\001\n\016TimeseriesRows\022^\n" +
-      "\004type\030\001 \002(\0162P.com.alicloud.openservices." +
-      "tablestore.core.protocol.timeseries.Rows" +
-      "SerializeType\022\021\n\trows_data\030\002 \002(\014\022\031\n\021flat" +
-      "buffer_crc32c\030\003 \001(\005\"\371\001\n\030PutTimeseriesDat" +
-      "aRequest\022\022\n\ntable_name\030\001 \002(\t\022`\n\trows_dat" +
-      "a\030\002 \002(\0132M.com.alicloud.openservices.tabl",
-      "estore.core.protocol.timeseries.Timeseri" +
-      "esRows\022g\n\020meta_update_mode\030\003 \001(\0162M.com.a" +
+      "uerySingleOperator\022\r\n\005value\030\002 \002(\t\"\234\001\n\025Me" +
+      "taQueryTagCondition\022b\n\002op\030\001 \002(\0162V.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.timeseries.MetaQuerySingleOperator\022" +
+      "\020\n\010tag_name\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\"\243\001\n\033Met" +
+      "aQueryAttributeCondition\022b\n\002op\030\001 \002(\0162V.c" +
+      "om.alicloud.openservices.tablestore.core",
+      ".protocol.timeseries.MetaQuerySingleOper" +
+      "ator\022\021\n\tattr_name\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\"\221" +
+      "\001\n\034MetaQueryUpdateTimeCondition\022b\n\002op\030\001 " +
+      "\002(\0162V.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.timeseries.MetaQuerySin" +
+      "gleOperator\022\r\n\005value\030\002 \002(\003\"B\n\rTimeseries" +
+      "Key\022\023\n\013measurement\030\001 \002(\t\022\016\n\006source\030\002 \002(\t" +
+      "\022\014\n\004tags\030\003 \002(\t\"\240\001\n\016TimeseriesMeta\022e\n\017tim" +
+      "e_series_key\030\001 \002(\0132L.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.timeseri",
+      "es.TimeseriesKey\022\022\n\nattributes\030\002 \001(\t\022\023\n\013" +
+      "update_time\030\003 \001(\003\"\313\001\n\032QueryTimeseriesMet" +
+      "aRequest\022\022\n\ntable_name\030\001 \002(\t\022d\n\tconditio" +
+      "n\030\002 \001(\0132Q.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.timeseries.MetaQuer" +
+      "yCondition\022\025\n\rget_total_hit\030\003 \001(\010\022\r\n\005tok" +
+      "en\030\004 \001(\014\022\r\n\005limit\030\005 \001(\005\"\255\001\n\033QueryTimeser" +
+      "iesMetaResponse\022g\n\020timeseries_metas\030\001 \003(" +
+      "\0132M.com.alicloud.openservices.tablestore" +
+      ".core.protocol.timeseries.TimeseriesMeta",
+      "\022\021\n\ttotal_hit\030\002 \001(\003\022\022\n\nnext_token\030\003 \001(\014\"" +
+      "\236\001\n\016TimeseriesRows\022^\n\004type\030\001 \002(\0162P.com.a" +
       "licloud.openservices.tablestore.core.pro" +
-      "tocol.timeseries.MetaUpdateMode\"M\n\rFaile" +
-      "dRowInfo\022\021\n\trow_index\030\001 \002(\005\022\022\n\nerror_cod" +
-      "e\030\002 \001(\t\022\025\n\rerror_message\030\003 \001(\t\">\n\020MetaUp" +
-      "dateStatus\022\017\n\007row_ids\030\001 \003(\r\022\031\n\021meta_upda" +
-      "te_times\030\002 \003(\r\"\353\001\n\031PutTimeseriesDataResp" +
-      "onse\022a\n\013failed_rows\030\001 \003(\0132L.com.alicloud" +
-      ".openservices.tablestore.core.protocol.t",
-      "imeseries.FailedRowInfo\022k\n\022meta_update_s" +
-      "tatus\030\002 \001(\0132O.com.alicloud.openservices." +
-      "tablestore.core.protocol.timeseries.Meta" +
-      "UpdateStatus\"3\n\025TimeseriesFieldsToGet\022\014\n" +
-      "\004name\030\001 \001(\t\022\014\n\004type\030\002 \001(\005\"\357\002\n\030GetTimeser" +
-      "iesDataRequest\022\022\n\ntable_name\030\001 \002(\t\022e\n\017ti" +
-      "me_series_key\030\002 \002(\0132L.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.timeser" +
-      "ies.TimeseriesKey\022\022\n\nbegin_time\030\003 \001(\003\022\020\n" +
-      "\010end_time\030\004 \001(\003\022\025\n\rspecific_time\030\005 \001(\003\022\r",
-      "\n\005token\030\006 \001(\014\022\r\n\005limit\030\007 \001(\005\022\020\n\010backward" +
-      "\030\010 \001(\010\022k\n\rfields_to_get\030\t \003(\0132T.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.timeseries.TimeseriesFieldsToGet\"B\n\031G" +
-      "etTimeseriesDataResponse\022\021\n\trows_data\030\001 " +
-      "\002(\014\022\022\n\nnext_token\030\002 \001(\014\"\231\001\n\033UpdateTimese" +
-      "riesMetaRequest\022\022\n\ntable_name\030\001 \002(\t\022f\n\017t" +
-      "imeseries_meta\030\002 \003(\0132M.com.alicloud.open" +
+      "tocol.timeseries.RowsSerializeType\022\021\n\tro" +
+      "ws_data\030\002 \002(\014\022\031\n\021flatbuffer_crc32c\030\003 \001(\005" +
+      "\"\371\001\n\030PutTimeseriesDataRequest\022\022\n\ntable_n" +
+      "ame\030\001 \002(\t\022`\n\trows_data\030\002 \002(\0132M.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.timeseries.TimeseriesRows\022g\n\020meta_upda" +
+      "te_mode\030\003 \001(\0162M.com.alicloud.openservice",
+      "s.tablestore.core.protocol.timeseries.Me" +
+      "taUpdateMode\"M\n\rFailedRowInfo\022\021\n\trow_ind" +
+      "ex\030\001 \002(\005\022\022\n\nerror_code\030\002 \001(\t\022\025\n\rerror_me" +
+      "ssage\030\003 \001(\t\">\n\020MetaUpdateStatus\022\017\n\007row_i" +
+      "ds\030\001 \003(\r\022\031\n\021meta_update_times\030\002 \003(\r\"\353\001\n\031" +
+      "PutTimeseriesDataResponse\022a\n\013failed_rows" +
+      "\030\001 \003(\0132L.com.alicloud.openservices.table" +
+      "store.core.protocol.timeseries.FailedRow" +
+      "Info\022k\n\022meta_update_status\030\002 \001(\0132O.com.a" +
+      "licloud.openservices.tablestore.core.pro",
+      "tocol.timeseries.MetaUpdateStatus\"3\n\025Tim" +
+      "eseriesFieldsToGet\022\014\n\004name\030\001 \001(\t\022\014\n\004type" +
+      "\030\002 \001(\005\"\357\002\n\030GetTimeseriesDataRequest\022\022\n\nt" +
+      "able_name\030\001 \002(\t\022e\n\017time_series_key\030\002 \002(\013" +
+      "2L.com.alicloud.openservices.tablestore." +
+      "core.protocol.timeseries.TimeseriesKey\022\022" +
+      "\n\nbegin_time\030\003 \001(\003\022\020\n\010end_time\030\004 \001(\003\022\025\n\r" +
+      "specific_time\030\005 \001(\003\022\r\n\005token\030\006 \001(\014\022\r\n\005li" +
+      "mit\030\007 \001(\005\022\020\n\010backward\030\010 \001(\010\022k\n\rfields_to" +
+      "_get\030\t \003(\0132T.com.alicloud.openservices.t",
+      "ablestore.core.protocol.timeseries.Times" +
+      "eriesFieldsToGet\"B\n\031GetTimeseriesDataRes" +
+      "ponse\022\021\n\trows_data\030\001 \002(\014\022\022\n\nnext_token\030\002" +
+      " \001(\014\"\231\001\n\033UpdateTimeseriesMetaRequest\022\022\n\n" +
+      "table_name\030\001 \002(\t\022f\n\017timeseries_meta\030\002 \003(" +
+      "\0132M.com.alicloud.openservices.tablestore" +
+      ".core.protocol.timeseries.TimeseriesMeta" +
+      "\"\201\001\n\034UpdateTimeseriesMetaResponse\022a\n\013fai" +
+      "led_rows\030\001 \003(\0132L.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.timeseries.F",
+      "ailedRowInfo\"\227\001\n\033DeleteTimeseriesMetaReq" +
+      "uest\022\022\n\ntable_name\030\001 \002(\t\022d\n\016timeseries_k" +
+      "ey\030\002 \003(\0132L.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.timeseries.Timeser" +
+      "iesKey\"\201\001\n\034DeleteTimeseriesMetaResponse\022" +
+      "a\n\013failed_rows\030\001 \003(\0132L.com.alicloud.open" +
       "services.tablestore.core.protocol.timese" +
-      "ries.TimeseriesMeta\"\201\001\n\034UpdateTimeseries",
-      "MetaResponse\022a\n\013failed_rows\030\001 \003(\0132L.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.timeseries.FailedRowInfo\"\227\001\n\033Dele" +
-      "teTimeseriesMetaRequest\022\022\n\ntable_name\030\001 " +
-      "\002(\t\022d\n\016timeseries_key\030\002 \003(\0132L.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".timeseries.TimeseriesKey\"\201\001\n\034DeleteTime" +
-      "seriesMetaResponse\022a\n\013failed_rows\030\001 \003(\0132" +
-      "L.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.timeseries.FailedRowInfo\"h\n",
-      "\036SplitTimeseriesScanTaskRequest\022\022\n\ntable" +
-      "_name\030\001 \002(\t\022\030\n\020measurement_name\030\002 \001(\t\022\030\n" +
-      "\020split_count_hint\030\003 \002(\005\"6\n\037SplitTimeseri" +
-      "esScanTaskResponse\022\023\n\013split_infos\030\001 \003(\014\"" +
-      "\351\002\n\031ScanTimeseriesDataRequest\022\022\n\ntable_n" +
-      "ame\030\001 \002(\t\022\022\n\nsplit_info\030\002 \001(\014\022\025\n\rstart_t" +
-      "ime_us\030\003 \001(\003\022\023\n\013end_time_us\030\004 \001(\003\022k\n\rfie" +
-      "lds_to_get\030\005 \003(\0132T.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.timeseries" +
-      ".TimeseriesFieldsToGet\022\r\n\005limit\030\006 \001(\005\022m\n",
-      "\023data_serialize_type\030\007 \001(\0162P.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "timeseries.RowsSerializeType\022\r\n\005token\030\010 " +
-      "\001(\014\"\255\001\n\032ScanTimeseriesDataResponse\022m\n\023da" +
-      "ta_serialize_type\030\001 \001(\0162P.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.tim" +
-      "eseries.RowsSerializeType\022\014\n\004data\030\002 \002(\014\022" +
-      "\022\n\nnext_token\030\003 \001(\014*\251\001\n\026MetaQueryConditi" +
-      "onType\022\027\n\023COMPOSITE_CONDITION\020\001\022\031\n\025MEASU" +
-      "REMENT_CONDITION\020\002\022\024\n\020SOURCE_CONDITION\020\003",
-      "\022\021\n\rTAG_CONDITION\020\004\022\031\n\025UPDATE_TIME_CONDI" +
-      "TION\020\005\022\027\n\023ATTRIBUTE_CONDITION\020\006*?\n\032MetaQ" +
-      "ueryCompositeOperator\022\n\n\006OP_AND\020\001\022\t\n\005OP_" +
-      "OR\020\002\022\n\n\006OP_NOT\020\003*\206\001\n\027MetaQuerySingleOper" +
-      "ator\022\014\n\010OP_EQUAL\020\001\022\023\n\017OP_GREATER_THAN\020\002\022" +
-      "\024\n\020OP_GREATER_EQUAL\020\003\022\020\n\014OP_LESS_THAN\020\004\022" +
-      "\021\n\rOP_LESS_EQUAL\020\005\022\r\n\tOP_PREFIX\020\006*>\n\021Row" +
-      "sSerializeType\022\023\n\017RST_FLAT_BUFFER\020\000\022\024\n\020R" +
-      "ST_PLAIN_BUFFER\020\001*0\n\016MetaUpdateMode\022\016\n\nM" +
-      "UM_NORMAL\020\000\022\016\n\nMUM_IGNORE\020\001"
+      "ries.FailedRowInfo\"h\n\036SplitTimeseriesSca" +
+      "nTaskRequest\022\022\n\ntable_name\030\001 \002(\t\022\030\n\020meas" +
+      "urement_name\030\002 \001(\t\022\030\n\020split_count_hint\030\003",
+      " \002(\005\"6\n\037SplitTimeseriesScanTaskResponse\022" +
+      "\023\n\013split_infos\030\001 \003(\014\"\351\002\n\031ScanTimeseriesD" +
+      "ataRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_" +
+      "info\030\002 \001(\014\022\025\n\rstart_time_us\030\003 \001(\003\022\023\n\013end" +
+      "_time_us\030\004 \001(\003\022k\n\rfields_to_get\030\005 \003(\0132T." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.timeseries.TimeseriesFieldsTo" +
+      "Get\022\r\n\005limit\030\006 \001(\005\022m\n\023data_serialize_typ" +
+      "e\030\007 \001(\0162P.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.timeseries.RowsSeri",
+      "alizeType\022\r\n\005token\030\010 \001(\014\"\255\001\n\032ScanTimeser" +
+      "iesDataResponse\022m\n\023data_serialize_type\030\001" +
+      " \001(\0162P.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.timeseries.RowsSeriali" +
+      "zeType\022\014\n\004data\030\002 \002(\014\022\022\n\nnext_token\030\003 \001(\014" +
+      "*\251\001\n\026MetaQueryConditionType\022\027\n\023COMPOSITE" +
+      "_CONDITION\020\001\022\031\n\025MEASUREMENT_CONDITION\020\002\022" +
+      "\024\n\020SOURCE_CONDITION\020\003\022\021\n\rTAG_CONDITION\020\004" +
+      "\022\031\n\025UPDATE_TIME_CONDITION\020\005\022\027\n\023ATTRIBUTE" +
+      "_CONDITION\020\006*?\n\032MetaQueryCompositeOperat",
+      "or\022\n\n\006OP_AND\020\001\022\t\n\005OP_OR\020\002\022\n\n\006OP_NOT\020\003*\206\001" +
+      "\n\027MetaQuerySingleOperator\022\014\n\010OP_EQUAL\020\001\022" +
+      "\023\n\017OP_GREATER_THAN\020\002\022\024\n\020OP_GREATER_EQUAL" +
+      "\020\003\022\020\n\014OP_LESS_THAN\020\004\022\021\n\rOP_LESS_EQUAL\020\005\022" +
+      "\r\n\tOP_PREFIX\020\006*>\n\021RowsSerializeType\022\023\n\017R" +
+      "ST_FLAT_BUFFER\020\000\022\024\n\020RST_PLAIN_BUFFER\020\001*0" +
+      "\n\016MetaUpdateMode\022\016\n\nMUM_NORMAL\020\000\022\016\n\nMUM_" +
+      "IGNORE\020\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -21334,16 +22028,24 @@ public final class Timeseries {
               new java.lang.String[] { "TimeToLive", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptions.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableOptions.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableMeta_descriptor =
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_descriptor =
             getDescriptor().getMessageTypes().get(1);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMetaOptions_descriptor,
+              new java.lang.String[] { "AllowUpdateAttributes", "MetaTimeToLive", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMetaOptions.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableMeta_descriptor =
+            getDescriptor().getMessageTypes().get(2);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableMeta_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableMeta_descriptor,
-              new java.lang.String[] { "TableName", "TableOptions", "Status", },
+              new java.lang.String[] { "TableName", "TableOptions", "Status", "MetaOptions", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableRequest_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableRequest_descriptor,
@@ -21351,7 +22053,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableResponse_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableResponse_descriptor,
@@ -21359,7 +22061,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableRequest_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableRequest_descriptor,
@@ -21367,7 +22069,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ListTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ListTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableResponse_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ListTimeseriesTableResponse_descriptor,
@@ -21375,7 +22077,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ListTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ListTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableRequest_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableRequest_descriptor,
@@ -21383,7 +22085,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableResponse_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesTableResponse_descriptor,
@@ -21391,15 +22093,15 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableRequest_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableRequest_descriptor,
-              new java.lang.String[] { "TableName", "TableOptions", },
+              new java.lang.String[] { "TableName", "TableOptions", "MetaOptions", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableResponse_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesTableResponse_descriptor,
@@ -21407,7 +22109,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableRequest_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableRequest_descriptor,
@@ -21415,7 +22117,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableResponse_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableResponse_descriptor,
@@ -21423,7 +22125,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCondition_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(13);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCondition_descriptor,
@@ -21431,7 +22133,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCompositeCondition_descriptor =
-            getDescriptor().getMessageTypes().get(13);
+            getDescriptor().getMessageTypes().get(14);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCompositeCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCompositeCondition_descriptor,
@@ -21439,7 +22141,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryCompositeCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryCompositeCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryMeasurementCondition_descriptor =
-            getDescriptor().getMessageTypes().get(14);
+            getDescriptor().getMessageTypes().get(15);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryMeasurementCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryMeasurementCondition_descriptor,
@@ -21447,7 +22149,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryMeasurementCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryMeasurementCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQuerySourceCondition_descriptor =
-            getDescriptor().getMessageTypes().get(15);
+            getDescriptor().getMessageTypes().get(16);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQuerySourceCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQuerySourceCondition_descriptor,
@@ -21455,7 +22157,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQuerySourceCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQuerySourceCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryTagCondition_descriptor =
-            getDescriptor().getMessageTypes().get(16);
+            getDescriptor().getMessageTypes().get(17);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryTagCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryTagCondition_descriptor,
@@ -21463,7 +22165,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryTagCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryTagCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryAttributeCondition_descriptor =
-            getDescriptor().getMessageTypes().get(17);
+            getDescriptor().getMessageTypes().get(18);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryAttributeCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryAttributeCondition_descriptor,
@@ -21471,7 +22173,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryAttributeCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryAttributeCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryUpdateTimeCondition_descriptor =
-            getDescriptor().getMessageTypes().get(18);
+            getDescriptor().getMessageTypes().get(19);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryUpdateTimeCondition_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryUpdateTimeCondition_descriptor,
@@ -21479,7 +22181,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryUpdateTimeCondition.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaQueryUpdateTimeCondition.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesKey_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(20);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesKey_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesKey_descriptor,
@@ -21487,7 +22189,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesKey.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesKey.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMeta_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(21);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMeta_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesMeta_descriptor,
@@ -21495,7 +22197,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMeta.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesMeta.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaRequest_descriptor =
-            getDescriptor().getMessageTypes().get(21);
+            getDescriptor().getMessageTypes().get(22);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaRequest_descriptor,
@@ -21503,7 +22205,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.QueryTimeseriesMetaRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.QueryTimeseriesMetaRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaResponse_descriptor =
-            getDescriptor().getMessageTypes().get(22);
+            getDescriptor().getMessageTypes().get(23);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_QueryTimeseriesMetaResponse_descriptor,
@@ -21511,7 +22213,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.QueryTimeseriesMetaResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.QueryTimeseriesMetaResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesRows_descriptor =
-            getDescriptor().getMessageTypes().get(23);
+            getDescriptor().getMessageTypes().get(24);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesRows_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesRows_descriptor,
@@ -21519,7 +22221,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesRows.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesRows.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataRequest_descriptor =
-            getDescriptor().getMessageTypes().get(24);
+            getDescriptor().getMessageTypes().get(25);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataRequest_descriptor,
@@ -21527,7 +22229,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.PutTimeseriesDataRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.PutTimeseriesDataRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_FailedRowInfo_descriptor =
-            getDescriptor().getMessageTypes().get(25);
+            getDescriptor().getMessageTypes().get(26);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_FailedRowInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_FailedRowInfo_descriptor,
@@ -21535,7 +22237,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.FailedRowInfo.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.FailedRowInfo.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaUpdateStatus_descriptor =
-            getDescriptor().getMessageTypes().get(26);
+            getDescriptor().getMessageTypes().get(27);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaUpdateStatus_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaUpdateStatus_descriptor,
@@ -21543,7 +22245,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaUpdateStatus.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.MetaUpdateStatus.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataResponse_descriptor =
-            getDescriptor().getMessageTypes().get(27);
+            getDescriptor().getMessageTypes().get(28);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_PutTimeseriesDataResponse_descriptor,
@@ -21551,7 +22253,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.PutTimeseriesDataResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.PutTimeseriesDataResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesFieldsToGet_descriptor =
-            getDescriptor().getMessageTypes().get(28);
+            getDescriptor().getMessageTypes().get(29);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesFieldsToGet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesFieldsToGet_descriptor,
@@ -21559,7 +22261,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesFieldsToGet.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesFieldsToGet.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataRequest_descriptor =
-            getDescriptor().getMessageTypes().get(29);
+            getDescriptor().getMessageTypes().get(30);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataRequest_descriptor,
@@ -21567,7 +22269,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.GetTimeseriesDataRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.GetTimeseriesDataRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataResponse_descriptor =
-            getDescriptor().getMessageTypes().get(30);
+            getDescriptor().getMessageTypes().get(31);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_GetTimeseriesDataResponse_descriptor,
@@ -21575,7 +22277,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.GetTimeseriesDataResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.GetTimeseriesDataResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaRequest_descriptor =
-            getDescriptor().getMessageTypes().get(31);
+            getDescriptor().getMessageTypes().get(32);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaRequest_descriptor,
@@ -21583,7 +22285,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesMetaRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesMetaRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaResponse_descriptor =
-            getDescriptor().getMessageTypes().get(32);
+            getDescriptor().getMessageTypes().get(33);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesMetaResponse_descriptor,
@@ -21591,7 +22293,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesMetaResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesMetaResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaRequest_descriptor =
-            getDescriptor().getMessageTypes().get(33);
+            getDescriptor().getMessageTypes().get(34);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaRequest_descriptor,
@@ -21599,7 +22301,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesMetaRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesMetaRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaResponse_descriptor =
-            getDescriptor().getMessageTypes().get(34);
+            getDescriptor().getMessageTypes().get(35);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesMetaResponse_descriptor,
@@ -21607,7 +22309,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesMetaResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesMetaResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskRequest_descriptor =
-            getDescriptor().getMessageTypes().get(35);
+            getDescriptor().getMessageTypes().get(36);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskRequest_descriptor,
@@ -21615,7 +22317,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.SplitTimeseriesScanTaskRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.SplitTimeseriesScanTaskRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskResponse_descriptor =
-            getDescriptor().getMessageTypes().get(36);
+            getDescriptor().getMessageTypes().get(37);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_SplitTimeseriesScanTaskResponse_descriptor,
@@ -21623,7 +22325,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.SplitTimeseriesScanTaskResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.SplitTimeseriesScanTaskResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataRequest_descriptor =
-            getDescriptor().getMessageTypes().get(37);
+            getDescriptor().getMessageTypes().get(38);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataRequest_descriptor,
@@ -21631,7 +22333,7 @@ public final class Timeseries {
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ScanTimeseriesDataRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ScanTimeseriesDataRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataResponse_descriptor =
-            getDescriptor().getMessageTypes().get(38);
+            getDescriptor().getMessageTypes().get(39);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataResponse_descriptor,

@@ -47,4 +47,12 @@ public interface AsyncTimeseriesClientInterface {
     Future<ScanTimeseriesDataResponse> scanTimeseriesData(ScanTimeseriesDataRequest request,
                                                           TableStoreCallback<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> callback)
             throws TableStoreException, ClientException;
+
+    public TimeseriesClientInterface asTimeseriesClientInterface();
+
+    /**
+     * 释放资源。
+     * <p>请确保在所有请求执行完毕之后释放资源。释放资源之后将不能再发送请求，正在执行的请求可能无法返回结果。</p>
+     */
+    public void shutdown();
 }

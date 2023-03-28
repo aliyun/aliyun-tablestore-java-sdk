@@ -68,7 +68,7 @@ public class WriterConfig {
     private BatchRequestType batchRequestType = BatchRequestType.BATCH_WRITE_ROW;
 
     /**
-     * 分筒数，默认参数暂定3，
+     * 分桶数，默认参数暂定3，
      * 并发写：3个桶性能较好
      * 按序写：桶数与写入正相关
      * */

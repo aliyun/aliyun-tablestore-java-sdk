@@ -6,10 +6,16 @@ message TimeseriesTableOptions {
   optional int32 time_to_live = 1;
 }
 
+message TimeseriesMetaOptions {
+  optional bool allow_update_attributes = 1;
+  optional int32 meta_time_to_live = 2;
+}
+
 message TimeseriesTableMeta {
   required string table_name = 1;
   optional TimeseriesTableOptions table_options = 2;
   optional string status = 3;
+  optional TimeseriesMetaOptions meta_options = 4;
 }
 
 message CreateTimeseriesTableRequest {
@@ -36,6 +42,7 @@ message DeleteTimeseriesTableResponse {
 message UpdateTimeseriesTableRequest {
   required string table_name = 1;
   optional TimeseriesTableOptions table_options = 2;
+  optional TimeseriesMetaOptions meta_options = 3;
 }
 
 message UpdateTimeseriesTableResponse {

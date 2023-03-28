@@ -128,7 +128,7 @@ public class RowEventHandler implements EventHandler<RowChangeEvent> {
 
         if (requestWithGroups != null) {
             final RequestWithGroups finalRequestWithGroups = requestWithGroups;
-            bucketSemaphore.acquire();      // 先阻塞等候筒信号量
+            bucketSemaphore.acquire();      // 先阻塞等候桶信号量
             callbackSemaphore.acquire();    // 后阻塞等候线程池信号量
             executor.execute(new Runnable() {
                 @Override

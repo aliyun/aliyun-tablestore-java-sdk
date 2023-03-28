@@ -208,6 +208,11 @@ public class AsyncTimeseriesClient implements AsyncTimeseriesClientInterface {
         this.internalClient.shutdown();
     }
 
+    @Override
+    public TimeseriesClientInterface asTimeseriesClientInterface() {
+        return new TimeseriesClient(this.internalClient);
+    }
+
     public SyncClient asSyncClient() {
         return new SyncClient(this.internalClient);
     }
