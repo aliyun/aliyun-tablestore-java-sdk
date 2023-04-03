@@ -107,7 +107,7 @@ public class TimeseriesClient implements TimeseriesClientInterface {
         }
         this.timeseriesMetaCache = CacheBuilder.newBuilder()
                 .maximumWeight(config.getTimeseriesConfiguration().getMetaCacheMaxDataSize())
-                .expireAfterAccess(config.getConnectionTimeoutInMillisecond(), TimeUnit.SECONDS)
+                .expireAfterAccess(config.getTimeseriesConfiguration().getMetaCacheExpireTimeAfterAccessInSec(), TimeUnit.SECONDS)
                 .weigher(new Weigher<String, Long>() {
                     @Override
                     public int weigh(String key, Long value) {

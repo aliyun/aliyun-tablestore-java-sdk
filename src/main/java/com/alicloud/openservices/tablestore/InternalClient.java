@@ -777,6 +777,9 @@ public class InternalClient {
 
     public void shutdown() {
         this.resourceManager.shutdown();
+        if (this.timeseriesMetaCache != null) {
+            this.timeseriesMetaCache.invalidateAll();
+        }
     }
 
     public Future<ListStreamResponse> listStream(ListStreamRequest request,
