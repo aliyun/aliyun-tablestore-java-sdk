@@ -204,6 +204,34 @@ public class AsyncTimeseriesClient implements AsyncTimeseriesClientInterface {
         return internalClient.scanTimeseriesData(request, callback);
     }
 
+    @Override
+    public Future<CreateTimeseriesAnalyticalStoreResponse> createTimeseriesAnalyticalStore(CreateTimeseriesAnalyticalStoreRequest request,
+                                                                                           TableStoreCallback<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.createTimeseriesAnalyticalStore(request, callback);
+    }
+
+    @Override
+    public Future<DeleteTimeseriesAnalyticalStoreResponse> deleteTimeseriesAnalyticalStore(DeleteTimeseriesAnalyticalStoreRequest request,
+                                                                                           TableStoreCallback<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.deleteTimeseriesAnalyticalStore(request, callback);
+    }
+
+    @Override
+    public Future<DescribeTimeseriesAnalyticalStoreResponse> describeTimeseriesAnalyticalStore(DescribeTimeseriesAnalyticalStoreRequest request,
+                                                                                               TableStoreCallback<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.describeTimeseriesAnalyticalStore(request, callback);
+    }
+
+    @Override
+    public Future<UpdateTimeseriesAnalyticalStoreResponse> updateTimeseriesAnalyticalStore(UpdateTimeseriesAnalyticalStoreRequest request,
+                                                                                           TableStoreCallback<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.updateTimeseriesAnalyticalStore(request, callback);
+    }
+
     public void shutdown() {
         this.internalClient.shutdown();
     }

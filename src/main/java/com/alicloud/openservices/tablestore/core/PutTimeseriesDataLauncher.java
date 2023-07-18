@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.core;
 
 import com.alicloud.openservices.tablestore.ClientConfiguration;
+import com.alicloud.openservices.tablestore.PartialResultFailedException;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
 import com.alicloud.openservices.tablestore.core.http.PutTimeseriesDataResponseConsumer;
@@ -43,6 +44,17 @@ public class PutTimeseriesDataLauncher extends OperationLauncher<PutTimeseriesDa
         this.tracer = tracer;
         this.retry = retry;
         this.timeseriesMetaCache = timeseriesMetaCache;
+    }
+
+    @Override
+    public PutTimeseriesDataRequest getRequestForRetry(Exception e) {
+        PutTimeseriesDataRequest request = this.originRequest;
+        if (e instanceof PartialResultFailedException) {
+            lastResult = (PutTimeseriesDataResponse) ((PartialResultFailedException) e).getResult();
+            request = this.originRequest.createRequestForRetry(
+                    lastResult.getFailedRows());
+        }
+        return request;
     }
 
     @Override

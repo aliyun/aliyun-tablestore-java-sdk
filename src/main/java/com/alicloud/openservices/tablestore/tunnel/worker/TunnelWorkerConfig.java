@@ -79,7 +79,7 @@ public class TunnelWorkerConfig {
     private static final int READ_MAX_TIMES_PER_ROUND = 50;
     private static final int READ_MAX_BYTES_PER_ROUND = 64 * 1024 * 1024;
 
-    private boolean enableClosingChannelDetect;
+    private boolean enableClosingChannelDetect = true;
 
     public TunnelWorkerConfig() {
         this(

@@ -123,5 +123,13 @@ public class OperationNames {
 
     public static final String OP_SCAN_TIMESERIES_DATA = "ScanTimeseriesData";
 
+    public static final String OP_CREATE_TIMESERIES_ANALYTICAL_STORE = "CreateTimeseriesAnalyticalStore";
+
+    public static final String OP_UPDATE_TIMESERIES_ANALYTICAL_STORE = "UpdateTimeseriesAnalyticalStore";
+
+    public static final String OP_DELETE_TIMESERIES_ANALYTICAL_STORE = "DeleteTimeseriesAnalyticalStore";
+
+    public static final String OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE = "DescribeTimeseriesAnalyticalStore";
+
     public static final String OP_SQL_Query = "SQLQuery";
 }

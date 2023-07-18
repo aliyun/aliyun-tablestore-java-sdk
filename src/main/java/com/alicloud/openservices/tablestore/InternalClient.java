@@ -1800,6 +1800,110 @@ public class InternalClient {
         return f;
     }
 
+    public Future<CreateTimeseriesAnalyticalStoreResponse> createTimeseriesAnalyticalStore(
+            CreateTimeseriesAnalyticalStoreRequest request,
+            TableStoreCallback<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateTimeseriesAnalyticalStoreLauncher launcher = launcherFactory.createTimeseriesAnalyticalStore(tracer, retry, request);
+
+        AsyncCompletion<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse> completion =
+                new AsyncCompletion<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse> f =
+                new CallbackImpledFuture<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteTimeseriesAnalyticalStoreResponse> deleteTimeseriesAnalyticalStore(
+            DeleteTimeseriesAnalyticalStoreRequest request,
+            TableStoreCallback<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteTimeseriesAnalyticalStoreLauncher launcher = launcherFactory.deleteTimeseriesAnalyticalStore(tracer, retry, request);
+
+        AsyncCompletion<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse> completion =
+                new AsyncCompletion<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse> f =
+                new CallbackImpledFuture<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DescribeTimeseriesAnalyticalStoreResponse> describeTimeseriesAnalyticalStore(
+            DescribeTimeseriesAnalyticalStoreRequest request,
+            TableStoreCallback<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DescribeTimeseriesAnalyticalStoreLauncher launcher = launcherFactory.describeTimeseriesAnalyticalStore(tracer, retry, request);
+
+        AsyncCompletion<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse> completion =
+                new AsyncCompletion<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse> f =
+                new CallbackImpledFuture<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<UpdateTimeseriesAnalyticalStoreResponse> updateTimeseriesAnalyticalStore(
+            UpdateTimeseriesAnalyticalStoreRequest request,
+            TableStoreCallback<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateTimeseriesAnalyticalStoreLauncher launcher = launcherFactory.updateTimeseriesAnalyticalStore(tracer, retry, request);
+
+        AsyncCompletion<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> completion =
+                new AsyncCompletion<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> f =
+                new CallbackImpledFuture<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
     public void setCredentials(ServiceCredentials credentials) {
         CredentialsProvider newCrdsProvider = CredentialsProviderFactory.newDefaultCredentialProvider(credentials.getAccessKeyId(),
                 credentials.getAccessKeySecret(), credentials.getSecurityToken());

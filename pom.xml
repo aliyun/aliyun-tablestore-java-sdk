@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>  
   <groupId>com.aliyun.openservices</groupId>  
   <artifactId>tablestore</artifactId>  
-  <version>5.13.15</version>  
+  <version>5.15.0</version>  
   <packaging>jar</packaging>  
   <name>AliCloud TableStore SDK for Java</name>  
   <url>http://www.aliyun.com</url>  

@@ -205,6 +205,34 @@ public class TimeseriesClient implements TimeseriesClientInterface {
         return waitForFuture(resp);
     }
 
+    @Override
+    public CreateTimeseriesAnalyticalStoreResponse createTimeseriesAnalyticalStore(CreateTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException {
+        Future<CreateTimeseriesAnalyticalStoreResponse> resp = internalClient.createTimeseriesAnalyticalStore(request, null);
+        return waitForFuture(resp);
+    }
+
+    @Override
+    public DeleteTimeseriesAnalyticalStoreResponse deleteTimeseriesAnalyticalStore(DeleteTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException {
+        Future<DeleteTimeseriesAnalyticalStoreResponse> resp = internalClient.deleteTimeseriesAnalyticalStore(request, null);
+        return waitForFuture(resp);
+    }
+
+    @Override
+    public DescribeTimeseriesAnalyticalStoreResponse describeTimeseriesAnalyticalStore(DescribeTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException {
+        Future<DescribeTimeseriesAnalyticalStoreResponse> resp = internalClient.describeTimeseriesAnalyticalStore(request, null);
+        return waitForFuture(resp);
+    }
+
+    @Override
+    public UpdateTimeseriesAnalyticalStoreResponse updateTimeseriesAnalyticalStore(UpdateTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException {
+        Future<UpdateTimeseriesAnalyticalStoreResponse> resp = internalClient.updateTimeseriesAnalyticalStore(request, null);
+        return waitForFuture(resp);
+    }
+
     private <Res> Res waitForFuture(Future<Res> f) {
         try {
             return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);

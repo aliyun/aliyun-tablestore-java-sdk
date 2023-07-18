@@ -380,6 +380,75 @@ public final class Timeseries {
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.MetaUpdateMode)
   }
   
+  public enum AnalyticalStoreSyncType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    SYNC_TYPE_FULL(0, 1),
+    SYNC_TYPE_INCR(1, 2),
+    ;
+    
+    public static final int SYNC_TYPE_FULL_VALUE = 1;
+    public static final int SYNC_TYPE_INCR_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static AnalyticalStoreSyncType valueOf(int value) {
+      switch (value) {
+        case 1: return SYNC_TYPE_FULL;
+        case 2: return SYNC_TYPE_INCR;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<AnalyticalStoreSyncType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<AnalyticalStoreSyncType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<AnalyticalStoreSyncType>() {
+            public AnalyticalStoreSyncType findValueByNumber(int number) {
+              return AnalyticalStoreSyncType.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.getDescriptor().getEnumTypes().get(5);
+    }
+    
+    private static final AnalyticalStoreSyncType[] VALUES = {
+      SYNC_TYPE_FULL, SYNC_TYPE_INCR, 
+    };
+    
+    public static AnalyticalStoreSyncType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private AnalyticalStoreSyncType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType)
+  }
+  
   public interface TimeseriesTableOptionsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -1883,6 +1952,20 @@ public final class Timeseries {
     boolean hasTableMeta();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta getTableMeta();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMetaOrBuilder getTableMetaOrBuilder();
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 3;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> 
+        getAnalyticalStoresList();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index);
+    int getAnalyticalStoresCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+        getAnalyticalStoresOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+        int index);
+    
+    // optional bool enable_analytical_store = 4;
+    boolean hasEnableAnalyticalStore();
+    boolean getEnableAnalyticalStore();
   }
   public static final class CreateTimeseriesTableRequest extends
       com.google.protobuf.GeneratedMessage
@@ -1926,8 +2009,41 @@ public final class Timeseries {
       return tableMeta_;
     }
     
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 3;
+    public static final int ANALYTICAL_STORES_FIELD_NUMBER = 3;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> analyticalStores_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> getAnalyticalStoresList() {
+      return analyticalStores_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+        getAnalyticalStoresOrBuilderList() {
+      return analyticalStores_;
+    }
+    public int getAnalyticalStoresCount() {
+      return analyticalStores_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index) {
+      return analyticalStores_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+        int index) {
+      return analyticalStores_.get(index);
+    }
+    
+    // optional bool enable_analytical_store = 4;
+    public static final int ENABLE_ANALYTICAL_STORE_FIELD_NUMBER = 4;
+    private boolean enableAnalyticalStore_;
+    public boolean hasEnableAnalyticalStore() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public boolean getEnableAnalyticalStore() {
+      return enableAnalyticalStore_;
+    }
+    
     private void initFields() {
       tableMeta_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta.getDefaultInstance();
+      analyticalStores_ = java.util.Collections.emptyList();
+      enableAnalyticalStore_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1952,6 +2068,12 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, tableMeta_);
       }
+      for (int i = 0; i < analyticalStores_.size(); i++) {
+        output.writeMessage(3, analyticalStores_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(4, enableAnalyticalStore_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -1964,6 +2086,14 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, tableMeta_);
+      }
+      for (int i = 0; i < analyticalStores_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, analyticalStores_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, enableAnalyticalStore_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2082,6 +2212,7 @@ public final class Timeseries {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTableMetaFieldBuilder();
+          getAnalyticalStoresFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2096,6 +2227,14 @@ public final class Timeseries {
           tableMetaBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStores_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          analyticalStoresBuilder_.clear();
+        }
+        enableAnalyticalStore_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -2142,6 +2281,19 @@ public final class Timeseries {
         } else {
           result.tableMeta_ = tableMetaBuilder_.build();
         }
+        if (analyticalStoresBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            analyticalStores_ = java.util.Collections.unmodifiableList(analyticalStores_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.analyticalStores_ = analyticalStores_;
+        } else {
+          result.analyticalStores_ = analyticalStoresBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.enableAnalyticalStore_ = enableAnalyticalStore_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2160,6 +2312,35 @@ public final class Timeseries {
         if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableRequest.getDefaultInstance()) return this;
         if (other.hasTableMeta()) {
           mergeTableMeta(other.getTableMeta());
+        }
+        if (analyticalStoresBuilder_ == null) {
+          if (!other.analyticalStores_.isEmpty()) {
+            if (analyticalStores_.isEmpty()) {
+              analyticalStores_ = other.analyticalStores_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAnalyticalStoresIsMutable();
+              analyticalStores_.addAll(other.analyticalStores_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.analyticalStores_.isEmpty()) {
+            if (analyticalStoresBuilder_.isEmpty()) {
+              analyticalStoresBuilder_.dispose();
+              analyticalStoresBuilder_ = null;
+              analyticalStores_ = other.analyticalStores_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              analyticalStoresBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getAnalyticalStoresFieldBuilder() : null;
+            } else {
+              analyticalStoresBuilder_.addAllMessages(other.analyticalStores_);
+            }
+          }
+        }
+        if (other.hasEnableAnalyticalStore()) {
+          setEnableAnalyticalStore(other.getEnableAnalyticalStore());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2207,6 +2388,17 @@ public final class Timeseries {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setTableMeta(subBuilder.buildPartial());
+              break;
+            }
+            case 26: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addAnalyticalStores(subBuilder.buildPartial());
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000004;
+              enableAnalyticalStore_ = input.readBool();
               break;
             }
           }
@@ -2303,6 +2495,213 @@ public final class Timeseries {
           tableMeta_ = null;
         }
         return tableMetaBuilder_;
+      }
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 3;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> analyticalStores_ =
+        java.util.Collections.emptyList();
+      private void ensureAnalyticalStoresIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          analyticalStores_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore>(analyticalStores_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> analyticalStoresBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> getAnalyticalStoresList() {
+        if (analyticalStoresBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(analyticalStores_);
+        } else {
+          return analyticalStoresBuilder_.getMessageList();
+        }
+      }
+      public int getAnalyticalStoresCount() {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.size();
+        } else {
+          return analyticalStoresBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index) {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.get(index);
+        } else {
+          return analyticalStoresBuilder_.getMessage(index);
+        }
+      }
+      public Builder setAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.set(index, value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(index, value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllAnalyticalStores(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> values) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          super.addAll(values, analyticalStores_);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearAnalyticalStores() {
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStores_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeAnalyticalStores(int index) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.remove(index);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder getAnalyticalStoresBuilder(
+          int index) {
+        return getAnalyticalStoresFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+          int index) {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.get(index);  } else {
+          return analyticalStoresBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+           getAnalyticalStoresOrBuilderList() {
+        if (analyticalStoresBuilder_ != null) {
+          return analyticalStoresBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(analyticalStores_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder addAnalyticalStoresBuilder() {
+        return getAnalyticalStoresFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder addAnalyticalStoresBuilder(
+          int index) {
+        return getAnalyticalStoresFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder> 
+           getAnalyticalStoresBuilderList() {
+        return getAnalyticalStoresFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+          getAnalyticalStoresFieldBuilder() {
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStoresBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder>(
+                  analyticalStores_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          analyticalStores_ = null;
+        }
+        return analyticalStoresBuilder_;
+      }
+      
+      // optional bool enable_analytical_store = 4;
+      private boolean enableAnalyticalStore_ ;
+      public boolean hasEnableAnalyticalStore() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public boolean getEnableAnalyticalStore() {
+        return enableAnalyticalStore_;
+      }
+      public Builder setEnableAnalyticalStore(boolean value) {
+        bitField0_ |= 0x00000004;
+        enableAnalyticalStore_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearEnableAnalyticalStore() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        enableAnalyticalStore_ = false;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.CreateTimeseriesTableRequest)
@@ -5425,6 +5824,16 @@ public final class Timeseries {
     boolean hasTableMeta();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta getTableMeta();
     com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMetaOrBuilder getTableMetaOrBuilder();
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 2;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> 
+        getAnalyticalStoresList();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index);
+    int getAnalyticalStoresCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+        getAnalyticalStoresOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+        int index);
   }
   public static final class DescribeTimeseriesTableResponse extends
       com.google.protobuf.GeneratedMessage
@@ -5468,8 +5877,30 @@ public final class Timeseries {
       return tableMeta_;
     }
     
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 2;
+    public static final int ANALYTICAL_STORES_FIELD_NUMBER = 2;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> analyticalStores_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> getAnalyticalStoresList() {
+      return analyticalStores_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+        getAnalyticalStoresOrBuilderList() {
+      return analyticalStores_;
+    }
+    public int getAnalyticalStoresCount() {
+      return analyticalStores_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index) {
+      return analyticalStores_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+        int index) {
+      return analyticalStores_.get(index);
+    }
+    
     private void initFields() {
       tableMeta_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesTableMeta.getDefaultInstance();
+      analyticalStores_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5494,6 +5925,9 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, tableMeta_);
       }
+      for (int i = 0; i < analyticalStores_.size(); i++) {
+        output.writeMessage(2, analyticalStores_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -5506,6 +5940,10 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, tableMeta_);
+      }
+      for (int i = 0; i < analyticalStores_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, analyticalStores_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5624,6 +6062,7 @@ public final class Timeseries {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTableMetaFieldBuilder();
+          getAnalyticalStoresFieldBuilder();
         }
       }
       private static Builder create() {
@@ -5638,6 +6077,12 @@ public final class Timeseries {
           tableMetaBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStores_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          analyticalStoresBuilder_.clear();
+        }
         return this;
       }
       
@@ -5684,6 +6129,15 @@ public final class Timeseries {
         } else {
           result.tableMeta_ = tableMetaBuilder_.build();
         }
+        if (analyticalStoresBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            analyticalStores_ = java.util.Collections.unmodifiableList(analyticalStores_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.analyticalStores_ = analyticalStores_;
+        } else {
+          result.analyticalStores_ = analyticalStoresBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5702,6 +6156,32 @@ public final class Timeseries {
         if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableResponse.getDefaultInstance()) return this;
         if (other.hasTableMeta()) {
           mergeTableMeta(other.getTableMeta());
+        }
+        if (analyticalStoresBuilder_ == null) {
+          if (!other.analyticalStores_.isEmpty()) {
+            if (analyticalStores_.isEmpty()) {
+              analyticalStores_ = other.analyticalStores_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAnalyticalStoresIsMutable();
+              analyticalStores_.addAll(other.analyticalStores_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.analyticalStores_.isEmpty()) {
+            if (analyticalStoresBuilder_.isEmpty()) {
+              analyticalStoresBuilder_.dispose();
+              analyticalStoresBuilder_ = null;
+              analyticalStores_ = other.analyticalStores_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              analyticalStoresBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getAnalyticalStoresFieldBuilder() : null;
+            } else {
+              analyticalStoresBuilder_.addAllMessages(other.analyticalStores_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5749,6 +6229,12 @@ public final class Timeseries {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setTableMeta(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addAnalyticalStores(subBuilder.buildPartial());
               break;
             }
           }
@@ -5845,6 +6331,192 @@ public final class Timeseries {
           tableMeta_ = null;
         }
         return tableMetaBuilder_;
+      }
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_stores = 2;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> analyticalStores_ =
+        java.util.Collections.emptyList();
+      private void ensureAnalyticalStoresIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          analyticalStores_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore>(analyticalStores_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> analyticalStoresBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> getAnalyticalStoresList() {
+        if (analyticalStoresBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(analyticalStores_);
+        } else {
+          return analyticalStoresBuilder_.getMessageList();
+        }
+      }
+      public int getAnalyticalStoresCount() {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.size();
+        } else {
+          return analyticalStoresBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStores(int index) {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.get(index);
+        } else {
+          return analyticalStoresBuilder_.getMessage(index);
+        }
+      }
+      public Builder setAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.set(index, value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(index, value);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAnalyticalStores(
+          int index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllAnalyticalStores(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore> values) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          super.addAll(values, analyticalStores_);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearAnalyticalStores() {
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStores_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeAnalyticalStores(int index) {
+        if (analyticalStoresBuilder_ == null) {
+          ensureAnalyticalStoresIsMutable();
+          analyticalStores_.remove(index);
+          onChanged();
+        } else {
+          analyticalStoresBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder getAnalyticalStoresBuilder(
+          int index) {
+        return getAnalyticalStoresFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoresOrBuilder(
+          int index) {
+        if (analyticalStoresBuilder_ == null) {
+          return analyticalStores_.get(index);  } else {
+          return analyticalStoresBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+           getAnalyticalStoresOrBuilderList() {
+        if (analyticalStoresBuilder_ != null) {
+          return analyticalStoresBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(analyticalStores_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder addAnalyticalStoresBuilder() {
+        return getAnalyticalStoresFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder addAnalyticalStoresBuilder(
+          int index) {
+        return getAnalyticalStoresFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder> 
+           getAnalyticalStoresBuilderList() {
+        return getAnalyticalStoresFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+          getAnalyticalStoresFieldBuilder() {
+        if (analyticalStoresBuilder_ == null) {
+          analyticalStoresBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder>(
+                  analyticalStores_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          analyticalStores_ = null;
+        }
+        return analyticalStoresBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DescribeTimeseriesTableResponse)
@@ -21647,6 +22319,4871 @@ public final class Timeseries {
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.ScanTimeseriesDataResponse)
   }
   
+  public interface TimeseriesAnalyticalStoreOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string store_name = 1;
+    boolean hasStoreName();
+    String getStoreName();
+    
+    // optional int32 time_to_live = 2;
+    boolean hasTimeToLive();
+    int getTimeToLive();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_option = 3;
+    boolean hasSyncOption();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncOption();
+  }
+  public static final class TimeseriesAnalyticalStore extends
+      com.google.protobuf.GeneratedMessage
+      implements TimeseriesAnalyticalStoreOrBuilder {
+    // Use TimeseriesAnalyticalStore.newBuilder() to construct.
+    private TimeseriesAnalyticalStore(Builder builder) {
+      super(builder);
+    }
+    private TimeseriesAnalyticalStore(boolean noInit) {}
+    
+    private static final TimeseriesAnalyticalStore defaultInstance;
+    public static TimeseriesAnalyticalStore getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public TimeseriesAnalyticalStore getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional string store_name = 1;
+    public static final int STORE_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object storeName_;
+    public boolean hasStoreName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getStoreName() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          storeName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getStoreNameBytes() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        storeName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional int32 time_to_live = 2;
+    public static final int TIME_TO_LIVE_FIELD_NUMBER = 2;
+    private int timeToLive_;
+    public boolean hasTimeToLive() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getTimeToLive() {
+      return timeToLive_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_option = 3;
+    public static final int SYNC_OPTION_FIELD_NUMBER = 3;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType syncOption_;
+    public boolean hasSyncOption() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncOption() {
+      return syncOption_;
+    }
+    
+    private void initFields() {
+      storeName_ = "";
+      timeToLive_ = 0;
+      syncOption_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getStoreNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, timeToLive_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(3, syncOption_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getStoreNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, timeToLive_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(3, syncOption_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        storeName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        timeToLive_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        syncOption_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.storeName_ = storeName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.timeToLive_ = timeToLive_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.syncOption_ = syncOption_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance()) return this;
+        if (other.hasStoreName()) {
+          setStoreName(other.getStoreName());
+        }
+        if (other.hasTimeToLive()) {
+          setTimeToLive(other.getTimeToLive());
+        }
+        if (other.hasSyncOption()) {
+          setSyncOption(other.getSyncOption());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              storeName_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              timeToLive_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType value = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(3, rawValue);
+              } else {
+                bitField0_ |= 0x00000004;
+                syncOption_ = value;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional string store_name = 1;
+      private java.lang.Object storeName_ = "";
+      public boolean hasStoreName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getStoreName() {
+        java.lang.Object ref = storeName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          storeName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setStoreName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        storeName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStoreName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        storeName_ = getDefaultInstance().getStoreName();
+        onChanged();
+        return this;
+      }
+      void setStoreName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        storeName_ = value;
+        onChanged();
+      }
+      
+      // optional int32 time_to_live = 2;
+      private int timeToLive_ ;
+      public boolean hasTimeToLive() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getTimeToLive() {
+        return timeToLive_;
+      }
+      public Builder setTimeToLive(int value) {
+        bitField0_ |= 0x00000002;
+        timeToLive_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTimeToLive() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        timeToLive_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_option = 3;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType syncOption_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+      public boolean hasSyncOption() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncOption() {
+        return syncOption_;
+      }
+      public Builder setSyncOption(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        syncOption_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSyncOption() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        syncOption_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore)
+    }
+    
+    static {
+      defaultInstance = new TimeseriesAnalyticalStore(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore)
+  }
+  
+  public interface AnalyticalStoreSyncStatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_phase = 1;
+    boolean hasSyncPhase();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncPhase();
+    
+    // optional int64 current_sync_timestamp = 2;
+    boolean hasCurrentSyncTimestamp();
+    long getCurrentSyncTimestamp();
+  }
+  public static final class AnalyticalStoreSyncStat extends
+      com.google.protobuf.GeneratedMessage
+      implements AnalyticalStoreSyncStatOrBuilder {
+    // Use AnalyticalStoreSyncStat.newBuilder() to construct.
+    private AnalyticalStoreSyncStat(Builder builder) {
+      super(builder);
+    }
+    private AnalyticalStoreSyncStat(boolean noInit) {}
+    
+    private static final AnalyticalStoreSyncStat defaultInstance;
+    public static AnalyticalStoreSyncStat getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public AnalyticalStoreSyncStat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_phase = 1;
+    public static final int SYNC_PHASE_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType syncPhase_;
+    public boolean hasSyncPhase() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncPhase() {
+      return syncPhase_;
+    }
+    
+    // optional int64 current_sync_timestamp = 2;
+    public static final int CURRENT_SYNC_TIMESTAMP_FIELD_NUMBER = 2;
+    private long currentSyncTimestamp_;
+    public boolean hasCurrentSyncTimestamp() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public long getCurrentSyncTimestamp() {
+      return currentSyncTimestamp_;
+    }
+    
+    private void initFields() {
+      syncPhase_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+      currentSyncTimestamp_ = 0L;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, syncPhase_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt64(2, currentSyncTimestamp_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, syncPhase_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, currentSyncTimestamp_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        syncPhase_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        currentSyncTimestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.syncPhase_ = syncPhase_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.currentSyncTimestamp_ = currentSyncTimestamp_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance()) return this;
+        if (other.hasSyncPhase()) {
+          setSyncPhase(other.getSyncPhase());
+        }
+        if (other.hasCurrentSyncTimestamp()) {
+          setCurrentSyncTimestamp(other.getCurrentSyncTimestamp());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType value = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                syncPhase_ = value;
+              }
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              currentSyncTimestamp_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncType sync_phase = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType syncPhase_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+      public boolean hasSyncPhase() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType getSyncPhase() {
+        return syncPhase_;
+      }
+      public Builder setSyncPhase(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        syncPhase_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSyncPhase() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        syncPhase_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL;
+        onChanged();
+        return this;
+      }
+      
+      // optional int64 current_sync_timestamp = 2;
+      private long currentSyncTimestamp_ ;
+      public boolean hasCurrentSyncTimestamp() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public long getCurrentSyncTimestamp() {
+        return currentSyncTimestamp_;
+      }
+      public Builder setCurrentSyncTimestamp(long value) {
+        bitField0_ |= 0x00000002;
+        currentSyncTimestamp_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearCurrentSyncTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        currentSyncTimestamp_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncStat)
+    }
+    
+    static {
+      defaultInstance = new AnalyticalStoreSyncStat(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncStat)
+  }
+  
+  public interface AnalyticalStoreStorageSizeOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional int64 size = 1;
+    boolean hasSize();
+    long getSize();
+    
+    // optional int64 timestamp = 2;
+    boolean hasTimestamp();
+    long getTimestamp();
+  }
+  public static final class AnalyticalStoreStorageSize extends
+      com.google.protobuf.GeneratedMessage
+      implements AnalyticalStoreStorageSizeOrBuilder {
+    // Use AnalyticalStoreStorageSize.newBuilder() to construct.
+    private AnalyticalStoreStorageSize(Builder builder) {
+      super(builder);
+    }
+    private AnalyticalStoreStorageSize(boolean noInit) {}
+    
+    private static final AnalyticalStoreStorageSize defaultInstance;
+    public static AnalyticalStoreStorageSize getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public AnalyticalStoreStorageSize getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional int64 size = 1;
+    public static final int SIZE_FIELD_NUMBER = 1;
+    private long size_;
+    public boolean hasSize() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public long getSize() {
+      return size_;
+    }
+    
+    // optional int64 timestamp = 2;
+    public static final int TIMESTAMP_FIELD_NUMBER = 2;
+    private long timestamp_;
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public long getTimestamp() {
+      return timestamp_;
+    }
+    
+    private void initFields() {
+      size_ = 0L;
+      timestamp_ = 0L;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, size_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt64(2, timestamp_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, size_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, timestamp_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        size_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.size_ = size_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.timestamp_ = timestamp_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance()) return this;
+        if (other.hasSize()) {
+          setSize(other.getSize());
+        }
+        if (other.hasTimestamp()) {
+          setTimestamp(other.getTimestamp());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              size_ = input.readInt64();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              timestamp_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional int64 size = 1;
+      private long size_ ;
+      public boolean hasSize() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public long getSize() {
+        return size_;
+      }
+      public Builder setSize(long value) {
+        bitField0_ |= 0x00000001;
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSize() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        size_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // optional int64 timestamp = 2;
+      private long timestamp_ ;
+      public boolean hasTimestamp() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      public Builder setTimestamp(long value) {
+        bitField0_ |= 0x00000002;
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        timestamp_ = 0L;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreStorageSize)
+    }
+    
+    static {
+      defaultInstance = new AnalyticalStoreStorageSize(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreStorageSize)
+  }
+  
+  public interface CreateTimeseriesAnalyticalStoreRequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string table_name = 1;
+    boolean hasTableName();
+    String getTableName();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+    boolean hasAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder();
+  }
+  public static final class CreateTimeseriesAnalyticalStoreRequest extends
+      com.google.protobuf.GeneratedMessage
+      implements CreateTimeseriesAnalyticalStoreRequestOrBuilder {
+    // Use CreateTimeseriesAnalyticalStoreRequest.newBuilder() to construct.
+    private CreateTimeseriesAnalyticalStoreRequest(Builder builder) {
+      super(builder);
+    }
+    private CreateTimeseriesAnalyticalStoreRequest(boolean noInit) {}
+    
+    private static final CreateTimeseriesAnalyticalStoreRequest defaultInstance;
+    public static CreateTimeseriesAnalyticalStoreRequest getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public CreateTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required string table_name = 1;
+    public static final int TABLE_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object tableName_;
+    public boolean hasTableName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getTableName() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tableName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTableNameBytes() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tableName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+    public static final int ANALYTICAL_STORE_FIELD_NUMBER = 2;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_;
+    public boolean hasAnalyticalStore() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+      return analyticalStore_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+      return analyticalStore_;
+    }
+    
+    private void initFields() {
+      tableName_ = "";
+      analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasTableName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, analyticalStore_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, analyticalStore_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getAnalyticalStoreFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        tableName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.tableName_ = tableName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (analyticalStoreBuilder_ == null) {
+          result.analyticalStore_ = analyticalStore_;
+        } else {
+          result.analyticalStore_ = analyticalStoreBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.getDefaultInstance()) return this;
+        if (other.hasTableName()) {
+          setTableName(other.getTableName());
+        }
+        if (other.hasAnalyticalStore()) {
+          mergeAnalyticalStore(other.getAnalyticalStore());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasTableName()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              tableName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder();
+              if (hasAnalyticalStore()) {
+                subBuilder.mergeFrom(getAnalyticalStore());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setAnalyticalStore(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required string table_name = 1;
+      private java.lang.Object tableName_ = "";
+      public boolean hasTableName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getTableName() {
+        java.lang.Object ref = tableName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tableName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTableName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTableName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        tableName_ = getDefaultInstance().getTableName();
+        onChanged();
+        return this;
+      }
+      void setTableName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> analyticalStoreBuilder_;
+      public boolean hasAnalyticalStore() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          return analyticalStore_;
+        } else {
+          return analyticalStoreBuilder_.getMessage();
+        }
+      }
+      public Builder setAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          analyticalStore_ = value;
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setAnalyticalStore(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = builderForValue.build();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              analyticalStore_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance()) {
+            analyticalStore_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder(analyticalStore_).mergeFrom(value).buildPartial();
+          } else {
+            analyticalStore_ = value;
+          }
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder getAnalyticalStoreBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getAnalyticalStoreFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+        if (analyticalStoreBuilder_ != null) {
+          return analyticalStoreBuilder_.getMessageOrBuilder();
+        } else {
+          return analyticalStore_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+          getAnalyticalStoreFieldBuilder() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStoreBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder>(
+                  analyticalStore_,
+                  getParentForChildren(),
+                  isClean());
+          analyticalStore_ = null;
+        }
+        return analyticalStoreBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.CreateTimeseriesAnalyticalStoreRequest)
+    }
+    
+    static {
+      defaultInstance = new CreateTimeseriesAnalyticalStoreRequest(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.CreateTimeseriesAnalyticalStoreRequest)
+  }
+  
+  public interface CreateTimeseriesAnalyticalStoreResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+  }
+  public static final class CreateTimeseriesAnalyticalStoreResponse extends
+      com.google.protobuf.GeneratedMessage
+      implements CreateTimeseriesAnalyticalStoreResponseOrBuilder {
+    // Use CreateTimeseriesAnalyticalStoreResponse.newBuilder() to construct.
+    private CreateTimeseriesAnalyticalStoreResponse(Builder builder) {
+      super(builder);
+    }
+    private CreateTimeseriesAnalyticalStoreResponse(boolean noInit) {}
+    
+    private static final CreateTimeseriesAnalyticalStoreResponse defaultInstance;
+    public static CreateTimeseriesAnalyticalStoreResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public CreateTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+    }
+    
+    private void initFields() {
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse(this);
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.CreateTimeseriesAnalyticalStoreResponse)
+    }
+    
+    static {
+      defaultInstance = new CreateTimeseriesAnalyticalStoreResponse(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.CreateTimeseriesAnalyticalStoreResponse)
+  }
+  
+  public interface DeleteTimeseriesAnalyticalStoreRequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string table_name = 1;
+    boolean hasTableName();
+    String getTableName();
+    
+    // required string store_name = 2;
+    boolean hasStoreName();
+    String getStoreName();
+  }
+  public static final class DeleteTimeseriesAnalyticalStoreRequest extends
+      com.google.protobuf.GeneratedMessage
+      implements DeleteTimeseriesAnalyticalStoreRequestOrBuilder {
+    // Use DeleteTimeseriesAnalyticalStoreRequest.newBuilder() to construct.
+    private DeleteTimeseriesAnalyticalStoreRequest(Builder builder) {
+      super(builder);
+    }
+    private DeleteTimeseriesAnalyticalStoreRequest(boolean noInit) {}
+    
+    private static final DeleteTimeseriesAnalyticalStoreRequest defaultInstance;
+    public static DeleteTimeseriesAnalyticalStoreRequest getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public DeleteTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required string table_name = 1;
+    public static final int TABLE_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object tableName_;
+    public boolean hasTableName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getTableName() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tableName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTableNameBytes() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tableName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // required string store_name = 2;
+    public static final int STORE_NAME_FIELD_NUMBER = 2;
+    private java.lang.Object storeName_;
+    public boolean hasStoreName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getStoreName() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          storeName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getStoreNameBytes() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        storeName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    private void initFields() {
+      tableName_ = "";
+      storeName_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasTableName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStoreName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getStoreNameBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getStoreNameBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        tableName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        storeName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.tableName_ = tableName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.storeName_ = storeName_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.getDefaultInstance()) return this;
+        if (other.hasTableName()) {
+          setTableName(other.getTableName());
+        }
+        if (other.hasStoreName()) {
+          setStoreName(other.getStoreName());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasTableName()) {
+          
+          return false;
+        }
+        if (!hasStoreName()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              tableName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              storeName_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required string table_name = 1;
+      private java.lang.Object tableName_ = "";
+      public boolean hasTableName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getTableName() {
+        java.lang.Object ref = tableName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tableName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTableName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTableName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        tableName_ = getDefaultInstance().getTableName();
+        onChanged();
+        return this;
+      }
+      void setTableName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+      }
+      
+      // required string store_name = 2;
+      private java.lang.Object storeName_ = "";
+      public boolean hasStoreName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getStoreName() {
+        java.lang.Object ref = storeName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          storeName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setStoreName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        storeName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStoreName() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        storeName_ = getDefaultInstance().getStoreName();
+        onChanged();
+        return this;
+      }
+      void setStoreName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        storeName_ = value;
+        onChanged();
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DeleteTimeseriesAnalyticalStoreRequest)
+    }
+    
+    static {
+      defaultInstance = new DeleteTimeseriesAnalyticalStoreRequest(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DeleteTimeseriesAnalyticalStoreRequest)
+  }
+  
+  public interface DeleteTimeseriesAnalyticalStoreResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+  }
+  public static final class DeleteTimeseriesAnalyticalStoreResponse extends
+      com.google.protobuf.GeneratedMessage
+      implements DeleteTimeseriesAnalyticalStoreResponseOrBuilder {
+    // Use DeleteTimeseriesAnalyticalStoreResponse.newBuilder() to construct.
+    private DeleteTimeseriesAnalyticalStoreResponse(Builder builder) {
+      super(builder);
+    }
+    private DeleteTimeseriesAnalyticalStoreResponse(boolean noInit) {}
+    
+    private static final DeleteTimeseriesAnalyticalStoreResponse defaultInstance;
+    public static DeleteTimeseriesAnalyticalStoreResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public DeleteTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+    }
+    
+    private void initFields() {
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse(this);
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DeleteTimeseriesAnalyticalStoreResponse)
+    }
+    
+    static {
+      defaultInstance = new DeleteTimeseriesAnalyticalStoreResponse(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DeleteTimeseriesAnalyticalStoreResponse)
+  }
+  
+  public interface DescribeTimeseriesAnalyticalStoreRequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string table_name = 1;
+    boolean hasTableName();
+    String getTableName();
+    
+    // required string store_name = 2;
+    boolean hasStoreName();
+    String getStoreName();
+  }
+  public static final class DescribeTimeseriesAnalyticalStoreRequest extends
+      com.google.protobuf.GeneratedMessage
+      implements DescribeTimeseriesAnalyticalStoreRequestOrBuilder {
+    // Use DescribeTimeseriesAnalyticalStoreRequest.newBuilder() to construct.
+    private DescribeTimeseriesAnalyticalStoreRequest(Builder builder) {
+      super(builder);
+    }
+    private DescribeTimeseriesAnalyticalStoreRequest(boolean noInit) {}
+    
+    private static final DescribeTimeseriesAnalyticalStoreRequest defaultInstance;
+    public static DescribeTimeseriesAnalyticalStoreRequest getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public DescribeTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required string table_name = 1;
+    public static final int TABLE_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object tableName_;
+    public boolean hasTableName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getTableName() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tableName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTableNameBytes() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tableName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // required string store_name = 2;
+    public static final int STORE_NAME_FIELD_NUMBER = 2;
+    private java.lang.Object storeName_;
+    public boolean hasStoreName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getStoreName() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          storeName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getStoreNameBytes() {
+      java.lang.Object ref = storeName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        storeName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    private void initFields() {
+      tableName_ = "";
+      storeName_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasTableName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStoreName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getStoreNameBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getStoreNameBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        tableName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        storeName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.tableName_ = tableName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.storeName_ = storeName_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.getDefaultInstance()) return this;
+        if (other.hasTableName()) {
+          setTableName(other.getTableName());
+        }
+        if (other.hasStoreName()) {
+          setStoreName(other.getStoreName());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasTableName()) {
+          
+          return false;
+        }
+        if (!hasStoreName()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              tableName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              storeName_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required string table_name = 1;
+      private java.lang.Object tableName_ = "";
+      public boolean hasTableName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getTableName() {
+        java.lang.Object ref = tableName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tableName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTableName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTableName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        tableName_ = getDefaultInstance().getTableName();
+        onChanged();
+        return this;
+      }
+      void setTableName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+      }
+      
+      // required string store_name = 2;
+      private java.lang.Object storeName_ = "";
+      public boolean hasStoreName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getStoreName() {
+        java.lang.Object ref = storeName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          storeName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setStoreName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        storeName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStoreName() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        storeName_ = getDefaultInstance().getStoreName();
+        onChanged();
+        return this;
+      }
+      void setStoreName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        storeName_ = value;
+        onChanged();
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DescribeTimeseriesAnalyticalStoreRequest)
+    }
+    
+    static {
+      defaultInstance = new DescribeTimeseriesAnalyticalStoreRequest(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DescribeTimeseriesAnalyticalStoreRequest)
+  }
+  
+  public interface DescribeTimeseriesAnalyticalStoreResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 1;
+    boolean hasAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncStat sync_stat = 2;
+    boolean hasSyncStat();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat getSyncStat();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder getSyncStatOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreStorageSize storage_size = 3;
+    boolean hasStorageSize();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize getStorageSize();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder getStorageSizeOrBuilder();
+  }
+  public static final class DescribeTimeseriesAnalyticalStoreResponse extends
+      com.google.protobuf.GeneratedMessage
+      implements DescribeTimeseriesAnalyticalStoreResponseOrBuilder {
+    // Use DescribeTimeseriesAnalyticalStoreResponse.newBuilder() to construct.
+    private DescribeTimeseriesAnalyticalStoreResponse(Builder builder) {
+      super(builder);
+    }
+    private DescribeTimeseriesAnalyticalStoreResponse(boolean noInit) {}
+    
+    private static final DescribeTimeseriesAnalyticalStoreResponse defaultInstance;
+    public static DescribeTimeseriesAnalyticalStoreResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public DescribeTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 1;
+    public static final int ANALYTICAL_STORE_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_;
+    public boolean hasAnalyticalStore() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+      return analyticalStore_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+      return analyticalStore_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncStat sync_stat = 2;
+    public static final int SYNC_STAT_FIELD_NUMBER = 2;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat syncStat_;
+    public boolean hasSyncStat() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat getSyncStat() {
+      return syncStat_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder getSyncStatOrBuilder() {
+      return syncStat_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreStorageSize storage_size = 3;
+    public static final int STORAGE_SIZE_FIELD_NUMBER = 3;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize storageSize_;
+    public boolean hasStorageSize() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize getStorageSize() {
+      return storageSize_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder getStorageSizeOrBuilder() {
+      return storageSize_;
+    }
+    
+    private void initFields() {
+      analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+      syncStat_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance();
+      storageSize_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, analyticalStore_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, syncStat_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(3, storageSize_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, analyticalStore_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, syncStat_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, storageSize_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getAnalyticalStoreFieldBuilder();
+          getSyncStatFieldBuilder();
+          getStorageSizeFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (syncStatBuilder_ == null) {
+          syncStat_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance();
+        } else {
+          syncStatBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (storageSizeBuilder_ == null) {
+          storageSize_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance();
+        } else {
+          storageSizeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (analyticalStoreBuilder_ == null) {
+          result.analyticalStore_ = analyticalStore_;
+        } else {
+          result.analyticalStore_ = analyticalStoreBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (syncStatBuilder_ == null) {
+          result.syncStat_ = syncStat_;
+        } else {
+          result.syncStat_ = syncStatBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (storageSizeBuilder_ == null) {
+          result.storageSize_ = storageSize_;
+        } else {
+          result.storageSize_ = storageSizeBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.getDefaultInstance()) return this;
+        if (other.hasAnalyticalStore()) {
+          mergeAnalyticalStore(other.getAnalyticalStore());
+        }
+        if (other.hasSyncStat()) {
+          mergeSyncStat(other.getSyncStat());
+        }
+        if (other.hasStorageSize()) {
+          mergeStorageSize(other.getStorageSize());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder();
+              if (hasAnalyticalStore()) {
+                subBuilder.mergeFrom(getAnalyticalStore());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setAnalyticalStore(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.newBuilder();
+              if (hasSyncStat()) {
+                subBuilder.mergeFrom(getSyncStat());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setSyncStat(subBuilder.buildPartial());
+              break;
+            }
+            case 26: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.newBuilder();
+              if (hasStorageSize()) {
+                subBuilder.mergeFrom(getStorageSize());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setStorageSize(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> analyticalStoreBuilder_;
+      public boolean hasAnalyticalStore() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          return analyticalStore_;
+        } else {
+          return analyticalStoreBuilder_.getMessage();
+        }
+      }
+      public Builder setAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          analyticalStore_ = value;
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setAnalyticalStore(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = builderForValue.build();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              analyticalStore_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance()) {
+            analyticalStore_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder(analyticalStore_).mergeFrom(value).buildPartial();
+          } else {
+            analyticalStore_ = value;
+          }
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder getAnalyticalStoreBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getAnalyticalStoreFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+        if (analyticalStoreBuilder_ != null) {
+          return analyticalStoreBuilder_.getMessageOrBuilder();
+        } else {
+          return analyticalStore_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+          getAnalyticalStoreFieldBuilder() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStoreBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder>(
+                  analyticalStore_,
+                  getParentForChildren(),
+                  isClean());
+          analyticalStore_ = null;
+        }
+        return analyticalStoreBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreSyncStat sync_stat = 2;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat syncStat_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder> syncStatBuilder_;
+      public boolean hasSyncStat() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat getSyncStat() {
+        if (syncStatBuilder_ == null) {
+          return syncStat_;
+        } else {
+          return syncStatBuilder_.getMessage();
+        }
+      }
+      public Builder setSyncStat(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat value) {
+        if (syncStatBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          syncStat_ = value;
+          onChanged();
+        } else {
+          syncStatBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setSyncStat(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder builderForValue) {
+        if (syncStatBuilder_ == null) {
+          syncStat_ = builderForValue.build();
+          onChanged();
+        } else {
+          syncStatBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeSyncStat(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat value) {
+        if (syncStatBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              syncStat_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance()) {
+            syncStat_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.newBuilder(syncStat_).mergeFrom(value).buildPartial();
+          } else {
+            syncStat_ = value;
+          }
+          onChanged();
+        } else {
+          syncStatBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearSyncStat() {
+        if (syncStatBuilder_ == null) {
+          syncStat_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.getDefaultInstance();
+          onChanged();
+        } else {
+          syncStatBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder getSyncStatBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getSyncStatFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder getSyncStatOrBuilder() {
+        if (syncStatBuilder_ != null) {
+          return syncStatBuilder_.getMessageOrBuilder();
+        } else {
+          return syncStat_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder> 
+          getSyncStatFieldBuilder() {
+        if (syncStatBuilder_ == null) {
+          syncStatBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStatOrBuilder>(
+                  syncStat_,
+                  getParentForChildren(),
+                  isClean());
+          syncStat_ = null;
+        }
+        return syncStatBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.timeseries.AnalyticalStoreStorageSize storage_size = 3;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize storageSize_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder> storageSizeBuilder_;
+      public boolean hasStorageSize() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize getStorageSize() {
+        if (storageSizeBuilder_ == null) {
+          return storageSize_;
+        } else {
+          return storageSizeBuilder_.getMessage();
+        }
+      }
+      public Builder setStorageSize(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize value) {
+        if (storageSizeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          storageSize_ = value;
+          onChanged();
+        } else {
+          storageSizeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder setStorageSize(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder builderForValue) {
+        if (storageSizeBuilder_ == null) {
+          storageSize_ = builderForValue.build();
+          onChanged();
+        } else {
+          storageSizeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeStorageSize(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize value) {
+        if (storageSizeBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              storageSize_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance()) {
+            storageSize_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.newBuilder(storageSize_).mergeFrom(value).buildPartial();
+          } else {
+            storageSize_ = value;
+          }
+          onChanged();
+        } else {
+          storageSizeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearStorageSize() {
+        if (storageSizeBuilder_ == null) {
+          storageSize_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.getDefaultInstance();
+          onChanged();
+        } else {
+          storageSizeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder getStorageSizeBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getStorageSizeFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder getStorageSizeOrBuilder() {
+        if (storageSizeBuilder_ != null) {
+          return storageSizeBuilder_.getMessageOrBuilder();
+        } else {
+          return storageSize_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder> 
+          getStorageSizeFieldBuilder() {
+        if (storageSizeBuilder_ == null) {
+          storageSizeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSizeOrBuilder>(
+                  storageSize_,
+                  getParentForChildren(),
+                  isClean());
+          storageSize_ = null;
+        }
+        return storageSizeBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DescribeTimeseriesAnalyticalStoreResponse)
+    }
+    
+    static {
+      defaultInstance = new DescribeTimeseriesAnalyticalStoreResponse(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DescribeTimeseriesAnalyticalStoreResponse)
+  }
+  
+  public interface UpdateTimeseriesAnalyticalStoreRequestOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string table_name = 1;
+    boolean hasTableName();
+    String getTableName();
+    
+    // required .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+    boolean hasAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore();
+    com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder();
+  }
+  public static final class UpdateTimeseriesAnalyticalStoreRequest extends
+      com.google.protobuf.GeneratedMessage
+      implements UpdateTimeseriesAnalyticalStoreRequestOrBuilder {
+    // Use UpdateTimeseriesAnalyticalStoreRequest.newBuilder() to construct.
+    private UpdateTimeseriesAnalyticalStoreRequest(Builder builder) {
+      super(builder);
+    }
+    private UpdateTimeseriesAnalyticalStoreRequest(boolean noInit) {}
+    
+    private static final UpdateTimeseriesAnalyticalStoreRequest defaultInstance;
+    public static UpdateTimeseriesAnalyticalStoreRequest getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public UpdateTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // required string table_name = 1;
+    public static final int TABLE_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object tableName_;
+    public boolean hasTableName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getTableName() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tableName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTableNameBytes() {
+      java.lang.Object ref = tableName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tableName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // required .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+    public static final int ANALYTICAL_STORE_FIELD_NUMBER = 2;
+    private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_;
+    public boolean hasAnalyticalStore() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+      return analyticalStore_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+      return analyticalStore_;
+    }
+    
+    private void initFields() {
+      tableName_ = "";
+      analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasTableName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasAnalyticalStore()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, analyticalStore_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getTableNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, analyticalStore_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getAnalyticalStoreFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        tableName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.tableName_ = tableName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (analyticalStoreBuilder_ == null) {
+          result.analyticalStore_ = analyticalStore_;
+        } else {
+          result.analyticalStore_ = analyticalStoreBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.getDefaultInstance()) return this;
+        if (other.hasTableName()) {
+          setTableName(other.getTableName());
+        }
+        if (other.hasAnalyticalStore()) {
+          mergeAnalyticalStore(other.getAnalyticalStore());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasTableName()) {
+          
+          return false;
+        }
+        if (!hasAnalyticalStore()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              tableName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder();
+              if (hasAnalyticalStore()) {
+                subBuilder.mergeFrom(getAnalyticalStore());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setAnalyticalStore(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // required string table_name = 1;
+      private java.lang.Object tableName_ = "";
+      public boolean hasTableName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getTableName() {
+        java.lang.Object ref = tableName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tableName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTableName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTableName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        tableName_ = getDefaultInstance().getTableName();
+        onChanged();
+        return this;
+      }
+      void setTableName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        tableName_ = value;
+        onChanged();
+      }
+      
+      // required .com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesAnalyticalStore analytical_store = 2;
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> analyticalStoreBuilder_;
+      public boolean hasAnalyticalStore() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore getAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          return analyticalStore_;
+        } else {
+          return analyticalStoreBuilder_.getMessage();
+        }
+      }
+      public Builder setAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          analyticalStore_ = value;
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setAnalyticalStore(
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder builderForValue) {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = builderForValue.build();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeAnalyticalStore(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore value) {
+        if (analyticalStoreBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              analyticalStore_ != com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance()) {
+            analyticalStore_ =
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.newBuilder(analyticalStore_).mergeFrom(value).buildPartial();
+          } else {
+            analyticalStore_ = value;
+          }
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearAnalyticalStore() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStore_ = com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.getDefaultInstance();
+          onChanged();
+        } else {
+          analyticalStoreBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder getAnalyticalStoreBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getAnalyticalStoreFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder getAnalyticalStoreOrBuilder() {
+        if (analyticalStoreBuilder_ != null) {
+          return analyticalStoreBuilder_.getMessageOrBuilder();
+        } else {
+          return analyticalStore_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder> 
+          getAnalyticalStoreFieldBuilder() {
+        if (analyticalStoreBuilder_ == null) {
+          analyticalStoreBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder, com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStoreOrBuilder>(
+                  analyticalStore_,
+                  getParentForChildren(),
+                  isClean());
+          analyticalStore_ = null;
+        }
+        return analyticalStoreBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.UpdateTimeseriesAnalyticalStoreRequest)
+    }
+    
+    static {
+      defaultInstance = new UpdateTimeseriesAnalyticalStoreRequest(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.UpdateTimeseriesAnalyticalStoreRequest)
+  }
+  
+  public interface UpdateTimeseriesAnalyticalStoreResponseOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+  }
+  public static final class UpdateTimeseriesAnalyticalStoreResponse extends
+      com.google.protobuf.GeneratedMessage
+      implements UpdateTimeseriesAnalyticalStoreResponseOrBuilder {
+    // Use UpdateTimeseriesAnalyticalStoreResponse.newBuilder() to construct.
+    private UpdateTimeseriesAnalyticalStoreResponse(Builder builder) {
+      super(builder);
+    }
+    private UpdateTimeseriesAnalyticalStoreResponse(boolean noInit) {}
+    
+    private static final UpdateTimeseriesAnalyticalStoreResponse defaultInstance;
+    public static UpdateTimeseriesAnalyticalStoreResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public UpdateTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+    }
+    
+    private void initFields() {
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse build() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse result = new com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse(this);
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.UpdateTimeseriesAnalyticalStoreResponse)
+    }
+    
+    static {
+      defaultInstance = new UpdateTimeseriesAnalyticalStoreResponse(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.UpdateTimeseriesAnalyticalStoreResponse)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesTableOptions_descriptor;
   private static
@@ -21847,6 +27384,61 @@ public final class Timeseries {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_ScanTimeseriesDataResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -21869,151 +27461,195 @@ public final class Timeseries {
       "eseries.TimeseriesTableOptions\022\016\n\006status" +
       "\030\003 \001(\t\022j\n\014meta_options\030\004 \001(\0132T.com.alicl" +
       "oud.openservices.tablestore.core.protoco" +
-      "l.timeseries.TimeseriesMetaOptions\"\206\001\n\034C" +
+      "l.timeseries.TimeseriesMetaOptions\"\234\002\n\034C" +
       "reateTimeseriesTableRequest\022f\n\ntable_met" +
       "a\030\001 \002(\0132R.com.alicloud.openservices.tabl" +
       "estore.core.protocol.timeseries.Timeseri" +
-      "esTableMeta\"\037\n\035CreateTimeseriesTableResp" +
-      "onse\"\034\n\032ListTimeseriesTableRequest\"\206\001\n\033L" +
-      "istTimeseriesTableResponse\022g\n\013table_meta",
-      "s\030\001 \003(\0132R.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.timeseries.Timeseri" +
-      "esTableMeta\"2\n\034DeleteTimeseriesTableRequ" +
-      "est\022\022\n\ntable_name\030\001 \002(\t\"\037\n\035DeleteTimeser" +
-      "iesTableResponse\"\214\002\n\034UpdateTimeseriesTab" +
-      "leRequest\022\022\n\ntable_name\030\001 \002(\t\022l\n\rtable_o" +
-      "ptions\030\002 \001(\0132U.com.alicloud.openservices" +
-      ".tablestore.core.protocol.timeseries.Tim" +
-      "eseriesTableOptions\022j\n\014meta_options\030\003 \001(" +
-      "\0132T.com.alicloud.openservices.tablestore",
-      ".core.protocol.timeseries.TimeseriesMeta" +
-      "Options\"\037\n\035UpdateTimeseriesTableResponse" +
-      "\"4\n\036DescribeTimeseriesTableRequest\022\022\n\nta" +
-      "ble_name\030\001 \002(\t\"\211\001\n\037DescribeTimeseriesTab" +
-      "leResponse\022f\n\ntable_meta\030\001 \002(\0132R.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.timeseries.TimeseriesTableMeta\"\215\001\n\022M" +
-      "etaQueryCondition\022c\n\004type\030\001 \002(\0162U.com.al" +
+      "esTableMeta\022s\n\021analytical_stores\030\003 \003(\0132X" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.timeseries.TimeseriesAnalyti",
+      "calStore\022\037\n\027enable_analytical_store\030\004 \001(" +
+      "\010\"\037\n\035CreateTimeseriesTableResponse\"\034\n\032Li" +
+      "stTimeseriesTableRequest\"\206\001\n\033ListTimeser" +
+      "iesTableResponse\022g\n\013table_metas\030\001 \003(\0132R." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.timeseries.TimeseriesTableMet" +
+      "a\"2\n\034DeleteTimeseriesTableRequest\022\022\n\ntab" +
+      "le_name\030\001 \002(\t\"\037\n\035DeleteTimeseriesTableRe" +
+      "sponse\"\214\002\n\034UpdateTimeseriesTableRequest\022" +
+      "\022\n\ntable_name\030\001 \002(\t\022l\n\rtable_options\030\002 \001",
+      "(\0132U.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.timeseries.TimeseriesTab" +
+      "leOptions\022j\n\014meta_options\030\003 \001(\0132T.com.al" +
       "icloud.openservices.tablestore.core.prot" +
-      "ocol.timeseries.MetaQueryConditionType\022\022",
-      "\n\nproto_data\030\002 \002(\014\"\357\001\n\033MetaQueryComposit" +
-      "eCondition\022e\n\002op\030\001 \002(\0162Y.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.time" +
-      "series.MetaQueryCompositeOperator\022i\n\016sub" +
-      "_conditions\030\002 \003(\0132Q.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.timeserie" +
-      "s.MetaQueryCondition\"\222\001\n\035MetaQueryMeasur" +
-      "ementCondition\022b\n\002op\030\001 \002(\0162V.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "timeseries.MetaQuerySingleOperator\022\r\n\005va",
-      "lue\030\002 \002(\t\"\215\001\n\030MetaQuerySourceCondition\022b" +
-      "\n\002op\030\001 \002(\0162V.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.timeseries.MetaQ" +
-      "uerySingleOperator\022\r\n\005value\030\002 \002(\t\"\234\001\n\025Me" +
-      "taQueryTagCondition\022b\n\002op\030\001 \002(\0162V.com.al" +
-      "icloud.openservices.tablestore.core.prot" +
-      "ocol.timeseries.MetaQuerySingleOperator\022" +
-      "\020\n\010tag_name\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\"\243\001\n\033Met" +
-      "aQueryAttributeCondition\022b\n\002op\030\001 \002(\0162V.c" +
-      "om.alicloud.openservices.tablestore.core",
-      ".protocol.timeseries.MetaQuerySingleOper" +
-      "ator\022\021\n\tattr_name\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\"\221" +
-      "\001\n\034MetaQueryUpdateTimeCondition\022b\n\002op\030\001 " +
-      "\002(\0162V.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.timeseries.MetaQuerySin" +
-      "gleOperator\022\r\n\005value\030\002 \002(\003\"B\n\rTimeseries" +
-      "Key\022\023\n\013measurement\030\001 \002(\t\022\016\n\006source\030\002 \002(\t" +
-      "\022\014\n\004tags\030\003 \002(\t\"\240\001\n\016TimeseriesMeta\022e\n\017tim" +
-      "e_series_key\030\001 \002(\0132L.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.timeseri",
-      "es.TimeseriesKey\022\022\n\nattributes\030\002 \001(\t\022\023\n\013" +
-      "update_time\030\003 \001(\003\"\313\001\n\032QueryTimeseriesMet" +
-      "aRequest\022\022\n\ntable_name\030\001 \002(\t\022d\n\tconditio" +
-      "n\030\002 \001(\0132Q.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.timeseries.MetaQuer" +
-      "yCondition\022\025\n\rget_total_hit\030\003 \001(\010\022\r\n\005tok" +
-      "en\030\004 \001(\014\022\r\n\005limit\030\005 \001(\005\"\255\001\n\033QueryTimeser" +
-      "iesMetaResponse\022g\n\020timeseries_metas\030\001 \003(" +
-      "\0132M.com.alicloud.openservices.tablestore" +
-      ".core.protocol.timeseries.TimeseriesMeta",
-      "\022\021\n\ttotal_hit\030\002 \001(\003\022\022\n\nnext_token\030\003 \001(\014\"" +
-      "\236\001\n\016TimeseriesRows\022^\n\004type\030\001 \002(\0162P.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.timeseries.RowsSerializeType\022\021\n\tro" +
-      "ws_data\030\002 \002(\014\022\031\n\021flatbuffer_crc32c\030\003 \001(\005" +
-      "\"\371\001\n\030PutTimeseriesDataRequest\022\022\n\ntable_n" +
-      "ame\030\001 \002(\t\022`\n\trows_data\030\002 \002(\0132M.com.alicl" +
-      "oud.openservices.tablestore.core.protoco" +
-      "l.timeseries.TimeseriesRows\022g\n\020meta_upda" +
-      "te_mode\030\003 \001(\0162M.com.alicloud.openservice",
+      "ocol.timeseries.TimeseriesMetaOptions\"\037\n" +
+      "\035UpdateTimeseriesTableResponse\"4\n\036Descri" +
+      "beTimeseriesTableRequest\022\022\n\ntable_name\030\001" +
+      " \002(\t\"\376\001\n\037DescribeTimeseriesTableResponse" +
+      "\022f\n\ntable_meta\030\001 \002(\0132R.com.alicloud.open" +
+      "services.tablestore.core.protocol.timese",
+      "ries.TimeseriesTableMeta\022s\n\021analytical_s" +
+      "tores\030\002 \003(\0132X.com.alicloud.openservices." +
+      "tablestore.core.protocol.timeseries.Time" +
+      "seriesAnalyticalStore\"\215\001\n\022MetaQueryCondi" +
+      "tion\022c\n\004type\030\001 \002(\0162U.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.timeseri" +
+      "es.MetaQueryConditionType\022\022\n\nproto_data\030" +
+      "\002 \002(\014\"\357\001\n\033MetaQueryCompositeCondition\022e\n" +
+      "\002op\030\001 \002(\0162Y.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.timeseries.MetaQu",
+      "eryCompositeOperator\022i\n\016sub_conditions\030\002" +
+      " \003(\0132Q.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.timeseries.MetaQueryCo" +
+      "ndition\"\222\001\n\035MetaQueryMeasurementConditio" +
+      "n\022b\n\002op\030\001 \002(\0162V.com.alicloud.openservice" +
       "s.tablestore.core.protocol.timeseries.Me" +
-      "taUpdateMode\"M\n\rFailedRowInfo\022\021\n\trow_ind" +
-      "ex\030\001 \002(\005\022\022\n\nerror_code\030\002 \001(\t\022\025\n\rerror_me" +
-      "ssage\030\003 \001(\t\">\n\020MetaUpdateStatus\022\017\n\007row_i" +
-      "ds\030\001 \003(\r\022\031\n\021meta_update_times\030\002 \003(\r\"\353\001\n\031" +
-      "PutTimeseriesDataResponse\022a\n\013failed_rows" +
-      "\030\001 \003(\0132L.com.alicloud.openservices.table" +
-      "store.core.protocol.timeseries.FailedRow" +
-      "Info\022k\n\022meta_update_status\030\002 \001(\0132O.com.a" +
-      "licloud.openservices.tablestore.core.pro",
-      "tocol.timeseries.MetaUpdateStatus\"3\n\025Tim" +
-      "eseriesFieldsToGet\022\014\n\004name\030\001 \001(\t\022\014\n\004type" +
-      "\030\002 \001(\005\"\357\002\n\030GetTimeseriesDataRequest\022\022\n\nt" +
-      "able_name\030\001 \002(\t\022e\n\017time_series_key\030\002 \002(\013" +
-      "2L.com.alicloud.openservices.tablestore." +
-      "core.protocol.timeseries.TimeseriesKey\022\022" +
-      "\n\nbegin_time\030\003 \001(\003\022\020\n\010end_time\030\004 \001(\003\022\025\n\r" +
-      "specific_time\030\005 \001(\003\022\r\n\005token\030\006 \001(\014\022\r\n\005li" +
-      "mit\030\007 \001(\005\022\020\n\010backward\030\010 \001(\010\022k\n\rfields_to" +
-      "_get\030\t \003(\0132T.com.alicloud.openservices.t",
-      "ablestore.core.protocol.timeseries.Times" +
-      "eriesFieldsToGet\"B\n\031GetTimeseriesDataRes" +
-      "ponse\022\021\n\trows_data\030\001 \002(\014\022\022\n\nnext_token\030\002" +
-      " \001(\014\"\231\001\n\033UpdateTimeseriesMetaRequest\022\022\n\n" +
-      "table_name\030\001 \002(\t\022f\n\017timeseries_meta\030\002 \003(" +
-      "\0132M.com.alicloud.openservices.tablestore" +
-      ".core.protocol.timeseries.TimeseriesMeta" +
-      "\"\201\001\n\034UpdateTimeseriesMetaResponse\022a\n\013fai" +
-      "led_rows\030\001 \003(\0132L.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.timeseries.F",
-      "ailedRowInfo\"\227\001\n\033DeleteTimeseriesMetaReq" +
-      "uest\022\022\n\ntable_name\030\001 \002(\t\022d\n\016timeseries_k" +
-      "ey\030\002 \003(\0132L.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.timeseries.Timeser" +
-      "iesKey\"\201\001\n\034DeleteTimeseriesMetaResponse\022" +
-      "a\n\013failed_rows\030\001 \003(\0132L.com.alicloud.open" +
-      "services.tablestore.core.protocol.timese" +
-      "ries.FailedRowInfo\"h\n\036SplitTimeseriesSca" +
-      "nTaskRequest\022\022\n\ntable_name\030\001 \002(\t\022\030\n\020meas" +
-      "urement_name\030\002 \001(\t\022\030\n\020split_count_hint\030\003",
-      " \002(\005\"6\n\037SplitTimeseriesScanTaskResponse\022" +
-      "\023\n\013split_infos\030\001 \003(\014\"\351\002\n\031ScanTimeseriesD" +
-      "ataRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_" +
-      "info\030\002 \001(\014\022\025\n\rstart_time_us\030\003 \001(\003\022\023\n\013end" +
-      "_time_us\030\004 \001(\003\022k\n\rfields_to_get\030\005 \003(\0132T." +
+      "taQuerySingleOperator\022\r\n\005value\030\002 \002(\t\"\215\001\n" +
+      "\030MetaQuerySourceCondition\022b\n\002op\030\001 \002(\0162V." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.timeseries.MetaQuerySingleOpe",
+      "rator\022\r\n\005value\030\002 \002(\t\"\234\001\n\025MetaQueryTagCon" +
+      "dition\022b\n\002op\030\001 \002(\0162V.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.timeseri" +
+      "es.MetaQuerySingleOperator\022\020\n\010tag_name\030\002" +
+      " \002(\t\022\r\n\005value\030\003 \002(\t\"\243\001\n\033MetaQueryAttribu" +
+      "teCondition\022b\n\002op\030\001 \002(\0162V.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.tim" +
+      "eseries.MetaQuerySingleOperator\022\021\n\tattr_" +
+      "name\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\"\221\001\n\034MetaQueryU" +
+      "pdateTimeCondition\022b\n\002op\030\001 \002(\0162V.com.ali",
+      "cloud.openservices.tablestore.core.proto" +
+      "col.timeseries.MetaQuerySingleOperator\022\r" +
+      "\n\005value\030\002 \002(\003\"B\n\rTimeseriesKey\022\023\n\013measur" +
+      "ement\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022\014\n\004tags\030\003 \002(" +
+      "\t\"\240\001\n\016TimeseriesMeta\022e\n\017time_series_key\030" +
+      "\001 \002(\0132L.com.alicloud.openservices.tables" +
+      "tore.core.protocol.timeseries.Timeseries" +
+      "Key\022\022\n\nattributes\030\002 \001(\t\022\023\n\013update_time\030\003" +
+      " \001(\003\"\313\001\n\032QueryTimeseriesMetaRequest\022\022\n\nt" +
+      "able_name\030\001 \002(\t\022d\n\tcondition\030\002 \001(\0132Q.com",
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.timeseries.MetaQueryCondition\022\025\n" +
+      "\rget_total_hit\030\003 \001(\010\022\r\n\005token\030\004 \001(\014\022\r\n\005l" +
+      "imit\030\005 \001(\005\"\255\001\n\033QueryTimeseriesMetaRespon" +
+      "se\022g\n\020timeseries_metas\030\001 \003(\0132M.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.timeseries.TimeseriesMeta\022\021\n\ttotal_hit" +
+      "\030\002 \001(\003\022\022\n\nnext_token\030\003 \001(\014\"\236\001\n\016Timeserie" +
+      "sRows\022^\n\004type\030\001 \002(\0162P.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.timeser",
+      "ies.RowsSerializeType\022\021\n\trows_data\030\002 \002(\014" +
+      "\022\031\n\021flatbuffer_crc32c\030\003 \001(\005\"\371\001\n\030PutTimes" +
+      "eriesDataRequest\022\022\n\ntable_name\030\001 \002(\t\022`\n\t" +
+      "rows_data\030\002 \002(\0132M.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.timeseries." +
+      "TimeseriesRows\022g\n\020meta_update_mode\030\003 \001(\016" +
+      "2M.com.alicloud.openservices.tablestore." +
+      "core.protocol.timeseries.MetaUpdateMode\"" +
+      "M\n\rFailedRowInfo\022\021\n\trow_index\030\001 \002(\005\022\022\n\ne" +
+      "rror_code\030\002 \001(\t\022\025\n\rerror_message\030\003 \001(\t\">",
+      "\n\020MetaUpdateStatus\022\017\n\007row_ids\030\001 \003(\r\022\031\n\021m" +
+      "eta_update_times\030\002 \003(\r\"\353\001\n\031PutTimeseries" +
+      "DataResponse\022a\n\013failed_rows\030\001 \003(\0132L.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.timeseries.FailedRowInfo\022k\n\022meta_" +
+      "update_status\030\002 \001(\0132O.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.timeser" +
+      "ies.MetaUpdateStatus\"3\n\025TimeseriesFields" +
+      "ToGet\022\014\n\004name\030\001 \001(\t\022\014\n\004type\030\002 \001(\005\"\357\002\n\030Ge" +
+      "tTimeseriesDataRequest\022\022\n\ntable_name\030\001 \002",
+      "(\t\022e\n\017time_series_key\030\002 \002(\0132L.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".timeseries.TimeseriesKey\022\022\n\nbegin_time\030" +
+      "\003 \001(\003\022\020\n\010end_time\030\004 \001(\003\022\025\n\rspecific_time" +
+      "\030\005 \001(\003\022\r\n\005token\030\006 \001(\014\022\r\n\005limit\030\007 \001(\005\022\020\n\010" +
+      "backward\030\010 \001(\010\022k\n\rfields_to_get\030\t \003(\0132T." +
       "com.alicloud.openservices.tablestore.cor" +
       "e.protocol.timeseries.TimeseriesFieldsTo" +
-      "Get\022\r\n\005limit\030\006 \001(\005\022m\n\023data_serialize_typ" +
-      "e\030\007 \001(\0162P.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.timeseries.RowsSeri",
-      "alizeType\022\r\n\005token\030\010 \001(\014\"\255\001\n\032ScanTimeser" +
-      "iesDataResponse\022m\n\023data_serialize_type\030\001" +
-      " \001(\0162P.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.timeseries.RowsSeriali" +
-      "zeType\022\014\n\004data\030\002 \002(\014\022\022\n\nnext_token\030\003 \001(\014" +
-      "*\251\001\n\026MetaQueryConditionType\022\027\n\023COMPOSITE" +
-      "_CONDITION\020\001\022\031\n\025MEASUREMENT_CONDITION\020\002\022" +
-      "\024\n\020SOURCE_CONDITION\020\003\022\021\n\rTAG_CONDITION\020\004" +
-      "\022\031\n\025UPDATE_TIME_CONDITION\020\005\022\027\n\023ATTRIBUTE" +
-      "_CONDITION\020\006*?\n\032MetaQueryCompositeOperat",
-      "or\022\n\n\006OP_AND\020\001\022\t\n\005OP_OR\020\002\022\n\n\006OP_NOT\020\003*\206\001" +
-      "\n\027MetaQuerySingleOperator\022\014\n\010OP_EQUAL\020\001\022" +
-      "\023\n\017OP_GREATER_THAN\020\002\022\024\n\020OP_GREATER_EQUAL" +
-      "\020\003\022\020\n\014OP_LESS_THAN\020\004\022\021\n\rOP_LESS_EQUAL\020\005\022" +
-      "\r\n\tOP_PREFIX\020\006*>\n\021RowsSerializeType\022\023\n\017R" +
-      "ST_FLAT_BUFFER\020\000\022\024\n\020RST_PLAIN_BUFFER\020\001*0" +
-      "\n\016MetaUpdateMode\022\016\n\nMUM_NORMAL\020\000\022\016\n\nMUM_" +
-      "IGNORE\020\001"
+      "Get\"B\n\031GetTimeseriesDataResponse\022\021\n\trows" +
+      "_data\030\001 \002(\014\022\022\n\nnext_token\030\002 \001(\014\"\231\001\n\033Upda",
+      "teTimeseriesMetaRequest\022\022\n\ntable_name\030\001 " +
+      "\002(\t\022f\n\017timeseries_meta\030\002 \003(\0132M.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.timeseries.TimeseriesMeta\"\201\001\n\034UpdateTi" +
+      "meseriesMetaResponse\022a\n\013failed_rows\030\001 \003(" +
+      "\0132L.com.alicloud.openservices.tablestore" +
+      ".core.protocol.timeseries.FailedRowInfo\"" +
+      "\227\001\n\033DeleteTimeseriesMetaRequest\022\022\n\ntable" +
+      "_name\030\001 \002(\t\022d\n\016timeseries_key\030\002 \003(\0132L.co" +
+      "m.alicloud.openservices.tablestore.core.",
+      "protocol.timeseries.TimeseriesKey\"\201\001\n\034De" +
+      "leteTimeseriesMetaResponse\022a\n\013failed_row" +
+      "s\030\001 \003(\0132L.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.timeseries.FailedRo" +
+      "wInfo\"h\n\036SplitTimeseriesScanTaskRequest\022" +
+      "\022\n\ntable_name\030\001 \002(\t\022\030\n\020measurement_name\030" +
+      "\002 \001(\t\022\030\n\020split_count_hint\030\003 \002(\005\"6\n\037Split" +
+      "TimeseriesScanTaskResponse\022\023\n\013split_info" +
+      "s\030\001 \003(\014\"\351\002\n\031ScanTimeseriesDataRequest\022\022\n" +
+      "\ntable_name\030\001 \002(\t\022\022\n\nsplit_info\030\002 \001(\014\022\025\n",
+      "\rstart_time_us\030\003 \001(\003\022\023\n\013end_time_us\030\004 \001(" +
+      "\003\022k\n\rfields_to_get\030\005 \003(\0132T.com.alicloud." +
+      "openservices.tablestore.core.protocol.ti" +
+      "meseries.TimeseriesFieldsToGet\022\r\n\005limit\030" +
+      "\006 \001(\005\022m\n\023data_serialize_type\030\007 \001(\0162P.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.timeseries.RowsSerializeType\022\r\n\005" +
+      "token\030\010 \001(\014\"\255\001\n\032ScanTimeseriesDataRespon" +
+      "se\022m\n\023data_serialize_type\030\001 \001(\0162P.com.al" +
+      "icloud.openservices.tablestore.core.prot",
+      "ocol.timeseries.RowsSerializeType\022\014\n\004dat" +
+      "a\030\002 \002(\014\022\022\n\nnext_token\030\003 \001(\014\"\262\001\n\031Timeseri" +
+      "esAnalyticalStore\022\022\n\nstore_name\030\001 \001(\t\022\024\n" +
+      "\014time_to_live\030\002 \001(\005\022k\n\013sync_option\030\003 \001(\016" +
+      "2V.com.alicloud.openservices.tablestore." +
+      "core.protocol.timeseries.AnalyticalStore" +
+      "SyncType\"\245\001\n\027AnalyticalStoreSyncStat\022j\n\n" +
+      "sync_phase\030\001 \001(\0162V.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.timeseries" +
+      ".AnalyticalStoreSyncType\022\036\n\026current_sync",
+      "_timestamp\030\002 \001(\003\"=\n\032AnalyticalStoreStora" +
+      "geSize\022\014\n\004size\030\001 \001(\003\022\021\n\ttimestamp\030\002 \001(\003\"" +
+      "\260\001\n&CreateTimeseriesAnalyticalStoreReque" +
+      "st\022\022\n\ntable_name\030\001 \002(\t\022r\n\020analytical_sto" +
+      "re\030\002 \001(\0132X.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.timeseries.Timeser" +
+      "iesAnalyticalStore\")\n\'CreateTimeseriesAn" +
+      "alyticalStoreResponse\"P\n&DeleteTimeserie" +
+      "sAnalyticalStoreRequest\022\022\n\ntable_name\030\001 " +
+      "\002(\t\022\022\n\nstore_name\030\002 \002(\t\")\n\'DeleteTimeser",
+      "iesAnalyticalStoreResponse\"R\n(DescribeTi" +
+      "meseriesAnalyticalStoreRequest\022\022\n\ntable_" +
+      "name\030\001 \002(\t\022\022\n\nstore_name\030\002 \002(\t\"\373\002\n)Descr" +
+      "ibeTimeseriesAnalyticalStoreResponse\022r\n\020" +
+      "analytical_store\030\001 \001(\0132X.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.time" +
+      "series.TimeseriesAnalyticalStore\022i\n\tsync" +
+      "_stat\030\002 \001(\0132V.com.alicloud.openservices." +
+      "tablestore.core.protocol.timeseries.Anal" +
+      "yticalStoreSyncStat\022o\n\014storage_size\030\003 \001(",
+      "\0132Y.com.alicloud.openservices.tablestore" +
+      ".core.protocol.timeseries.AnalyticalStor" +
+      "eStorageSize\"\260\001\n&UpdateTimeseriesAnalyti" +
+      "calStoreRequest\022\022\n\ntable_name\030\001 \002(\t\022r\n\020a" +
+      "nalytical_store\030\002 \002(\0132X.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.times" +
+      "eries.TimeseriesAnalyticalStore\")\n\'Updat" +
+      "eTimeseriesAnalyticalStoreResponse*\251\001\n\026M" +
+      "etaQueryConditionType\022\027\n\023COMPOSITE_CONDI" +
+      "TION\020\001\022\031\n\025MEASUREMENT_CONDITION\020\002\022\024\n\020SOU",
+      "RCE_CONDITION\020\003\022\021\n\rTAG_CONDITION\020\004\022\031\n\025UP" +
+      "DATE_TIME_CONDITION\020\005\022\027\n\023ATTRIBUTE_CONDI" +
+      "TION\020\006*?\n\032MetaQueryCompositeOperator\022\n\n\006" +
+      "OP_AND\020\001\022\t\n\005OP_OR\020\002\022\n\n\006OP_NOT\020\003*\206\001\n\027Meta" +
+      "QuerySingleOperator\022\014\n\010OP_EQUAL\020\001\022\023\n\017OP_" +
+      "GREATER_THAN\020\002\022\024\n\020OP_GREATER_EQUAL\020\003\022\020\n\014" +
+      "OP_LESS_THAN\020\004\022\021\n\rOP_LESS_EQUAL\020\005\022\r\n\tOP_" +
+      "PREFIX\020\006*>\n\021RowsSerializeType\022\023\n\017RST_FLA" +
+      "T_BUFFER\020\000\022\024\n\020RST_PLAIN_BUFFER\020\001*0\n\016Meta" +
+      "UpdateMode\022\016\n\nMUM_NORMAL\020\000\022\016\n\nMUM_IGNORE",
+      "\020\001*A\n\027AnalyticalStoreSyncType\022\022\n\016SYNC_TY" +
+      "PE_FULL\020\001\022\022\n\016SYNC_TYPE_INCR\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -22049,7 +27685,7 @@ public final class Timeseries {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableRequest_descriptor,
-              new java.lang.String[] { "TableMeta", },
+              new java.lang.String[] { "TableMeta", "AnalyticalStores", "EnableAnalyticalStore", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesTableRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesTableResponse_descriptor =
@@ -22121,7 +27757,7 @@ public final class Timeseries {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesTableResponse_descriptor,
-              new java.lang.String[] { "TableMeta", },
+              new java.lang.String[] { "TableMeta", "AnalyticalStores", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesTableResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_MetaQueryCondition_descriptor =
@@ -22340,6 +27976,94 @@ public final class Timeseries {
               new java.lang.String[] { "DataSerializeType", "Data", "NextToken", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ScanTimeseriesDataResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.ScanTimeseriesDataResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_descriptor =
+            getDescriptor().getMessageTypes().get(40);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_TimeseriesAnalyticalStore_descriptor,
+              new java.lang.String[] { "StoreName", "TimeToLive", "SyncOption", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.TimeseriesAnalyticalStore.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_descriptor =
+            getDescriptor().getMessageTypes().get(41);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreSyncStat_descriptor,
+              new java.lang.String[] { "SyncPhase", "CurrentSyncTimestamp", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreSyncStat.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_descriptor =
+            getDescriptor().getMessageTypes().get(42);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_AnalyticalStoreStorageSize_descriptor,
+              new java.lang.String[] { "Size", "Timestamp", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.AnalyticalStoreStorageSize.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_descriptor =
+            getDescriptor().getMessageTypes().get(43);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreRequest_descriptor,
+              new java.lang.String[] { "TableName", "AnalyticalStore", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreRequest.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_descriptor =
+            getDescriptor().getMessageTypes().get(44);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_CreateTimeseriesAnalyticalStoreResponse_descriptor,
+              new java.lang.String[] { },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.CreateTimeseriesAnalyticalStoreResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor =
+            getDescriptor().getMessageTypes().get(45);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor,
+              new java.lang.String[] { "TableName", "StoreName", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor =
+            getDescriptor().getMessageTypes().get(46);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor,
+              new java.lang.String[] { },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_descriptor =
+            getDescriptor().getMessageTypes().get(47);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreRequest_descriptor,
+              new java.lang.String[] { "TableName", "StoreName", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreRequest.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_descriptor =
+            getDescriptor().getMessageTypes().get(48);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DescribeTimeseriesAnalyticalStoreResponse_descriptor,
+              new java.lang.String[] { "AnalyticalStore", "SyncStat", "StorageSize", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DescribeTimeseriesAnalyticalStoreResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_descriptor =
+            getDescriptor().getMessageTypes().get(49);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreRequest_descriptor,
+              new java.lang.String[] { "TableName", "AnalyticalStore", },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreRequest.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_descriptor =
+            getDescriptor().getMessageTypes().get(50);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_UpdateTimeseriesAnalyticalStoreResponse_descriptor,
+              new java.lang.String[] { },
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.class,
+              com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.UpdateTimeseriesAnalyticalStoreResponse.Builder.class);
           return null;
         }
       };

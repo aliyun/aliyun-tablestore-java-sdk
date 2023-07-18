@@ -34,4 +34,16 @@ public interface TimeseriesClientInterface {
 
     ScanTimeseriesDataResponse scanTimeseriesData(ScanTimeseriesDataRequest request)
             throws TableStoreException, ClientException;
+
+    CreateTimeseriesAnalyticalStoreResponse createTimeseriesAnalyticalStore(CreateTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException;
+
+    DeleteTimeseriesAnalyticalStoreResponse deleteTimeseriesAnalyticalStore(DeleteTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException;
+
+    DescribeTimeseriesAnalyticalStoreResponse describeTimeseriesAnalyticalStore(DescribeTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException;
+
+    UpdateTimeseriesAnalyticalStoreResponse updateTimeseriesAnalyticalStore(UpdateTimeseriesAnalyticalStoreRequest request)
+            throws TableStoreException, ClientException;
 }
