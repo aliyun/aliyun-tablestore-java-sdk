@@ -236,6 +236,28 @@ public class TimeseriesResponseFactory {
         }
 
         result.setTimeseriesTableMeta(_meta);
+
+        if (!pbResponse.getAnalyticalStoresList().isEmpty()) {
+            List<TimeseriesAnalyticalStore> analyticalStores = new ArrayList<TimeseriesAnalyticalStore>();
+            for (Timeseries.TimeseriesAnalyticalStore pbAnalyticalStore : pbResponse.getAnalyticalStoresList()) {
+                TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore(pbAnalyticalStore.getStoreName());
+                if (pbAnalyticalStore.hasTimeToLive()) {
+                    analyticalStore.setTimeToLive(pbAnalyticalStore.getTimeToLive());
+                }
+                if (pbAnalyticalStore.hasSyncOption()) {
+                    switch (pbAnalyticalStore.getSyncOption()) {
+                        case SYNC_TYPE_FULL:
+                            analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_FULL);
+                            break;
+                        case SYNC_TYPE_INCR:
+                            analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_INCR);
+                            break;
+                    }
+                }
+                analyticalStores.add(analyticalStore);
+            }
+            result.setAnalyticalStores(analyticalStores);
+        }
         return result;
     }
 
@@ -311,6 +333,77 @@ public class TimeseriesResponseFactory {
         }
         if (pbResponse.hasNextToken() && !pbResponse.getNextToken().isEmpty()) {
             response.setNextToken(pbResponse.getNextToken().toByteArray());
+        }
+        return response;
+    }
+
+    public static CreateTimeseriesAnalyticalStoreResponse createCreateTimeseriesAnalyticalStoreResponse(
+            ResponseContentWithMeta response, Timeseries.CreateTimeseriesAnalyticalStoreResponse pbResponse) {
+        return new CreateTimeseriesAnalyticalStoreResponse(response.getMeta());
+    }
+
+    public static UpdateTimeseriesAnalyticalStoreResponse createUpdateTimeseriesAnalyticalStoreResponse(
+            ResponseContentWithMeta response, Timeseries.UpdateTimeseriesAnalyticalStoreResponse pbResponse) {
+        return new UpdateTimeseriesAnalyticalStoreResponse(response.getMeta());
+    }
+
+    public static DeleteTimeseriesAnalyticalStoreResponse createDeleteTimeseriesAnalyticalStoreResponse(
+            ResponseContentWithMeta response, Timeseries.DeleteTimeseriesAnalyticalStoreResponse pbResponse) {
+        return new DeleteTimeseriesAnalyticalStoreResponse(response.getMeta());
+    }
+
+    public static DescribeTimeseriesAnalyticalStoreResponse createDescribeTimeseriesAnalyticalStoreResponse(
+            ResponseContentWithMeta meta, Timeseries.DescribeTimeseriesAnalyticalStoreResponse pbResponse) {
+        DescribeTimeseriesAnalyticalStoreResponse response = new DescribeTimeseriesAnalyticalStoreResponse(meta.getMeta());
+
+        if (pbResponse.hasAnalyticalStore()) {
+            Timeseries.TimeseriesAnalyticalStore pbAnalyticalStore = pbResponse.getAnalyticalStore();
+            TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore(pbAnalyticalStore.getStoreName());
+            if (pbAnalyticalStore.hasTimeToLive()) {
+                analyticalStore.setTimeToLive(pbAnalyticalStore.getTimeToLive());
+            }
+            if (pbAnalyticalStore.hasSyncOption()) {
+                switch (pbAnalyticalStore.getSyncOption()) {
+                    case SYNC_TYPE_FULL:
+                        analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_FULL);
+                        break;
+                    case SYNC_TYPE_INCR:
+                        analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_INCR);
+                        break;
+                }
+            }
+            response.setAnalyticalStore(analyticalStore);
+        }
+
+        if (pbResponse.hasStorageSize()) {
+            Timeseries.AnalyticalStoreStorageSize pbStorageSize = pbResponse.getStorageSize();
+            AnalyticalStoreStorageSize storageSize = new AnalyticalStoreStorageSize();
+            if (pbStorageSize.hasSize()) {
+                storageSize.setSizeInBytes(pbStorageSize.getSize());
+            }
+            if (pbStorageSize.hasTimestamp()) {
+                storageSize.setTimestamp(pbStorageSize.getTimestamp());
+            }
+            response.setStorageSize(storageSize);
+        }
+
+        if (pbResponse.hasSyncStat()) {
+            Timeseries.AnalyticalStoreSyncStat pbSyncStat = pbResponse.getSyncStat();
+            AnalyticalStoreSyncStat syncStat = new AnalyticalStoreSyncStat();
+            if (pbSyncStat.hasCurrentSyncTimestamp()) {
+                syncStat.setCurrentSyncTimestamp(pbSyncStat.getCurrentSyncTimestamp());
+            }
+            if (pbSyncStat.hasSyncPhase()) {
+                switch (pbSyncStat.getSyncPhase()) {
+                    case SYNC_TYPE_FULL:
+                        syncStat.setSyncPhase(AnalyticalStoreSyncType.SYNC_TYPE_FULL);
+                        break;
+                    case SYNC_TYPE_INCR:
+                        syncStat.setSyncPhase(AnalyticalStoreSyncType.SYNC_TYPE_INCR);
+                        break;
+                }
+            }
+            response.setSyncStat(syncStat);
         }
         return response;
     }

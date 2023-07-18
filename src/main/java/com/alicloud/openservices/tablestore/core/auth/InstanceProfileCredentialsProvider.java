@@ -23,6 +23,8 @@ import com.alicloud.openservices.tablestore.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Credentials provider implementation that loads credentials from the Ali Cloud
  * ECS Instance Metadata Service.
@@ -55,7 +57,7 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
     }
 
     public boolean shouldRefreshCredentials() {
-        return credentials.willSoonExpire() && credentials.shouldRefresh();
+        return !isFetching.get() && credentials.willSoonExpire() && credentials.shouldRefresh();
     }
 
     @Override
@@ -71,11 +73,14 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
                     }
                 } else if (shouldRefreshCredentials()) {
                     try {
+                        isFetching.set(true);
                         credentials = (InstanceProfileCredentials) fetcher.fetch();
                     } catch (ClientException e) {
                         // Use the current expiring session token and wait for next round
                         credentials.setLastFailedRefreshTime();
                         logger.error("EcsInstanceCredentialsFetcher.fetch Exception:", e);
+                    } finally {
+                        isFetching.set(false);
                     }
                 }
             }
@@ -88,6 +93,7 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
     private volatile InstanceProfileCredentials credentials;
     private InstanceProfileCredentialsFetcher fetcher;
 
+    private final AtomicBoolean isFetching = new AtomicBoolean(false);
     private int maxRetryTimes = AuthUtils.MAX_ECS_METADATA_FETCH_RETRY_TIMES;
 
 }

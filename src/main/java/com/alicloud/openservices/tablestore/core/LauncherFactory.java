@@ -1,12 +1,9 @@
 package com.alicloud.openservices.tablestore.core;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import com.alicloud.openservices.tablestore.ClientConfiguration;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
-import com.alicloud.openservices.tablestore.core.http.OTSUri;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
+import com.alicloud.openservices.tablestore.core.http.OTSUri;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.delivery.CreateDeliveryTaskRequest;
 import com.alicloud.openservices.tablestore.model.delivery.DeleteDeliveryTaskRequest;
@@ -19,13 +16,11 @@ import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ConnectTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelRequest;
+import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
 import com.google.common.cache.Cache;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.alicloud.openservices.tablestore.model.OperationNames.*;
 
@@ -184,6 +179,14 @@ public class LauncherFactory {
                 new Context(new OTSUri(endpoint, OP_SPLIT_TIMESERIES_SCAN_TASK)));
         contexts.put(OP_SCAN_TIMESERIES_DATA,
                 new Context(new OTSUri(endpoint, OP_SCAN_TIMESERIES_DATA)));
+        contexts.put(OP_CREATE_TIMESERIES_ANALYTICAL_STORE,
+                new Context(new OTSUri(endpoint, OP_CREATE_TIMESERIES_ANALYTICAL_STORE)));
+        contexts.put(OP_DELETE_TIMESERIES_ANALYTICAL_STORE,
+                new Context(new OTSUri(endpoint, OP_DELETE_TIMESERIES_ANALYTICAL_STORE)));
+        contexts.put(OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE,
+                new Context(new OTSUri(endpoint, OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE)));
+        contexts.put(OP_UPDATE_TIMESERIES_ANALYTICAL_STORE,
+                new Context(new OTSUri(endpoint, OP_UPDATE_TIMESERIES_ANALYTICAL_STORE)));
         contexts.put(OP_SQL_Query,
                 new Context(new OTSUri(endpoint, OP_SQL_Query)));
     }
@@ -615,6 +618,34 @@ public class LauncherFactory {
                                                          ScanTimeseriesDataRequest originRequest) {
         Context ctx = contexts.get(OP_SCAN_TIMESERIES_DATA);
         return new ScanTimeseriesDataLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public CreateTimeseriesAnalyticalStoreLauncher createTimeseriesAnalyticalStore(TraceLogger tracer, RetryStrategy retry,
+                                                                                   CreateTimeseriesAnalyticalStoreRequest originRequest) {
+        Context ctx = contexts.get(OP_CREATE_TIMESERIES_ANALYTICAL_STORE);
+        return new CreateTimeseriesAnalyticalStoreLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DeleteTimeseriesAnalyticalStoreLauncher deleteTimeseriesAnalyticalStore(TraceLogger tracer, RetryStrategy retry,
+                                                                                   DeleteTimeseriesAnalyticalStoreRequest originRequest) {
+        Context ctx = contexts.get(OP_DELETE_TIMESERIES_ANALYTICAL_STORE);
+        return new DeleteTimeseriesAnalyticalStoreLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DescribeTimeseriesAnalyticalStoreLauncher describeTimeseriesAnalyticalStore(TraceLogger tracer, RetryStrategy retry,
+                                                                                       DescribeTimeseriesAnalyticalStoreRequest originRequest) {
+        Context ctx = contexts.get(OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE);
+        return new DescribeTimeseriesAnalyticalStoreLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public UpdateTimeseriesAnalyticalStoreLauncher updateTimeseriesAnalyticalStore(TraceLogger tracer, RetryStrategy retry,
+                                                                                   UpdateTimeseriesAnalyticalStoreRequest originRequest) {
+        Context ctx = contexts.get(OP_UPDATE_TIMESERIES_ANALYTICAL_STORE);
+        return new UpdateTimeseriesAnalyticalStoreLauncher(
                 ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
     }
 

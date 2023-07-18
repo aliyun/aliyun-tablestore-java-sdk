@@ -306,6 +306,51 @@ public class TimeseriesTest {
     }
 
     @Test
+    public void testPutTimeseriesDataIgnoreMetaUpdate() throws InterruptedException {
+        List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>();
+        Map<String, String> tags = new HashMap<String, String>();
+        for (int i = 0; i < 10; i++) {
+            TimeseriesKey timeseriesKey = new TimeseriesKey("not_update_meta", "source" + i, tags);
+            TimeseriesRow row = new TimeseriesRow(timeseriesKey, System.currentTimeMillis() * 1000 + i);
+            for (int j = 0; j < 10; j++) {
+                row.addField("field" + j, ColumnValue.fromString("value" + j));
+            }
+            rows.add(row);
+        }
+        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest(testTable);
+        putTimeseriesDataRequest.setRows(rows);
+        putTimeseriesDataRequest.setMetaUpdateMode(PutTimeseriesDataRequest.MetaUpdateMode.IGNORE);
+        PutTimeseriesDataResponse putTimeseriesDataResponse = client.putTimeseriesData(putTimeseriesDataRequest);
+        Assert.assertTrue(putTimeseriesDataResponse.isAllSuccess());
+
+        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest(testTable);
+        getTimeseriesDataRequest.setTimeseriesKey(new TimeseriesKey("not_update_meta", "source5", tags));
+        getTimeseriesDataRequest.setTimeRange(0, System.currentTimeMillis() * 1000 + 1000);
+        GetTimeseriesDataResponse getTimeseriesDataResponse = client.getTimeseriesData(getTimeseriesDataRequest);
+        Assert.assertEquals(1, getTimeseriesDataResponse.getRows().size());
+        Assert.assertNull(getTimeseriesDataResponse.getNextToken());
+        TimeseriesRow row = getTimeseriesDataResponse.getRows().get(0);
+        Assert.assertEquals("not_update_meta", row.getTimeseriesKey().getMeasurementName());
+        Assert.assertEquals("source5", row.getTimeseriesKey().getDataSource());
+
+        try {
+            Thread.sleep(waitSearchIndexSync);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        {
+            QueryTimeseriesMetaRequest queryTimeseriesMetaRequest = new QueryTimeseriesMetaRequest(testTable);
+            queryTimeseriesMetaRequest.setCondition(
+                    new MeasurementMetaQueryCondition(MetaQuerySingleOperator.OP_EQUAL, "not_update_meta"));
+            queryTimeseriesMetaRequest.setGetTotalHits(true);
+            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
+            Assert.assertEquals(0, queryTimeseriesMetaResponse.getTimeseriesMetas().size());
+            Assert.assertEquals(0, queryTimeseriesMetaResponse.getTotalHits());
+        }
+    }
+
+    @Test
     public void testGetTimeseriesData() {
         List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>();
         long timeStart = System.currentTimeMillis() * 1000;

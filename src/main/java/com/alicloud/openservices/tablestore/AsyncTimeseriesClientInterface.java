@@ -48,6 +48,22 @@ public interface AsyncTimeseriesClientInterface {
                                                           TableStoreCallback<ScanTimeseriesDataRequest, ScanTimeseriesDataResponse> callback)
             throws TableStoreException, ClientException;
 
+    Future<CreateTimeseriesAnalyticalStoreResponse> createTimeseriesAnalyticalStore(CreateTimeseriesAnalyticalStoreRequest request,
+                                                                                    TableStoreCallback<CreateTimeseriesAnalyticalStoreRequest, CreateTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException;
+
+    Future<DeleteTimeseriesAnalyticalStoreResponse> deleteTimeseriesAnalyticalStore(DeleteTimeseriesAnalyticalStoreRequest request,
+                                                                                    TableStoreCallback<DeleteTimeseriesAnalyticalStoreRequest, DeleteTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException;
+
+    Future<DescribeTimeseriesAnalyticalStoreResponse> describeTimeseriesAnalyticalStore(DescribeTimeseriesAnalyticalStoreRequest request,
+                                                                                        TableStoreCallback<DescribeTimeseriesAnalyticalStoreRequest, DescribeTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException;
+
+    Future<UpdateTimeseriesAnalyticalStoreResponse> updateTimeseriesAnalyticalStore(UpdateTimeseriesAnalyticalStoreRequest request,
+                                                                                    TableStoreCallback<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> callback)
+            throws TableStoreException, ClientException;
+
     public TimeseriesClientInterface asTimeseriesClientInterface();
 
     /**

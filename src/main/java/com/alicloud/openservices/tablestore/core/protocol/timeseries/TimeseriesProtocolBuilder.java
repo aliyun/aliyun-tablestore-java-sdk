@@ -224,6 +224,14 @@ public class TimeseriesProtocolBuilder {
 
         // required TimeseriesTableMeta table_meta = 1;
         builder.setTableMeta(buildTimeseriesTableMeta(createTimeseriesTableRequest.getTimeseriesTableMeta()));
+        // repeated TimeseriesAnalyticalStore analytical_stores = 3;
+        if (createTimeseriesTableRequest.getAnalyticalStores() != null) {
+            for (TimeseriesAnalyticalStore analyticalStore : createTimeseriesTableRequest.getAnalyticalStores()) {
+                builder.addAnalyticalStores(buildTimeseriesAnalyticalStore(analyticalStore));
+            }
+        }
+        // optional bool enable_analytical_store = 4;
+        builder.setEnableAnalyticalStore(createTimeseriesTableRequest.isEnableAnalyticalStore());
 
         return builder.build();
     }
@@ -243,6 +251,9 @@ public class TimeseriesProtocolBuilder {
         rowsBuilder.setRowsData(ByteString.copyFrom(flatbufferRowsData));
         rowsBuilder.setFlatbufferCrc32C(crc);
         builder.setRowsData(rowsBuilder);
+        if (request.getMetaUpdateMode().equals(PutTimeseriesDataRequest.MetaUpdateMode.IGNORE)) {
+            builder.setMetaUpdateMode(Timeseries.MetaUpdateMode.MUM_IGNORE);
+        }
         return builder.build();
     }
 
@@ -455,6 +466,64 @@ public class TimeseriesProtocolBuilder {
             builder.setToken(ByteString.copyFrom(scanTimeseriesDataRequest.getNextToken()));
         }
         builder.setDataSerializeType(Timeseries.RowsSerializeType.RST_PLAIN_BUFFER);
+        return builder.build();
+    }
+
+    public static Timeseries.TimeseriesAnalyticalStore buildTimeseriesAnalyticalStore(TimeseriesAnalyticalStore timeseriesAnalyticalStore) {
+        Timeseries.TimeseriesAnalyticalStore.Builder builder = Timeseries.TimeseriesAnalyticalStore.newBuilder();
+        // optional string store_name = 1;
+        builder.setStoreName(timeseriesAnalyticalStore.getAnalyticalStoreName());
+        // optional int32 time_to_live = 2;
+        if (timeseriesAnalyticalStore.hasTimeToLive()) {
+            builder.setTimeToLive(timeseriesAnalyticalStore.getTimeToLive());
+        }
+        // optional AnalyticalStoreSyncType sync_option = 3;
+        if (timeseriesAnalyticalStore.hasSyncOption()) {
+            switch (timeseriesAnalyticalStore.getSyncOption()) {
+                case SYNC_TYPE_FULL:
+                    builder.setSyncOption(Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_FULL);
+                    break;
+                case SYNC_TYPE_INCR:
+                    builder.setSyncOption(Timeseries.AnalyticalStoreSyncType.SYNC_TYPE_INCR);
+                    break;
+            }
+        }
+        return builder.build();
+    }
+
+    public static Timeseries.CreateTimeseriesAnalyticalStoreRequest buildCreateTimeseriesAnalyticalStoreRequest(CreateTimeseriesAnalyticalStoreRequest createTimeseriesAnalyticalStoreRequest) {
+        Timeseries.CreateTimeseriesAnalyticalStoreRequest.Builder builder = Timeseries.CreateTimeseriesAnalyticalStoreRequest.newBuilder();
+        // required String table_name = 1;
+        builder.setTableName(createTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
+        // required TimeseriesAnalyticalStore store = 2;
+        builder.setAnalyticalStore(buildTimeseriesAnalyticalStore(createTimeseriesAnalyticalStoreRequest.getAnalyticalStore()));
+        return builder.build();
+    }
+
+    public static Timeseries.DeleteTimeseriesAnalyticalStoreRequest buildDeleteTimeseriesAnalyticalStoreRequest(DeleteTimeseriesAnalyticalStoreRequest deleteTimeseriesAnalyticalStoreRequest) {
+        Timeseries.DeleteTimeseriesAnalyticalStoreRequest.Builder builder = Timeseries.DeleteTimeseriesAnalyticalStoreRequest.newBuilder();
+        // required String table_name = 1;
+        builder.setTableName(deleteTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
+        // required string store_name = 2;
+        builder.setStoreName(deleteTimeseriesAnalyticalStoreRequest.getAnalyticalStoreName());
+        return builder.build();
+    }
+
+    public static Timeseries.DescribeTimeseriesAnalyticalStoreRequest buildDescribeTimeseriesAnalyticalStoreRequest(DescribeTimeseriesAnalyticalStoreRequest describeTimeseriesAnalyticalStoreRequest) {
+        Timeseries.DescribeTimeseriesAnalyticalStoreRequest.Builder builder = Timeseries.DescribeTimeseriesAnalyticalStoreRequest.newBuilder();
+        // required String table_name = 1;
+        builder.setTableName(describeTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
+        // required string store_name = 2;
+        builder.setStoreName(describeTimeseriesAnalyticalStoreRequest.getAnalyticalStoreName());
+        return builder.build();
+    }
+
+    public static Timeseries.UpdateTimeseriesAnalyticalStoreRequest buildUpdateTimeseriesAnalyticalStoreRequest(UpdateTimeseriesAnalyticalStoreRequest updateTimeseriesAnalyticalStoreRequest) {
+        Timeseries.UpdateTimeseriesAnalyticalStoreRequest.Builder builder = Timeseries.UpdateTimeseriesAnalyticalStoreRequest.newBuilder();
+        // required String table_name = 1;
+        builder.setTableName(updateTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
+        // required TimeseriesAnalyticalStore analytical_store = 2;
+        builder.setAnalyticalStore(buildTimeseriesAnalyticalStore(updateTimeseriesAnalyticalStoreRequest.getAnalyticStore()));
         return builder.build();
     }
 

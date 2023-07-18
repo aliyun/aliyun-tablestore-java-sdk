@@ -11,7 +11,6 @@ import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesBu
 import com.alicloud.openservices.tablestore.timeserieswriter.enums.TSWriteMode;
 import com.alicloud.openservices.tablestore.timeserieswriter.group.TimeseriesGroup;
 import com.alicloud.openservices.tablestore.timeserieswriter.handle.TimeseriesWriterHandleStatistics;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,41 +150,35 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
 
     @Override
     public void onCompleted(Req request, Res response) {
-        if (request instanceof PutTimeseriesDataRequest) {
-            onCompleted((PutTimeseriesDataRequest) request, (PutTimeseriesDataResponse) response);
+        try {
+            if (request instanceof PutTimeseriesDataRequest) {
+                onCompleted((PutTimeseriesDataRequest) request, (PutTimeseriesDataResponse) response);
+            }
+        } catch (Exception e) {
+            logger.error("Failed while handling onCompleted function: {}", e.getMessage());
+        } finally {
+            requestComplete();
         }
-
-        requestComplete();
-
     }
 
     @Override
     public void onFailed(Req request, Exception ex) {
-        if (ex instanceof TableStoreException) {
-            failedOnException(request, (TableStoreException) ex);
-        } else {
-            failedOnUnknownException(request, ex);
-        }
-        requestComplete();
-    }
-
-    public void failedOnException(Req request, TableStoreException ex) {
-        logger.debug("OnFailed on TableStoreException: {}, {}", request.getClass().getName(), ex);
-
-        if (request instanceof PutTimeseriesDataRequest) {
-
-            if (ex.getErrorCode().equals("OTSParameterInvalid") && ((PutTimeseriesDataRequest) request).getRows().size() == 1) {
-                failedOTSParameterInvalid(request, ex);
-            } else {
+        try {
+            if (ex instanceof TableStoreException &&
+                    ((TableStoreException)ex).getErrorCode().equals("OTSParameterInvalid") &&
+                    ((PutTimeseriesDataRequest) request).getRows().size() > 1) {
                 retryTimeseriesRow((PutTimeseriesDataRequest) request);
+            } else {
+                failedOnException(request, ex);
             }
+        } catch (Exception e) {
+            logger.error("Failed while handling onFailed function: {}", e.getMessage());
+        } finally {
+            requestComplete();
         }
-
     }
 
-
-    public void failedOTSParameterInvalid(Req request, Exception ex) {
-        logger.debug("OnFailed on OTS Parameter Invalid: {}, {}", request.getClass().getName(), ex);
+    public void failedOnException(Req request, Exception ex) {
         List<TimeseriesTableRow> failedRows = new ArrayList<TimeseriesTableRow>();
         if (request instanceof PutTimeseriesDataRequest) {
             PutTimeseriesDataRequest bwr = (PutTimeseriesDataRequest) request;
@@ -198,29 +191,6 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
         triggerFailedCallback(failedRows, ex, groupList);
     }
 
-
-    public void failedOnUnknownException(Req request, Exception ex) {
-        logger.debug("OnFailed on ClientException: {}, {}", request.getClass().getName(), ex);
-        List<TimeseriesTableRow> failedRows = new ArrayList<TimeseriesTableRow>();
-        if (request instanceof PutTimeseriesDataRequest) {
-            PutTimeseriesDataRequest bwr = (PutTimeseriesDataRequest) request;
-            String tableName = bwr.getTimeseriesTableName();
-            for(TimeseriesRow timeseriesRow:  bwr.getRows()){
-                failedRows.add(new TimeseriesTableRow(timeseriesRow, tableName));
-            }
-        }
-
-        triggerFailedCallback(failedRows, ex, groupList);
-    }
-
-    /**
-     * 在一般情况下，BatchWriteRow是不会发生整体异常的，若发生，则代表其中包含有脏数据，例如有一行的属性列的大小超过大小限制等。
-     * 在这种情况下，我们不希望因为这一行脏数据，导致其他的行导入失败。但是由于我们无法找出这是哪一行，所以采取的做法是将这一次Batch内
-     * 包含的所有行通过PutRow等单行写操作写过去。
-     * 由于我们在writer外层是有一层参数检查了，所以这种情况是极少发生的。
-     *
-     * @param request
-     */
     private void retryTimeseriesRow(PutTimeseriesDataRequest request) {
         for (int i = 0; i < request.getRows().size(); i++) {
             TimeseriesGroup timeseriesGroup = groupList.get(i);
@@ -249,7 +219,7 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
 
         List<TimeseriesRow> list = new ArrayList<TimeseriesRow>();
         list.add(timeseriesRow);
-        request.setRows(list);
+        request.addRows(list);
 
 
         ots.putTimeseriesData(request, new TimeseriesFlushCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse>(ots, count, semaphore, callback,
@@ -260,7 +230,7 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
         PutTimeseriesDataRequest request = new PutTimeseriesDataRequest(tableName);
         List<TimeseriesRow> list = new ArrayList<TimeseriesRow>();
         list.add(timeseriesRow);
-        request.setRows(list);
+        request.addRows(list);
         try {
             ots.asTimeseriesClientInterface().putTimeseriesData(request);
             triggerSucceedCallback(new TimeseriesTableRow(timeseriesRow, tableName), timeseriesGroup);
