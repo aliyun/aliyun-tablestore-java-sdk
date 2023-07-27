@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.groupby.FieldRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
@@ -32,6 +33,8 @@ public class SearchGroupByBuilder {
                 return Search.GroupByType.GROUP_BY_GEO_DISTANCE;
             case GROUP_BY_HISTOGRAM:
                 return Search.GroupByType.GROUP_BY_HISTOGRAM;
+            case GROUP_BY_DATE_HISTOGRAM:
+                return Search.GroupByType.GROUP_BY_DATE_HISTOGRAM;
             default:
                 throw new IllegalArgumentException("unknown GroupByType: " + type.name());
         }
@@ -83,6 +86,38 @@ public class SearchGroupByBuilder {
         }
         if (groupBy.getFieldRange() != null) {
             builder.setFieldRange(buildFieldRange(groupBy.getFieldRange()));
+        }
+        return builder.build();
+    }
+
+    public static Search.GroupByDateHistogram buildGroupByDateHistogram(GroupByDateHistogram groupBy) {
+        Search.GroupByDateHistogram.Builder builder = Search.GroupByDateHistogram.newBuilder();
+        if (groupBy.getFieldName() != null) {
+            builder.setFieldName(groupBy.getFieldName());
+        }
+        if (groupBy.getInterval() != null) {
+            builder.setInterval(SearchProtocolBuilder.buildDateTimeValue(groupBy.getInterval()));
+        }
+        if (groupBy.getMissing() != null) {
+            builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMissing())));
+        }
+        if (groupBy.getGroupBySorters() != null) {
+            builder.setSort(SearchSortBuilder.buildGroupBySort(groupBy.getGroupBySorters()));
+        }
+        if (groupBy.getMinDocCount() != null) {
+            builder.setMinDocCount(groupBy.getMinDocCount());
+        }
+        if (groupBy.getTimeZone() != null) {
+            builder.setTimeZone(groupBy.getTimeZone());
+        }
+        if (groupBy.getFieldRange() != null) {
+            builder.setFieldRange(buildFieldRange(groupBy.getFieldRange()));
+        }
+        if (groupBy.getSubAggregations() != null) {
+            builder.setSubAggs(SearchAggregationBuilder.buildAggregations(groupBy.getSubAggregations()));
+        }
+        if (groupBy.getSubGroupBys() != null) {
+            builder.setSubGroupBys(buildGroupBys(groupBy.getSubGroupBys()));
         }
         return builder.build();
     }

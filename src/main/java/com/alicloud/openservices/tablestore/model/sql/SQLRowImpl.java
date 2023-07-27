@@ -3,6 +3,9 @@ package com.alicloud.openservices.tablestore.model.sql;
 import com.alicloud.openservices.tablestore.model.ColumnType;
 
 import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class SQLRowImpl implements SQLRow {
@@ -113,6 +116,72 @@ public class SQLRowImpl implements SQLRow {
             return null;
         } else {
             return (Double) value;
+        }
+    }
+
+    @Override
+    public ZonedDateTime getDateTime(int columnIndex) {
+        checkValid(columnIndex, ColumnType.DATETIME);
+        Object value = get(columnIndex);
+        if (value == null) {
+            return null;
+        } else {
+            return (ZonedDateTime) value;
+        }
+    }
+
+    @Override
+    public ZonedDateTime getDateTime(String name) {
+        checkValid(name, ColumnType.DATETIME);
+        Object value = get(name);
+        if (value == null) {
+            return null;
+        } else {
+            return (ZonedDateTime) value;
+        }
+    }
+
+    @Override
+    public Duration getTime(int columnIndex) {
+        checkValid(columnIndex, ColumnType.TIME);
+        Object value = get(columnIndex);
+        if (value == null) {
+            return null;
+        } else {
+            return (Duration) value;
+        }
+    }
+
+    @Override
+    public Duration getTime(String name) {
+        checkValid(name, ColumnType.TIME);
+        Object value = get(name);
+        if (value == null) {
+            return null;
+        } else {
+            return (Duration) value;
+        }
+    }
+
+    @Override
+    public LocalDate getDate(int columnIndex) {
+        checkValid(columnIndex, ColumnType.DATE);
+        Object value = get(columnIndex);
+        if (value == null) {
+            return null;
+        } else {
+            return (LocalDate) value;
+        }
+    }
+
+    @Override
+    public LocalDate getDate(String name) {
+        checkValid(name, ColumnType.DATE);
+        Object value = get(name);
+        if (value == null) {
+            return null;
+        } else {
+            return (LocalDate) value;
         }
     }
 

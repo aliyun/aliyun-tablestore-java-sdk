@@ -3,6 +3,9 @@ package com.alicloud.openservices.tablestore.model.sql;
 import com.alicloud.openservices.tablestore.model.ColumnType;
 
 import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 /**
  * 表示 SQL 行的数据结构
@@ -96,6 +99,60 @@ public interface SQLRow {
      * @return 浮点数类型的值
      */
     Double getDouble(String name);
+
+    /**
+     * 根据列游标获取时间类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#DATETIME}才能获取到值。</p>
+     *
+     * @param columnIndex 列游标
+     * @return 返回java.time.ZonedDateTime类型的值
+     */
+    ZonedDateTime getDateTime(int columnIndex);
+
+    /**
+     * 根据列名获取时间类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#DATETIME}才能获取到值。</p>
+     *
+     * @param name 列名
+     * @return 返回java.time.ZonedDateTime类型的值类型的值
+     */
+    ZonedDateTime getDateTime(String name);
+
+    /**
+     * 根据列游标获取时间间隔类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#TIME}才能获取到值。</p>
+     *
+     * @param columnIndex 列游标
+     * @return 返回java.time.Duration类型
+     */
+    Duration getTime(int columnIndex);
+
+    /**
+     * 根据列名获取时间间隔类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#TIME}才能获取到值。</p>
+     *
+     * @param name 列名
+     * @return 返回java.time.Duration类型
+     */
+    Duration getTime(String name);
+
+    /**
+     * 根据列游标获取日期类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#DATE}才能获取到值。</p>
+     *
+     * @param columnIndex 列游标
+     * @return 返回java.time.LocalDate类型
+     */
+    LocalDate getDate(int columnIndex);
+
+    /**
+     * 根据列名获取日期类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#DATE}才能获取到值。</p>
+     *
+     * @param name 列名
+     * @return 返回java.time.LocalDate类型
+     */
+    LocalDate getDate(String name);
 
     /**
      * 根据列游标获取 Binary 类型的值。

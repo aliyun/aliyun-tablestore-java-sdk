@@ -58,6 +58,9 @@ public class GroupByBuildersTest extends BaseSearchTest {
 
         GroupByHistogram groupByHistogram = GroupByBuilders.groupByHistogram("u", "u").build();
         assertEquals(GroupByType.GROUP_BY_HISTOGRAM, groupByHistogram.getGroupByType());
+
+        GroupByDateHistogram groupByDateHistogram = GroupByBuilders.groupByDateHistogram("u", "u").build();
+        assertEquals(GroupByType.GROUP_BY_DATE_HISTOGRAM, groupByDateHistogram.getGroupByType());
     }
 
     /**

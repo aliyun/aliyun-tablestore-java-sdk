@@ -625,6 +625,7 @@ enum SQLStatementType {
 message SQLQueryRequest {
     required string query = 1;
     optional SQLPayloadVersion version = 2;
+    optional int64 sql_version = 3;
 }
 
 message TableConsumedCapacity {

@@ -62,9 +62,15 @@ class SearchSortBuilder {
         if (fieldSort.getNestedFilter() != null) {
             builder.setNestedFilter(buildNestedFilter(fieldSort.getNestedFilter()));
         }
-        if (fieldSort.getMissing() != null) {
-            builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(fieldSort.getMissing())));
+        if (fieldSort.getMissingValue() != null) {
+            builder.setMissingValue(ByteString.copyFrom(SearchVariantType.toVariant(fieldSort.getMissing())));
+        } else if (fieldSort.getMissing() != null) {
+            builder.setMissingValue(ByteString.copyFrom(SearchVariantType.toVariant(fieldSort.getMissing())));
         }
+        if (fieldSort.getMissingField() != null) {
+            builder.setMissingField(fieldSort.getMissingField());
+        }
+        
         return builder.build();
     }
 

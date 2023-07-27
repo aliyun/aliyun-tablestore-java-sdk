@@ -63,8 +63,11 @@ class SearchSortParser {
         if (pb.hasNestedFilter()) {
             sort.setNestedFilter(toNestedFilter(pb.getNestedFilter()));
         }
-        if (pb.hasMissing()) {
-            sort.setMissing(SearchVariantType.forceConvertToDestColumnValue(pb.getMissing().toByteArray()));
+        if (pb.hasMissingValue()) {
+            sort.setMissingValue(SearchVariantType.forceConvertToDestColumnValue(pb.getMissingValue().toByteArray()));
+        }
+        if (pb.hasMissingField()) {
+            sort.setMissingField(pb.getMissingField());
         }
         return sort;
     }

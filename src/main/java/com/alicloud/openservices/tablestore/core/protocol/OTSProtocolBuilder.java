@@ -1271,6 +1271,7 @@ public class OTSProtocolBuilder {
 
         builder.setQuery(request.getQuery());
         builder.setVersion(buildSQLPayloadVersion(request.getSqlPayloadVersion()));
+        builder.setSqlVersion(1);
 
         return builder.build();
     }

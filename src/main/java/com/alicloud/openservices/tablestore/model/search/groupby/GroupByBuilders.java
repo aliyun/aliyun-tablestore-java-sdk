@@ -18,6 +18,10 @@ public final class GroupByBuilders {
         return GroupByHistogram.newBuilder().groupByName(groupByName).fieldName(field);
     }
 
+    public static GroupByDateHistogram.Builder groupByDateHistogram(String groupByName, String field) {
+        return GroupByDateHistogram.newBuilder().groupByName(groupByName).fieldName(field);
+    }
+
     public static GroupByFilter.Builder groupByFilter(String groupByName) {
         return GroupByFilter.newBuilder().groupByName(groupByName);
     }

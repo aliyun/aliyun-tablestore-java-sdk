@@ -3,8 +3,10 @@ package com.alicloud.openservices.tablestore.core.protocol;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
 import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
@@ -44,6 +46,45 @@ public class SearchGroupByParser {
         }
         if (pb.hasMinDocCount()) {
             groupBy.setMinDocCount(pb.getMinDocCount());
+        }
+        return groupBy;
+    }
+
+    private static GroupByDateHistogram toGroupByDateHistogram(String groupByName, ByteString groupByByteString) throws IOException {
+        Search.GroupByDateHistogram pb = Search.GroupByDateHistogram.parseFrom(groupByByteString);
+        GroupByDateHistogram groupBy = new GroupByDateHistogram();
+        groupBy.setGroupByName(groupByName);
+        if (pb.hasFieldName()) {
+            groupBy.setFieldName(pb.getFieldName());
+        }
+        if (pb.hasInterval()) {
+            DateTimeValue dateTimeValue = SearchProtocolParser.toDateTimeValue(pb.getInterval());
+            groupBy.setInterval(dateTimeValue);
+        }
+        if (pb.hasMissing()) {
+            ColumnValue missing = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getMissing().toByteArray()));
+            groupBy.setMissing(missing);
+        }
+        if (pb.hasSort()) {
+            groupBy.setGroupBySorters(SearchSortParser.toGroupBySort(pb.getSort()));
+        }
+        if (pb.hasMinDocCount()) {
+            groupBy.setMinDocCount(pb.getMinDocCount());
+        }
+        if (pb.hasTimeZone()) {
+            groupBy.setTimeZone(pb.getTimeZone());
+        }
+        if (pb.hasFieldRange()) {
+            Search.FieldRange fieldRangePb = pb.getFieldRange();
+            ColumnValue min = ValueUtil.toColumnValue(SearchVariantType.getValue(fieldRangePb.getMin().toByteArray()));
+            ColumnValue max = ValueUtil.toColumnValue(SearchVariantType.getValue(fieldRangePb.getMax().toByteArray()));
+            groupBy.setFieldRange(new com.alicloud.openservices.tablestore.model.search.groupby.FieldRange(min, max));
+        }
+        if (pb.hasSubGroupBys()) {
+            groupBy.setSubGroupBys(toGroupBys(pb.getSubGroupBys()));
+        }
+        if (pb.hasSubAggs()) {
+            groupBy.setSubAggregations(SearchAggregationParser.toAggregations(pb.getSubAggs()));
         }
         return groupBy;
     }
@@ -177,6 +218,8 @@ public class SearchGroupByParser {
                 return toGroupByFilter(groupByName, body);
             case GROUP_BY_HISTOGRAM:
                 return toGroupByHistogram(groupByName, body);
+            case GROUP_BY_DATE_HISTOGRAM:
+                return toGroupByDateHistogram(groupByName, body);
             default:
                 throw new IllegalArgumentException("unknown GroupByType: " + type.name());
         }

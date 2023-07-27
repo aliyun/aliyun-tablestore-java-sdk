@@ -10,6 +10,7 @@ import com.alicloud.openservices.tablestore.model.sql.SQLTableMeta;
 import com.alicloud.openservices.tablestore.model.sql.SQLUtils;
 
 import java.nio.ByteBuffer;
+import java.time.ZoneId;
 import java.util.List;
 
 public class SQLQuerySample {
@@ -122,6 +123,24 @@ public class SQLQuerySample {
                 System.out.println(row.toDebugString());
             }
             System.out.println("timeseries query end");
+
+            //select datetime_value,time_value,date_value
+            System.out.println("date type select query begin");
+            SQLQueryRequest dateTypeSelectRequest = new SQLQueryRequest("select from_unixtime(1689705552.010),timediff(from_unixtime(1699496141.123),from_unixtime(1699496041.257)),date(from_unixtime(1689705552.010))");
+            SQLQueryResponse dateTypeSelectResponse = client.sqlQuery(dateTypeSelectRequest);
+            System.out.println("response type: " + dateTypeSelectResponse.getSQLStatementType());
+            SQLTableMeta dateTypeSelectMeta = dateTypeSelectResponse.getSQLResultSet().getSQLTableMeta();
+            System.out.println(dateTypeSelectMeta.getSchema());
+            SQLResultSet dateTypeSelectResultSet = dateTypeSelectResponse.getSQLResultSet();
+            while (dateTypeSelectResultSet.hasNext()) {
+                SQLRow row = dateTypeSelectResultSet.next();
+                System.out.println(row.toDebugString());
+                System.out.println(row.getDateTime(0).withZoneSameInstant(ZoneId.systemDefault()) + ", " + row.getDateTime("from_unixtime(1689705552.010)").withZoneSameInstant(ZoneId.systemDefault()) + ", " +
+                        row.getTime(1) + ", " + row.getTime("timediff(from_unixtime(1699496141.123),from_unixtime(1699496041.257))") + ", " +
+                        row.getDate(2) + ", " + row.getDate("date(from_unixtime(1689705552.010))"));
+            }
+            System.out.println("select query end");
+
 
         } catch (TableStoreException e) {
             System.err.println("操作失败，详情：" + e.getMessage());

@@ -20,22 +20,27 @@ public final class SQLResponseColumn extends Table {
   public byte columnType() { int o = __offset(6); return o != 0 ? bb.get(o + bb_pos) : 0; }
   public ColumnValues columnValue() { return columnValue(new ColumnValues()); }
   public ColumnValues columnValue(ColumnValues obj) { int o = __offset(8); return o != 0 ? obj.__assign(__indirect(o + bb_pos), bb) : null; }
+  public ComplexColumnTypeInfo columnComplexTypeInfo() { return columnComplexTypeInfo(new ComplexColumnTypeInfo()); }
+  public ComplexColumnTypeInfo columnComplexTypeInfo(ComplexColumnTypeInfo obj) { int o = __offset(10); return o != 0 ? obj.__assign(__indirect(o + bb_pos), bb) : null; }
 
   public static int createSQLResponseColumn(FlatBufferBuilder builder,
       int column_nameOffset,
       byte column_type,
-      int column_valueOffset) {
-    builder.startObject(3);
+      int column_valueOffset,
+      int column_complex_type_infoOffset) {
+    builder.startObject(4);
+    SQLResponseColumn.addColumnComplexTypeInfo(builder, column_complex_type_infoOffset);
     SQLResponseColumn.addColumnValue(builder, column_valueOffset);
     SQLResponseColumn.addColumnName(builder, column_nameOffset);
     SQLResponseColumn.addColumnType(builder, column_type);
     return SQLResponseColumn.endSQLResponseColumn(builder);
   }
 
-  public static void startSQLResponseColumn(FlatBufferBuilder builder) { builder.startObject(3); }
+  public static void startSQLResponseColumn(FlatBufferBuilder builder) { builder.startObject(4); }
   public static void addColumnName(FlatBufferBuilder builder, int columnNameOffset) { builder.addOffset(0, columnNameOffset, 0); }
   public static void addColumnType(FlatBufferBuilder builder, byte columnType) { builder.addByte(1, columnType, 0); }
   public static void addColumnValue(FlatBufferBuilder builder, int columnValueOffset) { builder.addOffset(2, columnValueOffset, 0); }
+  public static void addColumnComplexTypeInfo(FlatBufferBuilder builder, int columnComplexTypeInfoOffset) { builder.addOffset(3, columnComplexTypeInfoOffset, 0); }
   public static int endSQLResponseColumn(FlatBufferBuilder builder) {
     int o = builder.endObject();
     return o;

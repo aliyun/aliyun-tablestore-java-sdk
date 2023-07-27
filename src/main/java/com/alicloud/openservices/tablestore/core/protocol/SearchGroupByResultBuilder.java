@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramItem;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResultItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilterResult;
@@ -153,6 +155,33 @@ class SearchGroupByResultBuilder {
         return result;
     }
 
+    private static GroupByDateHistogramResult buildGroupByDateHistogramResult(String groupByName, ByteString groupByBody) throws IOException {
+        Search.GroupByDateHistogramResult groupByResult = Search.GroupByDateHistogramResult.parseFrom(groupByBody);
+        GroupByDateHistogramResult result = new GroupByDateHistogramResult();
+        result.setGroupByName(groupByName);
+
+        List<GroupByDateHistogramItem> items = new ArrayList<GroupByDateHistogramItem>();
+        for (Search.GroupByDateHistogramItem item : groupByResult.getGroupByDateHistogramItemsList()) {
+            items.add(buildGroupByDateHistogramItem(item));
+        }
+        result.setGroupByDateHistogramItems(items);
+        return result;
+    }
+
+    private static GroupByDateHistogramItem buildGroupByDateHistogramItem(Search.GroupByDateHistogramItem groupByItem) throws IOException {
+        GroupByDateHistogramItem result = new GroupByDateHistogramItem();
+        result.setTimestamp(groupByItem.getTimestamp());
+        result.setRowCount(groupByItem.getRowCount());
+
+        if (groupByItem.hasSubAggsResult()) {
+            result.setSubAggregationResults(buildAggregationResults(groupByItem.getSubAggsResult()));
+        }
+        if (groupByItem.hasSubGroupBysResult()) {
+            result.setSubGroupByResults(buildGroupByResults(groupByItem.getSubGroupBysResult()));
+        }
+        return result;
+    }
+
     private static GroupByGeoDistanceResult buildGroupByGeoDistanceResult(String groupByName, ByteString groupByBody)
         throws IOException {
         Search.GroupByGeoDistanceResult groupByResult = Search.GroupByGeoDistanceResult.parseFrom(groupByBody);
@@ -180,6 +209,8 @@ class SearchGroupByResultBuilder {
                 return buildGroupByFilterResult(groupByResult.getName(), groupByResult.getGroupByResult());
             case GROUP_BY_HISTOGRAM:
                 return buildGroupByHistogramResult(groupByResult.getName(), groupByResult.getGroupByResult());
+            case GROUP_BY_DATE_HISTOGRAM:
+                return buildGroupByDateHistogramResult(groupByResult.getName(), groupByResult.getGroupByResult());
             default:
                 throw new ClientException("unsupported GroupByType: " + groupByResult.getType());
         }

@@ -88,7 +88,7 @@ public class SearchIndexSample {
             System.out.println("put row succeeded.");
 
             // 等待数据同步到SearchIndex
-            waitUntilAllDataSync(client, INDEX_NAME, 6);
+            waitUntilAllDataSync(client, INDEX_NAME, 7);
 
             // 使用matchAllQuery查询数据总行数
             System.out.println("MatchAllQuery...");
@@ -180,6 +180,7 @@ public class SearchIndexSample {
         indexSchema.setFieldSchemas(Arrays.asList(
             new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
             new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+            new FieldSchema("Col_Long_sec", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
             new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true)));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);
@@ -273,7 +274,7 @@ public class SearchIndexSample {
 
     private static void putRow(SyncClient client) {
         String[] keywords = {"hangzhou", "beijing", "shanghai", "hangzhou shanghai", "hangzhou beijing shanghai"};
-        long[] longValues = {1, 2, 3, 4, 5, 6};
+        long[] longValues = {1, 2, 3, 4, 5, 6, 7};
         for (int i = 0; i < 5; i++) {
             // 构造主键
             PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
@@ -286,6 +287,7 @@ public class SearchIndexSample {
             //加入一些属性列
             rowPutChange.addColumn("Col_Keyword", ColumnValue.fromString(keywords[i]));
             rowPutChange.addColumn("Col_Long", ColumnValue.fromLong(longValues[i]));
+            rowPutChange.addColumn("Col_Long_sec", ColumnValue.fromLong(longValues[i]));
 
             rowPutChange.addColumn("Col_Text", ColumnValue.fromString(keywords[i]));
             rowPutChange.addColumn("Col_Boolean", ColumnValue.fromBoolean(i % 2 == 0 ? true : false));
@@ -302,6 +304,20 @@ public class SearchIndexSample {
 
             //加入一些属性列
             rowPutChange.addColumn("Col_Long", ColumnValue.fromLong(longValues[5]));
+            rowPutChange.addColumn("Col_Boolean", ColumnValue.fromBoolean(false));
+            client.putRow(new PutRowRequest(rowPutChange));
+        }       
+        {   // 构造一行缺失 Col_Keyword、 Col_long 和 Col_Text列
+            // 构造主键
+            PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
+            primaryKeyBuilder.addPrimaryKeyColumn(PRIMARY_KEY_NAME_1, PrimaryKeyValue.fromString("sample"));
+            primaryKeyBuilder.addPrimaryKeyColumn(PRIMARY_KEY_NAME_2, PrimaryKeyValue.fromLong(6));
+            PrimaryKey primaryKey = primaryKeyBuilder.build();
+
+            RowPutChange rowPutChange = new RowPutChange(TABLE_NAME, primaryKey);
+
+            //加入一些属性列
+            rowPutChange.addColumn("Col_Long_sec", ColumnValue.fromLong(longValues[6]));
             rowPutChange.addColumn("Col_Boolean", ColumnValue.fromBoolean(false));
             client.putRow(new PutRowRequest(rowPutChange));
         }
@@ -505,6 +521,26 @@ public class SearchIndexSample {
         searchQuery.setGetTotalCount(true);
         // 设置按照Col_Long这一列逆序排序
         FieldSort fieldSort = new FieldSort("Col_Long");
+        fieldSort.setOrder(SortOrder.DESC);
+        searchQuery.setSort(new Sort(Arrays.asList((Sort.Sorter)fieldSort)));
+
+        SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
+
+        SearchResponse resp = client.search(searchRequest);
+        System.out.println("TotalCount: " + resp.getTotalCount()); // 匹配到的总行数，非返回行数
+        System.out.println("Row: " + resp.getRows());
+    }
+
+    /**
+     * 查询表中所有数据，并基于Col_Long这一列的值逆序排序，如果数据缺失用Col_Long_sec数据替换用于排序。
+     */
+    private static void fieldSortQuery(SyncClient client) {
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQuery(new MatchAllQuery());
+        searchQuery.setGetTotalCount(true);
+        // 设置按照Col_Long这一列逆序排序
+        FieldSort fieldSort = new FieldSort("Col_Long");
+        fieldSort.setMissingField("Col_Long_sec");
         fieldSort.setOrder(SortOrder.DESC);
         searchQuery.setSort(new Sort(Arrays.asList((Sort.Sorter)fieldSort)));
 
