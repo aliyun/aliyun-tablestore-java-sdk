@@ -7,6 +7,8 @@ import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyBuilder;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
+import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
+import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
 import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.ParallelScanRequest;
 import com.alicloud.openservices.tablestore.model.search.ScanQuery;
@@ -25,6 +27,7 @@ import com.alicloud.openservices.tablestore.model.search.agg.SumAggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.TopRowsAggregation;
 import com.alicloud.openservices.tablestore.model.search.groupby.FieldRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
@@ -244,9 +247,15 @@ public abstract class BaseSearchTest {
             sort.setNestedFilter(randomNestedFilter());
         }
         sort.setOrder(randomSortOrder());
-        assertAllFieldTested(sort, 5);
+        assertAllFieldTested(sort, 7);
         if (RANDOM.nextBoolean()) {
             sort.setMissing(randomColumnValue());
+        }
+        if (RANDOM.nextBoolean()) {
+            sort.setMissingValue(randomColumnValue());
+        }
+        if (RANDOM.nextBoolean()) {
+            sort.setMissingField(randomString(10));
         }
         return sort;
     }
@@ -941,6 +950,49 @@ public abstract class BaseSearchTest {
         return groupBy;
     }
 
+    public static DateTimeValue randomDateTimeValue() {
+        DateTimeValue dateTimeValue = new DateTimeValue();
+        if (RANDOM.nextBoolean()) {
+            dateTimeValue.setValue(RANDOM.nextInt());
+        }
+        if (RANDOM.nextBoolean()) {
+            dateTimeValue.setUnit(randomFrom(DateTimeUnit.values()));
+        }
+        return dateTimeValue;
+    }
+
+    public static GroupByDateHistogram randomGroupByDateHistogram() {
+        GroupByDateHistogram groupBy = new GroupByDateHistogram();
+        groupBy.setGroupByName(randomString(10));
+        groupBy.setFieldName(randomString(10));
+        if (RANDOM.nextBoolean()) {
+            groupBy.setGroupBySorters(randomGroupBySorterList());
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setInterval(randomDateTimeValue());
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setFieldRange(new FieldRange(randomNumberColumnValue(), randomNumberColumnValue()));
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setMinDocCount(RANDOM.nextLong());
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setMissing(randomNumberColumnValue());
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setTimeZone(randomString(10));
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setSubGroupBys(randomGroupBys());
+        }
+        if (RANDOM.nextBoolean()) {
+            groupBy.setSubAggregations(randomAggregations());
+        }
+        assertAllFieldTested(groupBy, 11);
+        return groupBy;
+    }
+
     public static GroupByFilter randomGroupByFilter() {
         GroupByFilter groupBy = new GroupByFilter();
         groupBy.setGroupByName(randomString(10));
@@ -983,6 +1035,12 @@ public abstract class BaseSearchTest {
             @Override
             public GroupBy get() {
                 return randomGroupByHistogram();
+            }
+        });
+        all.add(new Supplier<GroupBy>() {
+            @Override
+            public GroupBy get() {
+                return randomGroupByDateHistogram();
             }
         });
         all.add(new Supplier<GroupBy>() {

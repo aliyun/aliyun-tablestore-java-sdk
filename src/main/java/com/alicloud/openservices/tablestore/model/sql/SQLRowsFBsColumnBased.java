@@ -6,8 +6,12 @@ import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.DataTy
 import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.RLEStringValues;
 import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.SQLResponseColumn;
 import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.SQLResponseColumns;
+import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.LogicType;
+import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.ComplexColumnTypeInfo;
 import com.alicloud.openservices.tablestore.model.ColumnType;
 
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +32,8 @@ public class SQLRowsFBsColumnBased implements SQLRows {
 
     private RLEStringValues[] rleStringValues;
 
+    private ComplexColumnTypeInfo[] columnComplexTypeInfos;
+
     private long rowCount;
 
     private long columnCount;
@@ -37,12 +43,14 @@ public class SQLRowsFBsColumnBased implements SQLRows {
         this.columnTypes = new byte[columns.columnsLength()];
         this.columnValues = new ColumnValues[columns.columnsLength()];
         this.rleStringValues = new RLEStringValues[columns.columnsLength()];
+        this.columnComplexTypeInfos = new ComplexColumnTypeInfo[columns.columnsLength()];
         for (int i = 0; i < columns.columnsLength(); i++) {
             SQLResponseColumn column = columns.columns(i);
             this.columnNames[i] = column.columnName();
             this.columnTypes[i] = column.columnType();
             this.columnValues[i] = column.columnValue();
             this.rleStringValues[i] = this.columnValues[i].rleStringValues();
+            this.columnComplexTypeInfos[i] = column.columnComplexTypeInfo();
         }
         this.rowCount = columns.rowCount();
         this.columnCount = columns.columnsLength();
@@ -53,13 +61,13 @@ public class SQLRowsFBsColumnBased implements SQLRows {
         List<SQLColumnSchema> schema = new ArrayList<SQLColumnSchema>();
         Map<String, Integer> columnsMap = new HashMap<String, Integer>();
         for (int i = 0; i < columnCount; i++) {
-            schema.add(new SQLColumnSchema(columnNames[i], convertColumnType(columnTypes[i])));
+            schema.add(new SQLColumnSchema(columnNames[i], convertColumnType(columnTypes[i],this.columnComplexTypeInfos[i].columnLogicType())));
             columnsMap.put(columnNames[i], i);
         }
         return new SQLTableMeta(schema, columnsMap);
     }
 
-    private ColumnType convertColumnType(byte columnType) {
+    private ColumnType convertColumnType(byte columnType,byte logicType) {
         switch (columnType) {
             case DataType.LONG:
                 return ColumnType.INTEGER;
@@ -72,6 +80,18 @@ public class SQLRowsFBsColumnBased implements SQLRows {
                 return ColumnType.STRING;
             case DataType.BINARY:
                 return ColumnType.BINARY;
+            case DataType.COMPLEX:
+                switch (logicType) {
+                	case LogicType.DATETIME:
+                			return ColumnType.DATETIME;
+                	case LogicType.TIME:
+                			return ColumnType.TIME;
+                	case LogicType.DATE:
+                			return ColumnType.DATE;
+                	default:
+                        throw new UnsupportedOperationException("not supported Logic type in flatbuffers: " + logicType);
+                	}
+
             default:
                 throw new UnsupportedOperationException("not supported column type in flatbuffers: " + columnType);
         }
@@ -101,6 +121,8 @@ public class SQLRowsFBsColumnBased implements SQLRows {
             throw new IllegalStateException("Column index " + columnIndex + " out of range");
         }
         byte columnType = columnTypes[columnIndex];
+        byte logicType = columnComplexTypeInfos[columnIndex].columnLogicType();
+        byte encodingType = columnComplexTypeInfos[columnIndex].columnEncodeType();
         ColumnValues columnValue = columnValues[columnIndex];
         switch (columnType) {
             case DataType.LONG:
@@ -141,6 +163,26 @@ public class SQLRowsFBsColumnBased implements SQLRows {
                     RLEStringValues rleStringValue = rleStringValues[columnIndex];
                     return resolveRLEString(rleStringValue, rowIndex);
                 }
+            case DataType.COMPLEX:
+                switch (logicType) {
+                    case LogicType.DATETIME:
+                        if(encodingType != DataType.LONG){
+                            throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
+                        }
+                        return resolveDateTime(columnValue.longValues(rowIndex));
+                    case LogicType.TIME:
+                        if(encodingType != DataType.LONG){
+                            throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
+                        }
+                        return resolveTime(columnValue.longValues(rowIndex));
+                    case LogicType.DATE:
+                        if(encodingType != DataType.LONG){
+                            throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
+                        }
+                        return resolveDate(columnValue.longValues(rowIndex));
+                    default:
+                        throw new UnsupportedOperationException("not supported Logic type in flatbuffers: " + logicType);
+                }
             default:
                 throw new UnsupportedOperationException("not supported column type in flatbuffers: " + columnType);
         }
@@ -148,6 +190,20 @@ public class SQLRowsFBsColumnBased implements SQLRows {
 
     private String resolveRLEString(RLEStringValues rleStringValue, int rowIndex) {
         return rleStringValue.array(rleStringValue.indexMapping(rowIndex));
+    }
+
+    private ZonedDateTime resolveDateTime(long ts) {
+        return Instant.ofEpochSecond(ts / 1000000, (int) (ts % 1000000) * 1000).atZone(ZoneOffset.UTC);
+    }
+
+    private Duration resolveTime(long nanos) {
+        return Duration.ofNanos(nanos);
+    }
+
+    private LocalDate resolveDate(long ts) {
+        return Instant.ofEpochSecond(ts)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate();
     }
 
 }

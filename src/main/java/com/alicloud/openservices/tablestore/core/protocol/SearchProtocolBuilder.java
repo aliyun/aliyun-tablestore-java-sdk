@@ -9,6 +9,8 @@ import com.alicloud.openservices.tablestore.core.protocol.Search.ColumnReturnTyp
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
+import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
 import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.DescribeSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
@@ -367,6 +369,40 @@ public class SearchProtocolBuilder {
         }
         if (parallelScanRequest.getTimeoutInMillisecond() > 0) {
             builder.setTimeoutMs(parallelScanRequest.getTimeoutInMillisecond());
+        }
+        return builder.build();
+    }
+
+    public static Search.DateTimeUnit buildDateTimeUnit(DateTimeUnit unit) {
+        switch (unit) {
+            case YEAR:
+                return Search.DateTimeUnit.YEAR;
+            case QUARTER_YEAR:
+                return Search.DateTimeUnit.QUARTER_YEAR;
+            case MONTH:
+                return Search.DateTimeUnit.MONTH;
+            case WEEK:
+                return Search.DateTimeUnit.WEEK;
+            case DAY:
+                return Search.DateTimeUnit.DAY;
+            case HOUR:
+                return Search.DateTimeUnit.HOUR;
+            case MINUTE:
+                return Search.DateTimeUnit.MINUTE;
+            case SECOND:
+                return Search.DateTimeUnit.SECOND;
+            default:
+                throw new IllegalArgumentException("Unknown DateTimeUnit: " + unit.name());
+        }
+    }
+
+    public static Search.DateTimeValue buildDateTimeValue(DateTimeValue dateTimeValue) {
+        Search.DateTimeValue.Builder builder = Search.DateTimeValue.newBuilder();
+        if (dateTimeValue.getValue() != null) {
+            builder.setValue(dateTimeValue.getValue());
+        }
+        if (dateTimeValue.getUnit() != null) {
+            builder.setUnit(buildDateTimeUnit(dateTimeValue.getUnit()));
         }
         return builder.build();
     }

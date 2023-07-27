@@ -33,6 +33,7 @@ public class GroupByResults {
                     "the result with this groupByName can't cast to GroupByFieldResult.");
             }
         }
+
     }
 
     public GroupByGeoDistanceResult getAsGroupByGeoDistanceResult(String groupByName) {
@@ -91,6 +92,21 @@ public class GroupByResults {
             } else {
                 throw new IllegalArgumentException(
                         "the result with this groupByName can't cast to GroupByHistogramResult.");
+            }
+        }
+    }
+
+    public GroupByDateHistogramResult getAsGroupByDateHistogramResult(String groupByName) {
+        if (groupByResultMap != null && !groupByResultMap.containsKey(groupByName)) {
+            throw new IllegalArgumentException("GroupByResults don't contains: " + groupByName);
+        } else {
+            assert groupByResultMap != null;
+            GroupByResult result = groupByResultMap.get(groupByName);
+            if (result.getGroupByType() == GroupByType.GROUP_BY_DATE_HISTOGRAM) {
+                return (GroupByDateHistogramResult) result;
+            } else {
+                throw new IllegalArgumentException(
+                        "the result with this groupByName can't cast to GroupByDateHistogramResult.");
             }
         }
     }

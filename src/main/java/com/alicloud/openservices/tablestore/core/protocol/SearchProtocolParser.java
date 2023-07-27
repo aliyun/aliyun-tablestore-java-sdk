@@ -6,6 +6,8 @@ import com.alicloud.openservices.tablestore.model.CapacityUnit;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.ReservedThroughput;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
+import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
+import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
 import com.alicloud.openservices.tablestore.model.search.FieldType;
 import com.alicloud.openservices.tablestore.model.search.IndexOptions;
@@ -423,5 +425,40 @@ public class SearchProtocolParser {
             request.setTimeoutInMillisecond(pb.getTimeoutMs());
         }
         return request;
+    }
+
+    public static DateTimeUnit toDateTimeUnit(Search.DateTimeUnit unit) {
+        switch (unit) {
+            case YEAR:
+                return DateTimeUnit.YEAR;
+            case QUARTER_YEAR:
+                return DateTimeUnit.QUARTER_YEAR;
+            case MONTH:
+                return DateTimeUnit.MONTH;
+            case WEEK:
+                return DateTimeUnit.WEEK;
+            case DAY:
+                return DateTimeUnit.DAY;
+            case HOUR:
+                return DateTimeUnit.HOUR;
+            case MINUTE:
+                return DateTimeUnit.MINUTE;
+            case SECOND:
+                return DateTimeUnit.SECOND;
+            default:
+                throw new IllegalArgumentException("Unknown DateTimeUnit: " + unit.name());
+        }
+    }
+
+    public static  DateTimeValue toDateTimeValue(Search.DateTimeValue pb) {
+        DateTimeValue dateTimeValue = new DateTimeValue();
+        if (pb.hasValue()) {
+            dateTimeValue.setValue(pb.getValue());
+        }
+        if (pb.hasUnit()) {
+            DateTimeUnit dateTimeUnit = toDateTimeUnit(pb.getUnit());
+            dateTimeValue.setUnit(dateTimeUnit);
+        }
+        return dateTimeValue;
     }
 }

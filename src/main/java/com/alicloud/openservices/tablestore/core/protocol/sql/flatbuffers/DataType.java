@@ -11,8 +11,9 @@ public final class DataType {
   public static final byte STRING = 4;
   public static final byte BINARY = 5;
   public static final byte STRING_RLE = 6;
+  public static final byte COMPLEX = 7;
 
-  public static final String[] names = { "NONE", "LONG", "BOOLEAN", "DOUBLE", "STRING", "BINARY", "STRING_RLE", };
+  public static final String[] names = { "NONE", "LONG", "BOOLEAN", "DOUBLE", "STRING", "BINARY", "STRING_RLE", "COMPLEX", };
 
   public static String name(int e) { return names[e]; }
 }

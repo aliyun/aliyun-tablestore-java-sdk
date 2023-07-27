@@ -18,7 +18,9 @@ public class FieldSort implements Sort.Sorter {
      * <p> 2. {@link FieldSort#LAST_WHEN_MISSING}: 当排序字段值缺省时候排在最后面</p>
      * <p> 3. 自定义值: 当排序字段值缺省时候使用指定的值进行排序</p>
      */
-    private ColumnValue missing;
+    private ColumnValue missingValue;
+    
+    private String missingField;
 
     public FieldSort(String fieldName) {
         this.fieldName = fieldName;
@@ -61,14 +63,32 @@ public class FieldSort implements Sort.Sorter {
         this.nestedFilter = nestedFilter;
     }
 
+    @Deprecated
     public ColumnValue getMissing() {
-        return missing;
+        return missingValue;
     }
 
     /**
-     * @see FieldSort#missing
+     * @see FieldSort#missingValue
      */
+    @Deprecated
     public void setMissing(ColumnValue missing) {
-        this.missing = missing;
+        this.missingValue = missing;
+    }
+
+    public ColumnValue getMissingValue() {
+        return missingValue;
+    }
+
+    public void setMissingValue(ColumnValue missingValue) {
+        this.missingValue = missingValue;
+    }
+
+    public String getMissingField() {
+        return missingField;
+    }
+
+    public void setMissingField(String missingField) {
+        this.missingField = missingField;
     }
 }
