@@ -1,5 +1,7 @@
 package com.alicloud.openservices.tablestore;
 
+import com.alicloud.openservices.tablestore.core.ResourceManager;
+import com.alicloud.openservices.tablestore.core.auth.DefaultCredentialProvider;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
@@ -108,7 +110,7 @@ public class DefaultTableStoreTimeseriesWriter implements TableStoreTimeseriesWr
                 cc.setRetryStrategy(new CertainCodeRetryStrategy());
         }
 
-        this.ots = new AsyncTimeseriesClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.ots = new AsyncTimeseriesClient(endpoint, new DefaultCredentialProvider(credentials), instanceName, cc, new ResourceManager(cc, null));
         this.timeseriesWriterConfig = config;
         this.resultCallback = resultCallback;
         this.executor = this.createThreadPool(config);
@@ -138,7 +140,7 @@ public class DefaultTableStoreTimeseriesWriter implements TableStoreTimeseriesWr
             TableStoreCallback<TimeseriesTableRow, TimeseriesRowResult> resultCallback) {
         this.allowDuplicatePkInBatchRequest = true;
         this.timeseriesWriterHandleStatistics = new TimeseriesWriterHandleStatistics();
-        this.ots = new AsyncTimeseriesClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.ots = new AsyncTimeseriesClient(endpoint, new DefaultCredentialProvider(credentials), instanceName, cc, new ResourceManager(cc, null));
         this.timeseriesWriterConfig = config;
         this.resultCallback = resultCallback;
         this.executor = this.createThreadPool(config);

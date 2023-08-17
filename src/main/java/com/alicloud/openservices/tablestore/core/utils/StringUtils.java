@@ -304,4 +304,5 @@ public class StringUtils {
     public static boolean matchRegexPattern(String regex, String value) {
         return Pattern.compile(regex).matcher(value).matches();
     }
+
 }

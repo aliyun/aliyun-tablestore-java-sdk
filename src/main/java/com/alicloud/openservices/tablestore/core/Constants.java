@@ -5,11 +5,14 @@ import java.nio.charset.Charset;
 public class Constants {
     // ALL HTTP HEADERS SHOULD BE DEFINED IN LOWERCASE
     // request headers
-    public static final String USER_AGENT = "ots-java-sdk 5.16.0";
+    public static final String USER_AGENT = "ots-java-sdk 5.16.1";
     public static final String OTS_HEADER_API_VERSION = "x-ots-apiversion";
     public static final String OTS_HEADER_ACCESS_KEY_ID = "x-ots-accesskeyid";
     public static final String OTS_HEADER_OTS_CONTENT_MD5 = "x-ots-contentmd5";
     public static final String OTS_HEADER_SIGNATURE = "x-ots-signature";
+    public static final String OTS_HEADER_SIGNATURE_V4 = "x-ots-signaturev4";
+    public static final String OTS_HEADER_SIGN_DATE = "x-ots-signdate";
+    public static final String OTS_HEADER_SIGN_REGION = "x-ots-signregion";
     public static final String OTS_HEADER_INSTANCE_NAME = "x-ots-instancename";
     public static final String OTS_HEADER_SDK_TRACE_ID = "x-ots-sdk-traceid";
     public static final String OTS_HEADER_TRACE_THRESHOLD = "x-ots-trace-threshold";
@@ -59,4 +62,19 @@ public class Constants {
      * Timeseries隐藏主键数据格式
      */
     public static final String TIMESERIES_HIDDEN_PK = "_#h";
+
+    /**
+     * v4签名算签前对待算签字段加盐的盐值
+     * signature = Base64(Hmac-SHA256(v4SigningKey, (stringToString + salt)))
+     */
+    public static final String V4_SIGNATURE_SALT = "ots";
+    /**
+     * v4签名算签的方法
+     * signature = Base64(Hmac-SHA256(v4SigningKey, (stringToString + salt)))
+     */
+    public static final String SIGNING_KEY_SIGN_METHOD = "HmacSHA256";
+    /**
+     * v4签名的产品码
+     */
+    public static final String PRODUCT = "ots";
 }

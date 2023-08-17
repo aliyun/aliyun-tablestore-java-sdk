@@ -1,5 +1,7 @@
 package com.alicloud.openservices.tablestore;
 
+import com.alicloud.openservices.tablestore.core.ResourceManager;
+import com.alicloud.openservices.tablestore.core.auth.DefaultCredentialProvider;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.utils.ParamChecker;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
@@ -105,7 +107,7 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
             default:
                 cc.setRetryStrategy(new CertainCodeRetryStrategy());
         }
-        this.ots = new AsyncClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.ots = new AsyncClient(endpoint, new DefaultCredentialProvider(credentials), instanceName, cc, new ResourceManager(cc, null));
         this.tableName = tableName;
         this.writerConfig = config;
         this.callback = null;
@@ -129,7 +131,7 @@ public class DefaultTableStoreWriter implements TableStoreWriter {
             TableStoreCallback<RowChange, RowWriteResult> resultCallback) {
         Preconditions.checkArgument(tableName != null && !tableName.isEmpty(), "The table name can not be null or empty.");
         this.writerStatistics = new WriterHandleStatistics();
-        this.ots = new AsyncClient(endpoint, credentials.getAccessKeyId(), credentials.getAccessKeySecret(), instanceName, cc, credentials.getSecurityToken());
+        this.ots = new AsyncClient(endpoint, new DefaultCredentialProvider(credentials), instanceName, cc, new ResourceManager(cc, null));
         this.tableName = tableName;
         this.writerConfig = config;
         this.callback = null;
