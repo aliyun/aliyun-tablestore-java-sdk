@@ -7,13 +7,18 @@ import java.util.concurrent.TimeUnit;
 
 import com.alicloud.openservices.tablestore.RequestTracer;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.DnsResolver;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.conn.NHttpClientConnectionManager;
+import org.apache.http.nio.conn.NoopIOSessionStrategy;
+import org.apache.http.nio.conn.SchemeIOSessionStrategy;
+import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.protocol.BasicAsyncRequestProducer;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
@@ -37,8 +42,16 @@ public class AsyncServiceClient {
                     .setIoThreadCount(config.getIoThreadCount()).build();
             ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(
                     ioReactorConfig);
+            Registry<SchemeIOSessionStrategy> iosessionFactoryRegistry = RegistryBuilder.<SchemeIOSessionStrategy>create()
+                    .register("http", NoopIOSessionStrategy.INSTANCE)
+                    .register("https", SSLIOSessionStrategy.getDefaultStrategy())
+                    .build();
+            DnsResolver dnsResolver = null;
+            if (config.isEnableDnsCache()) {
+                dnsResolver = new CachedDnsResolver(config.getDnsCacheMaxSize(), config.getDnsCacheExpireAfterWriteSec(), config.getDnsCacheRefreshAfterWriteSec());
+            }
             PoolingNHttpClientConnectionManager cm =
-                    new PoolingNHttpClientConnectionManager(ioReactor);
+                    new PoolingNHttpClientConnectionManager(ioReactor, null, iosessionFactoryRegistry, dnsResolver);
             cm.setMaxTotal(config.getMaxConnections());
             cm.setDefaultMaxPerRoute(config.getMaxConnections());
             httpClient = HttpFactory.createHttpAsyncClient(config, cm);

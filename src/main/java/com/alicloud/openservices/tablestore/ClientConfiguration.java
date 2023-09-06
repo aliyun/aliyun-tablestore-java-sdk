@@ -41,6 +41,14 @@ public class ClientConfiguration {
      */
     private boolean enableRequestTracer = false;
 
+    /**
+     * DNS缓存相关配置 默认不开启
+     */
+    private boolean enableDnsCache = false;
+    private int dnsCacheMaxSize = 100;
+    private int dnsCacheExpireAfterWriteSec = 600;
+    private int dnsCacheRefreshAfterWriteSec = 300;
+
 
     /**
      * 链路追踪系统接口
@@ -462,6 +470,60 @@ public class ClientConfiguration {
         this.enableRequestTracer = enableRequestTracer;
     }
 
+
+    /**
+     * 获取DNS缓存开启状态
+     */
+    public boolean isEnableDnsCache() {
+        return enableDnsCache;
+    }
+
+    /**
+     * 设置是否开启DNS缓存
+     * @param enableDnsCache 控制是否打开DNS缓存的配置
+     */
+    public void setEnableDnsCache(boolean enableDnsCache) {
+        this.enableDnsCache = enableDnsCache;
+    }
+
+    /**
+     * 获取DNS缓存的条目数
+     */
+    public int getDnsCacheMaxSize() {
+        return dnsCacheMaxSize;
+    }
+
+    /**
+     * 获取DNS缓存的过期时间，单位秒
+     */
+    public int getDnsCacheExpireAfterWriteSec() {
+        return dnsCacheExpireAfterWriteSec;
+    }
+
+    /**
+     * 设置DNS缓存的过期时间，单位秒
+     */
+    public void setDnsCacheExpireAfterWriteSec(int dnsCacheExpireAfterWriteSec) {
+        Preconditions.checkArgument(dnsCacheExpireAfterWriteSec > 0, "The dns cache expire after write seconds must be greater than 0.");
+        Preconditions.checkArgument(dnsCacheExpireAfterWriteSec <= 600, "The dns cache expire after write seconds must be less than or equal to 600s.");
+        this.dnsCacheExpireAfterWriteSec = dnsCacheExpireAfterWriteSec;
+    }
+
+    /**
+     * 获取DNS缓存的刷新频率，单位秒
+     */
+    public int getDnsCacheRefreshAfterWriteSec() {
+        return dnsCacheRefreshAfterWriteSec;
+    }
+
+    /**
+     * 设置DNS缓存的刷新频率，单位秒
+     */
+    public void setDnsCacheRefreshAfterWriteSec(int dnsCacheRefreshAfterWriteSec) {
+        Preconditions.checkArgument(dnsCacheRefreshAfterWriteSec > 0, "The dns cache refresh after write seconds must be greater than 0.");
+        Preconditions.checkArgument(dnsCacheRefreshAfterWriteSec < this.dnsCacheExpireAfterWriteSec, "The dns cache refresh after write seconds must be less than dnsCacheExpireAfterWriteSec.");
+        this.dnsCacheRefreshAfterWriteSec = dnsCacheRefreshAfterWriteSec;
+    }
 
     /**
      * 设置接入链路追踪系统接口
