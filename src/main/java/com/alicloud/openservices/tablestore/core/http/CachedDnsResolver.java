@@ -2,6 +2,9 @@ package com.alicloud.openservices.tablestore.core.http;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.Cache;
@@ -17,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class CachedDnsResolver extends SystemDefaultDnsResolver {
     private final Logger logger = LoggerFactory.getLogger(CachedDnsResolver.class);
+    private static final int SCHEDULED_CORE_POOL_SIZE = 2;
     private final Cache<String, InetAddress[]> dnsCache;
 
     public CachedDnsResolver(int maxSize, int expireAfterWriteSec, int refreshAfterWriteSec) {
@@ -29,13 +33,21 @@ public class CachedDnsResolver extends SystemDefaultDnsResolver {
             }
         };
 
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(SCHEDULED_CORE_POOL_SIZE, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setName("refresh-dns-cache-" + thread.getId());
+                return thread;
+            }
+        });
         dnsCache = CacheBuilder.newBuilder()
                 .maximumSize(maxSize)
                 .weakKeys()
                 .expireAfterWrite(expireAfterWriteSec, TimeUnit.SECONDS)
                 .refreshAfterWrite(refreshAfterWriteSec, TimeUnit.SECONDS)
                 .removalListener(rmListener)
-                .build(new CacheLoader<String, InetAddress[]>() {
+                .build(CacheLoader.asyncReloading(new CacheLoader<String, InetAddress[]>() {
                     @Override
                     public InetAddress[] load(String host) throws Exception {
                         if (logger.isDebugEnabled()) {
@@ -43,15 +55,7 @@ public class CachedDnsResolver extends SystemDefaultDnsResolver {
                         }
                         return CachedDnsResolver.super.resolve(host);
                     }
-
-                    @Override
-                    public ListenableFuture<InetAddress[]> reload(String host, InetAddress[] oldValue) throws Exception {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("dns cache reload, host: {}", host);
-                        }
-                        return super.reload(host, oldValue);
-                    }
-                });
+                }, scheduler));
     }
 
     public long cacheSize() {
