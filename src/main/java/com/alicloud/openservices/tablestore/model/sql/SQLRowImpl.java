@@ -3,9 +3,9 @@ package com.alicloud.openservices.tablestore.model.sql;
 import com.alicloud.openservices.tablestore.model.ColumnType;
 
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.Duration;
 import java.util.List;
 
 public class SQLRowImpl implements SQLRow {

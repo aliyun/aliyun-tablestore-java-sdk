@@ -4,6 +4,10 @@ import com.alicloud.openservices.tablestore.common.TestUtil;
 import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import org.junit.Test;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import static java.lang.Math.abs;
 import static org.junit.Assert.*;
 
 public class TestColumnValue {
@@ -62,6 +66,15 @@ public class TestColumnValue {
 
             }
         }
+
+        if (type != ColumnType.DATETIME) {
+            try {
+                v.asDateTime();
+                fail();
+            } catch (IllegalStateException e) {
+
+            }
+        }
     }
 
     @Test
@@ -102,6 +115,14 @@ public class TestColumnValue {
         byte[] value = TestUtil.randomBytes(100000);
         ColumnValue v = ColumnValue.fromBinary(value);
         assertArrayEquals(v.asBinary(), value);
+        checkType(v);
+    }
+
+    @Test
+    public void testDateTime() {
+        ZonedDateTime value = TestUtil.randomDateTime();
+        ColumnValue v = ColumnValue.fromDateTime(value);
+        assertEquals(v.asDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")), value);
         checkType(v);
     }
 
@@ -159,6 +180,28 @@ public class TestColumnValue {
         assertTrue(!ColumnValue.fromBinary(new byte[]{0x1, 0x2, 0x3}).equals(ColumnValue.fromString("HelloWorld")));
         assertTrue(!ColumnValue.fromBinary(new byte[]{0x1, 0x2, 0x3}).equals(ColumnValue.fromBoolean(false)));
     }
+    @Test
+    public void testEquals_DateTime() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time2 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123458000, ZoneId.of("Asia/Shanghai"));
+        checkEquals(ColumnValue.fromDateTime(time1), ColumnValue.fromDateTime(time1));
+        assertTrue(!ColumnValue.fromDateTime(time1).equals(ColumnValue.fromDateTime(time2)));
+        assertTrue(!ColumnValue.fromDateTime(time1).equals(ColumnValue.fromBinary(TestUtil.randomBytes(10))));
+        assertTrue(!ColumnValue.fromDateTime(time1).equals(ColumnValue.fromBoolean(TestUtil.randomBoolean())));
+        assertTrue(!ColumnValue.fromDateTime(time1).equals(ColumnValue.fromDouble(TestUtil.randomDouble())));
+        assertTrue(!ColumnValue.fromDateTime(time1).equals(ColumnValue.fromString(TestUtil.randomString(10))));
+    }
+
+    @Test
+    public void testDateTimePrecisionExceed() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123458123, ZoneId.of("Asia/Shanghai"));
+        try {
+            ColumnValue value = ColumnValue.fromDateTime(time1);
+            fail();
+        } catch (RuntimeException e) {
+
+        }
+    }
 
     @Test
     public void testPrimaryKeyAddOne() {
@@ -196,6 +239,12 @@ public class TestColumnValue {
         assertTrue(pk2.compareTo(pk4) == 0);
         assertTrue(pk2.compareTo(pk5) < 0);
         assertTrue(pk2.compareTo(pk6) < 0);
+
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time2 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123457000, ZoneId.of("Asia/Shanghai"));
+        PrimaryKeyValue pk7 = PrimaryKeyValue.addOne(PrimaryKeyValue.fromDateTime(time1));
+        assertEquals(pk7.asDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")),time2);
+
     }
 
     private void compareWithOtherType(ColumnValue v) {
@@ -240,6 +289,15 @@ public class TestColumnValue {
         if (type != ColumnType.DOUBLE) {
             try {
                 v.compareTo(ColumnValue.fromDouble(10.0));
+                fail();
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+
+        if (type != ColumnType.DATETIME) {
+            try {
+                v.compareTo(ColumnValue.fromDateTime(ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"))));
                 fail();
             } catch (IllegalArgumentException e) {
 
@@ -300,11 +358,25 @@ public class TestColumnValue {
     }
 
     @Test
+    public void testCompareTo_DATETIME() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time2 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123457000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time3 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123453000, ZoneId.of("Asia/Shanghai"));
+        ColumnValue value = ColumnValue.fromDateTime(time1);
+        assertTrue(value.compareTo(ColumnValue.fromDateTime(time1)) == 0);
+        assertTrue(value.compareTo(ColumnValue.fromDateTime(time2)) < 0);
+        assertTrue(value.compareTo(ColumnValue.fromDateTime(time3)) > 0);
+        compareWithOtherType(value);
+    }
+
+    @Test
     public void testGetDataSize() throws Exception {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
         assertEquals(ColumnValue.fromBinary(new byte[]{0x0, 0x1, 0x2, 0x3, 0x4, 0x5}).getDataSize(), 6);
         assertEquals(ColumnValue.fromBoolean(true).getDataSize(), 1);
         assertEquals(ColumnValue.fromLong(1).getDataSize(), 8);
         assertEquals(ColumnValue.fromDouble(1.0).getDataSize(), 8);
+        assertEquals(ColumnValue.fromDateTime(time1).getDataSize(), 8);
 
         String value = "阿里巴巴";
         assertEquals(ColumnValue.fromString(value).getDataSize(), value.getBytes("utf-8").length);

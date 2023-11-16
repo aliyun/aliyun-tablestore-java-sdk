@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.core.utils.BinaryUtil;
 import com.alicloud.openservices.tablestore.core.utils.Pair;
+
+import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_DATETIME;
 
 public class PlainBufferBuilder {
 
@@ -35,6 +38,7 @@ public class PlainBufferBuilder {
                 size += value.asStringInBytes().length;
                 break;
             }
+            case DATETIME:
             case INTEGER: {
                 size += PlainBufferOutputStream.LITTLE_ENDIAN_64_SIZE;
                 break;
@@ -60,6 +64,7 @@ public class PlainBufferBuilder {
                 size += value.asStringInBytes().length;
                 break;
             }
+            case DATETIME:
             case INTEGER: {
                 size += PlainBufferOutputStream.LITTLE_ENDIAN_64_SIZE;
                 break;
@@ -265,6 +270,12 @@ public class PlainBufferBuilder {
                 output.writeRawByte(PlainBufferConsts.VT_BLOB);
                 output.writeRawLittleEndian32(rawData.length);
                 output.writeBytes(rawData);
+                break;
+            }
+            case DATETIME: {
+                output.writeRawLittleEndian32(1 + PlainBufferOutputStream.LITTLE_ENDIAN_64_SIZE);
+                output.writeRawByte(PlainBufferConsts.VT_DATETIME);
+                output.writeRawLittleEndian64(ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()));
                 break;
             }
             default:

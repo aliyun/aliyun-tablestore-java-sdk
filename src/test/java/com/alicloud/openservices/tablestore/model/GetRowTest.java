@@ -12,6 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -106,5 +108,39 @@ public class GetRowTest extends BaseFT {
         Row row = response.getRow();
         assertEquals(row.getColumns().length, 1);
         assertEquals(row.getColumn("attr").get(0).getValue().asString(), "hello world");
+    }
+
+    @Test
+    public void testReadPKColumnsWithDateTimeForPublic() throws Exception {
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        pks.put("PK1", PrimaryKeyType.STRING);
+        pks.put("PKDatetime", PrimaryKeyType.DATETIME);
+
+        CreateTable(client, tableName, pks);
+
+        ZonedDateTime time = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+
+        PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                .addPrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("haha"))
+                .addPrimaryKeyColumn("PKDatetime", PrimaryKeyValue.fromDateTime(time))
+                .build();
+
+
+        Map<String, ColumnValue> columns = new TreeMap<String, ColumnValue>();
+        columns.put("attr", ColumnValue.fromString("hello world"));
+        columns.put("attr1",ColumnValue.fromDateTime(time));
+        OTSHelper.putRow(client, tableName, pk, columns);
+
+        SingleRowQueryCriteria query = new SingleRowQueryCriteria(tableName, pk);
+        query.addColumnsToGet("PK1");
+        query.addColumnsToGet("PKDatetime");
+        query.addColumnsToGet("attr");
+        query.addColumnsToGet("attr1");
+        query.setMaxVersions(1);
+        GetRowResponse response = OTSHelper.getRow(client, query);
+        Row row = response.getRow();
+        assertEquals(row.getColumns().length, 2);
+        assertEquals(row.getColumn("attr").get(0).getValue().asString(), "hello world");
+        assertEquals(row.getColumn("attr1").get(0).getValue().asDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")), time);
     }
 }

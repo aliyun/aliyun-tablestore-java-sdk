@@ -149,5 +149,12 @@ public class TestPrimaryKeySchema {
             String json = schema.jsonize();
             assertEquals("{\"Name\": \"A\", \"Type\": \"INTEGER\", \"Option\":\"AUTO_INCREMENT\"}", json);
         }
+
+        {
+            PrimaryKeySchema schema = new PrimaryKeySchema("A", PrimaryKeyType.DATETIME);
+
+            String json = schema.jsonize();
+            assertEquals("{\"Name\": \"A\", \"Type\": \"DATETIME\"}", json);
+        }
     }
 }

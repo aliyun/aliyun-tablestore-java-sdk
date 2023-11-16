@@ -2,16 +2,15 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCrc8;
-import com.alicloud.openservices.tablestore.core.protocol.ResponseFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.alicloud.openservices.tablestore.core.Constants.UTF8_CHARSET;
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 
 /**
  * 面向range scan场景的基于行的数据块
@@ -228,6 +227,16 @@ public class SimpleRowMatrixBlockParser {
         return retrieveString(length);
     }
 
+    public ZonedDateTime getDateTime(int fieldIndex) {
+        ColumnType type = getColumnType(fieldIndex);
+        if (type != ColumnType.DATETIME) {
+            throw new ClientException("ColumnType mismatch. Actual:" + type +
+                    ". Expect:" + ColumnType.DATETIME);
+        }
+        long ts = buffer.getLong();
+        return ValueUtil.parseMicroTimestampToUTCDateTime(ts);
+    }
+
     public byte[] getBinary(int fieldIndex) {
         ColumnType type = getColumnType(fieldIndex);
         if (type != ColumnType.BINARY) {
@@ -256,6 +265,8 @@ public class SimpleRowMatrixBlockParser {
                 return getLong(fieldIndex);
             case DOUBLE:
                 return getDouble(fieldIndex);
+            case DATETIME:
+                return getDateTime(fieldIndex);
         }
         throw new ClientException("Unknown columnType:" + type);
     }
@@ -283,6 +294,9 @@ public class SimpleRowMatrixBlockParser {
                 case BINARY:
                     pks.add(new PrimaryKeyColumn(fieldNames[j], PrimaryKeyValue.fromBinary(getBinary(j))));
                     break;
+                case DATETIME:
+                    pks.add(new PrimaryKeyColumn(fieldNames[j], PrimaryKeyValue.fromDateTime(getDateTime(j))));
+                    break;
                 default:
                     throw new ClientException("Invalid ColumnType for PrimaryKeyType:" + type);
             }
@@ -309,6 +323,9 @@ public class SimpleRowMatrixBlockParser {
                     break;
                 case BINARY:
                     cols.add(new Column(fieldNames[j], ColumnValue.fromBinary(getBinary(j))));
+                    break;
+                case DATETIME:
+                    cols.add(new Column(fieldNames[j], ColumnValue.fromDateTime(getDateTime(j))));
                     break;
                 default:
                     throw new ClientException("Invalid ColumnType:" + type);
@@ -366,6 +383,8 @@ public class SimpleRowMatrixBlockParser {
                 return ColumnType.BOOLEAN;
             case 3:
                 return ColumnType.STRING;
+            case 4:
+                return ColumnType.DATETIME;
             case 6:
                 return null;
             case 7:
@@ -398,6 +417,7 @@ public class SimpleRowMatrixBlockParser {
                 case BOOLEAN:
                     skipLen = 1;
                     break;
+                case DATETIME:
                 case INTEGER:
                 case DOUBLE:
                     skipLen = 8;

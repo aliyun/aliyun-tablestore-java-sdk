@@ -8,6 +8,7 @@ public class DeleteTimeseriesAnalyticalStoreRequest implements Request {
 
     private final String timeseriesTableName;
     private final String analyticalStoreName;
+    private boolean dropMappingTable = false;
 
     public DeleteTimeseriesAnalyticalStoreRequest(String timeseriesTableName, String analyticalStoreName) {
         Preconditions.checkArgument(
@@ -31,5 +32,13 @@ public class DeleteTimeseriesAnalyticalStoreRequest implements Request {
 
     public String getAnalyticalStoreName() {
         return analyticalStoreName;
+    }
+
+    public boolean isDropMappingTable() {
+        return dropMappingTable;
+    }
+
+    public void setDropMappingTable(boolean dropMappingTable) {
+        this.dropMappingTable = dropMappingTable;
     }
 }

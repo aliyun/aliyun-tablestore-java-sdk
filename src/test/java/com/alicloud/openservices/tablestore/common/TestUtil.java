@@ -3,11 +3,15 @@ package com.alicloud.openservices.tablestore.common;
 import com.alicloud.openservices.tablestore.model.*;
 
 import java.lang.reflect.Field;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
 
 public class TestUtil {
@@ -48,6 +52,18 @@ public class TestUtil {
         return Math.abs(length);
     }
 
+    public static ZonedDateTime randomDateTime(){
+        Random random = new Random(System.currentTimeMillis());
+        ZoneId zoneId = ZoneId.of("Asia/Shanghai");
+        return ZonedDateTime.now(zoneId)
+                .plusDays(random.nextInt(365))
+                .plusHours(random.nextInt(24))
+                .plusMinutes(random.nextInt(60))
+                .plusSeconds(random.nextInt(60))
+                .plusNanos(random.nextInt(1000000000))
+                .truncatedTo(ChronoUnit.MICROS);
+    }
+
     public static PrimaryKeyValue randomPrimaryKeyValue(PrimaryKeyType type) {
         switch (type) {
             case STRING:
@@ -56,6 +72,8 @@ public class TestUtil {
                 return PrimaryKeyValue.fromLong(randomLong());
             case BINARY:
                 return PrimaryKeyValue.fromBinary(randomBytes(randomLength()));
+            case DATETIME:
+                return PrimaryKeyValue.fromDateTime(randomDateTime());
             default:
                 throw new IllegalStateException("Unsupported primary key type: " + type);
         }
@@ -73,6 +91,8 @@ public class TestUtil {
                 return ColumnValue.fromDouble(randomDouble());
             case BINARY:
                 return ColumnValue.fromBinary(randomBytes(randomLength()));
+            case DATETIME:
+                return ColumnValue.fromDateTime(randomDateTime());
             default:
                 throw new IllegalStateException("Unsupported column type: " + type);
         }
@@ -90,7 +110,7 @@ public class TestUtil {
         PrimaryKeySchema[] pks = new PrimaryKeySchema[size];
         for (int i = 0; i < size; i++) {
             String name = "pk" + i;
-            switch (Math.abs((int)randomLong()) % 3) {
+            switch (Math.abs((int)randomLong()) % 4) {
                 case 0:
                     pks[i] = new PrimaryKeySchema(name, PrimaryKeyType.INTEGER);
                     break;
@@ -99,6 +119,9 @@ public class TestUtil {
                     break;
                 case 2:
                     pks[i] = new PrimaryKeySchema(name, PrimaryKeyType.STRING);
+                    break;
+                case 3:
+                    pks[i] = new PrimaryKeySchema(name,PrimaryKeyType.DATETIME);
                     break;
                 default:
                     throw new IllegalStateException();

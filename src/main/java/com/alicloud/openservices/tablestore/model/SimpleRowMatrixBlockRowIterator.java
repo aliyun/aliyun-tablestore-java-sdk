@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.model.tunnel.BulkExportQueryCriteria;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -182,6 +183,15 @@ public class SimpleRowMatrixBlockRowIterator implements Iterator<Long> {
     public boolean isNull(String fieldName) {
         int idx = locate(fieldName);
         return block.isNull(idx);
+    }
+
+    public ZonedDateTime getDateTime(String fieldName) {
+        int idx = locate(fieldName);
+        return block.getDateTime(idx);
+    }
+
+    public ZonedDateTime getDateTIme(int index) {
+        return block.getDateTime(index);
     }
 
     public boolean isNull(int index) {

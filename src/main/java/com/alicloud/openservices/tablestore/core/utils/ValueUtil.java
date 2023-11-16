@@ -2,6 +2,10 @@ package com.alicloud.openservices.tablestore.core.utils;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+
 public class ValueUtil {
 
     public static ColumnValue toColumnValue(Object value) {
@@ -43,5 +47,16 @@ public class ValueUtil {
                 throw new RuntimeException("unexpected");
             }
         }
+    }
+
+    public static ZonedDateTime parseMicroTimestampToUTCDateTime(long ts){
+        return Instant.ofEpochSecond(ts / 1000000, (int) (ts % 1000000) * 1000).atZone(ZoneOffset.UTC);
+    }
+
+    public static long parseDateTimeToMicroTimestamp(ZonedDateTime zdt){
+        if (zdt.getNano() % 1000 != 0){
+            throw new RuntimeException("datetime precision exceed, please ensure the precision is microsecond");
+        }
+        return zdt.toEpochSecond() * 1000000 + zdt.getNano() / 1000;
     }
 }

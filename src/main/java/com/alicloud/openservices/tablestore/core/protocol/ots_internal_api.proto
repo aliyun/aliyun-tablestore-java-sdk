@@ -11,6 +11,7 @@ enum PrimaryKeyType {
     INTEGER = 1;
     STRING = 2;
     BINARY = 3;
+    DATETIME = 4;
 }
 
 enum DefinedColumnType {
@@ -18,6 +19,7 @@ enum DefinedColumnType {
     DCT_DOUBLE = 2;
     DCT_BOOLEAN = 3;
     DCT_STRING = 4;
+    DCT_DATETIME = 5;
     DCT_BLOB = 7;
 }
 

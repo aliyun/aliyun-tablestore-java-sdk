@@ -1,13 +1,10 @@
 package com.alicloud.openservices.tablestore.model;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 
-import com.alicloud.openservices.tablestore.core.utils.Bytes;
-import com.alicloud.openservices.tablestore.core.utils.Base64;
-import com.alicloud.openservices.tablestore.core.utils.CalculateHelper;
-import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
-import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.core.utils.*;
 import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCrc8;
 
 import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.*;
@@ -34,35 +31,38 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
         this.value = value;
         this.type = type;
     }
-    
+
     private int calculateDataSize() {
         int dataSize = 0;
         switch (this.type) {
-        case INTEGER:
-            dataSize = 8;
-            break;
-        case STRING:
-        	if (value == null) {
-        		dataSize = 0;
-        	} else {
-        		dataSize = CalculateHelper.calcStringSizeInBytes(this.asString());
-        	}
-            break;
-        case BINARY:
-            dataSize = this.asBinary().length;
-            break;
-        case DOUBLE:
-            dataSize = 8;
-            break;
-        case BOOLEAN:
-            dataSize = 1;
-            break;
-        default:
-            throw new IllegalStateException("Bug: not support the type : " + type);
+            case INTEGER:
+                dataSize = 8;
+                break;
+            case STRING:
+                if (value == null) {
+                    dataSize = 0;
+                } else {
+                    dataSize = CalculateHelper.calcStringSizeInBytes(this.asString());
+                }
+                break;
+            case BINARY:
+                dataSize = this.asBinary().length;
+                break;
+            case DOUBLE:
+                dataSize = 8;
+                break;
+            case BOOLEAN:
+                dataSize = 1;
+                break;
+            case DATETIME:
+                dataSize = 8;
+                break;
+            default:
+                throw new IllegalStateException("Bug: not support the type : " + type);
         }
         return dataSize;
     }
-    
+
     /**
      * 获取主键列值的大小，各类型大小计算公式为：
      *  - {@link ColumnType#INTEGER}: 恒定大小为8个字节
@@ -70,6 +70,7 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
      *  - {@link ColumnType#BOOLEAN}: 恒定大小为1个字节
      *  - {@link ColumnType#BINARY}: 大小为字节数
      *  - {@link ColumnType#STRING}: 大小为按UTF-8编码后的字节数
+     *  - {@link ColumnType#DATETIME}: 恒定大小为8个字节
      *
      * @return 值的大小
      */
@@ -145,6 +146,17 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     }
 
     /**
+     * 构造一个类型为{@link ColumnType#DATETIME}的属性列。
+     *
+     * @param value java.time.ZonedDateTime类型的值。
+     * @return 生成的实例
+     */
+    public static ColumnValue fromDateTime(ZonedDateTime value) {
+        long ts = ValueUtil.parseDateTimeToMicroTimestamp(value);
+        return new ColumnValue(ts, ColumnType.DATETIME);
+    }
+
+    /**
      * 获取属性列的字符串类型的值。
      * <p>当前仅当数据类型为{@link ColumnType#STRING}才能获取到值。</p>
      *
@@ -216,6 +228,19 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     }
 
     /**
+     * 获取属性列的时间类型的值。
+     * <p>当前仅当数据类型为{@link ColumnType#DATETIME}才能获取到值。</p>
+     *
+     * @return java.time.ZonedDateTime类型的值
+     */
+    public ZonedDateTime asDateTime() {
+        if (this.type != ColumnType.DATETIME) {
+            throw new IllegalStateException("The type of column is not DateTime.");
+        }
+        return ValueUtil.parseMicroTimestampToUTCDateTime((Long) value);
+    }
+
+    /**
      * 采用crc8算法得到一个checksum，主要用于计算cell的checksum
      * @param crc crc初始值
      * @return
@@ -249,6 +274,11 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
             case BOOLEAN: {
                 crc = PlainBufferCrc8.crc8(crc, VT_BOOLEAN);
                 crc = PlainBufferCrc8.crc8(crc, asBoolean() ? (byte) 0x1 : (byte) 0x0);
+                break;
+            }
+            case DATETIME:{
+                crc = PlainBufferCrc8.crc8(crc, VT_DATETIME);
+                crc = PlainBufferCrc8.crc8(crc, ValueUtil.parseDateTimeToMicroTimestamp(asDateTime()));
                 break;
             }
             default:
@@ -327,6 +357,8 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
                 return ((Double) value).compareTo(target.asDouble());
             case BOOLEAN:
                 return ((Boolean) value).compareTo(target.asBoolean());
+            case DATETIME:
+                return ((Long) value).compareTo(ValueUtil.parseDateTimeToMicroTimestamp(target.asDateTime()));
             default:
                 throw new IllegalArgumentException("Unknown type: " + this.type);
         }
@@ -346,30 +378,36 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
         sb.append("\", \"Value\": ");
 
         switch(type) {
-        case INTEGER:
-            sb.append(asLong());
-            break;
-        case BINARY:
-            sb.append("\"");
-            sb.append(Base64.toBase64String(asBinary()));
-            sb.append("\"");
-            break;
-        case DOUBLE:
-            sb.append(asDouble());
-            break;
-        case BOOLEAN:
-            sb.append(asBoolean() ? "true" : "false");
-            break;
-        case STRING:
-            sb.append("\"");
-            sb.append(asString());
-            sb.append("\"");
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown type: " + type);
+            case INTEGER:
+                sb.append(asLong());
+                break;
+            case BINARY:
+                sb.append("\"");
+                sb.append(Base64.toBase64String(asBinary()));
+                sb.append("\"");
+                break;
+            case DOUBLE:
+                sb.append(asDouble());
+                break;
+            case BOOLEAN:
+                sb.append(asBoolean() ? "true" : "false");
+                break;
+            case STRING:
+                sb.append("\"");
+                sb.append(asString());
+                sb.append("\"");
+                break;
+            case DATETIME:
+                sb.append("\"");
+                sb.append(asDateTime().toString());
+                sb.append("\"");
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown type: " + type);
         }
-        
+
         sb.append("}");
     }
 }
+
 

@@ -1,25 +1,23 @@
 package com.alicloud.openservices.tablestore.model;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 
 import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCrc8;
 import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.CalculateHelper;
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_BLOB;
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_INF_MIN;
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_INF_MAX;
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_STRING;
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_INTEGER;
-import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_AUTO_INCREMENT;
+import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.*;
 
 /**
  * 表示主键列的值。
  * <p>若要构造{@link PrimaryKeyType#INTEGER}类型的主键列，请使用{@link #fromLong(long)}来初始化。</p>
  * <p>若要构造{@link PrimaryKeyType#STRING}类型的主键列，请使用{@link #fromString(String)}来初始化。</p>
  * <p>若要构造{@link PrimaryKeyType#BINARY}类型的主键列，请使用{@link #fromBinary(byte[])}来初始化。</p>
+ * <p>若要构造{@link PrimaryKeyType#DATETIME}类型的主键列，请使用{@link #fromDateTime(ZonedDateTime)}来初始化。</p>
  * <p>注意：{@link #INF_MIN}和{@link #INF_MAX}是特殊的主键列，其唯一的用途是用于{@link com.alicloud.openservices.tablestore.SyncClientInterface#getRange(GetRangeRequest)}
  * 操作中表示主键列的范围，不能作为实际的数据写入TableStore，也不能作为除GetRange操作之外的读操作的参数。</p>
  */
@@ -65,6 +63,9 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 case BINARY:
                     this.dataSize = this.asBinary().length;
                     break;
+                case DATETIME:
+                    this.dataSize = 8;
+                    break;
                 default:
                     throw new IllegalStateException("Bug: not support the type : " + type);
             }
@@ -89,7 +90,7 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
      * 获取主键列值的大小，各类型大小计算公式为：
      *  - {@link PrimaryKeyType#INTEGER}: 恒定大小为8个字节
      *  - {@link PrimaryKeyType#STRING}: 大小为按UTF-8编码后的字节数
-     *
+     *  - {@link PrimaryKeyType#DATETIME}: 存储为8个字节
      * @return 值的大小
      */
     @Override
@@ -107,6 +108,16 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
     public static PrimaryKeyValue fromString(String value) {
         Preconditions.checkNotNull(value, "The value of primary key should not be null.");
         return new PrimaryKeyValue(value, PrimaryKeyType.STRING);
+    }
+
+    /**
+     * 构造一个类型为{@link PrimaryKeyType#DATETIME}的主键列。
+     *
+     * @param value java.time.ZonedDateTime类型的对象。
+     * @return 生成的对象
+     */
+    public static PrimaryKeyValue fromDateTime(ZonedDateTime value) {
+        return new PrimaryKeyValue(ValueUtil.parseDateTimeToMicroTimestamp(value), PrimaryKeyType.DATETIME);
     }
 
     /**
@@ -139,6 +150,8 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 return fromLong(value.asLong());
             case BINARY:
                 return fromBinary(value.asBinary());
+            case DATETIME:
+                return fromDateTime(value.asDateTime());
             default:
                 throw new IllegalArgumentException("Can not convert from column with not compatible type: " + value.getType());
         }
@@ -183,6 +196,11 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 crc = PlainBufferCrc8.crc8(crc, rawData);
                 break;
             }
+            case DATETIME:{
+                crc = PlainBufferCrc8.crc8(crc, VT_DATETIME);
+                crc = PlainBufferCrc8.crc8(crc, ValueUtil.parseDateTimeToMicroTimestamp(asDateTime()));
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported column type: " + getType());
         }
@@ -205,6 +223,10 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
             }
             case BINARY: {
                 value = ColumnValue.fromBinary(asBinary());
+                break;
+            }
+            case DATETIME:{
+                value = ColumnValue.fromDateTime(asDateTime());
                 break;
             }
             default:
@@ -259,6 +281,19 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
             throw new IllegalStateException("The type of primary key is not BINARY");
         }
         return (byte[]) value;
+    }
+
+    /**
+     * 获取主键列的时间类型的值。
+     * <p>当前仅当数据类型为{@link PrimaryKeyType#DATETIME}才能获取到值。</p>
+     *
+     * @return java.time.ZonedDateTime类型的值
+     */
+    public ZonedDateTime asDateTime() {
+        if (this.type != PrimaryKeyType.DATETIME) {
+            throw new IllegalStateException("The type of primary key is not DATETIME.");
+        }
+        return ValueUtil.parseMicroTimestampToUTCDateTime((Long) value);
     }
 
     /**
@@ -366,6 +401,8 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                     byte[] b1 = (byte[]) this.value;
                     byte[] b2 = (byte[]) target.value;
                     return Bytes.compareByteArrayInLexOrder(b1, 0, b1.length, b2, 0, b2.length);
+                case DATETIME:
+                    return ((Long) value).compareTo(ValueUtil.parseDateTimeToMicroTimestamp(target.asDateTime()));
                 default:
                     throw new IllegalArgumentException("Unknown type: " + this.type);
             }
@@ -395,6 +432,13 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 System.arraycopy(value.asBinary(), 0, binaryVal, 0, value.getDataSize());
                 binaryVal[value.getDataSize()] = 0;
                 return new PrimaryKeyValue(binaryVal, PrimaryKeyType.BINARY);
+            case DATETIME:
+                value = ColumnValue.fromDateTime(target.asDateTime());
+                long ts = ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()) + 1;
+                if (ts == Long.MAX_VALUE) {
+                    return new PrimaryKeyValue("INF_MAX", null);
+                }
+                return new PrimaryKeyValue(ts, PrimaryKeyType.DATETIME);
             default:
                 throw new IllegalArgumentException("Unknown type: " + target.getType());
         }

@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import org.slf4j.Logger;
@@ -63,6 +64,10 @@ public class PlainBufferCodedInputStream {
             }
             case VT_DOUBLE: {
                 columnValue = ColumnValue.fromDouble(input.readDouble());
+                break;
+            }
+            case VT_DATETIME:{
+                columnValue = ColumnValue.fromDateTime(ValueUtil.parseMicroTimestampToUTCDateTime(input.readInt64()));
                 break;
             }
             default:

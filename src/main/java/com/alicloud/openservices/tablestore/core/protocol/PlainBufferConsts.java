@@ -30,6 +30,7 @@ public class PlainBufferConsts {
     public final static byte VT_DOUBLE = 0x1;
     public final static byte VT_BOOLEAN = 0x2;
     public final static byte VT_STRING = 0x3;
+    public final static byte VT_DATETIME = 0x4;
     //public final static byte VT_NULL = 0x6;
     public final static byte VT_BLOB = 0x7;
     public final static byte VT_INF_MIN = 0x9;

@@ -17,6 +17,8 @@ public class OTSProtocolParser {
                 return PrimaryKeyType.STRING;
             case BINARY:
                 return PrimaryKeyType.BINARY;
+            case DATETIME:
+                return PrimaryKeyType.DATETIME;
             default:
                 throw new IllegalArgumentException("Unknown primary key type: " + type);
         }
@@ -34,6 +36,8 @@ public class OTSProtocolParser {
                 return DefinedColumnType.STRING;
             case DCT_BLOB:
                 return DefinedColumnType.BINARY;
+            case DCT_DATETIME:
+                return DefinedColumnType.DATETIME;
             default:
                 throw new IllegalArgumentException("Unknown defined column type: " + type);
         }

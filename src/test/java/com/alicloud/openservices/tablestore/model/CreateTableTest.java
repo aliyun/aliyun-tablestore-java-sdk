@@ -60,20 +60,34 @@ public class CreateTableTest extends BaseFT {
                            int writeCU, int readCU, int timeToLive, int maxVersions) throws Exception {
     	int pkNum = 1 + ((int)Math.random() % 4);
     	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
-    	for (int i = 0; i < pkNum; ++i) {
-    		pks.put("PK" + Integer.toString(i), type);
-    	}
-        
+        if (type == PrimaryKeyType.DATETIME){
+            pks.put("PK" + Integer.toString(0), PrimaryKeyType.STRING);
+            for (int i = 1; i < pkNum; ++i) {
+                pks.put("PK" + Integer.toString(i), type);
+            }
+        }else {
+            for (int i = 0; i < pkNum; ++i) {
+                pks.put("PK" + Integer.toString(i), type);
+            }
+        }
         OTSHelper.createTable(ots, tableName, pks, readCU, writeCU, timeToLive, maxVersions);
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
         
         DescribeTableResponse result = OTSHelper.describeTable(ots, tableName);
         
         assertEquals(pkNum, result.getTableMeta().getPrimaryKeyList().size());
-        
-        for (int i = 0; i < pkNum; ++i) {
-        	assertEquals("PK" + Integer.toString(i), result.getTableMeta().getPrimaryKeyList().get(i).getName());
-            assertEquals(type, result.getTableMeta().getPrimaryKeyList().get(i).getType());
+        if (type == PrimaryKeyType.DATETIME){
+            assertEquals("PK" + Integer.toString(0), result.getTableMeta().getPrimaryKeyList().get(0).getName());
+            assertEquals(PrimaryKeyType.STRING, result.getTableMeta().getPrimaryKeyList().get(0).getType());
+            for (int i = 1; i < pkNum; ++i) {
+                assertEquals("PK" + Integer.toString(i), result.getTableMeta().getPrimaryKeyList().get(i).getName());
+                assertEquals(type, result.getTableMeta().getPrimaryKeyList().get(i).getType());
+            }
+        }else{
+            for (int i = 0; i < pkNum; ++i) {
+                assertEquals("PK" + Integer.toString(i), result.getTableMeta().getPrimaryKeyList().get(i).getName());
+                assertEquals(type, result.getTableMeta().getPrimaryKeyList().get(i).getType());
+            }
         }
         
         assertEquals(readCU, result.getReservedThroughputDetails().getCapacityUnit().getReadCapacityUnit());
@@ -174,6 +188,20 @@ public class CreateTableTest extends BaseFT {
         int timeToLive = 86400;
         int maxVersions = (int)(Math.random() * 100) + 1;
         PrimaryKeyType type = PrimaryKeyType.BINARY;
+        testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
+    }
+
+    /**
+     * 创建表的时候，TableMeta中有4个PK列，第一个PK列为string，其余都为DATETIME类型，期望正常，describe table()获取信息与创表参数一致
+     * @throws Exception
+     */
+    @Test
+    public void testWithDateTimePK() throws Exception {
+        int writeCU = 0;
+        int readCU = 0;
+        int timeToLive = 86400;
+        int maxVersions = (int)(Math.random() * 100) + 1;
+        PrimaryKeyType type = PrimaryKeyType.DATETIME;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }
     

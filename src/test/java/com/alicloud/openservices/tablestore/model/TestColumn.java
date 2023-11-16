@@ -2,6 +2,9 @@ package com.alicloud.openservices.tablestore.model;
 
 import org.junit.Test;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -92,6 +95,7 @@ public class TestColumn {
 
     @Test
     public void testGetDataSize() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
         Column column = new Column("column", ColumnValue.fromString("abc"));
         assertEquals(column.getDataSize(), 9);
 
@@ -107,6 +111,9 @@ public class TestColumn {
         column = new Column("column", ColumnValue.fromBinary(new byte[]{0x0, 0x1, 0x2, 0x3, 0x4}));
         assertEquals(column.getDataSize(), 11);
 
+        column = new Column("column", ColumnValue.fromDateTime(time1));
+        assertEquals(column.getDataSize(), 14);
+
         column = new Column("column", ColumnValue.fromString("abc"), System.currentTimeMillis());
         assertEquals(column.getDataSize(), 17);
 
@@ -121,5 +128,8 @@ public class TestColumn {
 
         column = new Column("column", ColumnValue.fromBinary(new byte[]{0x0, 0x1, 0x2, 0x3, 0x4}), System.currentTimeMillis());
         assertEquals(column.getDataSize(), 19);
+
+        column = new Column("column", ColumnValue.fromDateTime(time1), System.currentTimeMillis());
+        assertEquals(column.getDataSize(), 22);
     }
 }

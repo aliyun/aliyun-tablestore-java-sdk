@@ -1,7 +1,7 @@
 package com.alicloud.openservices.tablestore.model;
 
 /**
- * 表示预定义列的数据类型，目前只支持{@link #INTEGER}、{@link #DOUBLE}、{@link #BOOLEAN}、{@link #STRING}和{@link #BINARY}这五种数据类型。
+ * 表示预定义列的数据类型，目前只支持{@link #INTEGER}、{@link #DOUBLE}、{@link #BOOLEAN}、{@link #STRING}、{@link #BINARY}和{@link #DATETIME}这六种数据类型。
  */
 public enum DefinedColumnType {
     /**
@@ -27,5 +27,10 @@ public enum DefinedColumnType {
     /**
      * BINARY。
      */
-    BINARY;
+    BINARY,
+
+    /**
+     * 时间类型。
+     */
+    DATETIME;
 }

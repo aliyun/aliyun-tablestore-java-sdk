@@ -27,6 +27,9 @@ public class OTSProtocolBuilder {
             return OtsInternalApi.PrimaryKeyType.STRING;
         case BINARY:
             return OtsInternalApi.PrimaryKeyType.BINARY;
+        case DATETIME:
+            return OtsInternalApi.PrimaryKeyType.DATETIME;
+
         default:
             throw new IllegalArgumentException("Unknown primary key type: " + type);
         }
@@ -53,6 +56,8 @@ public class OTSProtocolBuilder {
                 return OtsInternalApi.DefinedColumnType.DCT_STRING;
             case BINARY:
                 return OtsInternalApi.DefinedColumnType.DCT_BLOB;
+            case DATETIME:
+                return OtsInternalApi.DefinedColumnType.DCT_DATETIME;
             default:
                 throw new IllegalArgumentException("Unknown defined column type: " + type);
         }

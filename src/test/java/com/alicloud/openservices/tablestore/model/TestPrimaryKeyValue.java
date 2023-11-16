@@ -5,6 +5,8 @@ import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +50,15 @@ public class TestPrimaryKeyValue {
 
             }
         }
+
+        if (type != PrimaryKeyType.DATETIME) {
+            try {
+                v.asDateTime();
+                fail();
+            } catch (IllegalStateException e) {
+
+            }
+        }
     }
 
     @Test
@@ -72,6 +83,14 @@ public class TestPrimaryKeyValue {
         byte[] value = TestUtil.randomBytes(100000);
         PrimaryKeyValue v = PrimaryKeyValue.fromBinary(value);
         assertArrayEquals(v.asBinary(), value);
+        checkType(v);
+    }
+
+    @Test
+    public void testDateTime() {
+        ZonedDateTime value = TestUtil.randomDateTime();
+        PrimaryKeyValue v = PrimaryKeyValue.fromDateTime(value);
+        assertEquals(v.asDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")), value);
         checkType(v);
     }
 
@@ -105,6 +124,27 @@ public class TestPrimaryKeyValue {
     }
 
     @Test
+    public void testEquals_DateTime() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time2 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123458000, ZoneId.of("Asia/Shanghai"));
+        checkEquals(PrimaryKeyValue.fromDateTime(time1), PrimaryKeyValue.fromDateTime(time1));
+        assertTrue(!PrimaryKeyValue.fromDateTime(time1).equals(PrimaryKeyValue.fromDateTime(time2)));
+        assertTrue(!PrimaryKeyValue.fromDateTime(time1).equals(PrimaryKeyValue.fromBinary(TestUtil.randomBytes(10))));
+        assertTrue(!PrimaryKeyValue.fromDateTime(time1).equals(PrimaryKeyValue.fromString(TestUtil.randomString(10))));
+    }
+
+    @Test
+    public void testDateTimePrecisionExceed() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123458123, ZoneId.of("Asia/Shanghai"));
+        try {
+            PrimaryKeyValue value = PrimaryKeyValue.fromDateTime(time1);
+            fail();
+        } catch (RuntimeException e) {
+
+        }
+    }
+
+    @Test
     public void testEquals_AUTOINCREMENT() {
         checkEquals(PrimaryKeyValue.AUTO_INCREMENT, PrimaryKeyValue.AUTO_INCRMENT);
     }
@@ -133,6 +173,15 @@ public class TestPrimaryKeyValue {
         if (type != PrimaryKeyType.BINARY) {
             try {
                 v.compareTo(PrimaryKeyValue.fromBinary(new byte[]{0x1, 0x2}));
+                fail();
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+
+        if (type != PrimaryKeyType.DATETIME) {
+            try {
+                v.compareTo(PrimaryKeyValue.fromDateTime(ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"))));
                 fail();
             } catch (IllegalArgumentException e) {
 
@@ -170,6 +219,18 @@ public class TestPrimaryKeyValue {
         assertTrue(value.compareTo(PrimaryKeyValue.fromBinary(new byte[]{0x0, 0x1, (byte)0xff})) > 0);
         assertTrue(value.compareTo(PrimaryKeyValue.fromBinary(new byte[]{0x0, 0x1, (byte)0xff, 0x3, 0x0})) < 0);
 
+        compareWithOtherType(value);
+    }
+
+    @Test
+    public void testCompareTo_DATETIME() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time2 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123457000, ZoneId.of("Asia/Shanghai"));
+        ZonedDateTime time3 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123453000, ZoneId.of("Asia/Shanghai"));
+        PrimaryKeyValue value = PrimaryKeyValue.fromDateTime(time1);
+        assertTrue(value.compareTo(PrimaryKeyValue.fromDateTime(time1)) == 0);
+        assertTrue(value.compareTo(PrimaryKeyValue.fromDateTime(time2)) < 0);
+        assertTrue(value.compareTo(PrimaryKeyValue.fromDateTime(time3)) > 0);
         compareWithOtherType(value);
     }
 
@@ -225,10 +286,12 @@ public class TestPrimaryKeyValue {
 
     @Test
     public void testGetDataSize() {
+        ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
         assertEquals(PrimaryKeyValue.AUTO_INCREMENT.getDataSize(), 0);
         assertEquals(PrimaryKeyValue.AUTO_INCREMENT.getDataSize(), 0);
         assertEquals(PrimaryKeyValue.fromString("abc").getDataSize(), 3);
         assertEquals(PrimaryKeyValue.fromBinary(new byte[]{0x0, 0x1, 0x2}).getDataSize(), 3);
         assertEquals(8, PrimaryKeyValue.fromLong(100).getDataSize());
+        assertEquals(8, PrimaryKeyValue.fromDateTime(time1).getDataSize());
     }
 }

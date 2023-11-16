@@ -506,6 +506,8 @@ public class TimeseriesProtocolBuilder {
         builder.setTableName(deleteTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
         // required string store_name = 2;
         builder.setStoreName(deleteTimeseriesAnalyticalStoreRequest.getAnalyticalStoreName());
+        // optional bool drop_mapping_table = 3;
+        builder.setDropMappingTable(deleteTimeseriesAnalyticalStoreRequest.isDropMappingTable());
         return builder.build();
     }
 

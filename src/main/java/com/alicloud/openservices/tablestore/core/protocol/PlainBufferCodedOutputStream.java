@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
@@ -77,6 +78,12 @@ public class PlainBufferCodedOutputStream {
                 output.writeBytes(rawData);
                 break;
             }
+            case DATETIME:{
+                output.writeRawLittleEndian32(1 + PlainBufferOutputStream.LITTLE_ENDIAN_64_SIZE);
+                output.writeRawByte(PlainBufferConsts.VT_DATETIME);
+                output.writeRawLittleEndian64(ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()));
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported primary key type: " + value.getType());
         }  	
@@ -119,6 +126,12 @@ public class PlainBufferCodedOutputStream {
                 output.writeRawLittleEndian32(2);
                 output.writeRawByte(VT_BOOLEAN);
                 output.writeBoolean(value.asBoolean());
+                break;
+            }
+            case DATETIME: {
+                output.writeRawLittleEndian32(1 + PlainBufferOutputStream.LITTLE_ENDIAN_64_SIZE);
+                output.writeRawByte(VT_DATETIME);
+                output.writeRawLittleEndian64(ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()));
                 break;
             }
             default:
@@ -239,6 +252,11 @@ public class PlainBufferCodedOutputStream {
                 output.writeBytes(rawData);
                 break;
             }
+            case DATETIME: {
+                output.writeRawByte(VT_DATETIME);
+                output.writeRawLittleEndian64(ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()));
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported primary key type: " + value.getType());
         }
@@ -274,6 +292,11 @@ public class PlainBufferCodedOutputStream {
             case BOOLEAN: {
                 output.writeRawByte(VT_BOOLEAN);
                 output.writeBoolean(value.asBoolean());
+                break;
+            }
+            case DATETIME: {
+                output.writeRawByte(VT_DATETIME);
+                output.writeRawLittleEndian64(ValueUtil.parseDateTimeToMicroTimestamp(value.asDateTime()));
                 break;
             }
             default:

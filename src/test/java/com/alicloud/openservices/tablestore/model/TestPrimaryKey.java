@@ -2,6 +2,8 @@ package com.alicloud.openservices.tablestore.model;
 
 import org.junit.Test;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -156,6 +158,13 @@ public class TestPrimaryKey {
                     .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromString("abc"))
                     .build();
             assertEquals(primaryKey.getDataSize(), 6);
+        }
+        {
+            ZonedDateTime time1 = ZonedDateTime.of(2021, 11, 11, 11, 11, 11, 123456000, ZoneId.of("Asia/Shanghai"));
+            PrimaryKey primaryKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+                    .addPrimaryKeyColumn("pk0", PrimaryKeyValue.fromDateTime(time1))
+                    .build();
+            assertEquals(primaryKey.getDataSize(), 11);
         }
         {
             PrimaryKey primaryKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()

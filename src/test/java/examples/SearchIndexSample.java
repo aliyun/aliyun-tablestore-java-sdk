@@ -15,6 +15,7 @@ import com.alicloud.openservices.tablestore.model.search.agg.PercentilesAggregat
 import com.alicloud.openservices.tablestore.model.search.analysis.AnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResultItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilterResult;
@@ -30,6 +31,7 @@ import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchIndexSample {
@@ -128,7 +130,11 @@ public class SearchIndexSample {
 
             // 使用groupByHistogram查询数据
             System.out.println("groupByHistogram...");
-            groupByHistogram( client);
+            groupByHistogram(client);
+
+            // 使用groupByDateHistogram查询数据
+            System.out.println("groupByDateHistogram...");
+            groupByDateHistogram(client);
 
             // 使用percentilesAggLong查询数据
             System.out.println("percentilesAggLong(client);...");
@@ -178,10 +184,12 @@ public class SearchIndexSample {
         request.setIndexName(INDEX_NAME);
         IndexSchema indexSchema = new IndexSchema();
         indexSchema.setFieldSchemas(Arrays.asList(
-            new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Long_sec", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true)));
+                new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Long_sec", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true),
+                new FieldSchema("Col_Date", FieldType.DATE).setIndex(true).setDateFormats(Collections.singletonList("yyyy-MM-dd HH:mm:ss"))
+        ));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);
     }
@@ -1166,6 +1174,42 @@ public class SearchIndexSample {
         //循环取出结果
         for (GroupByHistogramItem item : results.getGroupByHistogramItems()) {
             System.out.println("key：" + item.getKey().asDouble() + " value:" + item.getValue());
+        }
+    }
+
+    /**
+     * 日期直方图统计：假设表中存储的是订单数据，如下代码实现按照1天的维度统计卖出的订单数，并通过添加subAgg统计每一天卖出价格的最大值
+     */
+    public static void groupByDateHistogram(SyncClient client) {
+        //构建查询语句。
+        SearchRequest searchRequest = SearchRequest.newBuilder()
+                .returnAllColumns(false)
+                .tableName(TABLE_NAME)
+                .indexName(INDEX_NAME)
+                .searchQuery(
+                        SearchQuery.newBuilder()
+                                .query(QueryBuilders.matchAll())
+                                .limit(0)
+                                .getTotalCount(false)
+                                .addGroupBy(GroupByBuilders
+                                        .groupByDateHistogram("groupByDateHistogram", "Col_Date")
+                                        .interval(1, DateTimeUnit.DAY)  // 一天一个分组
+                                        .minDocCount(1)     // 分组内个数大于1才会返回该分组
+                                        .timeZone("+05:30")  // 假如'Col_Date'字段内没有时区相关信息，可以指定timeZone，统计分组时候会该时间会落入哪一天的分组，以印度时区为例可以填写: +05:30
+                                        .missing("2017-05-10 12:00:00") // 如果某一行数据的'Col_Date'字段为空，使用该值进行统计
+                                        .fieldRange("2017-05-01 00:00", "2017-05-21 00:00:00")  // 只统计5月1号到5月21号期间
+                                        .addSubAggregation(AggregationBuilders.max("subAggName", "Column_Price")) // 添加子统计聚合，求每个分组内部的价格最大值
+                                )
+                                .build())
+                .build();
+        //执行查询。
+        SearchResponse resp = client.search(searchRequest);
+        //获取日期直方图的统计聚合结果。
+        List<GroupByDateHistogramItem> items = resp.getGroupByResults().getAsGroupByDateHistogramResult("groupByDateHistogram").getGroupByDateHistogramItems();
+        for (GroupByDateHistogramItem item : items) {
+            // 获取分组内的价格最大值
+            double maxPrice = item.getSubAggregationResults().getAsMaxAggregationResult("subAggName").getValue();
+            System.out.printf("millisecondTimestamp:%d, count:%d, maxPrice:%s \n", item.getTimestamp(), item.getRowCount(), maxPrice);
         }
     }
 
