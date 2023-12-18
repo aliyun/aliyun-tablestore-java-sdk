@@ -22,6 +22,74 @@ public class TestBatchWriteRowRequest {
     }
 
     @Test
+    public void testCreateRequestForRetry() {
+        BatchWriteRowRequest request = new BatchWriteRowRequest();
+        String tableName = "MyTable";
+
+        PrimaryKeySchema[] schema = TestUtil.randomPrimaryKeySchema(5);
+        List<PrimaryKey> pks = new ArrayList<PrimaryKey>();
+        for (int i = 0; i < 100; i++) {
+            pks.add(TestUtil.randomPrimaryKey(schema));
+        }
+        for (int i = 0; i < 100; i++) {
+            RowPutChange rowChange = new RowPutChange(tableName, pks.get(i));
+            rowChange.addColumn("column" + i, ColumnValue.fromString("HelloWorld"));
+            request.addRowChange(rowChange);
+        }
+        assertEquals(request.getRowChange().size(), 1);
+        assertEquals(request.getRowChange().get(tableName).size(), 100);
+
+        List<BatchWriteRowResponse.RowResult> rowResults = new ArrayList<BatchWriteRowResponse.RowResult>();
+        rowResults.add(new BatchWriteRowResponse.RowResult(tableName, null, new Error("Code", "Msg"), 10));
+        rowResults.add(new BatchWriteRowResponse.RowResult(tableName, null, new Error("Code", "Msg"), 20));
+
+        {
+            BatchWriteRowRequest requestForRetry = request.createRequestForRetry(rowResults);
+            assertEquals(requestForRetry.getRowChange().size(), 1);
+            assertEquals(requestForRetry.getRowChange().get(tableName).size(), 2);
+            assertEquals(requestForRetry.getRowChange(tableName, 0).getPrimaryKey(), pks.get(10));
+            assertEquals(requestForRetry.getRowChange(tableName, 1).getPrimaryKey(), pks.get(20));
+            assertFalse(requestForRetry.hasSetTransactionId());
+            assertFalse(requestForRetry.isAtomicSet());
+        }
+
+        request.setAtomic(true);
+        {
+            BatchWriteRowRequest requestForRetry = request.createRequestForRetry(rowResults);
+            assertEquals(requestForRetry.getRowChange().size(), 1);
+            assertEquals(requestForRetry.getRowChange().get(tableName).size(), 2);
+            assertEquals(requestForRetry.getRowChange(tableName, 0).getPrimaryKey(), pks.get(10));
+            assertEquals(requestForRetry.getRowChange(tableName, 1).getPrimaryKey(), pks.get(20));
+            assertFalse(requestForRetry.hasSetTransactionId());
+            assertTrue(requestForRetry.isAtomicSet());
+            assertTrue(requestForRetry.isAtomic());
+        }
+        request.setAtomic(false);
+        {
+            BatchWriteRowRequest requestForRetry = request.createRequestForRetry(rowResults);
+            assertEquals(requestForRetry.getRowChange().size(), 1);
+            assertEquals(requestForRetry.getRowChange().get(tableName).size(), 2);
+            assertEquals(requestForRetry.getRowChange(tableName, 0).getPrimaryKey(), pks.get(10));
+            assertEquals(requestForRetry.getRowChange(tableName, 1).getPrimaryKey(), pks.get(20));
+            assertFalse(requestForRetry.hasSetTransactionId());
+            assertTrue(requestForRetry.isAtomicSet());
+            assertFalse(requestForRetry.isAtomic());
+        }
+        request.setTransactionId("xxx");
+        {
+            BatchWriteRowRequest requestForRetry = request.createRequestForRetry(rowResults);
+            assertEquals(requestForRetry.getRowChange().size(), 1);
+            assertEquals(requestForRetry.getRowChange().get(tableName).size(), 2);
+            assertEquals(requestForRetry.getRowChange(tableName, 0).getPrimaryKey(), pks.get(10));
+            assertEquals(requestForRetry.getRowChange(tableName, 1).getPrimaryKey(), pks.get(20));
+            assertTrue(requestForRetry.hasSetTransactionId());
+            assertEquals(requestForRetry.getTransactionId(), "xxx");
+            assertTrue(requestForRetry.isAtomicSet());
+            assertFalse(requestForRetry.isAtomic());
+        }
+    }
+
+    @Test
     public void testRequest_RowChange_WithOneTable() {
         BatchWriteRowRequest request = new BatchWriteRowRequest();
         String tableName = "MyTable";

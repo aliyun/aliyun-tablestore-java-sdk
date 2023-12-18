@@ -66,4 +66,7 @@ public final class QueryBuilders {
         return WildcardQuery.newBuilder().field(fieldName).value(value);
     }
 
+    public static KnnVectorQuery.Builder knnVector(String fieldName, int topK, float[] queryVector) {
+        return KnnVectorQuery.newBuilder().field(fieldName).topK(topK).queryVector(queryVector);
+    }
 }

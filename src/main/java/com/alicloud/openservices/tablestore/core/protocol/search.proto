@@ -2,6 +2,8 @@ syntax = "proto2";
 
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import "ots_internal_api.proto";
+
 /////////////////////////////////////////////////// old agg proto
 enum AggType { //for compatibility
                AVG_AGG = 1;
@@ -327,6 +329,7 @@ message GroupByDateHistogram {
     optional GroupBySort sort = 7;
     optional Aggregations sub_aggs = 8;
     optional GroupBys sub_group_bys = 9;
+    optional DateTimeValue offset = 10;
 }
 
 message GroupByHistogram {
@@ -338,6 +341,7 @@ message GroupByHistogram {
     optional FieldRange field_range = 6;
     optional Aggregations sub_aggs = 7;
     optional GroupBys sub_group_bys = 8;
+    optional bytes offset = 9;
 }
 
 message GroupKeySort {
@@ -540,6 +544,7 @@ enum QueryType {
     GEO_POLYGON_QUERY = 14;
     TERMS_QUERY = 15;
     EXISTS_QUERY = 16;
+    KNN_VECTOR_QUERY = 17;
 }
 
 enum QueryOperator {
@@ -630,6 +635,14 @@ message NestedQuery {
     optional Query query = 2;
     optional ScoreMode score_mode = 3;
     optional float weight = 4;
+    optional InnerHits inner_hits = 5;
+}
+
+message InnerHits {
+    optional Sort sort = 1;
+    optional int32 offset = 2;
+    optional int32 limit = 3;
+    optional Highlight highlight = 4;
 }
 
 message GeoBoundingBoxQuery {
@@ -651,6 +664,14 @@ message GeoPolygonQuery {
 
 message ExistsQuery {
     optional string field_name = 1;
+}
+
+message KnnVectorQuery {
+    optional string field_name = 1;
+    optional int32 top_k = 2;
+    repeated float float32_query_vector = 4;
+    optional Query filter = 5;
+    optional float weight = 6;
 }
 
 message Query {
@@ -695,6 +716,10 @@ message FieldSort {
     optional string missing_field = 6;
 }
 
+message DocSort {
+    optional SortOrder order = 1;
+}
+
 enum GeoDistanceType {
     GEO_DISTANCE_ARC = 0;
     GEO_DISTANCE_PLANE = 1;
@@ -714,6 +739,7 @@ message Sorter {
     optional GeoDistanceSort geo_distance_sort = 2;
     optional ScoreSort score_sort = 3;
     optional PrimaryKeySort pk_sort = 4;
+    optional DocSort doc_sort = 5;
 }
 
 message Sort {
@@ -730,7 +756,31 @@ message SearchQuery {
     optional bytes token = 9;
     optional Aggregations aggs = 10;
     optional GroupBys group_bys = 11;
+    optional Highlight highlight = 12;
+}
 
+message Highlight {
+    repeated HighlightParameter highlight_parameters = 1;
+    optional HighlightEncoder highlight_encoder = 2 [default=PLAIN_MODE];
+}
+
+message HighlightParameter {
+    optional string  field_name = 1;
+    optional int32   number_of_fragments = 2;
+    optional int32   fragment_size = 3;
+    optional string  pre_tag = 4;
+    optional string  post_tag = 5;
+    optional HighlightFragmentOrder fragments_order = 6 [default=TEXT_SEQUENCE];
+}
+
+enum HighlightFragmentOrder {
+    TEXT_SEQUENCE = 1;
+    SCORE = 2;
+}
+
+enum HighlightEncoder {
+    PLAIN_MODE = 1;
+    HTML_MODE = 2;
 }
 
 enum ColumnReturnType {
@@ -758,9 +808,33 @@ message SearchResponse {
     optional int64 total_hits = 1;
     repeated bytes rows = 2;
     optional bool is_all_succeeded = 3;
+    repeated SearchHit search_hits = 5;
     optional bytes next_token = 6;
     optional bytes aggs = 7;
     optional bytes group_bys = 8;
+    optional ConsumedCapacity consumed = 9;
+    optional ConsumedCapacity reserved_consumed = 10;
+}
+
+message SearchHit {
+    optional double score = 3;
+    optional HighlightResult highlight_result = 4;
+    repeated SearchInnerHit search_inner_hits = 5;
+    optional int32 nested_doc_offset = 6;
+}
+
+message SearchInnerHit {
+    optional string path = 1;
+    repeated SearchHit search_hits = 2;
+}
+
+message HighlightResult {
+    repeated HighlightField highlight_fields = 1;
+}
+
+message HighlightField {
+    optional string field_name = 1;
+    repeated string field_fragments = 2;
 }
 
 /* Create Search Index */
@@ -781,6 +855,7 @@ enum FieldType {
     NESTED = 6;
     GEO_POINT = 7;
     DATE = 8;
+    VECTOR = 9;
 }
 
 enum DateTimeUnit {
@@ -792,6 +867,7 @@ enum DateTimeUnit {
     HOUR = 6;
     MINUTE = 7;
     SECOND = 8;
+    MILLISECOND = 9;
 }
 
 message DateTimeValue {
@@ -827,6 +903,35 @@ message FieldSchema {
     optional bool is_virtual_field = 11;
     repeated string source_field_names = 12;
     repeated string date_formats = 13;
+    optional bool enable_highlighting = 14;
+    optional VectorOptions vector_options = 15;
+}
+
+enum VectorDataType {
+    VD_FLOAT_32 = 2;
+}
+
+message VectorOptions {
+    optional VectorDataType data_type = 1;
+    optional int32 dimension = 2;
+    optional VectorMetricType metric_type = 3;
+    optional VectorIndexType index_type = 4;
+    optional bytes index_parameter = 5;
+}
+
+enum VectorMetricType {
+    VM_EUCLIDEAN = 0;
+    VM_COSINE = 1;
+    VM_DOT_PRODUCT = 2;
+}
+
+enum VectorIndexType {
+    VI_HNSW = 1;
+}
+
+message HNSWIndexParameter {
+    optional int32 m = 1;
+    optional int32 ef_construction = 2;
 }
 
 message IndexSchema {
@@ -927,8 +1032,19 @@ message DescribeSearchIndexResponse {
     repeated QueryFlowWeight query_flow_weight = 5;
     optional int64 create_time = 6;
     optional int32 time_to_live = 7;  // unit is seconds
+    optional IndexStatus index_status = 8;
 }
 
+message IndexStatus {
+    optional IndexStatusEnum status = 1;
+    optional string status_description = 2;
+}
+
+enum IndexStatusEnum {
+    PENDING = 1;
+    FAILED = 2;
+    RUNNING = 3;
+}
 
 /* ParallelScan API, same to Search API */
 message ScanQuery {

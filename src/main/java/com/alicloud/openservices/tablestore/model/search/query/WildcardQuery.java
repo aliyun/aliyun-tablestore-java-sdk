@@ -9,7 +9,7 @@ import com.google.protobuf.ByteString;
  */
 public class WildcardQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_WildcardQuery;
+    private final QueryType queryType = QueryType.QueryType_WildcardQuery;
 
     private String fieldName;
     private String value;

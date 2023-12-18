@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class TermQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_TermQuery;
+    private final QueryType queryType = QueryType.QueryType_TermQuery;
 
     private String fieldName;
     private ColumnValue term;

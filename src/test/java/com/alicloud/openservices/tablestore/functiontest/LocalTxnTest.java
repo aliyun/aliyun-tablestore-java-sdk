@@ -78,7 +78,10 @@ public class LocalTxnTest {
             client.startLocalTransaction(request);
         } catch (TableStoreException ex) {
             assertEquals("OTSRowOperationConflict", ex.getErrorCode());
-            assertEquals("Data is being modified by the other request.", ex.getMessage());
+            if (!(ex.getMessage().equals("Data is being modified by the other request.") ||
+                    ex.getMessage().equals("Failed to lock txn key: chengdu"))) {
+                fail(ex.getErrorCode());
+            }
         }
 
         commitTxn(txnId);
@@ -345,7 +348,10 @@ public class LocalTxnTest {
             putRow("", "chengdu", 111L, 1099L);
         } catch (TableStoreException ex) {
             assertEquals("OTSRowOperationConflict", ex.getErrorCode());
-            assertEquals("Data is being modified by the other request.", ex.getMessage());
+            if (!(ex.getMessage().equals("Data is being modified by the other request.") ||
+                    ex.getMessage().equals("Transaction timeout because cannot acquire exclusive lock."))) {
+                fail(ex.getErrorCode());
+            }
         }
 
         commitTxn(txnId);

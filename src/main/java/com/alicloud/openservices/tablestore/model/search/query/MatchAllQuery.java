@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
  */
 public class MatchAllQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_MatchAllQuery;
+    private final QueryType queryType = QueryType.QueryType_MatchAllQuery;
 
     @Override
     public QueryType getQueryType() {

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alicloud.openservices.tablestore.TimeseriesClient;
+import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesTableRequest;
+import com.alicloud.openservices.tablestore.model.timeseries.ListTimeseriesTableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +114,17 @@ public class OTSHelper {
             deleteTable(ots, name);
         }
         LOG.info("End deleteAllTable");
+    }
+
+    public static void deleteTsTable(TimeseriesClient client) throws Exception {
+        LOG.info("Begin deleteTsTable");
+        ListTimeseriesTableResponse r = client.listTimeseriesTable();
+
+        for (String name : r.getTimeseriesTableNames()) {
+            LOG.info("delete : " + name);
+            client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(name));
+        }
+        LOG.info("End deleteTsTable");
     }
     
     public static TableMeta getTableMeta(String tableName, List<PrimaryKeySchema> pk) {

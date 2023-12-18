@@ -35,6 +35,10 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogra
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByType;
 import com.alicloud.openservices.tablestore.model.search.groupby.Range;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightEncoder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightFragmentOrder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightParameter;
 import com.alicloud.openservices.tablestore.model.search.query.BoolQuery;
 import com.alicloud.openservices.tablestore.model.search.query.ConstScoreQuery;
 import com.alicloud.openservices.tablestore.model.search.query.ExistsQuery;
@@ -43,6 +47,8 @@ import com.alicloud.openservices.tablestore.model.search.query.FunctionScoreQuer
 import com.alicloud.openservices.tablestore.model.search.query.GeoBoundingBoxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoDistanceQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoPolygonQuery;
+import com.alicloud.openservices.tablestore.model.search.query.KnnVectorQuery;
+import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.query.MatchAllQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchPhraseQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchQuery;
@@ -56,6 +62,7 @@ import com.alicloud.openservices.tablestore.model.search.query.ScoreMode;
 import com.alicloud.openservices.tablestore.model.search.query.TermQuery;
 import com.alicloud.openservices.tablestore.model.search.query.TermsQuery;
 import com.alicloud.openservices.tablestore.model.search.query.WildcardQuery;
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
 import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceType;
@@ -70,6 +77,10 @@ import com.alicloud.openservices.tablestore.model.search.sort.Sort.Sorter;
 import com.alicloud.openservices.tablestore.model.search.sort.SortMode;
 import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 import com.alicloud.openservices.tablestore.model.search.sort.SubAggSort;
+import com.alicloud.openservices.tablestore.model.search.vector.HNSWIndexParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorDataType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorMetricType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 import com.google.common.base.Supplier;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -150,7 +161,7 @@ public abstract class BaseSearchTest {
 
     @Test
     public void testAllSorterShouldBeTest() {
-        assertEquals("all Sort.Sorter should be test. if you add a new kind, please add it to here", 4, getAllSortSorterSupplier().size());
+        assertEquals("all Sort.Sorter should be test. if you add a new kind, please add it to here", 5, getAllSortSorterSupplier().size());
     }
 
     @Test
@@ -280,6 +291,13 @@ public abstract class BaseSearchTest {
         return sort;
     }
 
+    public static DocSort randomDocSort() {
+        DocSort sort = new DocSort();
+        sort.setOrder(randomSortOrder());
+        assertAllFieldTested(sort, 1);
+        return sort;
+    }
+
     public static SortMode randomSortMode() {
         return randomFrom(SortMode.values());
     }
@@ -333,6 +351,12 @@ public abstract class BaseSearchTest {
                 return randomPrimaryKeySort();
             }
         });
+        all.add(new Supplier<Sorter>() {
+            @Override
+            public Sorter get() {
+                return randomDocSort();
+            }
+        });
         return all;
     }
 
@@ -347,6 +371,77 @@ public abstract class BaseSearchTest {
 
     public static Query randomQuery() {
         return randomFrom(getAllQuerySupplier()).get();
+    }
+
+    public static Highlight randomHighlight() {
+        Highlight.Builder highlightBuilder = Highlight.newBuilder();
+        switch (RANDOM.nextInt(3)) {
+            case 0:
+                highlightBuilder.highlightEncoder(HighlightEncoder.PLAIN);
+                break;
+            case 1:
+                highlightBuilder.highlightEncoder(HighlightEncoder.HTML);
+                break;
+            default:
+                break;
+        }
+
+        for (int i = 0; i < RANDOM.nextInt(10) ; i++) {
+            String fieldName = null;
+            if (RANDOM.nextBoolean()) {
+                fieldName = randomString(10);
+            }
+
+            HighlightParameter highlightParameter = new HighlightParameter();
+            switch (RANDOM.nextInt(3)) {
+                case 0:
+                    highlightParameter.setHighlightFragmentOrder(HighlightFragmentOrder.TEXT_SEQUENCE);
+                    break;
+                case 1:
+                    highlightParameter.setHighlightFragmentOrder(HighlightFragmentOrder.SCORE);
+                    break;
+                default:
+                    break;
+
+            }
+
+            if (RANDOM.nextBoolean()) {
+                highlightParameter.setPreTag(randomString(16));
+                highlightParameter.setPostTag(randomString(16));
+            }
+
+            if (RANDOM.nextBoolean()) {
+                highlightParameter.setNumberOfFragments(RANDOM.nextInt(10));
+            }
+
+            if (RANDOM.nextBoolean()) {
+                highlightParameter.setFragmentSize(RANDOM.nextInt(100));
+            }
+            highlightBuilder.addFieldHighlightParam(fieldName, highlightParameter);
+        }
+        return highlightBuilder.build();
+    }
+
+    public static InnerHits randomInnerHits() {
+        InnerHits.Builder innerHitsBuilder = InnerHits.newBuilder();
+
+        if (RANDOM.nextBoolean()) {
+            innerHitsBuilder.sort(randomSort());
+        }
+
+        if (RANDOM.nextBoolean()) {
+            innerHitsBuilder.offset(RANDOM.nextInt());
+        }
+
+        if (RANDOM.nextBoolean()) {
+            innerHitsBuilder.limit(RANDOM.nextInt());
+        }
+
+        if (RANDOM.nextBoolean()) {
+            innerHitsBuilder.highlight(randomHighlight());
+        }
+
+        return innerHitsBuilder.build();
     }
 
     public static List<Supplier<Query>> getAllQuerySupplier() {
@@ -439,6 +534,12 @@ public abstract class BaseSearchTest {
             @Override
             public Query get() {
                 return randomConstScoreQuery();
+            }
+        });
+        all.add(new Supplier<Query>() {
+            @Override
+            public Query get() {
+                return randomKnnVectorQuery();
             }
         });
         all.add(new Supplier<Query>() {
@@ -554,7 +655,7 @@ public abstract class BaseSearchTest {
             query.setWeight(RANDOM.nextFloat());
         }
         query.setScoreMode(randomScoreMode());
-        assertAllFieldTested(query, 5);
+        assertAllFieldTested(query, 6);
         return query;
     }
 
@@ -640,6 +741,23 @@ public abstract class BaseSearchTest {
         ConstScoreQuery query = new ConstScoreQuery();
         query.setFilter(randomQuery());
         assertAllFieldTested(query, 2);
+        return query;
+    }
+
+    public static KnnVectorQuery randomKnnVectorQuery() {
+        KnnVectorQuery query = new KnnVectorQuery();
+        query.setFieldName(randomString(3));
+        query.setTopK(RANDOM.nextInt());
+        float[] floats = new float[RANDOM.nextInt(100) + 1];
+        for (int i = 0; i < floats.length; i++) {
+            floats[i] = RANDOM.nextFloat();
+        }
+        query.setFloat32QueryVector(floats);
+        byte[] bytes = new byte[RANDOM.nextInt(100) + 1];
+        RANDOM.nextBytes(bytes);
+        query.setFilter(randomQuery());
+        query.setWeight(RANDOM.nextFloat());
+        assertAllFieldTested(query, 7);
         return query;
     }
 
@@ -941,12 +1059,15 @@ public abstract class BaseSearchTest {
             groupBy.setMissing(randomNumberColumnValue());
         }
         if (RANDOM.nextBoolean()) {
+            groupBy.setOffset(randomNumberColumnValue());
+        }
+        if (RANDOM.nextBoolean()) {
             groupBy.setSubGroupBys(randomGroupBys());
         }
         if (RANDOM.nextBoolean()) {
             groupBy.setSubAggregations(randomAggregations());
         }
-        assertAllFieldTested(groupBy, 10);
+        assertAllFieldTested(groupBy, 11);
         return groupBy;
     }
 
@@ -981,6 +1102,9 @@ public abstract class BaseSearchTest {
             groupBy.setMissing(randomNumberColumnValue());
         }
         if (RANDOM.nextBoolean()) {
+            groupBy.setOffset(randomDateTimeValue());
+        }
+        if (RANDOM.nextBoolean()) {
             groupBy.setTimeZone(randomString(10));
         }
         if (RANDOM.nextBoolean()) {
@@ -989,7 +1113,7 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             groupBy.setSubAggregations(randomAggregations());
         }
-        assertAllFieldTested(groupBy, 11);
+        assertAllFieldTested(groupBy, 12);
         return groupBy;
     }
 
@@ -1073,6 +1197,9 @@ public abstract class BaseSearchTest {
             searchQuery.setQuery(randomQuery());
         }
         if (RANDOM.nextBoolean()) {
+            searchQuery.setHighlight(randomHighlight());
+        }
+        if (RANDOM.nextBoolean()) {
             searchQuery.setSort(randomSort());
         }
         if (RANDOM.nextBoolean()) {
@@ -1090,7 +1217,7 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             searchQuery.setGroupByList(randomGroupBys());
         }
-        assertAllFieldTested(searchQuery, 9);
+        assertAllFieldTested(searchQuery, 10);
         return searchQuery;
     }
 
@@ -1203,6 +1330,34 @@ public abstract class BaseSearchTest {
         }
         assertAllFieldTested(request, 6);
         return request;
+    }
+
+    public static HNSWIndexParameter randomHNSWIndexParameter() {
+        HNSWIndexParameter hnswIndexParameter = new HNSWIndexParameter();
+        if (RANDOM.nextBoolean()) {
+            hnswIndexParameter.setM(RANDOM.nextInt());
+        }
+        if (RANDOM.nextBoolean()) {
+            hnswIndexParameter.setEfConstruction(RANDOM.nextInt());
+        }
+        return hnswIndexParameter;
+    }
+
+    public static VectorOptions randomVectorOptions() {
+        VectorOptions options = new VectorOptions();
+        if (RANDOM.nextBoolean()) {
+            options.setDataType(randomFrom(VectorDataType.values()));
+        }
+        if (RANDOM.nextBoolean()) {
+            options.setDimension(RANDOM.nextInt());
+        }
+        if (RANDOM.nextBoolean()) {
+            options.setMetricType(randomFrom(VectorMetricType.values()));
+        }
+        if (RANDOM.nextBoolean()) {
+            options.setIndexParameter(randomHNSWIndexParameter());
+        }
+        return options;
     }
 }
 

@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.model.search.query.Query;
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
 import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceType;
@@ -118,6 +119,14 @@ class SearchSortParser {
         return sort;
     }
 
+    private static DocSort toDocSort(Search.DocSort pb) {
+        DocSort sort = new DocSort();
+        if (pb.hasOrder()) {
+            sort.setOrder(toSortOrder(pb.getOrder()));
+        }
+        return sort;
+    }
+
     private static Sort.Sorter toSorter(Search.Sorter pb) throws IOException {
         if (pb.hasFieldSort()) {
             return toFieldSort(pb.getFieldSort());
@@ -130,6 +139,9 @@ class SearchSortParser {
         }
         if (pb.hasGeoDistanceSort()) {
             return toGeoDistanceSort(pb.getGeoDistanceSort());
+        }
+        if (pb.hasDocSort()) {
+            return toDocSort(pb.getDocSort());
         }
         throw new IllegalArgumentException("can not parse a sorter from Search.Sorter");
     }

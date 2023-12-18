@@ -67,6 +67,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
         JsonElement jsonElement = new Gson().toJsonTree(json);
         assertNotNull(jsonElement);
         assertEquals("{\n" +
+                "  \"IndexStatus\": null,\n" +
                 "  \"IndexSchema\": {\n" +
                 "    \"IndexSetting\": {\"RoutingFields\": [\"routing_field1\", \"routing_field2\"]},\n" +
                 "    \"FieldSchemas\": [{\n" +

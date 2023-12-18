@@ -80,6 +80,7 @@ public class PutTimeseriesDataRequest implements Request {
 
             request.addRow(rows.get(rowResult.getIndex()));
         }
+        request.setMetaUpdateMode(this.getMetaUpdateMode());
         return request;
     }
 }

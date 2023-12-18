@@ -9,7 +9,7 @@ import com.google.protobuf.ByteString;
  */
 public class FunctionScoreQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_FunctionScoreQuery;
+    private final QueryType queryType = QueryType.QueryType_FunctionScoreQuery;
 
     /**
      * 正常的{@link Query}

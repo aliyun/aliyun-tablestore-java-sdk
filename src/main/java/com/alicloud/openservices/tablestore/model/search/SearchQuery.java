@@ -7,6 +7,7 @@ import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilder;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilder;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.query.QueryBuilder;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
@@ -30,7 +31,10 @@ public class SearchQuery {
      * 查询语句
      */
     private Query query;
-
+    /**
+     * 查询高亮配置
+     */
+    private Highlight highlight;
     /**
      * 字段折叠
      * 能够实现某个字段的结果去重。
@@ -111,6 +115,15 @@ public class SearchQuery {
         return this;
     }
 
+    public Highlight getHighlight() {
+        return highlight;
+    }
+
+    public SearchQuery setHighlight(Highlight highlight) {
+        this.highlight = highlight;
+        return this;
+    }
+
     public Collapse getCollapse() {
         return collapse;
     }
@@ -161,6 +174,7 @@ public class SearchQuery {
         copy.setLimit(this.getLimit());
         copy.setOffset(this.getOffset());
         copy.setQuery(this.getQuery());
+        copy.setHighlight(this.getHighlight());
         copy.setSort(this.getSort());
         copy.setToken(this.getToken());
         return copy;
@@ -170,6 +184,7 @@ public class SearchQuery {
         setOffset(builder.offset);
         setLimit(builder.limit);
         setQuery(builder.query);
+        setHighlight(builder.highlight);
         setCollapse(builder.collapse);
         setSort(builder.sort);
         setGetTotalCount(builder.getTotalCount);
@@ -182,6 +197,7 @@ public class SearchQuery {
         private Integer offset;
         private Integer limit;
         private Query query;
+        private Highlight highlight;
         private Collapse collapse;
         private Sort sort;
         private boolean getTotalCount = false;
@@ -208,6 +224,16 @@ public class SearchQuery {
 
         public Builder query(Query query) {
             this.query = query;
+            return this;
+        }
+
+        public Builder highlight(Highlight highlight) {
+            this.highlight = highlight;
+            return this;
+        }
+
+        public Builder highlight(Highlight.Builder highlightBuilder) {
+            this.highlight = highlightBuilder.build();
             return this;
         }
 

@@ -11,6 +11,7 @@ import com.alicloud.openservices.tablestore.model.search.query.FunctionScoreQuer
 import com.alicloud.openservices.tablestore.model.search.query.GeoBoundingBoxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoDistanceQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoPolygonQuery;
+import com.alicloud.openservices.tablestore.model.search.query.KnnVectorQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchAllQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchPhraseQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchQuery;
@@ -28,6 +29,8 @@ import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toInnerHits;
 
 
 /**
@@ -77,6 +80,8 @@ public class SearchQueryParser {
                 return toGeoPolygonQuery(queryByteString);
             case EXISTS_QUERY:
                 return toExistsQuery(queryByteString);
+            case KNN_VECTOR_QUERY:
+                return toKnnVectorQuery(queryByteString);
             default:
                 throw new IllegalArgumentException("unknown queryType: " + query.getType().name());
         }
@@ -293,6 +298,9 @@ public class SearchQueryParser {
         if (pb.hasScoreMode()) {
             query.setScoreMode(toScoreMode(pb.getScoreMode()));
         }
+        if (pb.hasInnerHits()) {
+            query.setInnerHits(toInnerHits(pb.getInnerHits()));
+        }
         return query;
     }
 
@@ -341,6 +349,30 @@ public class SearchQueryParser {
         ExistsQuery query = new ExistsQuery();
         if (pb.hasFieldName()) {
             query.setFieldName(pb.getFieldName());
+        }
+        return query;
+    }
+
+    private static KnnVectorQuery toKnnVectorQuery(ByteString queryByteString) throws IOException {
+        Search.KnnVectorQuery pb = Search.KnnVectorQuery.parseFrom(queryByteString);
+        KnnVectorQuery query = new KnnVectorQuery();
+        if (pb.hasFieldName()) {
+            query.setFieldName(pb.getFieldName());
+        }
+        if (pb.hasTopK()) {
+            query.setTopK(pb.getTopK());
+        }
+        List<Float> floatList = pb.getFloat32QueryVectorList();
+        float[] floats = new float[floatList.size()];
+        for (int i = 0; i < floats.length; i++) {
+            floats[i] = floatList.get(i);
+        }
+        query.setFloat32QueryVector(floats);
+        if (pb.hasFilter()) {
+            query.setFilter(toQuery(pb.getFilter()));
+        }
+        if (pb.hasWeight()) {
+            query.setWeight(pb.getWeight());
         }
         return query;
     }

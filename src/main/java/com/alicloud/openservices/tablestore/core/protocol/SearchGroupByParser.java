@@ -65,6 +65,10 @@ public class SearchGroupByParser {
             ColumnValue missing = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getMissing().toByteArray()));
             groupBy.setMissing(missing);
         }
+        if (pb.hasOffset()) {
+            DateTimeValue dateTimeValue = SearchProtocolParser.toDateTimeValue(pb.getOffset());
+            groupBy.setOffset(dateTimeValue);
+        }
         if (pb.hasSort()) {
             groupBy.setGroupBySorters(SearchSortParser.toGroupBySort(pb.getSort()));
         }
@@ -112,6 +116,10 @@ public class SearchGroupByParser {
         if (pb.hasMissing()) {
             ColumnValue missing = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getMissing().toByteArray()));
             groupBy.setMissing(missing);
+        }
+        if (pb.hasOffset()) {
+            ColumnValue columnValue = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getOffset().toByteArray()));
+            groupBy.setOffset(columnValue);
         }
         if (pb.hasSubGroupBys()) {
             groupBy.setSubGroupBys(toGroupBys(pb.getSubGroupBys()));

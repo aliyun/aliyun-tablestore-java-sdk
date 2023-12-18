@@ -15,6 +15,8 @@ import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerP
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.sort.GroupBySorter;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
@@ -23,6 +25,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsBuilder.buildInnerHits;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsBuilder.buildInnerHitsToBytes;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toInnerHits;
 import static org.junit.Assert.*;
 
 public class TestSearchProtocolParser extends BaseSearchTest {
@@ -386,6 +391,38 @@ public class TestSearchProtocolParser extends BaseSearchTest {
             byte[] pb = SearchQueryBuilder.buildQueryToBytes(origin);
             Query newObj = SearchQueryParser.toQuery(pb);
             assertJsonEquals(origin, newObj);
+        }
+    }
+
+    @Test
+    public void testHighlightSerialization() throws IOException {
+        {
+            Highlight originHighlight = randomHighlight();
+            Search.Highlight pbHighlight = SearchHighlightBuilder.buildHighlight(originHighlight);
+            Highlight newHighlight = SearchHighlightParser.toHighlight(pbHighlight);
+            assertJsonEquals(originHighlight, newHighlight);
+        }
+        {
+            Highlight originHighlight = randomHighlight();
+            byte[] pbHighlightBytes = SearchHighlightBuilder.buildHighlightToBytes(originHighlight);
+            Highlight newHighlight = SearchHighlightParser.toHighlight(pbHighlightBytes);
+            assertJsonEquals(originHighlight, newHighlight);
+        }
+    }
+
+    @Test
+    public void testInnerHitsSerialization() throws IOException {
+        {
+            InnerHits origiInnerHits = randomInnerHits();
+            Search.InnerHits pbInnerHits = buildInnerHits(origiInnerHits);
+            InnerHits newInnerHits = toInnerHits(pbInnerHits);
+            assertJsonEquals(origiInnerHits, newInnerHits);
+        }
+        {
+            InnerHits originInnerHits = randomInnerHits();
+            byte[] pbInnerHitsBytes = buildInnerHitsToBytes(originInnerHits);
+            InnerHits newInnerHits = toInnerHits(pbInnerHitsBytes);
+            assertJsonEquals(originInnerHits, newInnerHits);
         }
     }
 

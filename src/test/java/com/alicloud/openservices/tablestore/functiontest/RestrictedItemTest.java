@@ -29,11 +29,14 @@ public class RestrictedItemTest extends BaseFT {
     
     private static String tableName = "RestrictedItemFunctiontest";
     private static SyncClientInterface ots;
+
+    private static TimeseriesClient tsClient;
     private static final Logger LOG = LoggerFactory.getLogger(RestrictedItemTest.class);
     
     @BeforeClass
     public static void classBefore() throws JsonSyntaxException, IOException {
         ots = Utils.getOTSInstance();
+        tsClient = Utils.getTsClient();
     }
     
     @AfterClass
@@ -45,6 +48,8 @@ public class RestrictedItemTest extends BaseFT {
     public void setup() throws Exception {
         // 清理环境
         OTSHelper.deleteAllTable(ots);
+
+        OTSHelper.deleteTsTable(tsClient);
     }
     
     @After

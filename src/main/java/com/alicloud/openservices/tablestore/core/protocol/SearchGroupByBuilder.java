@@ -75,6 +75,9 @@ public class SearchGroupByBuilder {
         if (groupBy.getMissing() != null) {
             builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMissing())));
         }
+        if (groupBy.getOffset() != null) {
+            builder.setOffset(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getOffset())));
+        }
         if (groupBy.getGroupBySorters() != null) {
             builder.setSort(SearchSortBuilder.buildGroupBySort(groupBy.getGroupBySorters()));
         }
@@ -100,6 +103,9 @@ public class SearchGroupByBuilder {
         }
         if (groupBy.getMissing() != null) {
             builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMissing())));
+        }
+        if (groupBy.getOffset() != null) {
+            builder.setOffset(SearchProtocolBuilder.buildDateTimeValue(groupBy.getOffset()));
         }
         if (groupBy.getGroupBySorters() != null) {
             builder.setSort(SearchSortBuilder.buildGroupBySort(groupBy.getGroupBySorters()));

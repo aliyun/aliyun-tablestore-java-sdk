@@ -78,6 +78,18 @@ public class Utils {
         return getOTSInstance(null);
     }
 
+
+    public static TimeseriesClient getTsClient() {
+        ServiceSettings serviceSettings = ServiceSettings.load();
+        return new TimeseriesClient(
+                serviceSettings.getOTSEndpoint(),
+                serviceSettings.getOTSAccessKeyId(),
+                serviceSettings.getOTSAccessKeySecret(),
+                serviceSettings.getOTSInstanceName()
+        );
+    }
+
+
     public static SyncClientInterface getOTSInstance(ClientConfiguration configuration) {
         ServiceSettings serviceSettings = ServiceSettings.load();
         return new SyncClient(

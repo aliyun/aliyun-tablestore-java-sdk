@@ -39,6 +39,10 @@ public class GroupByHistogram implements GroupBy {
      */
     private ColumnValue missing;
     /**
+     * 分组偏差量
+     */
+    private ColumnValue offset;
+    /**
      * 排序
      */
     private List<GroupBySorter> groupBySorters;
@@ -69,6 +73,7 @@ public class GroupByHistogram implements GroupBy {
         interval = builder.interval;
         groupBySorters = builder.groupBySorters;
         missing = builder.missing;
+        offset = builder.offset;
         minDocCount = builder.minDocCount;
         fieldRange = builder.fieldRange;
         subAggregations = builder.subAggregations;
@@ -108,6 +113,10 @@ public class GroupByHistogram implements GroupBy {
 
     public ColumnValue getMissing() {
         return missing;
+    }
+
+    public ColumnValue getOffset() {
+        return offset;
     }
 
     public List<GroupBySorter> getGroupBySorters() {
@@ -156,6 +165,11 @@ public class GroupByHistogram implements GroupBy {
         return this;
     }
 
+    public GroupByHistogram setOffset(ColumnValue offset) {
+        this.offset = offset;
+        return this;
+    }
+
     public GroupByHistogram setFieldRange(FieldRange fieldRange) {
         this.fieldRange = fieldRange;
         return this;
@@ -177,6 +191,7 @@ public class GroupByHistogram implements GroupBy {
         private String fieldName;
         private ColumnValue interval;
         private ColumnValue missing;
+        private ColumnValue offset;
         private Long minDocCount;
         private List<GroupBySorter> groupBySorters;
         private FieldRange fieldRange;
@@ -207,6 +222,11 @@ public class GroupByHistogram implements GroupBy {
          */
         public Builder missing(Object missing) {
             this.missing = ValueUtil.toColumnValue(missing);
+            return this;
+        }
+
+        public Builder offset(Object offset) {
+            this.offset = ValueUtil.toColumnValue(offset);
             return this;
         }
 

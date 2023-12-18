@@ -58,7 +58,10 @@ public class SearchQueryTest extends BaseSearchTest {
                 methodList.add(method);
             }
         }
-        assertEquals("QueryBuilders is incomplete", QueryType.values().length - 1, methodList.size());
+        assertEquals("QueryBuilders is incomplete, Maybe the new query lacks builders implementation",
+                QueryType.values().length - 1,
+                methodList.size()
+        );
     }
 
     /**

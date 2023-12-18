@@ -4,10 +4,19 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
 import com.alicloud.openservices.tablestore.model.search.FieldType;
 import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
+import com.alicloud.openservices.tablestore.model.search.SearchInnerHit;
 import com.alicloud.openservices.tablestore.model.search.UpdateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightEncoder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightFragmentOrder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightParameter;
+import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
+import com.alicloud.openservices.tablestore.model.search.sort.ScoreSort;
+import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
 
@@ -327,6 +336,75 @@ public class TestSearchProtocolBuilder extends BaseSearchTest {
         // assert
         assertEquals("max_word", pbFieldSchema.getAnalyzer());
         assertFalse(pbFieldSchema.hasAnalyzerParameter());
+    }
+
+    @Test
+    public void buildInnerHits() {
+        InnerHits.Builder innerHitsBuilder = InnerHits.newBuilder()
+                .limit(10)
+                .offset(0)
+                .sort(new Sort(Arrays.asList(
+                        new DocSort(),
+                        new ScoreSort())))
+                .highlight(Highlight.newBuilder()
+                        .highlightEncoder(HighlightEncoder.HTML)
+                        .addFieldHighlightParam("col1", HighlightParameter.newBuilder()
+                                .highlightFragmentOrder(HighlightFragmentOrder.SCORE)
+                                .fragmentSize(100)
+                                .numberOfFragments(50)
+                                .preTag("<em>")
+                                .postTag("</em>")
+                                .build())
+                        .build());
+        Search.InnerHits pbInnerHits = SearchInnerHitsBuilder.buildInnerHits(innerHitsBuilder.build());
+        assertEquals(0, pbInnerHits.getOffset());
+        assertEquals(10, pbInnerHits.getLimit());
+        assertEquals(2, pbInnerHits.getSort().getSorterCount());
+        assertTrue(pbInnerHits.getSort().getSorterList().get(0).hasDocSort());
+        assertTrue(pbInnerHits.getSort().getSorterList().get(1).hasScoreSort());
+        assertNotNull(pbInnerHits.getHighlight());
+
+        Search.Highlight pbHighlight = pbInnerHits.getHighlight();
+        assertEquals(Search.HighlightEncoder.HTML_MODE, pbHighlight.getHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersCount());
+        assertEquals(Search.HighlightFragmentOrder.SCORE, pbHighlight.getHighlightParameters(0).getFragmentsOrder());
+        assertEquals(100, pbHighlight.getHighlightParameters(0).getFragmentSize());
+        assertEquals(50, pbHighlight.getHighlightParameters(0).getNumberOfFragments());
+        assertEquals("<em>", pbHighlight.getHighlightParameters(0).getPreTag());
+        assertEquals("</em>", pbHighlight.getHighlightParameters(0).getPostTag());
+    }
+
+    @Test
+    public void buildHighlight() {
+        Highlight.Builder highlightBuilder = Highlight.newBuilder()
+                .highlightEncoder(HighlightEncoder.HTML)
+                .addFieldHighlightParam("col_name", HighlightParameter.newBuilder()
+                        .highlightFragmentOrder(HighlightFragmentOrder.SCORE)
+                        .fragmentSize(100)
+                        .numberOfFragments(50)
+                        .preTag("<em>")
+                        .postTag("</em>").build());
+        Search.Highlight pbHighlight = SearchHighlightBuilder.buildHighlight(highlightBuilder.build());
+        assertEquals(Search.HighlightEncoder.HTML_MODE, pbHighlight.getHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersCount());
+        assertEquals(Search.HighlightFragmentOrder.SCORE, pbHighlight.getHighlightParameters(0).getFragmentsOrder());
+        assertEquals(100, pbHighlight.getHighlightParameters(0).getFragmentSize());
+        assertEquals(50, pbHighlight.getHighlightParameters(0).getNumberOfFragments());
+        assertEquals("<em>", pbHighlight.getHighlightParameters(0).getPreTag());
+        assertEquals("</em>", pbHighlight.getHighlightParameters(0).getPostTag());
+
+        highlightBuilder = Highlight.newBuilder()
+                .highlightEncoder(null)
+                .addFieldHighlightParam(null, null);
+        pbHighlight = SearchHighlightBuilder.buildHighlight(highlightBuilder.build());
+        assertFalse(pbHighlight.hasHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersList().size());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFieldName());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasPreTag());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasPostTag());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFragmentSize());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasNumberOfFragments());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFragmentsOrder());
     }
 
     @Test

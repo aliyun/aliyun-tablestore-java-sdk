@@ -17,9 +17,73 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
     private Long createTime;
 
     /**
+     *  索引状态描述
+     */
+    private IndexStatus indexStatus;
+
+    /**
      * <p>索引数据的TTL时间，单位为秒。</p>
      */
     private Integer timeToLive;
+
+    /**
+     * 描述索引异步的创建状态
+     */
+    public enum IndexStatusEnum {
+        /**
+         * 索引处于待创建/创建中状态
+         */
+        PENDING("pending"),
+
+        /**
+         * 索引创建失败
+         */
+        FAILED("failed"),
+
+        /**
+         * 索引创建成功，正常运行中
+         */
+        RUNNING("running"),
+
+        /**
+         * 未知状态，请更新SDK
+         */
+        UNKNOWN("unknown");
+
+        private final String name;
+
+        IndexStatusEnum(String name) {
+            this.name = name;
+        }
+
+        public String status() {
+            return this.name;
+        }
+    }
+
+    public static class IndexStatus implements Jsonizable{
+        public IndexStatusEnum indexStatusEnum;
+        public String statusDescription;
+
+        @Override
+        public String jsonize() {
+            StringBuilder sb = new StringBuilder();
+            jsonize(sb, "\n  ");
+            return sb.toString();
+        }
+
+        @Override
+        public void jsonize(StringBuilder sb, String newline) {
+            sb.append("{");
+            sb.append("\"IndexStatusEnum\": ");
+            sb.append(indexStatusEnum.status());
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"StatusDescription: \"");
+            sb.append(statusDescription);
+            sb.append("}");
+        }
+    }
 
     public DescribeSearchIndexResponse(Response meta) {
         super(meta);
@@ -88,6 +152,14 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
         this.timeToLive = timeToLive;
     }
 
+    public void setIndexStatus(IndexStatus indexStatus) {
+        this.indexStatus = indexStatus;
+    }
+
+    public IndexStatus getIndexStatus() {
+        return this.indexStatus;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -98,6 +170,14 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
     @Override
     public void jsonize(StringBuilder sb, String newline) {
         sb.append('{');
+        sb.append(newline);
+        sb.append("\"IndexStatus\": ");
+        if (indexStatus != null) {
+            indexStatus.jsonize(sb, newline + "  ");
+        } else {
+            sb.append("null");
+        }
+        sb.append(",");
         sb.append(newline);
         sb.append("\"IndexSchema\": ");
         if (schema != null) {

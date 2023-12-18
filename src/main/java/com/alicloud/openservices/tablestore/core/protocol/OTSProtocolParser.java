@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.search.SyncStat;
 import com.alicloud.openservices.tablestore.model.sql.SQLPayloadVersion;
 import com.alicloud.openservices.tablestore.model.sql.SQLStatementType;
 
@@ -86,6 +87,13 @@ public class OTSProtocolParser {
         }
     }
 
+    public static SyncStat.SyncPhase parseIndexSyncPhase(OtsInternalApi.IndexSyncPhase indexSyncPhase) {
+        if (indexSyncPhase == OtsInternalApi.IndexSyncPhase.ISP_INCR) {
+            return SyncStat.SyncPhase.INCR;
+        }
+        return SyncStat.SyncPhase.FULL;
+    }
+
     public static IndexMeta parseIndexMeta(OtsInternalApi.IndexMeta indexMeta) {
         IndexMeta result = new IndexMeta(indexMeta.getName());
         for (String pk : indexMeta.getPrimaryKeyList()) {
@@ -96,6 +104,9 @@ public class OTSProtocolParser {
         }
         result.setIndexType(parseIndexType(indexMeta.getIndexType()));
         result.setIndexUpdateMode(parseIndexUpdateMode(indexMeta.getIndexUpdateMode()));
+        if (indexMeta.hasIndexSyncPhase()) {
+            result.setIndexSyncPhase(parseIndexSyncPhase(indexMeta.getIndexSyncPhase()));
+        }
 
         return result;
     }

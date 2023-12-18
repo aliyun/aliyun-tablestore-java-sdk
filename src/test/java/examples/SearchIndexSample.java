@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.iterator.RowIterator;
 import com.alicloud.openservices.tablestore.model.search.*;
@@ -15,6 +16,7 @@ import com.alicloud.openservices.tablestore.model.search.agg.PercentilesAggregat
 import com.alicloud.openservices.tablestore.model.search.analysis.AnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResultItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilterResult;
@@ -23,14 +25,22 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogra
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogramResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRangeResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRangeResultItem;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightField;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightFragmentOrder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightParameter;
 import com.alicloud.openservices.tablestore.model.search.query.*;
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
 import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
+import com.alicloud.openservices.tablestore.model.search.sort.ScoreSort;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class SearchIndexSample {
 
@@ -98,6 +108,10 @@ public class SearchIndexSample {
             System.out.println("MatchQuery...");
             matchQuery(client);
 
+            // 使用MatchQuery查询数据并高亮关键词
+            System.out.println("MatchQuery with Highlighting...");
+            matchQueryWithHighlighting(client);
+
             // 使用RangeQuery查询数据，并排序
             System.out.println("RangeQuery...");
             rangeQuery(client);
@@ -128,7 +142,11 @@ public class SearchIndexSample {
 
             // 使用groupByHistogram查询数据
             System.out.println("groupByHistogram...");
-            groupByHistogram( client);
+            groupByHistogram(client);
+
+            // 使用groupByDateHistogram查询数据
+            System.out.println("groupByDateHistogram...");
+            groupByDateHistogram(client);
 
             // 使用percentilesAggLong查询数据
             System.out.println("percentilesAggLong(client);...");
@@ -178,10 +196,20 @@ public class SearchIndexSample {
         request.setIndexName(INDEX_NAME);
         IndexSchema indexSchema = new IndexSchema();
         indexSchema.setFieldSchemas(Arrays.asList(
-            new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Long_sec", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
-            new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true)));
+                new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Long_sec", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Double", FieldType.DOUBLE).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true).setEnableHighlighting(true),
+                new FieldSchema("Col_Date", FieldType.DATE).setIndex(true).setDateFormats(Collections.singletonList("yyyy-MM-dd HH:mm:ss")),
+                new FieldSchema("Col_Nested", FieldType.NESTED).setIndex(true)
+                        .setSubFieldSchemas(Arrays.asList(
+                                new FieldSchema("Level1_Col1_Text", FieldType.TEXT).setIndex(true).setStore(true).setEnableHighlighting(true),
+                                new FieldSchema("Level1_Col2_Nested", FieldType.NESTED).setIndex(true)
+                                        .setSubFieldSchemas(Collections.singletonList(
+                                                new FieldSchema("Level2_Col1_Text", FieldType.TEXT).setIndex(true).setStore(true).setEnableHighlighting(true)
+                                        ))
+                        ))));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);
     }
@@ -196,7 +224,7 @@ public class SearchIndexSample {
         IndexSchema indexSchema = new IndexSchema();
         indexSchema.setFieldSchemas(Arrays.asList(
             new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true).setAnalyzer(analyzer)
-                .setAnalyzerParameter(analyzerParameter)));
+                .setAnalyzerParameter(analyzerParameter).setEnableHighlighting(true)));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);
     }
@@ -209,6 +237,7 @@ public class SearchIndexSample {
         indexSchema.setFieldSchemas(Arrays.asList(
             new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
             new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
+            new FieldSchema("Col_Double", FieldType.DOUBLE).setIndex(true).setEnableSortAndAgg(true),
             new FieldSchema("Col_Text", FieldType.TEXT).setIndex(true),
             new FieldSchema("Timestamp", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true)));
         indexSchema.setIndexSort(new Sort(
@@ -275,7 +304,18 @@ public class SearchIndexSample {
     private static void putRow(SyncClient client) {
         String[] keywords = {"hangzhou", "beijing", "shanghai", "hangzhou shanghai", "hangzhou beijing shanghai"};
         long[] longValues = {1, 2, 3, 4, 5, 6, 7};
+        double[] doubleValues = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
         for (int i = 0; i < 5; i++) {
+            // 构造Nested属性列
+            String stringBuilder = "[{" +
+                "\"Level1_Col1_Text\":\"" + keywords[i] + " " + i + "_1" + "\"," +
+                "\"Level1_Col2_Nested\":" + "[{" +
+                "\"Level2_Col1_Text\":\"" + keywords[i] + " " + i + "_1" + "\"" + "}]}," +
+                "{" +
+                "\"Level1_Col1_Text\":\"" + keywords[i] + " " + i + "_2" + "\"," +
+                "\"Level1_Col2_Nested\":" + "[{" +
+                "\"Level2_Col1_Text\":\"" + keywords[i] + " " + i + "_2" + "\"" + "}]}]";
+
             // 构造主键
             PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
             primaryKeyBuilder.addPrimaryKeyColumn(PRIMARY_KEY_NAME_1, PrimaryKeyValue.fromString("sample"));
@@ -288,9 +328,10 @@ public class SearchIndexSample {
             rowPutChange.addColumn("Col_Keyword", ColumnValue.fromString(keywords[i]));
             rowPutChange.addColumn("Col_Long", ColumnValue.fromLong(longValues[i]));
             rowPutChange.addColumn("Col_Long_sec", ColumnValue.fromLong(longValues[i]));
-
+            rowPutChange.addColumn("Col_Double", ColumnValue.fromDouble(doubleValues[i]));
             rowPutChange.addColumn("Col_Text", ColumnValue.fromString(keywords[i]));
             rowPutChange.addColumn("Col_Boolean", ColumnValue.fromBoolean(i % 2 == 0 ? true : false));
+            rowPutChange.addColumn("Col_Nested", ColumnValue.fromString(stringBuilder));
             client.putRow(new PutRowRequest(rowPutChange));
         }
         {   // 构造一行缺失 Col_Keyword 和 Col_Text列
@@ -1170,6 +1211,42 @@ public class SearchIndexSample {
     }
 
     /**
+     * 日期直方图统计：假设表中存储的是订单数据，如下代码实现按照1天的维度统计卖出的订单数，并通过添加subAgg统计每一天卖出价格的最大值
+     */
+    public static void groupByDateHistogram(SyncClient client) {
+        //构建查询语句。
+        SearchRequest searchRequest = SearchRequest.newBuilder()
+                .returnAllColumns(false)
+                .tableName(TABLE_NAME)
+                .indexName(INDEX_NAME)
+                .searchQuery(
+                        SearchQuery.newBuilder()
+                                .query(QueryBuilders.matchAll())
+                                .limit(0)
+                                .getTotalCount(false)
+                                .addGroupBy(GroupByBuilders
+                                        .groupByDateHistogram("groupByDateHistogram", "Col_Date")
+                                        .interval(1, DateTimeUnit.DAY)  // 一天一个分组
+                                        .minDocCount(1)     // 分组内个数大于1才会返回该分组
+                                        .timeZone("+05:30")  // 假如'Col_Date'字段内没有时区相关信息，可以指定timeZone，统计分组时候会该时间会落入哪一天的分组，以印度时区为例可以填写: +05:30
+                                        .missing("2017-05-10 12:00:00") // 如果某一行数据的'Col_Date'字段为空，使用该值进行统计
+                                        .fieldRange("2017-05-01 00:00", "2017-05-21 00:00:00")  // 只统计5月1号到5月21号期间
+                                        .addSubAggregation(AggregationBuilders.max("subAggName", "Column_Price")) // 添加子统计聚合，求每个分组内部的价格最大值
+                                )
+                                .build())
+                .build();
+        //执行查询。
+        SearchResponse resp = client.search(searchRequest);
+        //获取日期直方图的统计聚合结果。
+        List<GroupByDateHistogramItem> items = resp.getGroupByResults().getAsGroupByDateHistogramResult("groupByDateHistogram").getGroupByDateHistogramItems();
+        for (GroupByDateHistogramItem item : items) {
+            // 获取分组内的价格最大值
+            double maxPrice = item.getSubAggregationResults().getAsMaxAggregationResult("subAggName").getValue();
+            System.out.printf("millisecondTimestamp:%d, count:%d, maxPrice:%s \n", item.getTimestamp(), item.getRowCount(), maxPrice);
+        }
+    }
+
+    /**
      * 在 MatchQuery 的结果上进行百分比统计。
      */
     public static void percentilesAggDouble(SyncClient client) {
@@ -1231,6 +1308,55 @@ public class SearchIndexSample {
         for (PercentilesAggregationItem item : percentilesAggregationResult.getPercentilesAggregationItems()) {
             System.out.println("key：" + item.getKey() + " value:" + item.getValue().asLong());
         }
+    }
+
+    /**
+     * MatchQuery关键词高亮
+     */
+    public static void matchQueryWithHighlighting(SyncClient client) {
+        SearchRequest searchRequest = SearchRequest.newBuilder()
+            .tableName(TABLE_NAME)
+            .indexName(INDEX_NAME)
+            .returnAllColumnsFromIndex(true)
+            .searchQuery(SearchQuery.newBuilder()
+                .limit(5)
+                .query(QueryBuilders.bool()
+                    .should(QueryBuilders.match("Col_Text", "hangzhou shanghai"))
+                    .should(QueryBuilders.nested()
+                        .path("Col_Nested")
+                        .scoreMode(ScoreMode.Min)
+                        .query(QueryBuilders.bool()
+                            .should(QueryBuilders.match("Col_Nested.Level1_Col1_Text", "hangzhou shanghai"))
+                            .should(QueryBuilders.nested()
+                                .path("Col_Nested.Level1_Col2_Nested")
+                                .scoreMode(ScoreMode.Min)
+                                .query(QueryBuilders.match("Col_Nested.Level1_Col2_Nested.Level2_Col1_Text", "hangzhou shanghai"))
+                                .innerHits(InnerHits.newBuilder()
+                                    .highlight(Highlight.newBuilder()
+                                        .addFieldHighlightParam("Col_Nested.Level1_Col2_Nested.Level2_Col1_Text", HighlightParameter.newBuilder().build())
+                                        .build())
+                                    .build())))
+                        .innerHits(InnerHits.newBuilder()
+                            .sort(new Sort(Arrays.asList(
+                                new ScoreSort(),
+                                new DocSort()
+                            )))
+                            .highlight(Highlight.newBuilder()
+                                .addFieldHighlightParam("Col_Nested.Level1_Col1_Text", HighlightParameter.newBuilder().build())
+                                .build())
+                            .build())))
+                .highlight(Highlight.newBuilder()
+                    .addFieldHighlightParam("Col_Text", HighlightParameter.newBuilder()
+                        .highlightFragmentOrder(HighlightFragmentOrder.TEXT_SEQUENCE)
+                        .preTag("<b>")
+                        .postTag("</b>")
+                        .build())
+                    .build())
+                .build())
+            .build();
+        SearchResponse resp = client.search(searchRequest);
+
+        printSearchHit(resp.getSearchHits(), "");
     }
 
     /**
@@ -1314,5 +1440,44 @@ public class SearchIndexSample {
             thread.join();
         }
         System.out.println("all thread done!");
+    }
+
+    /**
+     * 打印searchHit内容
+     * @param searchHits
+     * @param prefix
+     */
+    private static void printSearchHit(List<SearchHit> searchHits, String prefix) {
+        for (SearchHit searchHit : searchHits) {
+            if (searchHit.getScore() != null) {
+                System.out.printf("%s Score: %s\n", prefix, searchHit.getScore());
+            }
+
+            if (searchHit.getOffset() != null) {
+                System.out.printf("%s Offset: %s\n", prefix, searchHit.getOffset());
+            }
+
+            if (searchHit.getRow() != null) {
+                System.out.printf("%s Row: %s\n", prefix, searchHit.getRow().toString());
+            }
+
+            if (searchHit.getHighlightResultItem() != null) {
+                System.out.printf("%s Highlight: \n", prefix);
+                StringBuilder strBuilder = new StringBuilder();
+                for (Map.Entry<String, HighlightField> entry : searchHit.getHighlightResultItem().getHighlightFields().entrySet()) {
+                    strBuilder.append(entry.getKey()).append(":").append("[");
+                    strBuilder.append(StringUtils.join(",", entry.getValue().getFragments())).append("]\n");
+                }
+                System.out.printf("%s   %s", prefix, strBuilder);
+            }
+
+            for (SearchInnerHit searchInnerHit : searchHit.getSearchInnerHits().values()) {
+                System.out.printf("%s Path: %s\n", prefix, searchInnerHit.getPath());
+                System.out.printf("%s InnerHit: \n", prefix);
+                printSearchHit(searchInnerHit.getSubSearchHits(), prefix + "    ");
+            }
+
+            System.out.println();
+        }
     }
 }

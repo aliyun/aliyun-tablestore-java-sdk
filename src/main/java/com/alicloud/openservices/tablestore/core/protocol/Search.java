@@ -302,6 +302,7 @@ public final class Search {
     GEO_POLYGON_QUERY(13, 14),
     TERMS_QUERY(14, 15),
     EXISTS_QUERY(15, 16),
+    KNN_VECTOR_QUERY(16, 17),
     ;
     
     public static final int MATCH_QUERY_VALUE = 1;
@@ -320,6 +321,7 @@ public final class Search {
     public static final int GEO_POLYGON_QUERY_VALUE = 14;
     public static final int TERMS_QUERY_VALUE = 15;
     public static final int EXISTS_QUERY_VALUE = 16;
+    public static final int KNN_VECTOR_QUERY_VALUE = 17;
     
     
     public final int getNumber() { return value; }
@@ -342,6 +344,7 @@ public final class Search {
         case 14: return GEO_POLYGON_QUERY;
         case 15: return TERMS_QUERY;
         case 16: return EXISTS_QUERY;
+        case 17: return KNN_VECTOR_QUERY;
         default: return null;
       }
     }
@@ -372,7 +375,7 @@ public final class Search {
     }
     
     private static final QueryType[] VALUES = {
-      MATCH_QUERY, MATCH_PHRASE_QUERY, TERM_QUERY, RANGE_QUERY, PREFIX_QUERY, BOOL_QUERY, CONST_SCORE_QUERY, FUNCTION_SCORE_QUERY, NESTED_QUERY, WILDCARD_QUERY, MATCH_ALL_QUERY, GEO_BOUNDING_BOX_QUERY, GEO_DISTANCE_QUERY, GEO_POLYGON_QUERY, TERMS_QUERY, EXISTS_QUERY, 
+      MATCH_QUERY, MATCH_PHRASE_QUERY, TERM_QUERY, RANGE_QUERY, PREFIX_QUERY, BOOL_QUERY, CONST_SCORE_QUERY, FUNCTION_SCORE_QUERY, NESTED_QUERY, WILDCARD_QUERY, MATCH_ALL_QUERY, GEO_BOUNDING_BOX_QUERY, GEO_DISTANCE_QUERY, GEO_POLYGON_QUERY, TERMS_QUERY, EXISTS_QUERY, KNN_VECTOR_QUERY, 
     };
     
     public static QueryType valueOf(
@@ -752,6 +755,144 @@ public final class Search {
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.GeoDistanceType)
   }
   
+  public enum HighlightFragmentOrder
+      implements com.google.protobuf.ProtocolMessageEnum {
+    TEXT_SEQUENCE(0, 1),
+    SCORE(1, 2),
+    ;
+    
+    public static final int TEXT_SEQUENCE_VALUE = 1;
+    public static final int SCORE_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static HighlightFragmentOrder valueOf(int value) {
+      switch (value) {
+        case 1: return TEXT_SEQUENCE;
+        case 2: return SCORE;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<HighlightFragmentOrder>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<HighlightFragmentOrder>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<HighlightFragmentOrder>() {
+            public HighlightFragmentOrder findValueByNumber(int number) {
+              return HighlightFragmentOrder.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(9);
+    }
+    
+    private static final HighlightFragmentOrder[] VALUES = {
+      TEXT_SEQUENCE, SCORE, 
+    };
+    
+    public static HighlightFragmentOrder valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private HighlightFragmentOrder(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightFragmentOrder)
+  }
+  
+  public enum HighlightEncoder
+      implements com.google.protobuf.ProtocolMessageEnum {
+    PLAIN_MODE(0, 1),
+    HTML_MODE(1, 2),
+    ;
+    
+    public static final int PLAIN_MODE_VALUE = 1;
+    public static final int HTML_MODE_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static HighlightEncoder valueOf(int value) {
+      switch (value) {
+        case 1: return PLAIN_MODE;
+        case 2: return HTML_MODE;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<HighlightEncoder>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<HighlightEncoder>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<HighlightEncoder>() {
+            public HighlightEncoder findValueByNumber(int number) {
+              return HighlightEncoder.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(10);
+    }
+    
+    private static final HighlightEncoder[] VALUES = {
+      PLAIN_MODE, HTML_MODE, 
+    };
+    
+    public static HighlightEncoder valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private HighlightEncoder(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightEncoder)
+  }
+  
   public enum ColumnReturnType
       implements com.google.protobuf.ProtocolMessageEnum {
     RETURN_ALL(0, 1),
@@ -800,7 +941,7 @@ public final class Search {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(9);
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(11);
     }
     
     private static final ColumnReturnType[] VALUES = {
@@ -875,7 +1016,7 @@ public final class Search {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(10);
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(12);
     }
     
     private static final IndexOptions[] VALUES = {
@@ -912,6 +1053,7 @@ public final class Search {
     NESTED(5, 6),
     GEO_POINT(6, 7),
     DATE(7, 8),
+    VECTOR(8, 9),
     ;
     
     public static final int LONG_VALUE = 1;
@@ -922,6 +1064,7 @@ public final class Search {
     public static final int NESTED_VALUE = 6;
     public static final int GEO_POINT_VALUE = 7;
     public static final int DATE_VALUE = 8;
+    public static final int VECTOR_VALUE = 9;
     
     
     public final int getNumber() { return value; }
@@ -936,6 +1079,7 @@ public final class Search {
         case 6: return NESTED;
         case 7: return GEO_POINT;
         case 8: return DATE;
+        case 9: return VECTOR;
         default: return null;
       }
     }
@@ -962,11 +1106,11 @@ public final class Search {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(11);
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(13);
     }
     
     private static final FieldType[] VALUES = {
-      LONG, DOUBLE, BOOLEAN, KEYWORD, TEXT, NESTED, GEO_POINT, DATE, 
+      LONG, DOUBLE, BOOLEAN, KEYWORD, TEXT, NESTED, GEO_POINT, DATE, VECTOR, 
     };
     
     public static FieldType valueOf(
@@ -999,6 +1143,7 @@ public final class Search {
     HOUR(5, 6),
     MINUTE(6, 7),
     SECOND(7, 8),
+    MILLISECOND(8, 9),
     ;
     
     public static final int YEAR_VALUE = 1;
@@ -1009,6 +1154,7 @@ public final class Search {
     public static final int HOUR_VALUE = 6;
     public static final int MINUTE_VALUE = 7;
     public static final int SECOND_VALUE = 8;
+    public static final int MILLISECOND_VALUE = 9;
     
     
     public final int getNumber() { return value; }
@@ -1023,6 +1169,7 @@ public final class Search {
         case 6: return HOUR;
         case 7: return MINUTE;
         case 8: return SECOND;
+        case 9: return MILLISECOND;
         default: return null;
       }
     }
@@ -1049,11 +1196,11 @@ public final class Search {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(12);
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(14);
     }
     
     private static final DateTimeUnit[] VALUES = {
-      YEAR, QUARTER_YEAR, MONTH, WEEK, DAY, HOUR, MINUTE, SECOND, 
+      YEAR, QUARTER_YEAR, MONTH, WEEK, DAY, HOUR, MINUTE, SECOND, MILLISECOND, 
     };
     
     public static DateTimeUnit valueOf(
@@ -1074,6 +1221,210 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.DateTimeUnit)
+  }
+  
+  public enum VectorDataType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    VD_FLOAT_32(0, 2),
+    ;
+    
+    public static final int VD_FLOAT_32_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static VectorDataType valueOf(int value) {
+      switch (value) {
+        case 2: return VD_FLOAT_32;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<VectorDataType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<VectorDataType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<VectorDataType>() {
+            public VectorDataType findValueByNumber(int number) {
+              return VectorDataType.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(15);
+    }
+    
+    private static final VectorDataType[] VALUES = {
+      VD_FLOAT_32, 
+    };
+    
+    public static VectorDataType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private VectorDataType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.VectorDataType)
+  }
+  
+  public enum VectorMetricType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    VM_EUCLIDEAN(0, 0),
+    VM_COSINE(1, 1),
+    VM_DOT_PRODUCT(2, 2),
+    ;
+    
+    public static final int VM_EUCLIDEAN_VALUE = 0;
+    public static final int VM_COSINE_VALUE = 1;
+    public static final int VM_DOT_PRODUCT_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static VectorMetricType valueOf(int value) {
+      switch (value) {
+        case 0: return VM_EUCLIDEAN;
+        case 1: return VM_COSINE;
+        case 2: return VM_DOT_PRODUCT;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<VectorMetricType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<VectorMetricType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<VectorMetricType>() {
+            public VectorMetricType findValueByNumber(int number) {
+              return VectorMetricType.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(16);
+    }
+    
+    private static final VectorMetricType[] VALUES = {
+      VM_EUCLIDEAN, VM_COSINE, VM_DOT_PRODUCT, 
+    };
+    
+    public static VectorMetricType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private VectorMetricType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.VectorMetricType)
+  }
+  
+  public enum VectorIndexType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    VI_HNSW(0, 1),
+    ;
+    
+    public static final int VI_HNSW_VALUE = 1;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static VectorIndexType valueOf(int value) {
+      switch (value) {
+        case 1: return VI_HNSW;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<VectorIndexType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<VectorIndexType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<VectorIndexType>() {
+            public VectorIndexType findValueByNumber(int number) {
+              return VectorIndexType.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(17);
+    }
+    
+    private static final VectorIndexType[] VALUES = {
+      VI_HNSW, 
+    };
+    
+    public static VectorIndexType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private VectorIndexType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.VectorIndexType)
   }
   
   public enum SyncPhase
@@ -1118,7 +1469,7 @@ public final class Search {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(13);
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(18);
     }
     
     private static final SyncPhase[] VALUES = {
@@ -1143,6 +1494,78 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.SyncPhase)
+  }
+  
+  public enum IndexStatusEnum
+      implements com.google.protobuf.ProtocolMessageEnum {
+    PENDING(0, 1),
+    FAILED(1, 2),
+    RUNNING(2, 3),
+    ;
+    
+    public static final int PENDING_VALUE = 1;
+    public static final int FAILED_VALUE = 2;
+    public static final int RUNNING_VALUE = 3;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static IndexStatusEnum valueOf(int value) {
+      switch (value) {
+        case 1: return PENDING;
+        case 2: return FAILED;
+        case 3: return RUNNING;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<IndexStatusEnum>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<IndexStatusEnum>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<IndexStatusEnum>() {
+            public IndexStatusEnum findValueByNumber(int number) {
+              return IndexStatusEnum.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.getDescriptor().getEnumTypes().get(19);
+    }
+    
+    private static final IndexStatusEnum[] VALUES = {
+      PENDING, FAILED, RUNNING, 
+    };
+    
+    public static IndexStatusEnum valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private IndexStatusEnum(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.IndexStatusEnum)
   }
   
   public interface AvgAggOrBuilder
@@ -26761,6 +27184,11 @@ public final class Search {
     boolean hasSubGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys getSubGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBysOrBuilder getSubGroupBysOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.DateTimeValue offset = 10;
+    boolean hasOffset();
+    com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue getOffset();
+    com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder getOffsetOrBuilder();
   }
   public static final class GroupByDateHistogram extends
       com.google.protobuf.GeneratedMessage
@@ -26940,6 +27368,19 @@ public final class Search {
       return subGroupBys_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.DateTimeValue offset = 10;
+    public static final int OFFSET_FIELD_NUMBER = 10;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue offset_;
+    public boolean hasOffset() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue getOffset() {
+      return offset_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder getOffsetOrBuilder() {
+      return offset_;
+    }
+    
     private void initFields() {
       fieldName_ = "";
       interval_ = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance();
@@ -26950,6 +27391,7 @@ public final class Search {
       sort_ = com.alicloud.openservices.tablestore.core.protocol.Search.GroupBySort.getDefaultInstance();
       subAggs_ = com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations.getDefaultInstance();
       subGroupBys_ = com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys.getDefaultInstance();
+      offset_ = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -26989,6 +27431,9 @@ public final class Search {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeMessage(9, subGroupBys_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeMessage(10, offset_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -27034,6 +27479,10 @@ public final class Search {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, subGroupBys_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, offset_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -27156,6 +27605,7 @@ public final class Search {
           getSortFieldBuilder();
           getSubAggsFieldBuilder();
           getSubGroupBysFieldBuilder();
+          getOffsetFieldBuilder();
         }
       }
       private static Builder create() {
@@ -27202,6 +27652,12 @@ public final class Search {
           subGroupBysBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000100);
+        if (offsetBuilder_ == null) {
+          offset_ = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance();
+        } else {
+          offsetBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
       
@@ -27296,6 +27752,14 @@ public final class Search {
         } else {
           result.subGroupBys_ = subGroupBysBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        if (offsetBuilder_ == null) {
+          result.offset_ = offset_;
+        } else {
+          result.offset_ = offsetBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -27338,6 +27802,9 @@ public final class Search {
         }
         if (other.hasSubGroupBys()) {
           mergeSubGroupBys(other.getSubGroupBys());
+        }
+        if (other.hasOffset()) {
+          mergeOffset(other.getOffset());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -27433,6 +27900,15 @@ public final class Search {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setSubGroupBys(subBuilder.buildPartial());
+              break;
+            }
+            case 82: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.newBuilder();
+              if (hasOffset()) {
+                subBuilder.mergeFrom(getOffset());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setOffset(subBuilder.buildPartial());
               break;
             }
           }
@@ -28008,6 +28484,96 @@ public final class Search {
         return subGroupBysBuilder_;
       }
       
+      // optional .com.alicloud.openservices.tablestore.core.protocol.DateTimeValue offset = 10;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue offset_ = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder> offsetBuilder_;
+      public boolean hasOffset() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue getOffset() {
+        if (offsetBuilder_ == null) {
+          return offset_;
+        } else {
+          return offsetBuilder_.getMessage();
+        }
+      }
+      public Builder setOffset(com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue value) {
+        if (offsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          offset_ = value;
+          onChanged();
+        } else {
+          offsetBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder setOffset(
+          com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder builderForValue) {
+        if (offsetBuilder_ == null) {
+          offset_ = builderForValue.build();
+          onChanged();
+        } else {
+          offsetBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder mergeOffset(com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue value) {
+        if (offsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+              offset_ != com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance()) {
+            offset_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.newBuilder(offset_).mergeFrom(value).buildPartial();
+          } else {
+            offset_ = value;
+          }
+          onChanged();
+        } else {
+          offsetBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder clearOffset() {
+        if (offsetBuilder_ == null) {
+          offset_ = com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.getDefaultInstance();
+          onChanged();
+        } else {
+          offsetBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder getOffsetBuilder() {
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return getOffsetFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder getOffsetOrBuilder() {
+        if (offsetBuilder_ != null) {
+          return offsetBuilder_.getMessageOrBuilder();
+        } else {
+          return offset_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder> 
+          getOffsetFieldBuilder() {
+        if (offsetBuilder_ == null) {
+          offsetBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValueOrBuilder>(
+                  offset_,
+                  getParentForChildren(),
+                  isClean());
+          offset_ = null;
+        }
+        return offsetBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.GroupByDateHistogram)
     }
     
@@ -28057,6 +28623,10 @@ public final class Search {
     boolean hasSubGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys getSubGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBysOrBuilder getSubGroupBysOrBuilder();
+    
+    // optional bytes offset = 9;
+    boolean hasOffset();
+    com.google.protobuf.ByteString getOffset();
   }
   public static final class GroupByHistogram extends
       com.google.protobuf.GeneratedMessage
@@ -28201,6 +28771,16 @@ public final class Search {
       return subGroupBys_;
     }
     
+    // optional bytes offset = 9;
+    public static final int OFFSET_FIELD_NUMBER = 9;
+    private com.google.protobuf.ByteString offset_;
+    public boolean hasOffset() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public com.google.protobuf.ByteString getOffset() {
+      return offset_;
+    }
+    
     private void initFields() {
       fieldName_ = "";
       interval_ = com.google.protobuf.ByteString.EMPTY;
@@ -28210,6 +28790,7 @@ public final class Search {
       fieldRange_ = com.alicloud.openservices.tablestore.core.protocol.Search.FieldRange.getDefaultInstance();
       subAggs_ = com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations.getDefaultInstance();
       subGroupBys_ = com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys.getDefaultInstance();
+      offset_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -28246,6 +28827,9 @@ public final class Search {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeMessage(8, subGroupBys_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, offset_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -28287,6 +28871,10 @@ public final class Search {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, subGroupBys_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, offset_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -28448,6 +29036,8 @@ public final class Search {
           subGroupBysBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000080);
+        offset_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
       
@@ -28534,6 +29124,10 @@ public final class Search {
         } else {
           result.subGroupBys_ = subGroupBysBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.offset_ = offset_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -28573,6 +29167,9 @@ public final class Search {
         }
         if (other.hasSubGroupBys()) {
           mergeSubGroupBys(other.getSubGroupBys());
+        }
+        if (other.hasOffset()) {
+          setOffset(other.getOffset());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -28659,6 +29256,11 @@ public final class Search {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setSubGroupBys(subBuilder.buildPartial());
+              break;
+            }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              offset_ = input.readBytes();
               break;
             }
           }
@@ -29130,6 +29732,30 @@ public final class Search {
           subGroupBys_ = null;
         }
         return subGroupBysBuilder_;
+      }
+      
+      // optional bytes offset = 9;
+      private com.google.protobuf.ByteString offset_ = com.google.protobuf.ByteString.EMPTY;
+      public boolean hasOffset() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public com.google.protobuf.ByteString getOffset() {
+        return offset_;
+      }
+      public Builder setOffset(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearOffset() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        offset_ = getDefaultInstance().getOffset();
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.GroupByHistogram)
@@ -55612,6 +56238,11 @@ public final class Search {
     // optional float weight = 4;
     boolean hasWeight();
     float getWeight();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.InnerHits inner_hits = 5;
+    boolean hasInnerHits();
+    com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits getInnerHits();
+    com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder getInnerHitsOrBuilder();
   }
   public static final class NestedQuery extends
       com.google.protobuf.GeneratedMessage
@@ -55707,11 +56338,25 @@ public final class Search {
       return weight_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.InnerHits inner_hits = 5;
+    public static final int INNER_HITS_FIELD_NUMBER = 5;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits innerHits_;
+    public boolean hasInnerHits() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits getInnerHits() {
+      return innerHits_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder getInnerHitsOrBuilder() {
+      return innerHits_;
+    }
+    
     private void initFields() {
       path_ = "";
       query_ = com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance();
       scoreMode_ = com.alicloud.openservices.tablestore.core.protocol.Search.ScoreMode.SCORE_MODE_NONE;
       weight_ = 0F;
+      innerHits_ = com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -55737,6 +56382,9 @@ public final class Search {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeFloat(4, weight_);
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeMessage(5, innerHits_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -55761,6 +56409,10 @@ public final class Search {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(4, weight_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, innerHits_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -55879,6 +56531,7 @@ public final class Search {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getQueryFieldBuilder();
+          getInnerHitsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -55899,6 +56552,12 @@ public final class Search {
         bitField0_ = (bitField0_ & ~0x00000004);
         weight_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000008);
+        if (innerHitsBuilder_ == null) {
+          innerHits_ = com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance();
+        } else {
+          innerHitsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -55957,6 +56616,14 @@ public final class Search {
           to_bitField0_ |= 0x00000008;
         }
         result.weight_ = weight_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        if (innerHitsBuilder_ == null) {
+          result.innerHits_ = innerHits_;
+        } else {
+          result.innerHits_ = innerHitsBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -55984,6 +56651,9 @@ public final class Search {
         }
         if (other.hasWeight()) {
           setWeight(other.getWeight());
+        }
+        if (other.hasInnerHits()) {
+          mergeInnerHits(other.getInnerHits());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -56044,6 +56714,15 @@ public final class Search {
             case 37: {
               bitField0_ |= 0x00000008;
               weight_ = input.readFloat();
+              break;
+            }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.newBuilder();
+              if (hasInnerHits()) {
+                subBuilder.mergeFrom(getInnerHits());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setInnerHits(subBuilder.buildPartial());
               break;
             }
           }
@@ -56223,6 +56902,96 @@ public final class Search {
         return this;
       }
       
+      // optional .com.alicloud.openservices.tablestore.core.protocol.InnerHits inner_hits = 5;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits innerHits_ = com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder> innerHitsBuilder_;
+      public boolean hasInnerHits() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits getInnerHits() {
+        if (innerHitsBuilder_ == null) {
+          return innerHits_;
+        } else {
+          return innerHitsBuilder_.getMessage();
+        }
+      }
+      public Builder setInnerHits(com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits value) {
+        if (innerHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          innerHits_ = value;
+          onChanged();
+        } else {
+          innerHitsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder setInnerHits(
+          com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder builderForValue) {
+        if (innerHitsBuilder_ == null) {
+          innerHits_ = builderForValue.build();
+          onChanged();
+        } else {
+          innerHitsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder mergeInnerHits(com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits value) {
+        if (innerHitsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+              innerHits_ != com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance()) {
+            innerHits_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.newBuilder(innerHits_).mergeFrom(value).buildPartial();
+          } else {
+            innerHits_ = value;
+          }
+          onChanged();
+        } else {
+          innerHitsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder clearInnerHits() {
+        if (innerHitsBuilder_ == null) {
+          innerHits_ = com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance();
+          onChanged();
+        } else {
+          innerHitsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder getInnerHitsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getInnerHitsFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder getInnerHitsOrBuilder() {
+        if (innerHitsBuilder_ != null) {
+          return innerHitsBuilder_.getMessageOrBuilder();
+        } else {
+          return innerHits_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder> 
+          getInnerHitsFieldBuilder() {
+        if (innerHitsBuilder_ == null) {
+          innerHitsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder>(
+                  innerHits_,
+                  getParentForChildren(),
+                  isClean());
+          innerHits_ = null;
+        }
+        return innerHitsBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.NestedQuery)
     }
     
@@ -56232,6 +57001,687 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.NestedQuery)
+  }
+  
+  public interface InnerHitsOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Sort sort = 1;
+    boolean hasSort();
+    com.alicloud.openservices.tablestore.core.protocol.Search.Sort getSort();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder getSortOrBuilder();
+    
+    // optional int32 offset = 2;
+    boolean hasOffset();
+    int getOffset();
+    
+    // optional int32 limit = 3;
+    boolean hasLimit();
+    int getLimit();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 4;
+    boolean hasHighlight();
+    com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder();
+  }
+  public static final class InnerHits extends
+      com.google.protobuf.GeneratedMessage
+      implements InnerHitsOrBuilder {
+    // Use InnerHits.newBuilder() to construct.
+    private InnerHits(Builder builder) {
+      super(builder);
+    }
+    private InnerHits(boolean noInit) {}
+    
+    private static final InnerHits defaultInstance;
+    public static InnerHits getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public InnerHits getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Sort sort = 1;
+    public static final int SORT_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.Sort sort_;
+    public boolean hasSort() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.Sort getSort() {
+      return sort_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder getSortOrBuilder() {
+      return sort_;
+    }
+    
+    // optional int32 offset = 2;
+    public static final int OFFSET_FIELD_NUMBER = 2;
+    private int offset_;
+    public boolean hasOffset() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getOffset() {
+      return offset_;
+    }
+    
+    // optional int32 limit = 3;
+    public static final int LIMIT_FIELD_NUMBER = 3;
+    private int limit_;
+    public boolean hasLimit() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getLimit() {
+      return limit_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 4;
+    public static final int HIGHLIGHT_FIELD_NUMBER = 4;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.Highlight highlight_;
+    public boolean hasHighlight() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight() {
+      return highlight_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder() {
+      return highlight_;
+    }
+    
+    private void initFields() {
+      sort_ = com.alicloud.openservices.tablestore.core.protocol.Search.Sort.getDefaultInstance();
+      offset_ = 0;
+      limit_ = 0;
+      highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, sort_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, offset_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, limit_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(4, highlight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, sort_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, offset_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, limit_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, highlight_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.InnerHitsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getSortFieldBuilder();
+          getHighlightFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (sortBuilder_ == null) {
+          sort_ = com.alicloud.openservices.tablestore.core.protocol.Search.Sort.getDefaultInstance();
+        } else {
+          sortBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        offset_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        limit_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (highlightBuilder_ == null) {
+          highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+        } else {
+          highlightBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits result = new com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (sortBuilder_ == null) {
+          result.sort_ = sort_;
+        } else {
+          result.sort_ = sortBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.offset_ = offset_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.limit_ = limit_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (highlightBuilder_ == null) {
+          result.highlight_ = highlight_;
+        } else {
+          result.highlight_ = highlightBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.getDefaultInstance()) return this;
+        if (other.hasSort()) {
+          mergeSort(other.getSort());
+        }
+        if (other.hasOffset()) {
+          setOffset(other.getOffset());
+        }
+        if (other.hasLimit()) {
+          setLimit(other.getLimit());
+        }
+        if (other.hasHighlight()) {
+          mergeHighlight(other.getHighlight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.Sort.newBuilder();
+              if (hasSort()) {
+                subBuilder.mergeFrom(getSort());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setSort(subBuilder.buildPartial());
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              offset_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              limit_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.newBuilder();
+              if (hasHighlight()) {
+                subBuilder.mergeFrom(getHighlight());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setHighlight(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.Sort sort = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.Sort sort_ = com.alicloud.openservices.tablestore.core.protocol.Search.Sort.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Sort, com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder> sortBuilder_;
+      public boolean hasSort() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Sort getSort() {
+        if (sortBuilder_ == null) {
+          return sort_;
+        } else {
+          return sortBuilder_.getMessage();
+        }
+      }
+      public Builder setSort(com.alicloud.openservices.tablestore.core.protocol.Search.Sort value) {
+        if (sortBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          sort_ = value;
+          onChanged();
+        } else {
+          sortBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder setSort(
+          com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder builderForValue) {
+        if (sortBuilder_ == null) {
+          sort_ = builderForValue.build();
+          onChanged();
+        } else {
+          sortBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeSort(com.alicloud.openservices.tablestore.core.protocol.Search.Sort value) {
+        if (sortBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              sort_ != com.alicloud.openservices.tablestore.core.protocol.Search.Sort.getDefaultInstance()) {
+            sort_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.Sort.newBuilder(sort_).mergeFrom(value).buildPartial();
+          } else {
+            sort_ = value;
+          }
+          onChanged();
+        } else {
+          sortBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearSort() {
+        if (sortBuilder_ == null) {
+          sort_ = com.alicloud.openservices.tablestore.core.protocol.Search.Sort.getDefaultInstance();
+          onChanged();
+        } else {
+          sortBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder getSortBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getSortFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder getSortOrBuilder() {
+        if (sortBuilder_ != null) {
+          return sortBuilder_.getMessageOrBuilder();
+        } else {
+          return sort_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Sort, com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder> 
+          getSortFieldBuilder() {
+        if (sortBuilder_ == null) {
+          sortBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.Sort, com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SortOrBuilder>(
+                  sort_,
+                  getParentForChildren(),
+                  isClean());
+          sort_ = null;
+        }
+        return sortBuilder_;
+      }
+      
+      // optional int32 offset = 2;
+      private int offset_ ;
+      public boolean hasOffset() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getOffset() {
+        return offset_;
+      }
+      public Builder setOffset(int value) {
+        bitField0_ |= 0x00000002;
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearOffset() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        offset_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 limit = 3;
+      private int limit_ ;
+      public boolean hasLimit() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public int getLimit() {
+        return limit_;
+      }
+      public Builder setLimit(int value) {
+        bitField0_ |= 0x00000004;
+        limit_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearLimit() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        limit_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 4;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.Highlight highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder> highlightBuilder_;
+      public boolean hasHighlight() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight() {
+        if (highlightBuilder_ == null) {
+          return highlight_;
+        } else {
+          return highlightBuilder_.getMessage();
+        }
+      }
+      public Builder setHighlight(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight value) {
+        if (highlightBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          highlight_ = value;
+          onChanged();
+        } else {
+          highlightBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder setHighlight(
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder builderForValue) {
+        if (highlightBuilder_ == null) {
+          highlight_ = builderForValue.build();
+          onChanged();
+        } else {
+          highlightBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder mergeHighlight(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight value) {
+        if (highlightBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              highlight_ != com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance()) {
+            highlight_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.newBuilder(highlight_).mergeFrom(value).buildPartial();
+          } else {
+            highlight_ = value;
+          }
+          onChanged();
+        } else {
+          highlightBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder clearHighlight() {
+        if (highlightBuilder_ == null) {
+          highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+          onChanged();
+        } else {
+          highlightBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder getHighlightBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getHighlightFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder() {
+        if (highlightBuilder_ != null) {
+          return highlightBuilder_.getMessageOrBuilder();
+        } else {
+          return highlight_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder> 
+          getHighlightFieldBuilder() {
+        if (highlightBuilder_ == null) {
+          highlightBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder>(
+                  highlight_,
+                  getParentForChildren(),
+                  isClean());
+          highlight_ = null;
+        }
+        return highlightBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.InnerHits)
+    }
+    
+    static {
+      defaultInstance = new InnerHits(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.InnerHits)
   }
   
   public interface GeoBoundingBoxQueryOrBuilder
@@ -58182,6 +59632,743 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.ExistsQuery)
+  }
+  
+  public interface KnnVectorQueryOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string field_name = 1;
+    boolean hasFieldName();
+    String getFieldName();
+    
+    // optional int32 top_k = 2;
+    boolean hasTopK();
+    int getTopK();
+    
+    // repeated float float32_query_vector = 4;
+    java.util.List<java.lang.Float> getFloat32QueryVectorList();
+    int getFloat32QueryVectorCount();
+    float getFloat32QueryVector(int index);
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Query filter = 5;
+    boolean hasFilter();
+    com.alicloud.openservices.tablestore.core.protocol.Search.Query getFilter();
+    com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder getFilterOrBuilder();
+    
+    // optional float weight = 6;
+    boolean hasWeight();
+    float getWeight();
+  }
+  public static final class KnnVectorQuery extends
+      com.google.protobuf.GeneratedMessage
+      implements KnnVectorQueryOrBuilder {
+    // Use KnnVectorQuery.newBuilder() to construct.
+    private KnnVectorQuery(Builder builder) {
+      super(builder);
+    }
+    private KnnVectorQuery(boolean noInit) {}
+    
+    private static final KnnVectorQuery defaultInstance;
+    public static KnnVectorQuery getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public KnnVectorQuery getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional string field_name = 1;
+    public static final int FIELD_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object fieldName_;
+    public boolean hasFieldName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getFieldName() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          fieldName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getFieldNameBytes() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        fieldName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional int32 top_k = 2;
+    public static final int TOP_K_FIELD_NUMBER = 2;
+    private int topK_;
+    public boolean hasTopK() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getTopK() {
+      return topK_;
+    }
+    
+    // repeated float float32_query_vector = 4;
+    public static final int FLOAT32_QUERY_VECTOR_FIELD_NUMBER = 4;
+    private java.util.List<java.lang.Float> float32QueryVector_;
+    public java.util.List<java.lang.Float>
+        getFloat32QueryVectorList() {
+      return float32QueryVector_;
+    }
+    public int getFloat32QueryVectorCount() {
+      return float32QueryVector_.size();
+    }
+    public float getFloat32QueryVector(int index) {
+      return float32QueryVector_.get(index);
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Query filter = 5;
+    public static final int FILTER_FIELD_NUMBER = 5;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.Query filter_;
+    public boolean hasFilter() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.Query getFilter() {
+      return filter_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder getFilterOrBuilder() {
+      return filter_;
+    }
+    
+    // optional float weight = 6;
+    public static final int WEIGHT_FIELD_NUMBER = 6;
+    private float weight_;
+    public boolean hasWeight() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public float getWeight() {
+      return weight_;
+    }
+    
+    private void initFields() {
+      fieldName_ = "";
+      topK_ = 0;
+      float32QueryVector_ = java.util.Collections.emptyList();;
+      filter_ = com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance();
+      weight_ = 0F;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getFieldNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, topK_);
+      }
+      for (int i = 0; i < float32QueryVector_.size(); i++) {
+        output.writeFloat(4, float32QueryVector_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(5, filter_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeFloat(6, weight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getFieldNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, topK_);
+      }
+      {
+        int dataSize = 0;
+        dataSize = 4 * getFloat32QueryVectorList().size();
+        size += dataSize;
+        size += 1 * getFloat32QueryVectorList().size();
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, filter_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(6, weight_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQueryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getFilterFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        fieldName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        topK_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        float32QueryVector_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (filterBuilder_ == null) {
+          filter_ = com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance();
+        } else {
+          filterBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        weight_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery result = new com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.fieldName_ = fieldName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.topK_ = topK_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          float32QueryVector_ = java.util.Collections.unmodifiableList(float32QueryVector_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.float32QueryVector_ = float32QueryVector_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (filterBuilder_ == null) {
+          result.filter_ = filter_;
+        } else {
+          result.filter_ = filterBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.weight_ = weight_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.getDefaultInstance()) return this;
+        if (other.hasFieldName()) {
+          setFieldName(other.getFieldName());
+        }
+        if (other.hasTopK()) {
+          setTopK(other.getTopK());
+        }
+        if (!other.float32QueryVector_.isEmpty()) {
+          if (float32QueryVector_.isEmpty()) {
+            float32QueryVector_ = other.float32QueryVector_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureFloat32QueryVectorIsMutable();
+            float32QueryVector_.addAll(other.float32QueryVector_);
+          }
+          onChanged();
+        }
+        if (other.hasFilter()) {
+          mergeFilter(other.getFilter());
+        }
+        if (other.hasWeight()) {
+          setWeight(other.getWeight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              fieldName_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              topK_ = input.readInt32();
+              break;
+            }
+            case 37: {
+              ensureFloat32QueryVectorIsMutable();
+              float32QueryVector_.add(input.readFloat());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              while (input.getBytesUntilLimit() > 0) {
+                addFloat32QueryVector(input.readFloat());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.Query.newBuilder();
+              if (hasFilter()) {
+                subBuilder.mergeFrom(getFilter());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setFilter(subBuilder.buildPartial());
+              break;
+            }
+            case 53: {
+              bitField0_ |= 0x00000010;
+              weight_ = input.readFloat();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional string field_name = 1;
+      private java.lang.Object fieldName_ = "";
+      public boolean hasFieldName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getFieldName() {
+        java.lang.Object ref = fieldName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          fieldName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setFieldName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFieldName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        fieldName_ = getDefaultInstance().getFieldName();
+        onChanged();
+        return this;
+      }
+      void setFieldName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+      }
+      
+      // optional int32 top_k = 2;
+      private int topK_ ;
+      public boolean hasTopK() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getTopK() {
+        return topK_;
+      }
+      public Builder setTopK(int value) {
+        bitField0_ |= 0x00000002;
+        topK_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTopK() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        topK_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // repeated float float32_query_vector = 4;
+      private java.util.List<java.lang.Float> float32QueryVector_ = java.util.Collections.emptyList();;
+      private void ensureFloat32QueryVectorIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          float32QueryVector_ = new java.util.ArrayList<java.lang.Float>(float32QueryVector_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      public java.util.List<java.lang.Float>
+          getFloat32QueryVectorList() {
+        return java.util.Collections.unmodifiableList(float32QueryVector_);
+      }
+      public int getFloat32QueryVectorCount() {
+        return float32QueryVector_.size();
+      }
+      public float getFloat32QueryVector(int index) {
+        return float32QueryVector_.get(index);
+      }
+      public Builder setFloat32QueryVector(
+          int index, float value) {
+        ensureFloat32QueryVectorIsMutable();
+        float32QueryVector_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addFloat32QueryVector(float value) {
+        ensureFloat32QueryVectorIsMutable();
+        float32QueryVector_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllFloat32QueryVector(
+          java.lang.Iterable<? extends java.lang.Float> values) {
+        ensureFloat32QueryVectorIsMutable();
+        super.addAll(values, float32QueryVector_);
+        onChanged();
+        return this;
+      }
+      public Builder clearFloat32QueryVector() {
+        float32QueryVector_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.Query filter = 5;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.Query filter_ = com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Query, com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder> filterBuilder_;
+      public boolean hasFilter() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Query getFilter() {
+        if (filterBuilder_ == null) {
+          return filter_;
+        } else {
+          return filterBuilder_.getMessage();
+        }
+      }
+      public Builder setFilter(com.alicloud.openservices.tablestore.core.protocol.Search.Query value) {
+        if (filterBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          filter_ = value;
+          onChanged();
+        } else {
+          filterBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder setFilter(
+          com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder builderForValue) {
+        if (filterBuilder_ == null) {
+          filter_ = builderForValue.build();
+          onChanged();
+        } else {
+          filterBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder mergeFilter(com.alicloud.openservices.tablestore.core.protocol.Search.Query value) {
+        if (filterBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              filter_ != com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance()) {
+            filter_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.Query.newBuilder(filter_).mergeFrom(value).buildPartial();
+          } else {
+            filter_ = value;
+          }
+          onChanged();
+        } else {
+          filterBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder clearFilter() {
+        if (filterBuilder_ == null) {
+          filter_ = com.alicloud.openservices.tablestore.core.protocol.Search.Query.getDefaultInstance();
+          onChanged();
+        } else {
+          filterBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder getFilterBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getFilterFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder getFilterOrBuilder() {
+        if (filterBuilder_ != null) {
+          return filterBuilder_.getMessageOrBuilder();
+        } else {
+          return filter_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Query, com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder> 
+          getFilterFieldBuilder() {
+        if (filterBuilder_ == null) {
+          filterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.Query, com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.QueryOrBuilder>(
+                  filter_,
+                  getParentForChildren(),
+                  isClean());
+          filter_ = null;
+        }
+        return filterBuilder_;
+      }
+      
+      // optional float weight = 6;
+      private float weight_ ;
+      public boolean hasWeight() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public float getWeight() {
+        return weight_;
+      }
+      public Builder setWeight(float value) {
+        bitField0_ |= 0x00000010;
+        weight_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearWeight() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        weight_ = 0F;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.KnnVectorQuery)
+    }
+    
+    static {
+      defaultInstance = new KnnVectorQuery(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.KnnVectorQuery)
   }
   
   public interface QueryOrBuilder
@@ -60982,6 +63169,353 @@ public final class Search {
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.FieldSort)
   }
   
+  public interface DocSortOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.SortOrder order = 1;
+    boolean hasOrder();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder getOrder();
+  }
+  public static final class DocSort extends
+      com.google.protobuf.GeneratedMessage
+      implements DocSortOrBuilder {
+    // Use DocSort.newBuilder() to construct.
+    private DocSort(Builder builder) {
+      super(builder);
+    }
+    private DocSort(boolean noInit) {}
+    
+    private static final DocSort defaultInstance;
+    public static DocSort getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public DocSort getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.SortOrder order = 1;
+    public static final int ORDER_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder order_;
+    public boolean hasOrder() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder getOrder() {
+      return order_;
+    }
+    
+    private void initFields() {
+      order_ = com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder.SORT_ORDER_ASC;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, order_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, order_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.DocSort parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.DocSort prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        order_ = com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder.SORT_ORDER_ASC;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.DocSort result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.DocSort buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.DocSort result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.DocSort result = new com.alicloud.openservices.tablestore.core.protocol.Search.DocSort(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.order_ = order_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.DocSort) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.DocSort)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.DocSort other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance()) return this;
+        if (other.hasOrder()) {
+          setOrder(other.getOrder());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder value = com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                order_ = value;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.SortOrder order = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder order_ = com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder.SORT_ORDER_ASC;
+      public boolean hasOrder() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder getOrder() {
+        return order_;
+      }
+      public Builder setOrder(com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        order_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearOrder() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        order_ = com.alicloud.openservices.tablestore.core.protocol.Search.SortOrder.SORT_ORDER_ASC;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.DocSort)
+    }
+    
+    static {
+      defaultInstance = new DocSort(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.DocSort)
+  }
+  
   public interface GeoDistanceSortOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -61831,6 +64365,11 @@ public final class Search {
     boolean hasPkSort();
     com.alicloud.openservices.tablestore.core.protocol.Search.PrimaryKeySort getPkSort();
     com.alicloud.openservices.tablestore.core.protocol.Search.PrimaryKeySortOrBuilder getPkSortOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.DocSort doc_sort = 5;
+    boolean hasDocSort();
+    com.alicloud.openservices.tablestore.core.protocol.Search.DocSort getDocSort();
+    com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder getDocSortOrBuilder();
   }
   public static final class Sorter extends
       com.google.protobuf.GeneratedMessage
@@ -61913,11 +64452,25 @@ public final class Search {
       return pkSort_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.DocSort doc_sort = 5;
+    public static final int DOC_SORT_FIELD_NUMBER = 5;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.DocSort docSort_;
+    public boolean hasDocSort() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort getDocSort() {
+      return docSort_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder getDocSortOrBuilder() {
+      return docSort_;
+    }
+    
     private void initFields() {
       fieldSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.FieldSort.getDefaultInstance();
       geoDistanceSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.GeoDistanceSort.getDefaultInstance();
       scoreSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.ScoreSort.getDefaultInstance();
       pkSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.PrimaryKeySort.getDefaultInstance();
+      docSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -61943,6 +64496,9 @@ public final class Search {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(4, pkSort_);
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeMessage(5, docSort_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -61967,6 +64523,10 @@ public final class Search {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, pkSort_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, docSort_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -62088,6 +64648,7 @@ public final class Search {
           getGeoDistanceSortFieldBuilder();
           getScoreSortFieldBuilder();
           getPkSortFieldBuilder();
+          getDocSortFieldBuilder();
         }
       }
       private static Builder create() {
@@ -62120,6 +64681,12 @@ public final class Search {
           pkSortBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        if (docSortBuilder_ == null) {
+          docSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance();
+        } else {
+          docSortBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -62190,6 +64757,14 @@ public final class Search {
         } else {
           result.pkSort_ = pkSortBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        if (docSortBuilder_ == null) {
+          result.docSort_ = docSort_;
+        } else {
+          result.docSort_ = docSortBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -62217,6 +64792,9 @@ public final class Search {
         }
         if (other.hasPkSort()) {
           mergePkSort(other.getPkSort());
+        }
+        if (other.hasDocSort()) {
+          mergeDocSort(other.getDocSort());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -62283,6 +64861,15 @@ public final class Search {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setPkSort(subBuilder.buildPartial());
+              break;
+            }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.newBuilder();
+              if (hasDocSort()) {
+                subBuilder.mergeFrom(getDocSort());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setDocSort(subBuilder.buildPartial());
               break;
             }
           }
@@ -62649,6 +65236,96 @@ public final class Search {
           pkSort_ = null;
         }
         return pkSortBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.DocSort doc_sort = 5;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.DocSort docSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.DocSort, com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder> docSortBuilder_;
+      public boolean hasDocSort() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort getDocSort() {
+        if (docSortBuilder_ == null) {
+          return docSort_;
+        } else {
+          return docSortBuilder_.getMessage();
+        }
+      }
+      public Builder setDocSort(com.alicloud.openservices.tablestore.core.protocol.Search.DocSort value) {
+        if (docSortBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          docSort_ = value;
+          onChanged();
+        } else {
+          docSortBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder setDocSort(
+          com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder builderForValue) {
+        if (docSortBuilder_ == null) {
+          docSort_ = builderForValue.build();
+          onChanged();
+        } else {
+          docSortBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder mergeDocSort(com.alicloud.openservices.tablestore.core.protocol.Search.DocSort value) {
+        if (docSortBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+              docSort_ != com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance()) {
+            docSort_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.newBuilder(docSort_).mergeFrom(value).buildPartial();
+          } else {
+            docSort_ = value;
+          }
+          onChanged();
+        } else {
+          docSortBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      public Builder clearDocSort() {
+        if (docSortBuilder_ == null) {
+          docSort_ = com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.getDefaultInstance();
+          onChanged();
+        } else {
+          docSortBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder getDocSortBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getDocSortFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder getDocSortOrBuilder() {
+        if (docSortBuilder_ != null) {
+          return docSortBuilder_.getMessageOrBuilder();
+        } else {
+          return docSort_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.DocSort, com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder> 
+          getDocSortFieldBuilder() {
+        if (docSortBuilder_ == null) {
+          docSortBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.DocSort, com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.DocSortOrBuilder>(
+                  docSort_,
+                  getParentForChildren(),
+                  isClean());
+          docSort_ = null;
+        }
+        return docSortBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.Sorter)
@@ -63256,6 +65933,11 @@ public final class Search {
     boolean hasGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys getGroupBys();
     com.alicloud.openservices.tablestore.core.protocol.Search.GroupBysOrBuilder getGroupBysOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 12;
+    boolean hasHighlight();
+    com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder();
   }
   public static final class SearchQuery extends
       com.google.protobuf.GeneratedMessage
@@ -63391,6 +66073,19 @@ public final class Search {
       return groupBys_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 12;
+    public static final int HIGHLIGHT_FIELD_NUMBER = 12;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.Highlight highlight_;
+    public boolean hasHighlight() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight() {
+      return highlight_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder() {
+      return highlight_;
+    }
+    
     private void initFields() {
       offset_ = 0;
       limit_ = 0;
@@ -63401,6 +66096,7 @@ public final class Search {
       token_ = com.google.protobuf.ByteString.EMPTY;
       aggs_ = com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations.getDefaultInstance();
       groupBys_ = com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys.getDefaultInstance();
+      highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -63440,6 +66136,9 @@ public final class Search {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeMessage(11, groupBys_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeMessage(12, highlight_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -63485,6 +66184,10 @@ public final class Search {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, groupBys_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, highlight_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -63607,6 +66310,7 @@ public final class Search {
           getSortFieldBuilder();
           getAggsFieldBuilder();
           getGroupBysFieldBuilder();
+          getHighlightFieldBuilder();
         }
       }
       private static Builder create() {
@@ -63653,6 +66357,12 @@ public final class Search {
           groupBysBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000100);
+        if (highlightBuilder_ == null) {
+          highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+        } else {
+          highlightBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
       
@@ -63747,6 +66457,14 @@ public final class Search {
         } else {
           result.groupBys_ = groupBysBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        if (highlightBuilder_ == null) {
+          result.highlight_ = highlight_;
+        } else {
+          result.highlight_ = highlightBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -63789,6 +66507,9 @@ public final class Search {
         }
         if (other.hasGroupBys()) {
           mergeGroupBys(other.getGroupBys());
+        }
+        if (other.hasHighlight()) {
+          mergeHighlight(other.getHighlight());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -63884,6 +66605,15 @@ public final class Search {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setGroupBys(subBuilder.buildPartial());
+              break;
+            }
+            case 98: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.newBuilder();
+              if (hasHighlight()) {
+                subBuilder.mergeFrom(getHighlight());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setHighlight(subBuilder.buildPartial());
               break;
             }
           }
@@ -64429,6 +67159,96 @@ public final class Search {
         return groupBysBuilder_;
       }
       
+      // optional .com.alicloud.openservices.tablestore.core.protocol.Highlight highlight = 12;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.Highlight highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder> highlightBuilder_;
+      public boolean hasHighlight() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getHighlight() {
+        if (highlightBuilder_ == null) {
+          return highlight_;
+        } else {
+          return highlightBuilder_.getMessage();
+        }
+      }
+      public Builder setHighlight(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight value) {
+        if (highlightBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          highlight_ = value;
+          onChanged();
+        } else {
+          highlightBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder setHighlight(
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder builderForValue) {
+        if (highlightBuilder_ == null) {
+          highlight_ = builderForValue.build();
+          onChanged();
+        } else {
+          highlightBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder mergeHighlight(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight value) {
+        if (highlightBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+              highlight_ != com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance()) {
+            highlight_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.newBuilder(highlight_).mergeFrom(value).buildPartial();
+          } else {
+            highlight_ = value;
+          }
+          onChanged();
+        } else {
+          highlightBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      public Builder clearHighlight() {
+        if (highlightBuilder_ == null) {
+          highlight_ = com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+          onChanged();
+        } else {
+          highlightBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder getHighlightBuilder() {
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return getHighlightFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder getHighlightOrBuilder() {
+        if (highlightBuilder_ != null) {
+          return highlightBuilder_.getMessageOrBuilder();
+        } else {
+          return highlight_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder> 
+          getHighlightFieldBuilder() {
+        if (highlightBuilder_ == null) {
+          highlightBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight, com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder>(
+                  highlight_,
+                  getParentForChildren(),
+                  isClean());
+          highlight_ = null;
+        }
+        return highlightBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SearchQuery)
     }
     
@@ -64438,6 +67258,1369 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.SearchQuery)
+  }
+  
+  public interface HighlightOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightParameter highlight_parameters = 1;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> 
+        getHighlightParametersList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter getHighlightParameters(int index);
+    int getHighlightParametersCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder> 
+        getHighlightParametersOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder getHighlightParametersOrBuilder(
+        int index);
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightEncoder highlight_encoder = 2 [default = PLAIN_MODE];
+    boolean hasHighlightEncoder();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder getHighlightEncoder();
+  }
+  public static final class Highlight extends
+      com.google.protobuf.GeneratedMessage
+      implements HighlightOrBuilder {
+    // Use Highlight.newBuilder() to construct.
+    private Highlight(Builder builder) {
+      super(builder);
+    }
+    private Highlight(boolean noInit) {}
+    
+    private static final Highlight defaultInstance;
+    public static Highlight getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Highlight getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightParameter highlight_parameters = 1;
+    public static final int HIGHLIGHT_PARAMETERS_FIELD_NUMBER = 1;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> highlightParameters_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> getHighlightParametersList() {
+      return highlightParameters_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder> 
+        getHighlightParametersOrBuilderList() {
+      return highlightParameters_;
+    }
+    public int getHighlightParametersCount() {
+      return highlightParameters_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter getHighlightParameters(int index) {
+      return highlightParameters_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder getHighlightParametersOrBuilder(
+        int index) {
+      return highlightParameters_.get(index);
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightEncoder highlight_encoder = 2 [default = PLAIN_MODE];
+    public static final int HIGHLIGHT_ENCODER_FIELD_NUMBER = 2;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder highlightEncoder_;
+    public boolean hasHighlightEncoder() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder getHighlightEncoder() {
+      return highlightEncoder_;
+    }
+    
+    private void initFields() {
+      highlightParameters_ = java.util.Collections.emptyList();
+      highlightEncoder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder.PLAIN_MODE;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < highlightParameters_.size(); i++) {
+        output.writeMessage(1, highlightParameters_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(2, highlightEncoder_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      for (int i = 0; i < highlightParameters_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, highlightParameters_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, highlightEncoder_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.Highlight parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.HighlightOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getHighlightParametersFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (highlightParametersBuilder_ == null) {
+          highlightParameters_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          highlightParametersBuilder_.clear();
+        }
+        highlightEncoder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder.PLAIN_MODE;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.Highlight result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.Highlight buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.Highlight result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.Highlight buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.Highlight result = new com.alicloud.openservices.tablestore.core.protocol.Search.Highlight(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (highlightParametersBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            highlightParameters_ = java.util.Collections.unmodifiableList(highlightParameters_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.highlightParameters_ = highlightParameters_;
+        } else {
+          result.highlightParameters_ = highlightParametersBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.highlightEncoder_ = highlightEncoder_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.Highlight) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.Highlight)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.Highlight other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.getDefaultInstance()) return this;
+        if (highlightParametersBuilder_ == null) {
+          if (!other.highlightParameters_.isEmpty()) {
+            if (highlightParameters_.isEmpty()) {
+              highlightParameters_ = other.highlightParameters_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureHighlightParametersIsMutable();
+              highlightParameters_.addAll(other.highlightParameters_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.highlightParameters_.isEmpty()) {
+            if (highlightParametersBuilder_.isEmpty()) {
+              highlightParametersBuilder_.dispose();
+              highlightParametersBuilder_ = null;
+              highlightParameters_ = other.highlightParameters_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              highlightParametersBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getHighlightParametersFieldBuilder() : null;
+            } else {
+              highlightParametersBuilder_.addAllMessages(other.highlightParameters_);
+            }
+          }
+        }
+        if (other.hasHighlightEncoder()) {
+          setHighlightEncoder(other.getHighlightEncoder());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addHighlightParameters(subBuilder.buildPartial());
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder value = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(2, rawValue);
+              } else {
+                bitField0_ |= 0x00000002;
+                highlightEncoder_ = value;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightParameter highlight_parameters = 1;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> highlightParameters_ =
+        java.util.Collections.emptyList();
+      private void ensureHighlightParametersIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          highlightParameters_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter>(highlightParameters_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder> highlightParametersBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> getHighlightParametersList() {
+        if (highlightParametersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(highlightParameters_);
+        } else {
+          return highlightParametersBuilder_.getMessageList();
+        }
+      }
+      public int getHighlightParametersCount() {
+        if (highlightParametersBuilder_ == null) {
+          return highlightParameters_.size();
+        } else {
+          return highlightParametersBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter getHighlightParameters(int index) {
+        if (highlightParametersBuilder_ == null) {
+          return highlightParameters_.get(index);
+        } else {
+          return highlightParametersBuilder_.getMessage(index);
+        }
+      }
+      public Builder setHighlightParameters(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter value) {
+        if (highlightParametersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.set(index, value);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setHighlightParameters(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder builderForValue) {
+        if (highlightParametersBuilder_ == null) {
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          highlightParametersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addHighlightParameters(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter value) {
+        if (highlightParametersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.add(value);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addHighlightParameters(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter value) {
+        if (highlightParametersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.add(index, value);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addHighlightParameters(
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder builderForValue) {
+        if (highlightParametersBuilder_ == null) {
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.add(builderForValue.build());
+          onChanged();
+        } else {
+          highlightParametersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addHighlightParameters(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder builderForValue) {
+        if (highlightParametersBuilder_ == null) {
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          highlightParametersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllHighlightParameters(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter> values) {
+        if (highlightParametersBuilder_ == null) {
+          ensureHighlightParametersIsMutable();
+          super.addAll(values, highlightParameters_);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearHighlightParameters() {
+        if (highlightParametersBuilder_ == null) {
+          highlightParameters_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeHighlightParameters(int index) {
+        if (highlightParametersBuilder_ == null) {
+          ensureHighlightParametersIsMutable();
+          highlightParameters_.remove(index);
+          onChanged();
+        } else {
+          highlightParametersBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder getHighlightParametersBuilder(
+          int index) {
+        return getHighlightParametersFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder getHighlightParametersOrBuilder(
+          int index) {
+        if (highlightParametersBuilder_ == null) {
+          return highlightParameters_.get(index);  } else {
+          return highlightParametersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder> 
+           getHighlightParametersOrBuilderList() {
+        if (highlightParametersBuilder_ != null) {
+          return highlightParametersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(highlightParameters_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder addHighlightParametersBuilder() {
+        return getHighlightParametersFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder addHighlightParametersBuilder(
+          int index) {
+        return getHighlightParametersFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder> 
+           getHighlightParametersBuilderList() {
+        return getHighlightParametersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder> 
+          getHighlightParametersFieldBuilder() {
+        if (highlightParametersBuilder_ == null) {
+          highlightParametersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder>(
+                  highlightParameters_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          highlightParameters_ = null;
+        }
+        return highlightParametersBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightEncoder highlight_encoder = 2 [default = PLAIN_MODE];
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder highlightEncoder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder.PLAIN_MODE;
+      public boolean hasHighlightEncoder() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder getHighlightEncoder() {
+        return highlightEncoder_;
+      }
+      public Builder setHighlightEncoder(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        highlightEncoder_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearHighlightEncoder() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        highlightEncoder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightEncoder.PLAIN_MODE;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.Highlight)
+    }
+    
+    static {
+      defaultInstance = new Highlight(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.Highlight)
+  }
+  
+  public interface HighlightParameterOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string field_name = 1;
+    boolean hasFieldName();
+    String getFieldName();
+    
+    // optional int32 number_of_fragments = 2;
+    boolean hasNumberOfFragments();
+    int getNumberOfFragments();
+    
+    // optional int32 fragment_size = 3;
+    boolean hasFragmentSize();
+    int getFragmentSize();
+    
+    // optional string pre_tag = 4;
+    boolean hasPreTag();
+    String getPreTag();
+    
+    // optional string post_tag = 5;
+    boolean hasPostTag();
+    String getPostTag();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightFragmentOrder fragments_order = 6 [default = TEXT_SEQUENCE];
+    boolean hasFragmentsOrder();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder getFragmentsOrder();
+  }
+  public static final class HighlightParameter extends
+      com.google.protobuf.GeneratedMessage
+      implements HighlightParameterOrBuilder {
+    // Use HighlightParameter.newBuilder() to construct.
+    private HighlightParameter(Builder builder) {
+      super(builder);
+    }
+    private HighlightParameter(boolean noInit) {}
+    
+    private static final HighlightParameter defaultInstance;
+    public static HighlightParameter getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public HighlightParameter getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional string field_name = 1;
+    public static final int FIELD_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object fieldName_;
+    public boolean hasFieldName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getFieldName() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          fieldName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getFieldNameBytes() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        fieldName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional int32 number_of_fragments = 2;
+    public static final int NUMBER_OF_FRAGMENTS_FIELD_NUMBER = 2;
+    private int numberOfFragments_;
+    public boolean hasNumberOfFragments() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getNumberOfFragments() {
+      return numberOfFragments_;
+    }
+    
+    // optional int32 fragment_size = 3;
+    public static final int FRAGMENT_SIZE_FIELD_NUMBER = 3;
+    private int fragmentSize_;
+    public boolean hasFragmentSize() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getFragmentSize() {
+      return fragmentSize_;
+    }
+    
+    // optional string pre_tag = 4;
+    public static final int PRE_TAG_FIELD_NUMBER = 4;
+    private java.lang.Object preTag_;
+    public boolean hasPreTag() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getPreTag() {
+      java.lang.Object ref = preTag_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          preTag_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getPreTagBytes() {
+      java.lang.Object ref = preTag_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        preTag_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string post_tag = 5;
+    public static final int POST_TAG_FIELD_NUMBER = 5;
+    private java.lang.Object postTag_;
+    public boolean hasPostTag() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getPostTag() {
+      java.lang.Object ref = postTag_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          postTag_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getPostTagBytes() {
+      java.lang.Object ref = postTag_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        postTag_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightFragmentOrder fragments_order = 6 [default = TEXT_SEQUENCE];
+    public static final int FRAGMENTS_ORDER_FIELD_NUMBER = 6;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder fragmentsOrder_;
+    public boolean hasFragmentsOrder() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder getFragmentsOrder() {
+      return fragmentsOrder_;
+    }
+    
+    private void initFields() {
+      fieldName_ = "";
+      numberOfFragments_ = 0;
+      fragmentSize_ = 0;
+      preTag_ = "";
+      postTag_ = "";
+      fragmentsOrder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder.TEXT_SEQUENCE;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getFieldNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, numberOfFragments_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, fragmentSize_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getPreTagBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getPostTagBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeEnum(6, fragmentsOrder_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getFieldNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, numberOfFragments_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, fragmentSize_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getPreTagBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getPostTagBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(6, fragmentsOrder_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        fieldName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        numberOfFragments_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        fragmentSize_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        preTag_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        postTag_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        fragmentsOrder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder.TEXT_SEQUENCE;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter result = new com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.fieldName_ = fieldName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.numberOfFragments_ = numberOfFragments_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.fragmentSize_ = fragmentSize_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.preTag_ = preTag_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.postTag_ = postTag_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.fragmentsOrder_ = fragmentsOrder_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.getDefaultInstance()) return this;
+        if (other.hasFieldName()) {
+          setFieldName(other.getFieldName());
+        }
+        if (other.hasNumberOfFragments()) {
+          setNumberOfFragments(other.getNumberOfFragments());
+        }
+        if (other.hasFragmentSize()) {
+          setFragmentSize(other.getFragmentSize());
+        }
+        if (other.hasPreTag()) {
+          setPreTag(other.getPreTag());
+        }
+        if (other.hasPostTag()) {
+          setPostTag(other.getPostTag());
+        }
+        if (other.hasFragmentsOrder()) {
+          setFragmentsOrder(other.getFragmentsOrder());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              fieldName_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              numberOfFragments_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              fragmentSize_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              preTag_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000010;
+              postTag_ = input.readBytes();
+              break;
+            }
+            case 48: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder value = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(6, rawValue);
+              } else {
+                bitField0_ |= 0x00000020;
+                fragmentsOrder_ = value;
+              }
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional string field_name = 1;
+      private java.lang.Object fieldName_ = "";
+      public boolean hasFieldName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getFieldName() {
+        java.lang.Object ref = fieldName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          fieldName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setFieldName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFieldName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        fieldName_ = getDefaultInstance().getFieldName();
+        onChanged();
+        return this;
+      }
+      void setFieldName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+      }
+      
+      // optional int32 number_of_fragments = 2;
+      private int numberOfFragments_ ;
+      public boolean hasNumberOfFragments() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getNumberOfFragments() {
+        return numberOfFragments_;
+      }
+      public Builder setNumberOfFragments(int value) {
+        bitField0_ |= 0x00000002;
+        numberOfFragments_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearNumberOfFragments() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        numberOfFragments_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 fragment_size = 3;
+      private int fragmentSize_ ;
+      public boolean hasFragmentSize() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public int getFragmentSize() {
+        return fragmentSize_;
+      }
+      public Builder setFragmentSize(int value) {
+        bitField0_ |= 0x00000004;
+        fragmentSize_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFragmentSize() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        fragmentSize_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional string pre_tag = 4;
+      private java.lang.Object preTag_ = "";
+      public boolean hasPreTag() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getPreTag() {
+        java.lang.Object ref = preTag_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          preTag_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setPreTag(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        preTag_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPreTag() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        preTag_ = getDefaultInstance().getPreTag();
+        onChanged();
+        return this;
+      }
+      void setPreTag(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        preTag_ = value;
+        onChanged();
+      }
+      
+      // optional string post_tag = 5;
+      private java.lang.Object postTag_ = "";
+      public boolean hasPostTag() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public String getPostTag() {
+        java.lang.Object ref = postTag_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          postTag_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setPostTag(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        postTag_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPostTag() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        postTag_ = getDefaultInstance().getPostTag();
+        onChanged();
+        return this;
+      }
+      void setPostTag(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        postTag_ = value;
+        onChanged();
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightFragmentOrder fragments_order = 6 [default = TEXT_SEQUENCE];
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder fragmentsOrder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder.TEXT_SEQUENCE;
+      public boolean hasFragmentsOrder() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder getFragmentsOrder() {
+        return fragmentsOrder_;
+      }
+      public Builder setFragmentsOrder(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000020;
+        fragmentsOrder_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFragmentsOrder() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        fragmentsOrder_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFragmentOrder.TEXT_SEQUENCE;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightParameter)
+    }
+    
+    static {
+      defaultInstance = new HighlightParameter(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightParameter)
   }
   
   public interface ColumnsToGetOrBuilder
@@ -65748,6 +69931,16 @@ public final class Search {
     boolean hasIsAllSucceeded();
     boolean getIsAllSucceeded();
     
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 5;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> 
+        getSearchHitsList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index);
+    int getSearchHitsCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+        getSearchHitsOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+        int index);
+    
     // optional bytes next_token = 6;
     boolean hasNextToken();
     com.google.protobuf.ByteString getNextToken();
@@ -65759,6 +69952,16 @@ public final class Search {
     // optional bytes group_bys = 8;
     boolean hasGroupBys();
     com.google.protobuf.ByteString getGroupBys();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 9;
+    boolean hasConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity reserved_consumed = 10;
+    boolean hasReservedConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getReservedConsumed();
+    com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getReservedConsumedOrBuilder();
   }
   public static final class SearchResponse extends
       com.google.protobuf.GeneratedMessage
@@ -65823,6 +70026,27 @@ public final class Search {
       return isAllSucceeded_;
     }
     
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 5;
+    public static final int SEARCH_HITS_FIELD_NUMBER = 5;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> searchHits_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> getSearchHitsList() {
+      return searchHits_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+        getSearchHitsOrBuilderList() {
+      return searchHits_;
+    }
+    public int getSearchHitsCount() {
+      return searchHits_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index) {
+      return searchHits_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+        int index) {
+      return searchHits_.get(index);
+    }
+    
     // optional bytes next_token = 6;
     public static final int NEXT_TOKEN_FIELD_NUMBER = 6;
     private com.google.protobuf.ByteString nextToken_;
@@ -65853,19 +70077,60 @@ public final class Search {
       return groupBys_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 9;
+    public static final int CONSUMED_FIELD_NUMBER = 9;
+    private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity consumed_;
+    public boolean hasConsumed() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed() {
+      return consumed_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder() {
+      return consumed_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity reserved_consumed = 10;
+    public static final int RESERVED_CONSUMED_FIELD_NUMBER = 10;
+    private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity reservedConsumed_;
+    public boolean hasReservedConsumed() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getReservedConsumed() {
+      return reservedConsumed_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getReservedConsumedOrBuilder() {
+      return reservedConsumed_;
+    }
+    
     private void initFields() {
       totalHits_ = 0L;
       rows_ = java.util.Collections.emptyList();;
       isAllSucceeded_ = false;
+      searchHits_ = java.util.Collections.emptyList();
       nextToken_ = com.google.protobuf.ByteString.EMPTY;
       aggs_ = com.google.protobuf.ByteString.EMPTY;
       groupBys_ = com.google.protobuf.ByteString.EMPTY;
+      consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+      reservedConsumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
+      if (hasConsumed()) {
+        if (!getConsumed().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasReservedConsumed()) {
+        if (!getReservedConsumed().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -65882,6 +70147,9 @@ public final class Search {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(3, isAllSucceeded_);
       }
+      for (int i = 0; i < searchHits_.size(); i++) {
+        output.writeMessage(5, searchHits_.get(i));
+      }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(6, nextToken_);
       }
@@ -65890,6 +70158,12 @@ public final class Search {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBytes(8, groupBys_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeMessage(9, consumed_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeMessage(10, reservedConsumed_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -65917,6 +70191,10 @@ public final class Search {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, isAllSucceeded_);
       }
+      for (int i = 0; i < searchHits_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, searchHits_.get(i));
+      }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, nextToken_);
@@ -65928,6 +70206,14 @@ public final class Search {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(8, groupBys_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, consumed_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, reservedConsumed_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -66045,6 +70331,9 @@ public final class Search {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getSearchHitsFieldBuilder();
+          getConsumedFieldBuilder();
+          getReservedConsumedFieldBuilder();
         }
       }
       private static Builder create() {
@@ -66059,12 +70348,30 @@ public final class Search {
         bitField0_ = (bitField0_ & ~0x00000002);
         isAllSucceeded_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (searchHitsBuilder_ == null) {
+          searchHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          searchHitsBuilder_.clear();
+        }
         nextToken_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        aggs_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000010);
-        groupBys_ = com.google.protobuf.ByteString.EMPTY;
+        aggs_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000020);
+        groupBys_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        if (consumedBuilder_ == null) {
+          consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+        } else {
+          consumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
+        if (reservedConsumedBuilder_ == null) {
+          reservedConsumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+        } else {
+          reservedConsumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
       
@@ -66116,18 +70423,43 @@ public final class Search {
           to_bitField0_ |= 0x00000002;
         }
         result.isAllSucceeded_ = isAllSucceeded_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (searchHitsBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            searchHits_ = java.util.Collections.unmodifiableList(searchHits_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.searchHits_ = searchHits_;
+        } else {
+          result.searchHits_ = searchHitsBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000004;
         }
         result.nextToken_ = nextToken_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000008;
         }
         result.aggs_ = aggs_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000010;
         }
         result.groupBys_ = groupBys_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        if (consumedBuilder_ == null) {
+          result.consumed_ = consumed_;
+        } else {
+          result.consumed_ = consumedBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        if (reservedConsumedBuilder_ == null) {
+          result.reservedConsumed_ = reservedConsumed_;
+        } else {
+          result.reservedConsumed_ = reservedConsumedBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -66160,6 +70492,32 @@ public final class Search {
         if (other.hasIsAllSucceeded()) {
           setIsAllSucceeded(other.getIsAllSucceeded());
         }
+        if (searchHitsBuilder_ == null) {
+          if (!other.searchHits_.isEmpty()) {
+            if (searchHits_.isEmpty()) {
+              searchHits_ = other.searchHits_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureSearchHitsIsMutable();
+              searchHits_.addAll(other.searchHits_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.searchHits_.isEmpty()) {
+            if (searchHitsBuilder_.isEmpty()) {
+              searchHitsBuilder_.dispose();
+              searchHitsBuilder_ = null;
+              searchHits_ = other.searchHits_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              searchHitsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getSearchHitsFieldBuilder() : null;
+            } else {
+              searchHitsBuilder_.addAllMessages(other.searchHits_);
+            }
+          }
+        }
         if (other.hasNextToken()) {
           setNextToken(other.getNextToken());
         }
@@ -66169,11 +70527,29 @@ public final class Search {
         if (other.hasGroupBys()) {
           setGroupBys(other.getGroupBys());
         }
+        if (other.hasConsumed()) {
+          mergeConsumed(other.getConsumed());
+        }
+        if (other.hasReservedConsumed()) {
+          mergeReservedConsumed(other.getReservedConsumed());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
+        if (hasConsumed()) {
+          if (!getConsumed().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasReservedConsumed()) {
+          if (!getReservedConsumed().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
       
@@ -66215,19 +70591,43 @@ public final class Search {
               isAllSucceeded_ = input.readBool();
               break;
             }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addSearchHits(subBuilder.buildPartial());
+              break;
+            }
             case 50: {
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               nextToken_ = input.readBytes();
               break;
             }
             case 58: {
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               aggs_ = input.readBytes();
               break;
             }
             case 66: {
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               groupBys_ = input.readBytes();
+              break;
+            }
+            case 74: {
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder();
+              if (hasConsumed()) {
+                subBuilder.mergeFrom(getConsumed());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setConsumed(subBuilder.buildPartial());
+              break;
+            }
+            case 82: {
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder();
+              if (hasReservedConsumed()) {
+                subBuilder.mergeFrom(getReservedConsumed());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setReservedConsumed(subBuilder.buildPartial());
               break;
             }
           }
@@ -66329,10 +70729,196 @@ public final class Search {
         return this;
       }
       
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 5;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> searchHits_ =
+        java.util.Collections.emptyList();
+      private void ensureSearchHitsIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          searchHits_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit>(searchHits_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> searchHitsBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> getSearchHitsList() {
+        if (searchHitsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(searchHits_);
+        } else {
+          return searchHitsBuilder_.getMessageList();
+        }
+      }
+      public int getSearchHitsCount() {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.size();
+        } else {
+          return searchHitsBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index) {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.get(index);
+        } else {
+          return searchHitsBuilder_.getMessage(index);
+        }
+      }
+      public Builder setSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.set(index, value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchHits(com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.add(value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.add(index, value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.add(builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllSearchHits(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> values) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          super.addAll(values, searchHits_);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearSearchHits() {
+        if (searchHitsBuilder_ == null) {
+          searchHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          searchHitsBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeSearchHits(int index) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.remove(index);
+          onChanged();
+        } else {
+          searchHitsBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder getSearchHitsBuilder(
+          int index) {
+        return getSearchHitsFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+          int index) {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.get(index);  } else {
+          return searchHitsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+           getSearchHitsOrBuilderList() {
+        if (searchHitsBuilder_ != null) {
+          return searchHitsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(searchHits_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder addSearchHitsBuilder() {
+        return getSearchHitsFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder addSearchHitsBuilder(
+          int index) {
+        return getSearchHitsFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder> 
+           getSearchHitsBuilderList() {
+        return getSearchHitsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+          getSearchHitsFieldBuilder() {
+        if (searchHitsBuilder_ == null) {
+          searchHitsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder>(
+                  searchHits_,
+                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  getParentForChildren(),
+                  isClean());
+          searchHits_ = null;
+        }
+        return searchHitsBuilder_;
+      }
+      
       // optional bytes next_token = 6;
       private com.google.protobuf.ByteString nextToken_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasNextToken() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public com.google.protobuf.ByteString getNextToken() {
         return nextToken_;
@@ -66341,13 +70927,13 @@ public final class Search {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000010;
         nextToken_ = value;
         onChanged();
         return this;
       }
       public Builder clearNextToken() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         nextToken_ = getDefaultInstance().getNextToken();
         onChanged();
         return this;
@@ -66356,7 +70942,7 @@ public final class Search {
       // optional bytes aggs = 7;
       private com.google.protobuf.ByteString aggs_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasAggs() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       public com.google.protobuf.ByteString getAggs() {
         return aggs_;
@@ -66365,13 +70951,13 @@ public final class Search {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         aggs_ = value;
         onChanged();
         return this;
       }
       public Builder clearAggs() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         aggs_ = getDefaultInstance().getAggs();
         onChanged();
         return this;
@@ -66380,7 +70966,7 @@ public final class Search {
       // optional bytes group_bys = 8;
       private com.google.protobuf.ByteString groupBys_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasGroupBys() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       public com.google.protobuf.ByteString getGroupBys() {
         return groupBys_;
@@ -66389,16 +70975,196 @@ public final class Search {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  bitField0_ |= 0x00000040;
         groupBys_ = value;
         onChanged();
         return this;
       }
       public Builder clearGroupBys() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         groupBys_ = getDefaultInstance().getGroupBys();
         onChanged();
         return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity consumed = 9;
+      private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> consumedBuilder_;
+      public boolean hasConsumed() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getConsumed() {
+        if (consumedBuilder_ == null) {
+          return consumed_;
+        } else {
+          return consumedBuilder_.getMessage();
+        }
+      }
+      public Builder setConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (consumedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          consumed_ = value;
+          onChanged();
+        } else {
+          consumedBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder setConsumed(
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder builderForValue) {
+        if (consumedBuilder_ == null) {
+          consumed_ = builderForValue.build();
+          onChanged();
+        } else {
+          consumedBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder mergeConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (consumedBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
+              consumed_ != com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance()) {
+            consumed_ =
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder(consumed_).mergeFrom(value).buildPartial();
+          } else {
+            consumed_ = value;
+          }
+          onChanged();
+        } else {
+          consumedBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder clearConsumed() {
+        if (consumedBuilder_ == null) {
+          consumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+          onChanged();
+        } else {
+          consumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder getConsumedBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getConsumedFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getConsumedOrBuilder() {
+        if (consumedBuilder_ != null) {
+          return consumedBuilder_.getMessageOrBuilder();
+        } else {
+          return consumed_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> 
+          getConsumedFieldBuilder() {
+        if (consumedBuilder_ == null) {
+          consumedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder>(
+                  consumed_,
+                  getParentForChildren(),
+                  isClean());
+          consumed_ = null;
+        }
+        return consumedBuilder_;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.ConsumedCapacity reserved_consumed = 10;
+      private com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity reservedConsumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> reservedConsumedBuilder_;
+      public boolean hasReservedConsumed() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity getReservedConsumed() {
+        if (reservedConsumedBuilder_ == null) {
+          return reservedConsumed_;
+        } else {
+          return reservedConsumedBuilder_.getMessage();
+        }
+      }
+      public Builder setReservedConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (reservedConsumedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reservedConsumed_ = value;
+          onChanged();
+        } else {
+          reservedConsumedBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder setReservedConsumed(
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder builderForValue) {
+        if (reservedConsumedBuilder_ == null) {
+          reservedConsumed_ = builderForValue.build();
+          onChanged();
+        } else {
+          reservedConsumedBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder mergeReservedConsumed(com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity value) {
+        if (reservedConsumedBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              reservedConsumed_ != com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance()) {
+            reservedConsumed_ =
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.newBuilder(reservedConsumed_).mergeFrom(value).buildPartial();
+          } else {
+            reservedConsumed_ = value;
+          }
+          onChanged();
+        } else {
+          reservedConsumedBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      public Builder clearReservedConsumed() {
+        if (reservedConsumedBuilder_ == null) {
+          reservedConsumed_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.getDefaultInstance();
+          onChanged();
+        } else {
+          reservedConsumedBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder getReservedConsumedBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getReservedConsumedFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder getReservedConsumedOrBuilder() {
+        if (reservedConsumedBuilder_ != null) {
+          return reservedConsumedBuilder_.getMessageOrBuilder();
+        } else {
+          return reservedConsumed_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder> 
+          getReservedConsumedFieldBuilder() {
+        if (reservedConsumedBuilder_ == null) {
+          reservedConsumedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacity.Builder, com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ConsumedCapacityOrBuilder>(
+                  reservedConsumed_,
+                  getParentForChildren(),
+                  isClean());
+          reservedConsumed_ = null;
+        }
+        return reservedConsumedBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SearchResponse)
@@ -66410,6 +71176,2502 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.SearchResponse)
+  }
+  
+  public interface SearchHitOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional double score = 3;
+    boolean hasScore();
+    double getScore();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightResult highlight_result = 4;
+    boolean hasHighlightResult();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult getHighlightResult();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder getHighlightResultOrBuilder();
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchInnerHit search_inner_hits = 5;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> 
+        getSearchInnerHitsList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit getSearchInnerHits(int index);
+    int getSearchInnerHitsCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder> 
+        getSearchInnerHitsOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder getSearchInnerHitsOrBuilder(
+        int index);
+    
+    // optional int32 nested_doc_offset = 6;
+    boolean hasNestedDocOffset();
+    int getNestedDocOffset();
+  }
+  public static final class SearchHit extends
+      com.google.protobuf.GeneratedMessage
+      implements SearchHitOrBuilder {
+    // Use SearchHit.newBuilder() to construct.
+    private SearchHit(Builder builder) {
+      super(builder);
+    }
+    private SearchHit(boolean noInit) {}
+    
+    private static final SearchHit defaultInstance;
+    public static SearchHit getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public SearchHit getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional double score = 3;
+    public static final int SCORE_FIELD_NUMBER = 3;
+    private double score_;
+    public boolean hasScore() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public double getScore() {
+      return score_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightResult highlight_result = 4;
+    public static final int HIGHLIGHT_RESULT_FIELD_NUMBER = 4;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult highlightResult_;
+    public boolean hasHighlightResult() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult getHighlightResult() {
+      return highlightResult_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder getHighlightResultOrBuilder() {
+      return highlightResult_;
+    }
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchInnerHit search_inner_hits = 5;
+    public static final int SEARCH_INNER_HITS_FIELD_NUMBER = 5;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> searchInnerHits_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> getSearchInnerHitsList() {
+      return searchInnerHits_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder> 
+        getSearchInnerHitsOrBuilderList() {
+      return searchInnerHits_;
+    }
+    public int getSearchInnerHitsCount() {
+      return searchInnerHits_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit getSearchInnerHits(int index) {
+      return searchInnerHits_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder getSearchInnerHitsOrBuilder(
+        int index) {
+      return searchInnerHits_.get(index);
+    }
+    
+    // optional int32 nested_doc_offset = 6;
+    public static final int NESTED_DOC_OFFSET_FIELD_NUMBER = 6;
+    private int nestedDocOffset_;
+    public boolean hasNestedDocOffset() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getNestedDocOffset() {
+      return nestedDocOffset_;
+    }
+    
+    private void initFields() {
+      score_ = 0D;
+      highlightResult_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance();
+      searchInnerHits_ = java.util.Collections.emptyList();
+      nestedDocOffset_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeDouble(3, score_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(4, highlightResult_);
+      }
+      for (int i = 0; i < searchInnerHits_.size(); i++) {
+        output.writeMessage(5, searchInnerHits_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(6, nestedDocOffset_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(3, score_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, highlightResult_);
+      }
+      for (int i = 0; i < searchInnerHits_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, searchInnerHits_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, nestedDocOffset_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getHighlightResultFieldBuilder();
+          getSearchInnerHitsFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        score_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (highlightResultBuilder_ == null) {
+          highlightResult_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance();
+        } else {
+          highlightResultBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (searchInnerHitsBuilder_ == null) {
+          searchInnerHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          searchInnerHitsBuilder_.clear();
+        }
+        nestedDocOffset_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit result = new com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.score_ = score_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (highlightResultBuilder_ == null) {
+          result.highlightResult_ = highlightResult_;
+        } else {
+          result.highlightResult_ = highlightResultBuilder_.build();
+        }
+        if (searchInnerHitsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            searchInnerHits_ = java.util.Collections.unmodifiableList(searchInnerHits_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.searchInnerHits_ = searchInnerHits_;
+        } else {
+          result.searchInnerHits_ = searchInnerHitsBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.nestedDocOffset_ = nestedDocOffset_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance()) return this;
+        if (other.hasScore()) {
+          setScore(other.getScore());
+        }
+        if (other.hasHighlightResult()) {
+          mergeHighlightResult(other.getHighlightResult());
+        }
+        if (searchInnerHitsBuilder_ == null) {
+          if (!other.searchInnerHits_.isEmpty()) {
+            if (searchInnerHits_.isEmpty()) {
+              searchInnerHits_ = other.searchInnerHits_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureSearchInnerHitsIsMutable();
+              searchInnerHits_.addAll(other.searchInnerHits_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.searchInnerHits_.isEmpty()) {
+            if (searchInnerHitsBuilder_.isEmpty()) {
+              searchInnerHitsBuilder_.dispose();
+              searchInnerHitsBuilder_ = null;
+              searchInnerHits_ = other.searchInnerHits_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              searchInnerHitsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getSearchInnerHitsFieldBuilder() : null;
+            } else {
+              searchInnerHitsBuilder_.addAllMessages(other.searchInnerHits_);
+            }
+          }
+        }
+        if (other.hasNestedDocOffset()) {
+          setNestedDocOffset(other.getNestedDocOffset());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 25: {
+              bitField0_ |= 0x00000001;
+              score_ = input.readDouble();
+              break;
+            }
+            case 34: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.newBuilder();
+              if (hasHighlightResult()) {
+                subBuilder.mergeFrom(getHighlightResult());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setHighlightResult(subBuilder.buildPartial());
+              break;
+            }
+            case 42: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addSearchInnerHits(subBuilder.buildPartial());
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000008;
+              nestedDocOffset_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional double score = 3;
+      private double score_ ;
+      public boolean hasScore() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public double getScore() {
+        return score_;
+      }
+      public Builder setScore(double value) {
+        bitField0_ |= 0x00000001;
+        score_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearScore() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        score_ = 0D;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.HighlightResult highlight_result = 4;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult highlightResult_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder> highlightResultBuilder_;
+      public boolean hasHighlightResult() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult getHighlightResult() {
+        if (highlightResultBuilder_ == null) {
+          return highlightResult_;
+        } else {
+          return highlightResultBuilder_.getMessage();
+        }
+      }
+      public Builder setHighlightResult(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult value) {
+        if (highlightResultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          highlightResult_ = value;
+          onChanged();
+        } else {
+          highlightResultBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder setHighlightResult(
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder builderForValue) {
+        if (highlightResultBuilder_ == null) {
+          highlightResult_ = builderForValue.build();
+          onChanged();
+        } else {
+          highlightResultBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder mergeHighlightResult(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult value) {
+        if (highlightResultBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              highlightResult_ != com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance()) {
+            highlightResult_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.newBuilder(highlightResult_).mergeFrom(value).buildPartial();
+          } else {
+            highlightResult_ = value;
+          }
+          onChanged();
+        } else {
+          highlightResultBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      public Builder clearHighlightResult() {
+        if (highlightResultBuilder_ == null) {
+          highlightResult_ = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance();
+          onChanged();
+        } else {
+          highlightResultBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder getHighlightResultBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getHighlightResultFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder getHighlightResultOrBuilder() {
+        if (highlightResultBuilder_ != null) {
+          return highlightResultBuilder_.getMessageOrBuilder();
+        } else {
+          return highlightResult_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder> 
+          getHighlightResultFieldBuilder() {
+        if (highlightResultBuilder_ == null) {
+          highlightResultBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder>(
+                  highlightResult_,
+                  getParentForChildren(),
+                  isClean());
+          highlightResult_ = null;
+        }
+        return highlightResultBuilder_;
+      }
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchInnerHit search_inner_hits = 5;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> searchInnerHits_ =
+        java.util.Collections.emptyList();
+      private void ensureSearchInnerHitsIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          searchInnerHits_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit>(searchInnerHits_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder> searchInnerHitsBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> getSearchInnerHitsList() {
+        if (searchInnerHitsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(searchInnerHits_);
+        } else {
+          return searchInnerHitsBuilder_.getMessageList();
+        }
+      }
+      public int getSearchInnerHitsCount() {
+        if (searchInnerHitsBuilder_ == null) {
+          return searchInnerHits_.size();
+        } else {
+          return searchInnerHitsBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit getSearchInnerHits(int index) {
+        if (searchInnerHitsBuilder_ == null) {
+          return searchInnerHits_.get(index);
+        } else {
+          return searchInnerHitsBuilder_.getMessage(index);
+        }
+      }
+      public Builder setSearchInnerHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit value) {
+        if (searchInnerHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.set(index, value);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setSearchInnerHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder builderForValue) {
+        if (searchInnerHitsBuilder_ == null) {
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchInnerHits(com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit value) {
+        if (searchInnerHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.add(value);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addSearchInnerHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit value) {
+        if (searchInnerHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.add(index, value);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addSearchInnerHits(
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder builderForValue) {
+        if (searchInnerHitsBuilder_ == null) {
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.add(builderForValue.build());
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchInnerHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder builderForValue) {
+        if (searchInnerHitsBuilder_ == null) {
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllSearchInnerHits(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit> values) {
+        if (searchInnerHitsBuilder_ == null) {
+          ensureSearchInnerHitsIsMutable();
+          super.addAll(values, searchInnerHits_);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearSearchInnerHits() {
+        if (searchInnerHitsBuilder_ == null) {
+          searchInnerHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeSearchInnerHits(int index) {
+        if (searchInnerHitsBuilder_ == null) {
+          ensureSearchInnerHitsIsMutable();
+          searchInnerHits_.remove(index);
+          onChanged();
+        } else {
+          searchInnerHitsBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder getSearchInnerHitsBuilder(
+          int index) {
+        return getSearchInnerHitsFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder getSearchInnerHitsOrBuilder(
+          int index) {
+        if (searchInnerHitsBuilder_ == null) {
+          return searchInnerHits_.get(index);  } else {
+          return searchInnerHitsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder> 
+           getSearchInnerHitsOrBuilderList() {
+        if (searchInnerHitsBuilder_ != null) {
+          return searchInnerHitsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(searchInnerHits_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder addSearchInnerHitsBuilder() {
+        return getSearchInnerHitsFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder addSearchInnerHitsBuilder(
+          int index) {
+        return getSearchInnerHitsFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder> 
+           getSearchInnerHitsBuilderList() {
+        return getSearchInnerHitsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder> 
+          getSearchInnerHitsFieldBuilder() {
+        if (searchInnerHitsBuilder_ == null) {
+          searchInnerHitsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder>(
+                  searchInnerHits_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          searchInnerHits_ = null;
+        }
+        return searchInnerHitsBuilder_;
+      }
+      
+      // optional int32 nested_doc_offset = 6;
+      private int nestedDocOffset_ ;
+      public boolean hasNestedDocOffset() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public int getNestedDocOffset() {
+        return nestedDocOffset_;
+      }
+      public Builder setNestedDocOffset(int value) {
+        bitField0_ |= 0x00000008;
+        nestedDocOffset_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearNestedDocOffset() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        nestedDocOffset_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SearchHit)
+    }
+    
+    static {
+      defaultInstance = new SearchHit(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.SearchHit)
+  }
+  
+  public interface SearchInnerHitOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string path = 1;
+    boolean hasPath();
+    String getPath();
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 2;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> 
+        getSearchHitsList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index);
+    int getSearchHitsCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+        getSearchHitsOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+        int index);
+  }
+  public static final class SearchInnerHit extends
+      com.google.protobuf.GeneratedMessage
+      implements SearchInnerHitOrBuilder {
+    // Use SearchInnerHit.newBuilder() to construct.
+    private SearchInnerHit(Builder builder) {
+      super(builder);
+    }
+    private SearchInnerHit(boolean noInit) {}
+    
+    private static final SearchInnerHit defaultInstance;
+    public static SearchInnerHit getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public SearchInnerHit getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional string path = 1;
+    public static final int PATH_FIELD_NUMBER = 1;
+    private java.lang.Object path_;
+    public boolean hasPath() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getPath() {
+      java.lang.Object ref = path_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          path_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getPathBytes() {
+      java.lang.Object ref = path_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        path_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 2;
+    public static final int SEARCH_HITS_FIELD_NUMBER = 2;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> searchHits_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> getSearchHitsList() {
+      return searchHits_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+        getSearchHitsOrBuilderList() {
+      return searchHits_;
+    }
+    public int getSearchHitsCount() {
+      return searchHits_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index) {
+      return searchHits_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+        int index) {
+      return searchHits_.get(index);
+    }
+    
+    private void initFields() {
+      path_ = "";
+      searchHits_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getPathBytes());
+      }
+      for (int i = 0; i < searchHits_.size(); i++) {
+        output.writeMessage(2, searchHits_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getPathBytes());
+      }
+      for (int i = 0; i < searchHits_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, searchHits_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHitOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getSearchHitsFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        path_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (searchHitsBuilder_ == null) {
+          searchHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          searchHitsBuilder_.clear();
+        }
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit result = new com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.path_ = path_;
+        if (searchHitsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            searchHits_ = java.util.Collections.unmodifiableList(searchHits_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.searchHits_ = searchHits_;
+        } else {
+          result.searchHits_ = searchHitsBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.getDefaultInstance()) return this;
+        if (other.hasPath()) {
+          setPath(other.getPath());
+        }
+        if (searchHitsBuilder_ == null) {
+          if (!other.searchHits_.isEmpty()) {
+            if (searchHits_.isEmpty()) {
+              searchHits_ = other.searchHits_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureSearchHitsIsMutable();
+              searchHits_.addAll(other.searchHits_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.searchHits_.isEmpty()) {
+            if (searchHitsBuilder_.isEmpty()) {
+              searchHitsBuilder_.dispose();
+              searchHitsBuilder_ = null;
+              searchHits_ = other.searchHits_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              searchHitsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getSearchHitsFieldBuilder() : null;
+            } else {
+              searchHitsBuilder_.addAllMessages(other.searchHits_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              path_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addSearchHits(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional string path = 1;
+      private java.lang.Object path_ = "";
+      public boolean hasPath() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getPath() {
+        java.lang.Object ref = path_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          path_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setPath(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearPath() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        path_ = getDefaultInstance().getPath();
+        onChanged();
+        return this;
+      }
+      void setPath(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        path_ = value;
+        onChanged();
+      }
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.SearchHit search_hits = 2;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> searchHits_ =
+        java.util.Collections.emptyList();
+      private void ensureSearchHitsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          searchHits_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit>(searchHits_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> searchHitsBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> getSearchHitsList() {
+        if (searchHitsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(searchHits_);
+        } else {
+          return searchHitsBuilder_.getMessageList();
+        }
+      }
+      public int getSearchHitsCount() {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.size();
+        } else {
+          return searchHitsBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit getSearchHits(int index) {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.get(index);
+        } else {
+          return searchHitsBuilder_.getMessage(index);
+        }
+      }
+      public Builder setSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.set(index, value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchHits(com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.add(value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit value) {
+        if (searchHitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSearchHitsIsMutable();
+          searchHits_.add(index, value);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.add(builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addSearchHits(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder builderForValue) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          searchHitsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllSearchHits(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit> values) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          super.addAll(values, searchHits_);
+          onChanged();
+        } else {
+          searchHitsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearSearchHits() {
+        if (searchHitsBuilder_ == null) {
+          searchHits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          searchHitsBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeSearchHits(int index) {
+        if (searchHitsBuilder_ == null) {
+          ensureSearchHitsIsMutable();
+          searchHits_.remove(index);
+          onChanged();
+        } else {
+          searchHitsBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder getSearchHitsBuilder(
+          int index) {
+        return getSearchHitsFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder getSearchHitsOrBuilder(
+          int index) {
+        if (searchHitsBuilder_ == null) {
+          return searchHits_.get(index);  } else {
+          return searchHitsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+           getSearchHitsOrBuilderList() {
+        if (searchHitsBuilder_ != null) {
+          return searchHitsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(searchHits_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder addSearchHitsBuilder() {
+        return getSearchHitsFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder addSearchHitsBuilder(
+          int index) {
+        return getSearchHitsFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder> 
+           getSearchHitsBuilderList() {
+        return getSearchHitsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder> 
+          getSearchHitsFieldBuilder() {
+        if (searchHitsBuilder_ == null) {
+          searchHitsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.SearchHitOrBuilder>(
+                  searchHits_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          searchHits_ = null;
+        }
+        return searchHitsBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SearchInnerHit)
+    }
+    
+    static {
+      defaultInstance = new SearchInnerHit(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.SearchInnerHit)
+  }
+  
+  public interface HighlightResultOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightField highlight_fields = 1;
+    java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> 
+        getHighlightFieldsList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField getHighlightFields(int index);
+    int getHighlightFieldsCount();
+    java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder> 
+        getHighlightFieldsOrBuilderList();
+    com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder getHighlightFieldsOrBuilder(
+        int index);
+  }
+  public static final class HighlightResult extends
+      com.google.protobuf.GeneratedMessage
+      implements HighlightResultOrBuilder {
+    // Use HighlightResult.newBuilder() to construct.
+    private HighlightResult(Builder builder) {
+      super(builder);
+    }
+    private HighlightResult(boolean noInit) {}
+    
+    private static final HighlightResult defaultInstance;
+    public static HighlightResult getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public HighlightResult getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_fieldAccessorTable;
+    }
+    
+    // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightField highlight_fields = 1;
+    public static final int HIGHLIGHT_FIELDS_FIELD_NUMBER = 1;
+    private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> highlightFields_;
+    public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> getHighlightFieldsList() {
+      return highlightFields_;
+    }
+    public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder> 
+        getHighlightFieldsOrBuilderList() {
+      return highlightFields_;
+    }
+    public int getHighlightFieldsCount() {
+      return highlightFields_.size();
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField getHighlightFields(int index) {
+      return highlightFields_.get(index);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder getHighlightFieldsOrBuilder(
+        int index) {
+      return highlightFields_.get(index);
+    }
+    
+    private void initFields() {
+      highlightFields_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < highlightFields_.size(); i++) {
+        output.writeMessage(1, highlightFields_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      for (int i = 0; i < highlightFields_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, highlightFields_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getHighlightFieldsFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (highlightFieldsBuilder_ == null) {
+          highlightFields_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          highlightFieldsBuilder_.clear();
+        }
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult result = new com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult(this);
+        int from_bitField0_ = bitField0_;
+        if (highlightFieldsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            highlightFields_ = java.util.Collections.unmodifiableList(highlightFields_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.highlightFields_ = highlightFields_;
+        } else {
+          result.highlightFields_ = highlightFieldsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.getDefaultInstance()) return this;
+        if (highlightFieldsBuilder_ == null) {
+          if (!other.highlightFields_.isEmpty()) {
+            if (highlightFields_.isEmpty()) {
+              highlightFields_ = other.highlightFields_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureHighlightFieldsIsMutable();
+              highlightFields_.addAll(other.highlightFields_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.highlightFields_.isEmpty()) {
+            if (highlightFieldsBuilder_.isEmpty()) {
+              highlightFieldsBuilder_.dispose();
+              highlightFieldsBuilder_ = null;
+              highlightFields_ = other.highlightFields_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              highlightFieldsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getHighlightFieldsFieldBuilder() : null;
+            } else {
+              highlightFieldsBuilder_.addAllMessages(other.highlightFields_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addHighlightFields(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // repeated .com.alicloud.openservices.tablestore.core.protocol.HighlightField highlight_fields = 1;
+      private java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> highlightFields_ =
+        java.util.Collections.emptyList();
+      private void ensureHighlightFieldsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          highlightFields_ = new java.util.ArrayList<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField>(highlightFields_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder> highlightFieldsBuilder_;
+      
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> getHighlightFieldsList() {
+        if (highlightFieldsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(highlightFields_);
+        } else {
+          return highlightFieldsBuilder_.getMessageList();
+        }
+      }
+      public int getHighlightFieldsCount() {
+        if (highlightFieldsBuilder_ == null) {
+          return highlightFields_.size();
+        } else {
+          return highlightFieldsBuilder_.getCount();
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField getHighlightFields(int index) {
+        if (highlightFieldsBuilder_ == null) {
+          return highlightFields_.get(index);
+        } else {
+          return highlightFieldsBuilder_.getMessage(index);
+        }
+      }
+      public Builder setHighlightFields(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField value) {
+        if (highlightFieldsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.set(index, value);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setHighlightFields(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder builderForValue) {
+        if (highlightFieldsBuilder_ == null) {
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addHighlightFields(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField value) {
+        if (highlightFieldsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.add(value);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addHighlightFields(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField value) {
+        if (highlightFieldsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.add(index, value);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addHighlightFields(
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder builderForValue) {
+        if (highlightFieldsBuilder_ == null) {
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.add(builderForValue.build());
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addHighlightFields(
+          int index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder builderForValue) {
+        if (highlightFieldsBuilder_ == null) {
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllHighlightFields(
+          java.lang.Iterable<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField> values) {
+        if (highlightFieldsBuilder_ == null) {
+          ensureHighlightFieldsIsMutable();
+          super.addAll(values, highlightFields_);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearHighlightFields() {
+        if (highlightFieldsBuilder_ == null) {
+          highlightFields_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeHighlightFields(int index) {
+        if (highlightFieldsBuilder_ == null) {
+          ensureHighlightFieldsIsMutable();
+          highlightFields_.remove(index);
+          onChanged();
+        } else {
+          highlightFieldsBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder getHighlightFieldsBuilder(
+          int index) {
+        return getHighlightFieldsFieldBuilder().getBuilder(index);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder getHighlightFieldsOrBuilder(
+          int index) {
+        if (highlightFieldsBuilder_ == null) {
+          return highlightFields_.get(index);  } else {
+          return highlightFieldsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder> 
+           getHighlightFieldsOrBuilderList() {
+        if (highlightFieldsBuilder_ != null) {
+          return highlightFieldsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(highlightFields_);
+        }
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder addHighlightFieldsBuilder() {
+        return getHighlightFieldsFieldBuilder().addBuilder(
+            com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.getDefaultInstance());
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder addHighlightFieldsBuilder(
+          int index) {
+        return getHighlightFieldsFieldBuilder().addBuilder(
+            index, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.getDefaultInstance());
+      }
+      public java.util.List<com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder> 
+           getHighlightFieldsBuilderList() {
+        return getHighlightFieldsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder> 
+          getHighlightFieldsFieldBuilder() {
+        if (highlightFieldsBuilder_ == null) {
+          highlightFieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder>(
+                  highlightFields_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          highlightFields_ = null;
+        }
+        return highlightFieldsBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightResult)
+    }
+    
+    static {
+      defaultInstance = new HighlightResult(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightResult)
+  }
+  
+  public interface HighlightFieldOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string field_name = 1;
+    boolean hasFieldName();
+    String getFieldName();
+    
+    // repeated string field_fragments = 2;
+    java.util.List<String> getFieldFragmentsList();
+    int getFieldFragmentsCount();
+    String getFieldFragments(int index);
+  }
+  public static final class HighlightField extends
+      com.google.protobuf.GeneratedMessage
+      implements HighlightFieldOrBuilder {
+    // Use HighlightField.newBuilder() to construct.
+    private HighlightField(Builder builder) {
+      super(builder);
+    }
+    private HighlightField(boolean noInit) {}
+    
+    private static final HighlightField defaultInstance;
+    public static HighlightField getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public HighlightField getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional string field_name = 1;
+    public static final int FIELD_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object fieldName_;
+    public boolean hasFieldName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getFieldName() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          fieldName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getFieldNameBytes() {
+      java.lang.Object ref = fieldName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        fieldName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // repeated string field_fragments = 2;
+    public static final int FIELD_FRAGMENTS_FIELD_NUMBER = 2;
+    private com.google.protobuf.LazyStringList fieldFragments_;
+    public java.util.List<String>
+        getFieldFragmentsList() {
+      return fieldFragments_;
+    }
+    public int getFieldFragmentsCount() {
+      return fieldFragments_.size();
+    }
+    public String getFieldFragments(int index) {
+      return fieldFragments_.get(index);
+    }
+    
+    private void initFields() {
+      fieldName_ = "";
+      fieldFragments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getFieldNameBytes());
+      }
+      for (int i = 0; i < fieldFragments_.size(); i++) {
+        output.writeBytes(2, fieldFragments_.getByteString(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getFieldNameBytes());
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < fieldFragments_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(fieldFragments_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getFieldFragmentsList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.HighlightFieldOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        fieldName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        fieldFragments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField result = new com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.fieldName_ = fieldName_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          fieldFragments_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              fieldFragments_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.fieldFragments_ = fieldFragments_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.getDefaultInstance()) return this;
+        if (other.hasFieldName()) {
+          setFieldName(other.getFieldName());
+        }
+        if (!other.fieldFragments_.isEmpty()) {
+          if (fieldFragments_.isEmpty()) {
+            fieldFragments_ = other.fieldFragments_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureFieldFragmentsIsMutable();
+            fieldFragments_.addAll(other.fieldFragments_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              fieldName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              ensureFieldFragmentsIsMutable();
+              fieldFragments_.add(input.readBytes());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional string field_name = 1;
+      private java.lang.Object fieldName_ = "";
+      public boolean hasFieldName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getFieldName() {
+        java.lang.Object ref = fieldName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          fieldName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setFieldName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearFieldName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        fieldName_ = getDefaultInstance().getFieldName();
+        onChanged();
+        return this;
+      }
+      void setFieldName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        fieldName_ = value;
+        onChanged();
+      }
+      
+      // repeated string field_fragments = 2;
+      private com.google.protobuf.LazyStringList fieldFragments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureFieldFragmentsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          fieldFragments_ = new com.google.protobuf.LazyStringArrayList(fieldFragments_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      public java.util.List<String>
+          getFieldFragmentsList() {
+        return java.util.Collections.unmodifiableList(fieldFragments_);
+      }
+      public int getFieldFragmentsCount() {
+        return fieldFragments_.size();
+      }
+      public String getFieldFragments(int index) {
+        return fieldFragments_.get(index);
+      }
+      public Builder setFieldFragments(
+          int index, String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureFieldFragmentsIsMutable();
+        fieldFragments_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addFieldFragments(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureFieldFragmentsIsMutable();
+        fieldFragments_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllFieldFragments(
+          java.lang.Iterable<String> values) {
+        ensureFieldFragmentsIsMutable();
+        super.addAll(values, fieldFragments_);
+        onChanged();
+        return this;
+      }
+      public Builder clearFieldFragments() {
+        fieldFragments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      void addFieldFragments(com.google.protobuf.ByteString value) {
+        ensureFieldFragmentsIsMutable();
+        fieldFragments_.add(value);
+        onChanged();
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightField)
+    }
+    
+    static {
+      defaultInstance = new HighlightField(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.HighlightField)
   }
   
   public interface DateTimeValueOrBuilder
@@ -68043,6 +75305,15 @@ public final class Search {
     java.util.List<String> getDateFormatsList();
     int getDateFormatsCount();
     String getDateFormats(int index);
+    
+    // optional bool enable_highlighting = 14;
+    boolean hasEnableHighlighting();
+    boolean getEnableHighlighting();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorOptions vector_options = 15;
+    boolean hasVectorOptions();
+    com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions getVectorOptions();
+    com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder getVectorOptionsOrBuilder();
   }
   public static final class FieldSchema extends
       com.google.protobuf.GeneratedMessage
@@ -68266,6 +75537,29 @@ public final class Search {
       return dateFormats_.get(index);
     }
     
+    // optional bool enable_highlighting = 14;
+    public static final int ENABLE_HIGHLIGHTING_FIELD_NUMBER = 14;
+    private boolean enableHighlighting_;
+    public boolean hasEnableHighlighting() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public boolean getEnableHighlighting() {
+      return enableHighlighting_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorOptions vector_options = 15;
+    public static final int VECTOR_OPTIONS_FIELD_NUMBER = 15;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions vectorOptions_;
+    public boolean hasVectorOptions() {
+      return ((bitField0_ & 0x00000800) == 0x00000800);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions getVectorOptions() {
+      return vectorOptions_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder getVectorOptionsOrBuilder() {
+      return vectorOptions_;
+    }
+    
     private void initFields() {
       fieldName_ = "";
       fieldType_ = com.alicloud.openservices.tablestore.core.protocol.Search.FieldType.LONG;
@@ -68280,6 +75574,8 @@ public final class Search {
       isVirtualField_ = false;
       sourceFieldNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      enableHighlighting_ = false;
+      vectorOptions_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -68331,6 +75627,12 @@ public final class Search {
       }
       for (int i = 0; i < dateFormats_.size(); i++) {
         output.writeBytes(13, dateFormats_.getByteString(i));
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeBool(14, enableHighlighting_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeMessage(15, vectorOptions_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -68402,6 +75704,14 @@ public final class Search {
         }
         size += dataSize;
         size += 1 * getDateFormatsList().size();
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(14, enableHighlighting_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(15, vectorOptions_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -68520,6 +75830,7 @@ public final class Search {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getFieldSchemasFieldBuilder();
+          getVectorOptionsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -68558,6 +75869,14 @@ public final class Search {
         bitField0_ = (bitField0_ & ~0x00000800);
         dateFormats_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00001000);
+        enableHighlighting_ = false;
+        bitField0_ = (bitField0_ & ~0x00002000);
+        if (vectorOptionsBuilder_ == null) {
+          vectorOptions_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance();
+        } else {
+          vectorOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00004000);
         return this;
       }
       
@@ -68657,6 +75976,18 @@ public final class Search {
           bitField0_ = (bitField0_ & ~0x00001000);
         }
         result.dateFormats_ = dateFormats_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.enableHighlighting_ = enableHighlighting_;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        if (vectorOptionsBuilder_ == null) {
+          result.vectorOptions_ = vectorOptions_;
+        } else {
+          result.vectorOptions_ = vectorOptionsBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -68748,6 +76079,12 @@ public final class Search {
             dateFormats_.addAll(other.dateFormats_);
           }
           onChanged();
+        }
+        if (other.hasEnableHighlighting()) {
+          setEnableHighlighting(other.getEnableHighlighting());
+        }
+        if (other.hasVectorOptions()) {
+          mergeVectorOptions(other.getVectorOptions());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -68856,6 +76193,20 @@ public final class Search {
             case 106: {
               ensureDateFormatsIsMutable();
               dateFormats_.add(input.readBytes());
+              break;
+            }
+            case 112: {
+              bitField0_ |= 0x00002000;
+              enableHighlighting_ = input.readBool();
+              break;
+            }
+            case 122: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.newBuilder();
+              if (hasVectorOptions()) {
+                subBuilder.mergeFrom(getVectorOptions());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setVectorOptions(subBuilder.buildPartial());
               break;
             }
           }
@@ -69411,6 +76762,117 @@ public final class Search {
         onChanged();
       }
       
+      // optional bool enable_highlighting = 14;
+      private boolean enableHighlighting_ ;
+      public boolean hasEnableHighlighting() {
+        return ((bitField0_ & 0x00002000) == 0x00002000);
+      }
+      public boolean getEnableHighlighting() {
+        return enableHighlighting_;
+      }
+      public Builder setEnableHighlighting(boolean value) {
+        bitField0_ |= 0x00002000;
+        enableHighlighting_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearEnableHighlighting() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        enableHighlighting_ = false;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.VectorOptions vector_options = 15;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions vectorOptions_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder> vectorOptionsBuilder_;
+      public boolean hasVectorOptions() {
+        return ((bitField0_ & 0x00004000) == 0x00004000);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions getVectorOptions() {
+        if (vectorOptionsBuilder_ == null) {
+          return vectorOptions_;
+        } else {
+          return vectorOptionsBuilder_.getMessage();
+        }
+      }
+      public Builder setVectorOptions(com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions value) {
+        if (vectorOptionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          vectorOptions_ = value;
+          onChanged();
+        } else {
+          vectorOptionsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      public Builder setVectorOptions(
+          com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder builderForValue) {
+        if (vectorOptionsBuilder_ == null) {
+          vectorOptions_ = builderForValue.build();
+          onChanged();
+        } else {
+          vectorOptionsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      public Builder mergeVectorOptions(com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions value) {
+        if (vectorOptionsBuilder_ == null) {
+          if (((bitField0_ & 0x00004000) == 0x00004000) &&
+              vectorOptions_ != com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance()) {
+            vectorOptions_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.newBuilder(vectorOptions_).mergeFrom(value).buildPartial();
+          } else {
+            vectorOptions_ = value;
+          }
+          onChanged();
+        } else {
+          vectorOptionsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      public Builder clearVectorOptions() {
+        if (vectorOptionsBuilder_ == null) {
+          vectorOptions_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance();
+          onChanged();
+        } else {
+          vectorOptionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00004000);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder getVectorOptionsBuilder() {
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return getVectorOptionsFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder getVectorOptionsOrBuilder() {
+        if (vectorOptionsBuilder_ != null) {
+          return vectorOptionsBuilder_.getMessageOrBuilder();
+        } else {
+          return vectorOptions_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder> 
+          getVectorOptionsFieldBuilder() {
+        if (vectorOptionsBuilder_ == null) {
+          vectorOptionsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder>(
+                  vectorOptions_,
+                  getParentForChildren(),
+                  isClean());
+          vectorOptions_ = null;
+        }
+        return vectorOptionsBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.FieldSchema)
     }
     
@@ -69420,6 +76882,997 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.FieldSchema)
+  }
+  
+  public interface VectorOptionsOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorDataType data_type = 1;
+    boolean hasDataType();
+    com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType getDataType();
+    
+    // optional int32 dimension = 2;
+    boolean hasDimension();
+    int getDimension();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorMetricType metric_type = 3;
+    boolean hasMetricType();
+    com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType getMetricType();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorIndexType index_type = 4;
+    boolean hasIndexType();
+    com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType getIndexType();
+    
+    // optional bytes index_parameter = 5;
+    boolean hasIndexParameter();
+    com.google.protobuf.ByteString getIndexParameter();
+  }
+  public static final class VectorOptions extends
+      com.google.protobuf.GeneratedMessage
+      implements VectorOptionsOrBuilder {
+    // Use VectorOptions.newBuilder() to construct.
+    private VectorOptions(Builder builder) {
+      super(builder);
+    }
+    private VectorOptions(boolean noInit) {}
+    
+    private static final VectorOptions defaultInstance;
+    public static VectorOptions getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public VectorOptions getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorDataType data_type = 1;
+    public static final int DATA_TYPE_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType dataType_;
+    public boolean hasDataType() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType getDataType() {
+      return dataType_;
+    }
+    
+    // optional int32 dimension = 2;
+    public static final int DIMENSION_FIELD_NUMBER = 2;
+    private int dimension_;
+    public boolean hasDimension() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getDimension() {
+      return dimension_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorMetricType metric_type = 3;
+    public static final int METRIC_TYPE_FIELD_NUMBER = 3;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType metricType_;
+    public boolean hasMetricType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType getMetricType() {
+      return metricType_;
+    }
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.VectorIndexType index_type = 4;
+    public static final int INDEX_TYPE_FIELD_NUMBER = 4;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType indexType_;
+    public boolean hasIndexType() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType getIndexType() {
+      return indexType_;
+    }
+    
+    // optional bytes index_parameter = 5;
+    public static final int INDEX_PARAMETER_FIELD_NUMBER = 5;
+    private com.google.protobuf.ByteString indexParameter_;
+    public boolean hasIndexParameter() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.google.protobuf.ByteString getIndexParameter() {
+      return indexParameter_;
+    }
+    
+    private void initFields() {
+      dataType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType.VD_FLOAT_32;
+      dimension_ = 0;
+      metricType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType.VM_EUCLIDEAN;
+      indexType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType.VI_HNSW;
+      indexParameter_ = com.google.protobuf.ByteString.EMPTY;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, dataType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, dimension_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(3, metricType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeEnum(4, indexType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, indexParameter_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, dataType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, dimension_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(3, metricType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, indexType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, indexParameter_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptionsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        dataType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType.VD_FLOAT_32;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        dimension_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        metricType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType.VM_EUCLIDEAN;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        indexType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType.VI_HNSW;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        indexParameter_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions result = new com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.dataType_ = dataType_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.dimension_ = dimension_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.metricType_ = metricType_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.indexType_ = indexType_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.indexParameter_ = indexParameter_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.getDefaultInstance()) return this;
+        if (other.hasDataType()) {
+          setDataType(other.getDataType());
+        }
+        if (other.hasDimension()) {
+          setDimension(other.getDimension());
+        }
+        if (other.hasMetricType()) {
+          setMetricType(other.getMetricType());
+        }
+        if (other.hasIndexType()) {
+          setIndexType(other.getIndexType());
+        }
+        if (other.hasIndexParameter()) {
+          setIndexParameter(other.getIndexParameter());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType value = com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                dataType_ = value;
+              }
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              dimension_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType value = com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(3, rawValue);
+              } else {
+                bitField0_ |= 0x00000004;
+                metricType_ = value;
+              }
+              break;
+            }
+            case 32: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType value = com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(4, rawValue);
+              } else {
+                bitField0_ |= 0x00000008;
+                indexType_ = value;
+              }
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000010;
+              indexParameter_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.VectorDataType data_type = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType dataType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType.VD_FLOAT_32;
+      public boolean hasDataType() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType getDataType() {
+        return dataType_;
+      }
+      public Builder setDataType(com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        dataType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearDataType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        dataType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorDataType.VD_FLOAT_32;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 dimension = 2;
+      private int dimension_ ;
+      public boolean hasDimension() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getDimension() {
+        return dimension_;
+      }
+      public Builder setDimension(int value) {
+        bitField0_ |= 0x00000002;
+        dimension_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearDimension() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        dimension_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.VectorMetricType metric_type = 3;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType metricType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType.VM_EUCLIDEAN;
+      public boolean hasMetricType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType getMetricType() {
+        return metricType_;
+      }
+      public Builder setMetricType(com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        metricType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearMetricType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        metricType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorMetricType.VM_EUCLIDEAN;
+        onChanged();
+        return this;
+      }
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.VectorIndexType index_type = 4;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType indexType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType.VI_HNSW;
+      public boolean hasIndexType() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType getIndexType() {
+        return indexType_;
+      }
+      public Builder setIndexType(com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        indexType_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearIndexType() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        indexType_ = com.alicloud.openservices.tablestore.core.protocol.Search.VectorIndexType.VI_HNSW;
+        onChanged();
+        return this;
+      }
+      
+      // optional bytes index_parameter = 5;
+      private com.google.protobuf.ByteString indexParameter_ = com.google.protobuf.ByteString.EMPTY;
+      public boolean hasIndexParameter() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public com.google.protobuf.ByteString getIndexParameter() {
+        return indexParameter_;
+      }
+      public Builder setIndexParameter(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        indexParameter_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearIndexParameter() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        indexParameter_ = getDefaultInstance().getIndexParameter();
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.VectorOptions)
+    }
+    
+    static {
+      defaultInstance = new VectorOptions(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.VectorOptions)
+  }
+  
+  public interface HNSWIndexParameterOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional int32 m = 1;
+    boolean hasM();
+    int getM();
+    
+    // optional int32 ef_construction = 2;
+    boolean hasEfConstruction();
+    int getEfConstruction();
+  }
+  public static final class HNSWIndexParameter extends
+      com.google.protobuf.GeneratedMessage
+      implements HNSWIndexParameterOrBuilder {
+    // Use HNSWIndexParameter.newBuilder() to construct.
+    private HNSWIndexParameter(Builder builder) {
+      super(builder);
+    }
+    private HNSWIndexParameter(boolean noInit) {}
+    
+    private static final HNSWIndexParameter defaultInstance;
+    public static HNSWIndexParameter getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public HNSWIndexParameter getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional int32 m = 1;
+    public static final int M_FIELD_NUMBER = 1;
+    private int m_;
+    public boolean hasM() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public int getM() {
+      return m_;
+    }
+    
+    // optional int32 ef_construction = 2;
+    public static final int EF_CONSTRUCTION_FIELD_NUMBER = 2;
+    private int efConstruction_;
+    public boolean hasEfConstruction() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getEfConstruction() {
+      return efConstruction_;
+    }
+    
+    private void initFields() {
+      m_ = 0;
+      efConstruction_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, m_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, efConstruction_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, m_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, efConstruction_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        m_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        efConstruction_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter result = new com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.m_ = m_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.efConstruction_ = efConstruction_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.getDefaultInstance()) return this;
+        if (other.hasM()) {
+          setM(other.getM());
+        }
+        if (other.hasEfConstruction()) {
+          setEfConstruction(other.getEfConstruction());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              m_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              efConstruction_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional int32 m = 1;
+      private int m_ ;
+      public boolean hasM() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getM() {
+        return m_;
+      }
+      public Builder setM(int value) {
+        bitField0_ |= 0x00000001;
+        m_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearM() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        m_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // optional int32 ef_construction = 2;
+      private int efConstruction_ ;
+      public boolean hasEfConstruction() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getEfConstruction() {
+        return efConstruction_;
+      }
+      public Builder setEfConstruction(int value) {
+        bitField0_ |= 0x00000002;
+        efConstruction_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearEfConstruction() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        efConstruction_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.HNSWIndexParameter)
+    }
+    
+    static {
+      defaultInstance = new HNSWIndexParameter(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.HNSWIndexParameter)
   }
   
   public interface IndexSchemaOrBuilder
@@ -76985,6 +85438,11 @@ public final class Search {
     // optional int32 time_to_live = 7;
     boolean hasTimeToLive();
     int getTimeToLive();
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatus index_status = 8;
+    boolean hasIndexStatus();
+    com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus getIndexStatus();
+    com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder getIndexStatusOrBuilder();
   }
   public static final class DescribeSearchIndexResponse extends
       com.google.protobuf.GeneratedMessage
@@ -77127,6 +85585,19 @@ public final class Search {
       return timeToLive_;
     }
     
+    // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatus index_status = 8;
+    public static final int INDEX_STATUS_FIELD_NUMBER = 8;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus indexStatus_;
+    public boolean hasIndexStatus() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus getIndexStatus() {
+      return indexStatus_;
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder getIndexStatusOrBuilder() {
+      return indexStatus_;
+    }
+    
     private void initFields() {
       schema_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexSchema.getDefaultInstance();
       syncStat_ = com.alicloud.openservices.tablestore.core.protocol.Search.SyncStat.getDefaultInstance();
@@ -77135,6 +85606,7 @@ public final class Search {
       queryFlowWeight_ = java.util.Collections.emptyList();
       createTime_ = 0L;
       timeToLive_ = 0;
+      indexStatus_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -77168,6 +85640,9 @@ public final class Search {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeInt32(7, timeToLive_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeMessage(8, indexStatus_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -77205,6 +85680,10 @@ public final class Search {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(7, timeToLive_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, indexStatus_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -77326,6 +85805,7 @@ public final class Search {
           getSyncStatFieldBuilder();
           getMeteringInfoFieldBuilder();
           getQueryFlowWeightFieldBuilder();
+          getIndexStatusFieldBuilder();
         }
       }
       private static Builder create() {
@@ -77364,6 +85844,12 @@ public final class Search {
         bitField0_ = (bitField0_ & ~0x00000020);
         timeToLive_ = 0;
         bitField0_ = (bitField0_ & ~0x00000040);
+        if (indexStatusBuilder_ == null) {
+          indexStatus_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance();
+        } else {
+          indexStatusBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       
@@ -77447,6 +85933,14 @@ public final class Search {
           to_bitField0_ |= 0x00000020;
         }
         result.timeToLive_ = timeToLive_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        if (indexStatusBuilder_ == null) {
+          result.indexStatus_ = indexStatus_;
+        } else {
+          result.indexStatus_ = indexStatusBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -77506,6 +86000,9 @@ public final class Search {
         }
         if (other.hasTimeToLive()) {
           setTimeToLive(other.getTimeToLive());
+        }
+        if (other.hasIndexStatus()) {
+          mergeIndexStatus(other.getIndexStatus());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -77584,6 +86081,15 @@ public final class Search {
             case 56: {
               bitField0_ |= 0x00000040;
               timeToLive_ = input.readInt32();
+              break;
+            }
+            case 66: {
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder subBuilder = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.newBuilder();
+              if (hasIndexStatus()) {
+                subBuilder.mergeFrom(getIndexStatus());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setIndexStatus(subBuilder.buildPartial());
               break;
             }
           }
@@ -78126,6 +86632,96 @@ public final class Search {
         return this;
       }
       
+      // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatus index_status = 8;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus indexStatus_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder> indexStatusBuilder_;
+      public boolean hasIndexStatus() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus getIndexStatus() {
+        if (indexStatusBuilder_ == null) {
+          return indexStatus_;
+        } else {
+          return indexStatusBuilder_.getMessage();
+        }
+      }
+      public Builder setIndexStatus(com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus value) {
+        if (indexStatusBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          indexStatus_ = value;
+          onChanged();
+        } else {
+          indexStatusBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder setIndexStatus(
+          com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder builderForValue) {
+        if (indexStatusBuilder_ == null) {
+          indexStatus_ = builderForValue.build();
+          onChanged();
+        } else {
+          indexStatusBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder mergeIndexStatus(com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus value) {
+        if (indexStatusBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
+              indexStatus_ != com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance()) {
+            indexStatus_ =
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.newBuilder(indexStatus_).mergeFrom(value).buildPartial();
+          } else {
+            indexStatus_ = value;
+          }
+          onChanged();
+        } else {
+          indexStatusBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      public Builder clearIndexStatus() {
+        if (indexStatusBuilder_ == null) {
+          indexStatus_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance();
+          onChanged();
+        } else {
+          indexStatusBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
+        return this;
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder getIndexStatusBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getIndexStatusFieldBuilder().getBuilder();
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder getIndexStatusOrBuilder() {
+        if (indexStatusBuilder_ != null) {
+          return indexStatusBuilder_.getMessageOrBuilder();
+        } else {
+          return indexStatus_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder> 
+          getIndexStatusFieldBuilder() {
+        if (indexStatusBuilder_ == null) {
+          indexStatusBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder, com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder>(
+                  indexStatus_,
+                  getParentForChildren(),
+                  isClean());
+          indexStatus_ = null;
+        }
+        return indexStatusBuilder_;
+      }
+      
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.DescribeSearchIndexResponse)
     }
     
@@ -78135,6 +86731,447 @@ public final class Search {
     }
     
     // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.DescribeSearchIndexResponse)
+  }
+  
+  public interface IndexStatusOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatusEnum status = 1;
+    boolean hasStatus();
+    com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum getStatus();
+    
+    // optional string status_description = 2;
+    boolean hasStatusDescription();
+    String getStatusDescription();
+  }
+  public static final class IndexStatus extends
+      com.google.protobuf.GeneratedMessage
+      implements IndexStatusOrBuilder {
+    // Use IndexStatus.newBuilder() to construct.
+    private IndexStatus(Builder builder) {
+      super(builder);
+    }
+    private IndexStatus(boolean noInit) {}
+    
+    private static final IndexStatus defaultInstance;
+    public static IndexStatus getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public IndexStatus getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_fieldAccessorTable;
+    }
+    
+    private int bitField0_;
+    // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatusEnum status = 1;
+    public static final int STATUS_FIELD_NUMBER = 1;
+    private com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum status_;
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum getStatus() {
+      return status_;
+    }
+    
+    // optional string status_description = 2;
+    public static final int STATUS_DESCRIPTION_FIELD_NUMBER = 2;
+    private java.lang.Object statusDescription_;
+    public boolean hasStatusDescription() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getStatusDescription() {
+      java.lang.Object ref = statusDescription_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          statusDescription_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getStatusDescriptionBytes() {
+      java.lang.Object ref = statusDescription_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        statusDescription_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    private void initFields() {
+      status_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum.PENDING;
+      statusDescription_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getStatusDescriptionBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getStatusDescriptionBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_fieldAccessorTable;
+      }
+      
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        status_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum.PENDING;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        statusDescription_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDescriptor();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance();
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus build() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus result = new com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.status_ = status_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.statusDescription_ = statusDescription_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.getDefaultInstance()) return this;
+        if (other.hasStatus()) {
+          setStatus(other.getStatus());
+        }
+        if (other.hasStatusDescription()) {
+          setStatusDescription(other.getStatusDescription());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum value = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                status_ = value;
+              }
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              statusDescription_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // optional .com.alicloud.openservices.tablestore.core.protocol.IndexStatusEnum status = 1;
+      private com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum status_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum.PENDING;
+      public boolean hasStatus() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum getStatus() {
+        return status_;
+      }
+      public Builder setStatus(com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        status_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatusEnum.PENDING;
+        onChanged();
+        return this;
+      }
+      
+      // optional string status_description = 2;
+      private java.lang.Object statusDescription_ = "";
+      public boolean hasStatusDescription() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public String getStatusDescription() {
+        java.lang.Object ref = statusDescription_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          statusDescription_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setStatusDescription(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        statusDescription_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearStatusDescription() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        statusDescription_ = getDefaultInstance().getStatusDescription();
+        onChanged();
+        return this;
+      }
+      void setStatusDescription(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        statusDescription_ = value;
+        onChanged();
+      }
+      
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.IndexStatus)
+    }
+    
+    static {
+      defaultInstance = new IndexStatus(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.IndexStatus)
   }
   
   public interface ScanQueryOrBuilder
@@ -80683,6 +89720,11 @@ public final class Search {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedQuery_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoBoundingBoxQuery_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -80702,6 +89744,11 @@ public final class Search {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_ExistsQuery_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Query_descriptor;
   private static
@@ -80733,6 +89780,11 @@ public final class Search {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSort_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceSort_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -80753,6 +89805,16 @@ public final class Search {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchQuery_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnsToGet_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -80767,6 +89829,26 @@ public final class Search {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchResponse_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_DateTimeValue_descriptor;
   private static
@@ -80792,6 +89874,16 @@ public final class Search {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSchema_descriptor;
   private static
@@ -80873,6 +89965,11 @@ public final class Search {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexResponse_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ScanQuery_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -80897,507 +89994,587 @@ public final class Search {
   static {
     java.lang.String[] descriptorData = {
       "\n\014search.proto\0222com.alicloud.openservice" +
-      "s.tablestore.core.protocol\"-\n\006AvgAgg\022\022\n\n" +
-      "field_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"$\n\016Car" +
-      "dinalityAgg\022\022\n\nfield_name\030\001 \001(\t\"-\n\006MaxAg" +
-      "g\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"-" +
-      "\n\006MinAgg\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030" +
-      "\002 \001(\014\"-\n\006SumAgg\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007m" +
-      "issing\030\002 \001(\014\"r\n\010TermsAgg\022\022\n\nfield_name\030\001" +
-      " \001(\t\022\014\n\004size\030\002 \001(\005\022D\n\003agg\030\003 \001(\01327.com.al" +
-      "icloud.openservices.tablestore.core.prot",
-      "ocol.Agg\"\234\001\n\tFilterAgg\022I\n\006filter\030\001 \001(\01329" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.Query\022D\n\003agg\030\002 \001(\01327.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.Agg\"\032\n\nNestedPath\022\014\n\004path\030\001 \001(\t\"\246\001\n\t" +
-      "NestedAgg\022S\n\013nested_path\030\001 \001(\0132>.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.NestedPath\022D\n\003agg\030\002 \001(\01327.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".Agg\":\n\014GeoBoundsAgg\022\022\n\nfield_name\030\001 \001(\t",
-      "\022\026\n\016wrap_longitude\030\002 \001(\010\"H\n\023GeoDistanceA" +
-      "ggRange\022\013\n\003key\030\001 \001(\t\022\022\n\nrange_from\030\002 \001(\001" +
-      "\022\020\n\010range_to\030\003 \001(\001\"\215\001\n\016GeoDistanceAgg\022\022\n" +
-      "\nfield_name\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t\022W\n\006ran" +
-      "ges\030\003 \003(\0132G.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.GeoDistanceAggRan" +
-      "ge\"/\n\010StatsAgg\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007mi" +
-      "ssing\030\002 \001(\014\"7\n\020ExtendedStatsAgg\022\022\n\nfield" +
-      "_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"G\n\016Percenti" +
-      "lesAgg\022\022\n\nfield_name\030\001 \001(\t\022\020\n\010percents\030\002",
-      " \003(\001\022\017\n\007missing\030\003 \001(\014\"I\n\022PercentileRanks" +
-      "Agg\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006values\030\002 \003(\001\022" +
-      "\017\n\007missing\030\003 \001(\014\"#\n\rValueCountAgg\022\022\n\nfie" +
-      "ld_name\030\001 \001(\t\"~\n\tAggClause\022\020\n\010agg_name\030\001" +
-      " \001(\t\022M\n\010agg_type\030\002 \001(\0162;.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.AggT" +
-      "ype\022\020\n\010agg_body\030\003 \001(\014\"X\n\003Agg\022Q\n\nagg_clau" +
-      "se\030\001 \003(\0132=.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.AggClause\"\035\n\014AvgAg" +
-      "gResult\022\r\n\005value\030\001 \001(\001\"\035\n\014MaxAggResult\022\r",
-      "\n\005value\030\001 \001(\001\"\035\n\014MinAggResult\022\r\n\005value\030\001" +
-      " \001(\001\"\035\n\014SumAggResult\022\r\n\005value\030\001 \001(\001\"%\n\024C" +
-      "ardinalityAggResult\022\r\n\005value\030\001 \001(\003\"{\n\006Bu" +
-      "cket\022\013\n\003key\030\001 \001(\t\022\021\n\tdoc_count\030\002 \001(\003\022Q\n\n" +
-      "agg_result\030\003 \001(\0132=.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.AggResult\"" +
-      "\241\001\n\016TermsAggResult\022#\n\033doc_count_error_up" +
-      "per_bound\030\001 \001(\003\022\036\n\026sum_of_other_doc_coun" +
-      "t\030\002 \001(\003\022J\n\006bucket\030\003 \003(\0132:.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Buc",
-      "ket\"w\n\017FilterAggResult\022\021\n\tdoc_count\030\001 \001(" +
-      "\003\022Q\n\nagg_result\030\002 \001(\0132=.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.AggRe" +
-      "sult\"w\n\017NestedAggResult\022\021\n\tdoc_count\030\001 \001" +
-      "(\003\022Q\n\nagg_result\030\002 \001(\0132=.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.AggR" +
-      "esult\"$\n\010GeoPoint\022\013\n\003lat\030\001 \001(\001\022\013\n\003lon\030\002 " +
-      "\001(\001\"\270\001\n\022GeoBoundsAggResult\022N\n\010top_left\030\001" +
-      " \001(\0132<.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.GeoPoint\022R\n\014bottom_rig",
-      "ht\030\002 \001(\0132<.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.GeoPoint\"S\n\013RangeB" +
-      "ucket\022\013\n\003key\030\001 \001(\t\022\022\n\nrange_from\030\002 \001(\001\022\020" +
-      "\n\010range_to\030\003 \001(\001\022\021\n\tdoc_count\030\004 \001(\003\"g\n\024G" +
-      "eoDistanceAggResult\022O\n\006bucket\030\001 \003(\0132?.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.RangeBucket\"S\n\016StatsAggResult\022\r" +
-      "\n\005count\030\001 \001(\003\022\013\n\003min\030\002 \001(\001\022\013\n\003max\030\003 \001(\001\022" +
-      "\013\n\003avg\030\004 \001(\001\022\013\n\003sum\030\005 \001(\001\"\344\001\n\026ExtendedSt" +
-      "atsAggResult\022\r\n\005count\030\001 \001(\003\022\013\n\003min\030\002 \001(\001",
-      "\022\013\n\003max\030\003 \001(\001\022\013\n\003avg\030\004 \001(\001\022\013\n\003sum\030\005 \001(\001\022" +
-      "\026\n\016sum_of_squares\030\006 \001(\001\022\020\n\010variance\030\007 \001(" +
-      "\001\022\025\n\rstd_deviation\030\010 \001(\001\022\"\n\032std_deviatio" +
-      "n_bounds_upper\030\t \001(\001\022\"\n\032std_deviation_bo" +
-      "unds_lower\030\n \001(\001\",\n\nPercentile\022\017\n\007percen" +
-      "t\030\001 \001(\001\022\r\n\005value\030\002 \001(\001\"k\n\024PercentilesAgg" +
-      "Result\022S\n\013percentiles\030\001 \003(\0132>.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".Percentile\"o\n\030PercentileRanksAggResult\022" +
-      "S\n\013percentiles\030\001 \003(\0132>.com.alicloud.open",
-      "services.tablestore.core.protocol.Percen" +
-      "tile\"$\n\023ValueCountAggResult\022\r\n\005count\030\001 \001" +
-      "(\003\"{\n\014SubAggResult\022\014\n\004name\030\001 \001(\t\022I\n\004type" +
-      "\030\002 \001(\0162;.com.alicloud.openservices.table" +
-      "store.core.protocol.AggType\022\022\n\nagg_resul" +
-      "t\030\003 \001(\014\"f\n\tAggResult\022Y\n\017sub_agg_results\030" +
-      "\001 \003(\0132@.com.alicloud.openservices.tables" +
-      "tore.core.protocol.SubAggResult\"|\n\013Aggre" +
-      "gation\022\014\n\004name\030\001 \001(\t\022Q\n\004type\030\002 \001(\0162C.com" +
-      ".alicloud.openservices.tablestore.core.p",
-      "rotocol.AggregationType\022\014\n\004body\030\003 \001(\014\"]\n" +
-      "\014Aggregations\022M\n\004aggs\030\001 \003(\0132?.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".Aggregation\"t\n\007GroupBy\022\014\n\004name\030\001 \001(\t\022M\n" +
-      "\004type\030\002 \001(\0162?.com.alicloud.openservices." +
-      "tablestore.core.protocol.GroupByType\022\014\n\004" +
-      "body\030\003 \001(\014\"Z\n\010GroupBys\022N\n\tgroup_bys\030\001 \003(" +
-      "\0132;.com.alicloud.openservices.tablestore" +
-      ".core.protocol.GroupBy\"5\n\016AvgAggregation" +
-      "\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"5\n",
-      "\016MaxAggregation\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007m" +
-      "issing\030\002 \001(\014\"5\n\016MinAggregation\022\022\n\nfield_" +
-      "name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"5\n\016SumAggreg" +
-      "ation\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001" +
-      "(\014\"&\n\020CountAggregation\022\022\n\nfield_name\030\001 \001" +
-      "(\t\"?\n\030DistinctCountAggregation\022\022\n\nfield_" +
-      "name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"k\n\022TopRowsAg" +
-      "gregation\022\r\n\005limit\030\001 \001(\005\022F\n\004sort\030\002 \001(\01328" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.Sort\"R\n\026PercentilesAggregati",
-      "on\022\022\n\nfield_name\030\001 \001(\t\022\023\n\013percentiles\030\002 " +
-      "\003(\001\022\017\n\007missing\030\003 \001(\014\"&\n\nFieldRange\022\013\n\003mi" +
-      "n\030\001 \001(\014\022\013\n\003max\030\002 \001(\014\"\207\004\n\024GroupByDateHist" +
-      "ogram\022\022\n\nfield_name\030\001 \001(\t\022S\n\010interval\030\002 " +
-      "\001(\0132A.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.DateTimeValue\022S\n\013field_" +
-      "range\030\003 \001(\0132>.com.alicloud.openservices." +
-      "tablestore.core.protocol.FieldRange\022\017\n\007m" +
-      "issing\030\004 \001(\014\022\025\n\rmin_doc_count\030\005 \001(\003\022\021\n\tt" +
-      "ime_zone\030\006 \001(\t\022M\n\004sort\030\007 \001(\0132?.com.alicl",
-      "oud.openservices.tablestore.core.protoco" +
-      "l.GroupBySort\022R\n\010sub_aggs\030\010 \001(\0132@.com.al" +
-      "icloud.openservices.tablestore.core.prot" +
-      "ocol.Aggregations\022S\n\rsub_group_bys\030\t \001(\013" +
-      "2<.com.alicloud.openservices.tablestore." +
-      "core.protocol.GroupBys\"\255\003\n\020GroupByHistog" +
-      "ram\022\022\n\nfield_name\030\001 \001(\t\022\020\n\010interval\030\002 \001(" +
-      "\014\022\017\n\007missing\030\003 \001(\014\022\025\n\rmin_doc_count\030\004 \001(" +
-      "\003\022M\n\004sort\030\005 \001(\0132?.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.GroupBySort",
-      "\022S\n\013field_range\030\006 \001(\0132>.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.Field" +
-      "Range\022R\n\010sub_aggs\030\007 \001(\0132@.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Agg" +
-      "regations\022S\n\rsub_group_bys\030\010 \001(\0132<.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.GroupBys\"\\\n\014GroupKeySort\022L\n\005order\030" +
-      "\001 \001(\0162=.com.alicloud.openservices.tables" +
-      "tore.core.protocol.SortOrder\"\\\n\014RowCount" +
-      "Sort\022L\n\005order\030\001 \001(\0162=.com.alicloud.opens",
-      "ervices.tablestore.core.protocol.SortOrd" +
-      "er\"p\n\nSubAggSort\022\024\n\014sub_agg_name\030\001 \001(\t\022L" +
-      "\n\005order\030\002 \001(\0162=.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.SortOrder\"\231\002\n" +
-      "\rGroupBySorter\022X\n\016group_key_sort\030\001 \001(\0132@" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.GroupKeySort\022X\n\016row_count_so" +
-      "rt\030\002 \001(\0132@.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.RowCountSort\022T\n\014su" +
-      "b_agg_sort\030\003 \001(\0132>.com.alicloud.openserv",
-      "ices.tablestore.core.protocol.SubAggSort" +
-      "\"a\n\013GroupBySort\022R\n\007sorters\030\001 \003(\0132A.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.GroupBySorter\"\277\002\n\014GroupByField\022\022\n\n" +
-      "field_name\030\001 \001(\t\022\014\n\004size\030\002 \001(\005\022M\n\004sort\030\003" +
-      " \001(\0132?.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.GroupBySort\022R\n\010sub_agg" +
-      "s\030\004 \001(\0132@.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.Aggregations\022S\n\rsub" +
-      "_group_bys\030\005 \001(\0132<.com.alicloud.openserv",
-      "ices.tablestore.core.protocol.GroupBys\022\025" +
-      "\n\rmin_doc_count\030\006 \001(\003\"!\n\005Range\022\014\n\004from\030\001" +
-      " \001(\001\022\n\n\002to\030\002 \001(\001\"\226\002\n\014GroupByRange\022\022\n\nfie" +
-      "ld_name\030\001 \001(\t\022I\n\006ranges\030\002 \003(\01329.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.Range\022R\n\010sub_aggs\030\003 \001(\0132@.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "Aggregations\022S\n\rsub_group_bys\030\004 \001(\0132<.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.GroupBys\"\204\002\n\rGroupByFilter\022J\n\007f",
-      "ilters\030\001 \003(\01329.com.alicloud.openservices" +
-      ".tablestore.core.protocol.Query\022R\n\010sub_a" +
-      "ggs\030\002 \001(\0132@.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.Aggregations\022S\n\rs" +
-      "ub_group_bys\030\003 \001(\0132<.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.GroupBys" +
-      "\"\352\002\n\022GroupByGeoDistance\022\022\n\nfield_name\030\001 " +
-      "\001(\t\022L\n\006origin\030\002 \001(\0132<.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.GeoPoin" +
-      "t\022I\n\006ranges\030\003 \003(\01329.com.alicloud.openser",
-      "vices.tablestore.core.protocol.Range\022R\n\010" +
-      "sub_aggs\030\004 \001(\0132@.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.Aggregations" +
-      "\022S\n\rsub_group_bys\030\005 \001(\0132<.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Gro" +
-      "upBys\"%\n\024AvgAggregationResult\022\r\n\005value\030\001" +
-      " \001(\001\"(\n\030TopRowsAggregationResult\022\014\n\004rows" +
-      "\030\001 \003(\014\"8\n\032PercentilesAggregationItem\022\013\n\003" +
-      "key\030\001 \001(\001\022\r\n\005value\030\002 \001(\014\"\225\001\n\034Percentiles" +
-      "AggregationResult\022u\n\035percentiles_aggrega",
-      "tion_items\030\001 \003(\0132N.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.Percentile" +
-      "sAggregationItem\"/\n\036DistinctCountAggrega" +
-      "tionResult\022\r\n\005value\030\001 \001(\003\"%\n\024MaxAggregat" +
-      "ionResult\022\r\n\005value\030\001 \001(\001\"%\n\024MinAggregati" +
-      "onResult\022\r\n\005value\030\001 \001(\001\"%\n\024SumAggregatio" +
-      "nResult\022\r\n\005value\030\001 \001(\001\"\'\n\026CountAggregati" +
-      "onResult\022\r\n\005value\030\001 \001(\003\"\210\001\n\021AggregationR" +
-      "esult\022\014\n\004name\030\001 \001(\t\022Q\n\004type\030\002 \001(\0162C.com." +
-      "alicloud.openservices.tablestore.core.pr",
-      "otocol.AggregationType\022\022\n\nagg_result\030\003 \001" +
-      "(\014\"p\n\022AggregationsResult\022Z\n\013agg_results\030" +
-      "\001 \003(\0132E.com.alicloud.openservices.tables" +
-      "tore.core.protocol.AggregationResult\"\373\001\n" +
-      "\026GroupByFieldResultItem\022\013\n\003key\030\001 \001(\t\022\021\n\t" +
-      "row_count\030\002 \001(\003\022_\n\017sub_aggs_result\030\003 \001(\013" +
-      "2F.com.alicloud.openservices.tablestore." +
-      "core.protocol.AggregationsResult\022`\n\024sub_" +
-      "group_bys_result\030\004 \001(\0132B.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Grou",
-      "pBysResult\"\205\001\n\022GroupByFieldResult\022o\n\033gro" +
-      "up_by_field_result_items\030\001 \003(\0132J.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.GroupByFieldResultItem\"\210\002\n\026GroupByRa" +
-      "ngeResultItem\022\014\n\004from\030\001 \001(\001\022\n\n\002to\030\002 \001(\001\022" +
-      "\021\n\trow_count\030\003 \001(\003\022_\n\017sub_aggs_result\030\004 " +
-      "\001(\0132F.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.AggregationsResult\022`\n\024s" +
-      "ub_group_bys_result\030\005 \001(\0132B.com.alicloud" +
-      ".openservices.tablestore.core.protocol.G",
-      "roupBysResult\"\205\001\n\022GroupByRangeResult\022o\n\033" +
-      "group_by_range_result_items\030\001 \003(\0132J.com." +
+      "s.tablestore.core.protocol\032\026ots_internal" +
+      "_api.proto\"-\n\006AvgAgg\022\022\n\nfield_name\030\001 \001(\t" +
+      "\022\017\n\007missing\030\002 \001(\014\"$\n\016CardinalityAgg\022\022\n\nf" +
+      "ield_name\030\001 \001(\t\"-\n\006MaxAgg\022\022\n\nfield_name\030" +
+      "\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"-\n\006MinAgg\022\022\n\nfiel" +
+      "d_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"-\n\006SumAgg\022" +
+      "\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"r\n\010" +
+      "TermsAgg\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004size\030\002 \001" +
+      "(\005\022D\n\003agg\030\003 \001(\01327.com.alicloud.openservi",
+      "ces.tablestore.core.protocol.Agg\"\234\001\n\tFil" +
+      "terAgg\022I\n\006filter\030\001 \001(\01329.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Quer" +
+      "y\022D\n\003agg\030\002 \001(\01327.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.Agg\"\032\n\nNeste" +
+      "dPath\022\014\n\004path\030\001 \001(\t\"\246\001\n\tNestedAgg\022S\n\013nes" +
+      "ted_path\030\001 \001(\0132>.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.NestedPath\022D" +
+      "\n\003agg\030\002 \001(\01327.com.alicloud.openservices." +
+      "tablestore.core.protocol.Agg\":\n\014GeoBound",
+      "sAgg\022\022\n\nfield_name\030\001 \001(\t\022\026\n\016wrap_longitu" +
+      "de\030\002 \001(\010\"H\n\023GeoDistanceAggRange\022\013\n\003key\030\001" +
+      " \001(\t\022\022\n\nrange_from\030\002 \001(\001\022\020\n\010range_to\030\003 \001" +
+      "(\001\"\215\001\n\016GeoDistanceAgg\022\022\n\nfield_name\030\001 \001(" +
+      "\t\022\016\n\006origin\030\002 \001(\t\022W\n\006ranges\030\003 \003(\0132G.com." +
       "alicloud.openservices.tablestore.core.pr" +
-      "otocol.GroupByRangeResultItem\"\216\002\n\034GroupB" +
-      "yGeoDistanceResultItem\022\014\n\004from\030\001 \001(\001\022\n\n\002" +
-      "to\030\002 \001(\001\022\021\n\trow_count\030\003 \001(\003\022_\n\017sub_aggs_" +
-      "result\030\004 \001(\0132F.com.alicloud.openservices" +
-      ".tablestore.core.protocol.AggregationsRe" +
-      "sult\022`\n\024sub_group_bys_result\030\005 \001(\0132B.com" +
-      ".alicloud.openservices.tablestore.core.p",
-      "rotocol.GroupBysResult\"\230\001\n\030GroupByGeoDis" +
-      "tanceResult\022|\n\"group_by_geo_distance_res" +
-      "ult_items\030\001 \003(\0132P.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.GroupByGeoD" +
-      "istanceResultItem\"\357\001\n\027GroupByFilterResul" +
-      "tItem\022\021\n\trow_count\030\001 \001(\003\022_\n\017sub_aggs_res" +
-      "ult\030\002 \001(\0132F.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.AggregationsResul" +
-      "t\022`\n\024sub_group_bys_result\030\003 \001(\0132B.com.al" +
-      "icloud.openservices.tablestore.core.prot",
-      "ocol.GroupBysResult\"\210\001\n\023GroupByFilterRes" +
-      "ult\022q\n\034group_by_filter_result_items\030\001 \003(" +
-      "\0132K.com.alicloud.openservices.tablestore" +
-      ".core.protocol.GroupByFilterResultItem\"\205" +
-      "\001\n\rGroupByResult\022\014\n\004name\030\001 \001(\t\022M\n\004type\030\002" +
-      " \001(\0162?.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.GroupByType\022\027\n\017group_b" +
-      "y_result\030\003 \001(\014\"m\n\016GroupBysResult\022[\n\020grou" +
-      "p_by_results\030\001 \003(\0132A.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.GroupByR",
-      "esult\"\365\001\n\024GroupByHistogramItem\022\013\n\003key\030\001 " +
-      "\001(\014\022\r\n\005value\030\002 \001(\003\022_\n\017sub_aggs_result\030\003 " +
-      "\001(\0132F.com.alicloud.openservices.tablesto" +
+      "otocol.GeoDistanceAggRange\"/\n\010StatsAgg\022\022" +
+      "\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"7\n\020E" +
+      "xtendedStatsAgg\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007m" +
+      "issing\030\002 \001(\014\"G\n\016PercentilesAgg\022\022\n\nfield_",
+      "name\030\001 \001(\t\022\020\n\010percents\030\002 \003(\001\022\017\n\007missing\030" +
+      "\003 \001(\014\"I\n\022PercentileRanksAgg\022\022\n\nfield_nam" +
+      "e\030\001 \001(\t\022\016\n\006values\030\002 \003(\001\022\017\n\007missing\030\003 \001(\014" +
+      "\"#\n\rValueCountAgg\022\022\n\nfield_name\030\001 \001(\t\"~\n" +
+      "\tAggClause\022\020\n\010agg_name\030\001 \001(\t\022M\n\010agg_type" +
+      "\030\002 \001(\0162;.com.alicloud.openservices.table" +
+      "store.core.protocol.AggType\022\020\n\010agg_body\030" +
+      "\003 \001(\014\"X\n\003Agg\022Q\n\nagg_clause\030\001 \003(\0132=.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.AggClause\"\035\n\014AvgAggResult\022\r\n\005value",
+      "\030\001 \001(\001\"\035\n\014MaxAggResult\022\r\n\005value\030\001 \001(\001\"\035\n" +
+      "\014MinAggResult\022\r\n\005value\030\001 \001(\001\"\035\n\014SumAggRe" +
+      "sult\022\r\n\005value\030\001 \001(\001\"%\n\024CardinalityAggRes" +
+      "ult\022\r\n\005value\030\001 \001(\003\"{\n\006Bucket\022\013\n\003key\030\001 \001(" +
+      "\t\022\021\n\tdoc_count\030\002 \001(\003\022Q\n\nagg_result\030\003 \001(\013" +
+      "2=.com.alicloud.openservices.tablestore." +
+      "core.protocol.AggResult\"\241\001\n\016TermsAggResu" +
+      "lt\022#\n\033doc_count_error_upper_bound\030\001 \001(\003\022" +
+      "\036\n\026sum_of_other_doc_count\030\002 \001(\003\022J\n\006bucke" +
+      "t\030\003 \003(\0132:.com.alicloud.openservices.tabl",
+      "estore.core.protocol.Bucket\"w\n\017FilterAgg" +
+      "Result\022\021\n\tdoc_count\030\001 \001(\003\022Q\n\nagg_result\030" +
+      "\002 \001(\0132=.com.alicloud.openservices.tables" +
+      "tore.core.protocol.AggResult\"w\n\017NestedAg" +
+      "gResult\022\021\n\tdoc_count\030\001 \001(\003\022Q\n\nagg_result" +
+      "\030\002 \001(\0132=.com.alicloud.openservices.table" +
+      "store.core.protocol.AggResult\"$\n\010GeoPoin" +
+      "t\022\013\n\003lat\030\001 \001(\001\022\013\n\003lon\030\002 \001(\001\"\270\001\n\022GeoBound" +
+      "sAggResult\022N\n\010top_left\030\001 \001(\0132<.com.alicl" +
+      "oud.openservices.tablestore.core.protoco",
+      "l.GeoPoint\022R\n\014bottom_right\030\002 \001(\0132<.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.GeoPoint\"S\n\013RangeBucket\022\013\n\003key\030\001 \001" +
+      "(\t\022\022\n\nrange_from\030\002 \001(\001\022\020\n\010range_to\030\003 \001(\001" +
+      "\022\021\n\tdoc_count\030\004 \001(\003\"g\n\024GeoDistanceAggRes" +
+      "ult\022O\n\006bucket\030\001 \003(\0132?.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.RangeBu" +
+      "cket\"S\n\016StatsAggResult\022\r\n\005count\030\001 \001(\003\022\013\n" +
+      "\003min\030\002 \001(\001\022\013\n\003max\030\003 \001(\001\022\013\n\003avg\030\004 \001(\001\022\013\n\003" +
+      "sum\030\005 \001(\001\"\344\001\n\026ExtendedStatsAggResult\022\r\n\005",
+      "count\030\001 \001(\003\022\013\n\003min\030\002 \001(\001\022\013\n\003max\030\003 \001(\001\022\013\n" +
+      "\003avg\030\004 \001(\001\022\013\n\003sum\030\005 \001(\001\022\026\n\016sum_of_square" +
+      "s\030\006 \001(\001\022\020\n\010variance\030\007 \001(\001\022\025\n\rstd_deviati" +
+      "on\030\010 \001(\001\022\"\n\032std_deviation_bounds_upper\030\t" +
+      " \001(\001\022\"\n\032std_deviation_bounds_lower\030\n \001(\001" +
+      "\",\n\nPercentile\022\017\n\007percent\030\001 \001(\001\022\r\n\005value" +
+      "\030\002 \001(\001\"k\n\024PercentilesAggResult\022S\n\013percen" +
+      "tiles\030\001 \003(\0132>.com.alicloud.openservices." +
+      "tablestore.core.protocol.Percentile\"o\n\030P" +
+      "ercentileRanksAggResult\022S\n\013percentiles\030\001",
+      " \003(\0132>.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.Percentile\"$\n\023ValueCou" +
+      "ntAggResult\022\r\n\005count\030\001 \001(\003\"{\n\014SubAggResu" +
+      "lt\022\014\n\004name\030\001 \001(\t\022I\n\004type\030\002 \001(\0162;.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.AggType\022\022\n\nagg_result\030\003 \001(\014\"f\n\tAggRe" +
+      "sult\022Y\n\017sub_agg_results\030\001 \003(\0132@.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.SubAggResult\"|\n\013Aggregation\022\014\n\004name\030\001" +
+      " \001(\t\022Q\n\004type\030\002 \001(\0162C.com.alicloud.opense",
+      "rvices.tablestore.core.protocol.Aggregat" +
+      "ionType\022\014\n\004body\030\003 \001(\014\"]\n\014Aggregations\022M\n" +
+      "\004aggs\030\001 \003(\0132?.com.alicloud.openservices." +
+      "tablestore.core.protocol.Aggregation\"t\n\007" +
+      "GroupBy\022\014\n\004name\030\001 \001(\t\022M\n\004type\030\002 \001(\0162?.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.GroupByType\022\014\n\004body\030\003 \001(\014\"Z\n\010Gr" +
+      "oupBys\022N\n\tgroup_bys\030\001 \003(\0132;.com.alicloud" +
+      ".openservices.tablestore.core.protocol.G" +
+      "roupBy\"5\n\016AvgAggregation\022\022\n\nfield_name\030\001",
+      " \001(\t\022\017\n\007missing\030\002 \001(\014\"5\n\016MaxAggregation\022" +
+      "\022\n\nfield_name\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"5\n\016" +
+      "MinAggregation\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007mi" +
+      "ssing\030\002 \001(\014\"5\n\016SumAggregation\022\022\n\nfield_n" +
+      "ame\030\001 \001(\t\022\017\n\007missing\030\002 \001(\014\"&\n\020CountAggre" +
+      "gation\022\022\n\nfield_name\030\001 \001(\t\"?\n\030DistinctCo" +
+      "untAggregation\022\022\n\nfield_name\030\001 \001(\t\022\017\n\007mi" +
+      "ssing\030\002 \001(\014\"k\n\022TopRowsAggregation\022\r\n\005lim" +
+      "it\030\001 \001(\005\022F\n\004sort\030\002 \001(\01328.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Sort",
+      "\"R\n\026PercentilesAggregation\022\022\n\nfield_name" +
+      "\030\001 \001(\t\022\023\n\013percentiles\030\002 \003(\001\022\017\n\007missing\030\003" +
+      " \001(\014\"&\n\nFieldRange\022\013\n\003min\030\001 \001(\014\022\013\n\003max\030\002" +
+      " \001(\014\"\332\004\n\024GroupByDateHistogram\022\022\n\nfield_n" +
+      "ame\030\001 \001(\t\022S\n\010interval\030\002 \001(\0132A.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".DateTimeValue\022S\n\013field_range\030\003 \001(\0132>.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.FieldRange\022\017\n\007missing\030\004 \001(\014\022\025\n\r" +
+      "min_doc_count\030\005 \001(\003\022\021\n\ttime_zone\030\006 \001(\t\022M",
+      "\n\004sort\030\007 \001(\0132?.com.alicloud.openservices" +
+      ".tablestore.core.protocol.GroupBySort\022R\n" +
+      "\010sub_aggs\030\010 \001(\0132@.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Aggregation" +
+      "s\022S\n\rsub_group_bys\030\t \001(\0132<.com.alicloud." +
+      "openservices.tablestore.core.protocol.Gr" +
+      "oupBys\022Q\n\006offset\030\n \001(\0132A.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Date" +
+      "TimeValue\"\275\003\n\020GroupByHistogram\022\022\n\nfield_" +
+      "name\030\001 \001(\t\022\020\n\010interval\030\002 \001(\014\022\017\n\007missing\030",
+      "\003 \001(\014\022\025\n\rmin_doc_count\030\004 \001(\003\022M\n\004sort\030\005 \001" +
+      "(\0132?.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.GroupBySort\022S\n\013field_ran" +
+      "ge\030\006 \001(\0132>.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.FieldRange\022R\n\010sub_" +
+      "aggs\030\007 \001(\0132@.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.Aggregations\022S\n\r" +
+      "sub_group_bys\030\010 \001(\0132<.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.GroupBy" +
+      "s\022\016\n\006offset\030\t \001(\014\"\\\n\014GroupKeySort\022L\n\005ord",
+      "er\030\001 \001(\0162=.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.SortOrder\"\\\n\014RowCo" +
+      "untSort\022L\n\005order\030\001 \001(\0162=.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Sort" +
+      "Order\"p\n\nSubAggSort\022\024\n\014sub_agg_name\030\001 \001(" +
+      "\t\022L\n\005order\030\002 \001(\0162=.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.SortOrder\"" +
+      "\231\002\n\rGroupBySorter\022X\n\016group_key_sort\030\001 \001(" +
+      "\0132@.com.alicloud.openservices.tablestore" +
+      ".core.protocol.GroupKeySort\022X\n\016row_count",
+      "_sort\030\002 \001(\0132@.com.alicloud.openservices." +
+      "tablestore.core.protocol.RowCountSort\022T\n" +
+      "\014sub_agg_sort\030\003 \001(\0132>.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.SubAggS" +
+      "ort\"a\n\013GroupBySort\022R\n\007sorters\030\001 \003(\0132A.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.GroupBySorter\"\277\002\n\014GroupByField\022" +
+      "\022\n\nfield_name\030\001 \001(\t\022\014\n\004size\030\002 \001(\005\022M\n\004sor" +
+      "t\030\003 \001(\0132?.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.GroupBySort\022R\n\010sub_",
+      "aggs\030\004 \001(\0132@.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.Aggregations\022S\n\r" +
+      "sub_group_bys\030\005 \001(\0132<.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.GroupBy" +
+      "s\022\025\n\rmin_doc_count\030\006 \001(\003\"!\n\005Range\022\014\n\004fro" +
+      "m\030\001 \001(\001\022\n\n\002to\030\002 \001(\001\"\226\002\n\014GroupByRange\022\022\n\n" +
+      "field_name\030\001 \001(\t\022I\n\006ranges\030\002 \003(\01329.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.Range\022R\n\010sub_aggs\030\003 \001(\0132@.com.alic" +
+      "loud.openservices.tablestore.core.protoc",
+      "ol.Aggregations\022S\n\rsub_group_bys\030\004 \001(\0132<" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.GroupBys\"\204\002\n\rGroupByFilter\022J" +
+      "\n\007filters\030\001 \003(\01329.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Query\022R\n\010su" +
+      "b_aggs\030\002 \001(\0132@.com.alicloud.openservices" +
+      ".tablestore.core.protocol.Aggregations\022S" +
+      "\n\rsub_group_bys\030\003 \001(\0132<.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Group" +
+      "Bys\"\352\002\n\022GroupByGeoDistance\022\022\n\nfield_name",
+      "\030\001 \001(\t\022L\n\006origin\030\002 \001(\0132<.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.GeoP" +
+      "oint\022I\n\006ranges\030\003 \003(\01329.com.alicloud.open" +
+      "services.tablestore.core.protocol.Range\022" +
+      "R\n\010sub_aggs\030\004 \001(\0132@.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.Aggregati" +
+      "ons\022S\n\rsub_group_bys\030\005 \001(\0132<.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "GroupBys\"%\n\024AvgAggregationResult\022\r\n\005valu" +
+      "e\030\001 \001(\001\"(\n\030TopRowsAggregationResult\022\014\n\004r",
+      "ows\030\001 \003(\014\"8\n\032PercentilesAggregationItem\022" +
+      "\013\n\003key\030\001 \001(\001\022\r\n\005value\030\002 \001(\014\"\225\001\n\034Percenti" +
+      "lesAggregationResult\022u\n\035percentiles_aggr" +
+      "egation_items\030\001 \003(\0132N.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.Percent" +
+      "ilesAggregationItem\"/\n\036DistinctCountAggr" +
+      "egationResult\022\r\n\005value\030\001 \001(\003\"%\n\024MaxAggre" +
+      "gationResult\022\r\n\005value\030\001 \001(\001\"%\n\024MinAggreg" +
+      "ationResult\022\r\n\005value\030\001 \001(\001\"%\n\024SumAggrega" +
+      "tionResult\022\r\n\005value\030\001 \001(\001\"\'\n\026CountAggreg",
+      "ationResult\022\r\n\005value\030\001 \001(\003\"\210\001\n\021Aggregati" +
+      "onResult\022\014\n\004name\030\001 \001(\t\022Q\n\004type\030\002 \001(\0162C.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.AggregationType\022\022\n\nagg_result\030" +
+      "\003 \001(\014\"p\n\022AggregationsResult\022Z\n\013agg_resul" +
+      "ts\030\001 \003(\0132E.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.AggregationResult\"" +
+      "\373\001\n\026GroupByFieldResultItem\022\013\n\003key\030\001 \001(\t\022" +
+      "\021\n\trow_count\030\002 \001(\003\022_\n\017sub_aggs_result\030\003 " +
+      "\001(\0132F.com.alicloud.openservices.tablesto",
       "re.core.protocol.AggregationsResult\022`\n\024s" +
       "ub_group_bys_result\030\004 \001(\0132B.com.alicloud" +
       ".openservices.tablestore.core.protocol.G" +
-      "roupBysResult\"\203\001\n\026GroupByHistogramResult" +
-      "\022i\n\027group_by_histogra_items\030\001 \003(\0132H.com." +
+      "roupBysResult\"\205\001\n\022GroupByFieldResult\022o\n\033" +
+      "group_by_field_result_items\030\001 \003(\0132J.com." +
       "alicloud.openservices.tablestore.core.pr" +
-      "otocol.GroupByHistogramItem\"\203\002\n\030GroupByD",
-      "ateHistogramItem\022\021\n\ttimestamp\030\001 \001(\003\022\021\n\tr" +
-      "ow_count\030\002 \001(\003\022_\n\017sub_aggs_result\030\003 \001(\0132" +
-      "F.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.AggregationsResult\022`\n\024sub_g" +
-      "roup_bys_result\030\004 \001(\0132B.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.Group" +
-      "BysResult\"\221\001\n\032GroupByDateHistogramResult" +
-      "\022s\n\035group_by_date_histogram_items\030\001 \003(\0132" +
-      "L.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.GroupByDateHistogramItem\"\261\001",
-      "\n\nMatchQuery\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004text" +
-      "\030\002 \001(\t\022\034\n\024minimum_should_match\030\003 \001(\005\022S\n\010" +
-      "operator\030\004 \001(\0162A.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.QueryOperato" +
-      "r\022\016\n\006weight\030\005 \001(\002\"D\n\020MatchPhraseQuery\022\022\n" +
-      "\nfield_name\030\001 \001(\t\022\014\n\004text\030\002 \001(\t\022\016\n\006weigh" +
-      "t\030\003 \001(\002\"\017\n\rMatchAllQuery\"=\n\tTermQuery\022\022\n" +
-      "\nfield_name\030\001 \001(\t\022\014\n\004term\030\002 \001(\014\022\016\n\006weigh" +
-      "t\030\003 \001(\002\"?\n\nTermsQuery\022\022\n\nfield_name\030\001 \001(" +
-      "\t\022\r\n\005terms\030\002 \003(\014\022\016\n\006weight\030\003 \001(\002\"t\n\nRang",
-      "eQuery\022\022\n\nfield_name\030\001 \001(\t\022\022\n\nrange_from" +
-      "\030\002 \001(\014\022\020\n\010range_to\030\003 \001(\014\022\025\n\rinclude_lowe" +
-      "r\030\004 \001(\010\022\025\n\rinclude_upper\030\005 \001(\010\"A\n\013Prefix" +
-      "Query\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006prefix\030\002 \001(" +
-      "\t\022\016\n\006weight\030\003 \001(\002\"B\n\rWildcardQuery\022\022\n\nfi" +
-      "eld_name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\016\n\006weight\030" +
-      "\003 \001(\002\"\365\002\n\tBoolQuery\022O\n\014must_queries\030\001 \003(" +
-      "\01329.com.alicloud.openservices.tablestore" +
-      ".core.protocol.Query\022S\n\020must_not_queries" +
-      "\030\002 \003(\01329.com.alicloud.openservices.table",
-      "store.core.protocol.Query\022Q\n\016filter_quer" +
-      "ies\030\003 \003(\01329.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.Query\022Q\n\016should_q" +
-      "ueries\030\004 \003(\01329.com.alicloud.openservices" +
-      ".tablestore.core.protocol.Query\022\034\n\024minim" +
-      "um_should_match\030\005 \001(\005\"\\\n\017ConstScoreQuery" +
-      "\022I\n\006filter\030\001 \001(\01329.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.Query\"&\n\020F" +
-      "ieldValueFactor\022\022\n\nfield_name\030\001 \001(\t\"\300\001\n\022" +
-      "FunctionScoreQuery\022H\n\005query\030\001 \001(\01329.com.",
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.Query\022`\n\022field_value_factor\030\002 \001(\013" +
-      "2D.com.alicloud.openservices.tablestore." +
-      "core.protocol.FieldValueFactor\"\310\001\n\013Neste" +
-      "dQuery\022\014\n\004path\030\001 \001(\t\022H\n\005query\030\002 \001(\01329.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.Query\022Q\n\nscore_mode\030\003 \001(\0162=.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.ScoreMode\022\016\n\006weight\030\004 \001(\002\"Q\n\023Geo" +
-      "BoundingBoxQuery\022\022\n\nfield_name\030\001 \001(\t\022\020\n\010",
-      "top_left\030\002 \001(\t\022\024\n\014bottom_right\030\003 \001(\t\"N\n\020" +
-      "GeoDistanceQuery\022\022\n\nfield_name\030\001 \001(\t\022\024\n\014" +
-      "center_point\030\002 \001(\t\022\020\n\010distance\030\003 \001(\001\"5\n\017" +
-      "GeoPolygonQuery\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006p" +
-      "oints\030\002 \003(\t\"!\n\013ExistsQuery\022\022\n\nfield_name" +
-      "\030\001 \001(\t\"c\n\005Query\022K\n\004type\030\001 \001(\0162=.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.QueryType\022\r\n\005query\030\002 \001(\014\"\036\n\010Collapse\022" +
-      "\022\n\nfield_name\030\001 \001(\t\"g\n\014NestedFilter\022\014\n\004p" +
-      "ath\030\001 \001(\t\022I\n\006filter\030\002 \001(\01329.com.alicloud",
-      ".openservices.tablestore.core.protocol.Q" +
-      "uery\"Y\n\tScoreSort\022L\n\005order\030\001 \001(\0162=.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.SortOrder\"^\n\016PrimaryKeySort\022L\n\005ord" +
-      "er\030\001 \001(\0162=.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.SortOrder\"\300\002\n\tFiel" +
-      "dSort\022\022\n\nfield_name\030\001 \001(\t\022L\n\005order\030\002 \001(\016" +
-      "2=.com.alicloud.openservices.tablestore." +
-      "core.protocol.SortOrder\022J\n\004mode\030\003 \001(\0162<." +
-      "com.alicloud.openservices.tablestore.cor",
-      "e.protocol.SortMode\022W\n\rnested_filter\030\004 \001" +
-      "(\0132@.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.NestedFilter\022\025\n\rmissing_" +
-      "value\030\005 \001(\014\022\025\n\rmissing_field\030\006 \001(\t\"\204\003\n\017G" +
-      "eoDistanceSort\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006po" +
-      "ints\030\002 \003(\t\022L\n\005order\030\003 \001(\0162=.com.alicloud" +
-      ".openservices.tablestore.core.protocol.S" +
-      "ortOrder\022J\n\004mode\030\004 \001(\0162<.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Sort" +
-      "Mode\022Z\n\rdistance_type\030\005 \001(\0162C.com.aliclo",
-      "ud.openservices.tablestore.core.protocol" +
-      ".GeoDistanceType\022W\n\rnested_filter\030\006 \001(\0132" +
-      "@.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.NestedFilter\"\343\002\n\006Sorter\022Q\n\n" +
-      "field_sort\030\001 \001(\0132=.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.FieldSort\022" +
-      "^\n\021geo_distance_sort\030\002 \001(\0132C.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "GeoDistanceSort\022Q\n\nscore_sort\030\003 \001(\0132=.co" +
-      "m.alicloud.openservices.tablestore.core.",
-      "protocol.ScoreSort\022S\n\007pk_sort\030\004 \001(\0132B.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.PrimaryKeySort\"R\n\004Sort\022J\n\006sorte" +
-      "r\030\001 \003(\0132:.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.Sorter\"\325\003\n\013SearchQu" +
-      "ery\022\016\n\006offset\030\001 \001(\005\022\r\n\005limit\030\002 \001(\005\022H\n\005qu" +
-      "ery\030\004 \001(\01329.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.Query\022N\n\010collapse" +
-      "\030\005 \001(\0132<.com.alicloud.openservices.table" +
-      "store.core.protocol.Collapse\022F\n\004sort\030\006 \001",
-      "(\01328.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.Sort\022\025\n\rgetTotalCount\030\010 " +
-      "\001(\010\022\r\n\005token\030\t \001(\014\022N\n\004aggs\030\n \001(\0132@.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.Aggregations\022O\n\tgroup_bys\030\013 \001(\0132<." +
+      "otocol.GroupByFieldResultItem\"\210\002\n\026GroupB" +
+      "yRangeResultItem\022\014\n\004from\030\001 \001(\001\022\n\n\002to\030\002 \001" +
+      "(\001\022\021\n\trow_count\030\003 \001(\003\022_\n\017sub_aggs_result" +
+      "\030\004 \001(\0132F.com.alicloud.openservices.table",
+      "store.core.protocol.AggregationsResult\022`" +
+      "\n\024sub_group_bys_result\030\005 \001(\0132B.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.GroupBysResult\"\205\001\n\022GroupByRangeResult\022" +
+      "o\n\033group_by_range_result_items\030\001 \003(\0132J.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.GroupByRangeResultItem\"\216\002\n\034Gro" +
+      "upByGeoDistanceResultItem\022\014\n\004from\030\001 \001(\001\022" +
+      "\n\n\002to\030\002 \001(\001\022\021\n\trow_count\030\003 \001(\003\022_\n\017sub_ag" +
+      "gs_result\030\004 \001(\0132F.com.alicloud.openservi",
+      "ces.tablestore.core.protocol.Aggregation" +
+      "sResult\022`\n\024sub_group_bys_result\030\005 \001(\0132B." +
       "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.GroupBys\"\177\n\014ColumnsToGet\022Y\n\013r" +
-      "eturn_type\030\001 \001(\0162D.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.ColumnRetu" +
-      "rnType\022\024\n\014column_names\030\002 \003(\t\"\323\001\n\rSearchR",
-      "equest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name" +
-      "\030\002 \001(\t\022X\n\016columns_to_get\030\003 \001(\0132@.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.ColumnsToGet\022\024\n\014search_query\030\004 \001(\014\022\026" +
-      "\n\016routing_values\030\005 \003(\014\022\022\n\ntimeout_ms\030\006 \001" +
-      "(\005\"\201\001\n\016SearchResponse\022\022\n\ntotal_hits\030\001 \001(" +
-      "\003\022\014\n\004rows\030\002 \003(\014\022\030\n\020is_all_succeeded\030\003 \001(" +
-      "\010\022\022\n\nnext_token\030\006 \001(\014\022\014\n\004aggs\030\007 \001(\014\022\021\n\tg" +
-      "roup_bys\030\010 \001(\014\"n\n\rDateTimeValue\022\r\n\005value" +
-      "\030\001 \001(\005\022N\n\004unit\030\002 \001(\0162@.com.alicloud.open",
-      "services.tablestore.core.protocol.DateTi" +
-      "meUnit\"K\n\033SingleWordAnalyzerParameter\022\026\n" +
-      "\016case_sensitive\030\001 \001(\010\022\024\n\014delimit_word\030\002 " +
-      "\001(\010\"+\n\026SplitAnalyzerParameter\022\021\n\tdelimit" +
-      "er\030\001 \001(\t\">\n\026FuzzyAnalyzerParameter\022\021\n\tmi" +
-      "n_chars\030\001 \001(\005\022\021\n\tmax_chars\030\002 \001(\005\"\345\003\n\013Fie" +
-      "ldSchema\022\022\n\nfield_name\030\001 \001(\t\022Q\n\nfield_ty" +
-      "pe\030\002 \001(\0162=.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.FieldType\022W\n\rindex" +
-      "_options\030\003 \001(\0162@.com.alicloud.openservic",
-      "es.tablestore.core.protocol.IndexOptions" +
-      "\022\020\n\010analyzer\030\004 \001(\t\022\r\n\005index\030\005 \001(\010\022\024\n\014sor" +
-      "t_and_agg\030\006 \001(\010\022\r\n\005store\030\007 \001(\010\022V\n\rfield_" +
-      "schemas\030\010 \003(\0132?.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.FieldSchema\022\020" +
-      "\n\010is_array\030\t \001(\010\022\032\n\022analyzer_parameter\030\n" +
-      " \001(\014\022\030\n\020is_virtual_field\030\013 \001(\010\022\032\n\022source" +
-      "_field_names\030\014 \003(\t\022\024\n\014date_formats\030\r \003(\t" +
-      "\"\214\002\n\013IndexSchema\022V\n\rfield_schemas\030\001 \003(\0132" +
-      "?.com.alicloud.openservices.tablestore.c",
-      "ore.protocol.FieldSchema\022W\n\rindex_settin" +
-      "g\030\002 \001(\0132@.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.IndexSetting\022L\n\nind" +
-      "ex_sort\030\003 \001(\01328.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.Sort\"`\n\014Index" +
-      "Setting\022\030\n\020number_of_shards\030\001 \001(\005\022\026\n\016rou" +
-      "ting_fields\030\002 \003(\t\022\036\n\026routing_partition_s" +
-      "ize\030\003 \001(\005\"\304\001\n\030CreateSearchIndexRequest\022\022" +
-      "\n\ntable_name\030\001 \002(\t\022\022\n\nindex_name\030\002 \002(\t\022O" +
-      "\n\006schema\030\003 \001(\0132?.com.alicloud.openservic",
-      "es.tablestore.core.protocol.IndexSchema\022" +
-      "\031\n\021source_index_name\030\004 \001(\t\022\024\n\014time_to_li" +
-      "ve\030\005 \001(\005\"\033\n\031CreateSearchIndexResponse\"5\n" +
-      "\017QueryFlowWeight\022\022\n\nindex_name\030\001 \001(\t\022\016\n\006" +
-      "weight\030\002 \001(\005\"\323\001\n\030UpdateSearchIndexReques" +
-      "t\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(" +
-      "\t\022\031\n\021switch_index_name\030\003 \001(\t\022^\n\021query_fl" +
-      "ow_weight\030\004 \003(\0132C.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.QueryFlowWe" +
-      "ight\022\024\n\014time_to_live\030\005 \001(\005\"\033\n\031UpdateSear",
-      "chIndexResponse\"3\n\tIndexInfo\022\022\n\ntable_na" +
-      "me\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\",\n\026ListSear" +
-      "chIndexRequest\022\022\n\ntable_name\030\001 \001(\t\"i\n\027Li" +
-      "stSearchIndexResponse\022N\n\007indices\030\001 \003(\0132=" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.IndexInfo\"B\n\030DeleteSearchInd" +
-      "exRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_n" +
-      "ame\030\002 \001(\t\"\033\n\031DeleteSearchIndexResponse\"}" +
-      "\n\010SyncStat\022Q\n\nsync_phase\030\001 \001(\0162=.com.ali" +
-      "cloud.openservices.tablestore.core.proto",
-      "col.SyncPhase\022\036\n\026current_sync_timestamp\030" +
-      "\002 \001(\003\"d\n\014MeteringInfo\022\024\n\014storage_size\030\001 " +
-      "\001(\003\022\021\n\trow_count\030\002 \001(\003\022\030\n\020reserved_read_" +
-      "cu\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"D\n\032DescribeS" +
-      "earchIndexRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n" +
-      "\nindex_name\030\002 \001(\t\"\277\003\n\033DescribeSearchInde" +
-      "xResponse\022O\n\006schema\030\001 \001(\0132?.com.alicloud" +
-      ".openservices.tablestore.core.protocol.I" +
-      "ndexSchema\022O\n\tsync_stat\030\002 \001(\0132<.com.alic" +
-      "loud.openservices.tablestore.core.protoc",
-      "ol.SyncStat\022W\n\rmetering_info\030\003 \001(\0132@.com" +
+      "e.protocol.GroupBysResult\"\230\001\n\030GroupByGeo" +
+      "DistanceResult\022|\n\"group_by_geo_distance_" +
+      "result_items\030\001 \003(\0132P.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.GroupByG" +
+      "eoDistanceResultItem\"\357\001\n\027GroupByFilterRe" +
+      "sultItem\022\021\n\trow_count\030\001 \001(\003\022_\n\017sub_aggs_" +
+      "result\030\002 \001(\0132F.com.alicloud.openservices",
+      ".tablestore.core.protocol.AggregationsRe" +
+      "sult\022`\n\024sub_group_bys_result\030\003 \001(\0132B.com" +
       ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.MeteringInfo\022\032\n\022brother_index_na" +
-      "me\030\004 \001(\t\022^\n\021query_flow_weight\030\005 \003(\0132C.co" +
+      "rotocol.GroupBysResult\"\210\001\n\023GroupByFilter" +
+      "Result\022q\n\034group_by_filter_result_items\030\001" +
+      " \003(\0132K.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.GroupByFilterResultIte" +
+      "m\"\205\001\n\rGroupByResult\022\014\n\004name\030\001 \001(\t\022M\n\004typ" +
+      "e\030\002 \001(\0162?.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.GroupByType\022\027\n\017grou",
+      "p_by_result\030\003 \001(\014\"m\n\016GroupBysResult\022[\n\020g" +
+      "roup_by_results\030\001 \003(\0132A.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Group" +
+      "ByResult\"\365\001\n\024GroupByHistogramItem\022\013\n\003key" +
+      "\030\001 \001(\014\022\r\n\005value\030\002 \001(\003\022_\n\017sub_aggs_result" +
+      "\030\003 \001(\0132F.com.alicloud.openservices.table" +
+      "store.core.protocol.AggregationsResult\022`" +
+      "\n\024sub_group_bys_result\030\004 \001(\0132B.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.GroupBysResult\"\203\001\n\026GroupByHistogramRes",
+      "ult\022i\n\027group_by_histogra_items\030\001 \003(\0132H.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.GroupByHistogramItem\"\203\002\n\030Group" +
+      "ByDateHistogramItem\022\021\n\ttimestamp\030\001 \001(\003\022\021" +
+      "\n\trow_count\030\002 \001(\003\022_\n\017sub_aggs_result\030\003 \001" +
+      "(\0132F.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.AggregationsResult\022`\n\024su" +
+      "b_group_bys_result\030\004 \001(\0132B.com.alicloud." +
+      "openservices.tablestore.core.protocol.Gr" +
+      "oupBysResult\"\221\001\n\032GroupByDateHistogramRes",
+      "ult\022s\n\035group_by_date_histogram_items\030\001 \003" +
+      "(\0132L.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.GroupByDateHistogramItem" +
+      "\"\261\001\n\nMatchQuery\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004t" +
+      "ext\030\002 \001(\t\022\034\n\024minimum_should_match\030\003 \001(\005\022" +
+      "S\n\010operator\030\004 \001(\0162A.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.QueryOper" +
+      "ator\022\016\n\006weight\030\005 \001(\002\"D\n\020MatchPhraseQuery" +
+      "\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004text\030\002 \001(\t\022\016\n\006we" +
+      "ight\030\003 \001(\002\"\017\n\rMatchAllQuery\"=\n\tTermQuery",
+      "\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004term\030\002 \001(\014\022\016\n\006we" +
+      "ight\030\003 \001(\002\"?\n\nTermsQuery\022\022\n\nfield_name\030\001" +
+      " \001(\t\022\r\n\005terms\030\002 \003(\014\022\016\n\006weight\030\003 \001(\002\"t\n\nR" +
+      "angeQuery\022\022\n\nfield_name\030\001 \001(\t\022\022\n\nrange_f" +
+      "rom\030\002 \001(\014\022\020\n\010range_to\030\003 \001(\014\022\025\n\rinclude_l" +
+      "ower\030\004 \001(\010\022\025\n\rinclude_upper\030\005 \001(\010\"A\n\013Pre" +
+      "fixQuery\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006prefix\030\002" +
+      " \001(\t\022\016\n\006weight\030\003 \001(\002\"B\n\rWildcardQuery\022\022\n" +
+      "\nfield_name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\016\n\006weig" +
+      "ht\030\003 \001(\002\"\365\002\n\tBoolQuery\022O\n\014must_queries\030\001",
+      " \003(\01329.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.Query\022S\n\020must_not_quer" +
+      "ies\030\002 \003(\01329.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.Query\022Q\n\016filter_q" +
+      "ueries\030\003 \003(\01329.com.alicloud.openservices" +
+      ".tablestore.core.protocol.Query\022Q\n\016shoul" +
+      "d_queries\030\004 \003(\01329.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Query\022\034\n\024mi" +
+      "nimum_should_match\030\005 \001(\005\"\\\n\017ConstScoreQu" +
+      "ery\022I\n\006filter\030\001 \001(\01329.com.alicloud.opens",
+      "ervices.tablestore.core.protocol.Query\"&" +
+      "\n\020FieldValueFactor\022\022\n\nfield_name\030\001 \001(\t\"\300" +
+      "\001\n\022FunctionScoreQuery\022H\n\005query\030\001 \001(\01329.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.Query\022`\n\022field_value_factor\030\002 " +
+      "\001(\0132D.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.FieldValueFactor\"\233\002\n\013Ne" +
+      "stedQuery\022\014\n\004path\030\001 \001(\t\022H\n\005query\030\002 \001(\01329" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.Query\022Q\n\nscore_mode\030\003 \001(\0162=.",
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.ScoreMode\022\016\n\006weight\030\004 \001(\002\022Q\n\n" +
+      "inner_hits\030\005 \001(\0132=.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.InnerHits\"" +
+      "\304\001\n\tInnerHits\022F\n\004sort\030\001 \001(\01328.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".Sort\022\016\n\006offset\030\002 \001(\005\022\r\n\005limit\030\003 \001(\005\022P\n\t" +
+      "highlight\030\004 \001(\0132=.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Highlight\"Q" +
+      "\n\023GeoBoundingBoxQuery\022\022\n\nfield_name\030\001 \001(",
+      "\t\022\020\n\010top_left\030\002 \001(\t\022\024\n\014bottom_right\030\003 \001(" +
+      "\t\"N\n\020GeoDistanceQuery\022\022\n\nfield_name\030\001 \001(" +
+      "\t\022\024\n\014center_point\030\002 \001(\t\022\020\n\010distance\030\003 \001(" +
+      "\001\"5\n\017GeoPolygonQuery\022\022\n\nfield_name\030\001 \001(\t" +
+      "\022\016\n\006points\030\002 \003(\t\"!\n\013ExistsQuery\022\022\n\nfield" +
+      "_name\030\001 \001(\t\"\254\001\n\016KnnVectorQuery\022\022\n\nfield_" +
+      "name\030\001 \001(\t\022\r\n\005top_k\030\002 \001(\005\022\034\n\024float32_que" +
+      "ry_vector\030\004 \003(\002\022I\n\006filter\030\005 \001(\01329.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.Query\022\016\n\006weight\030\006 \001(\002\"c\n\005Query\022K\n\004t",
+      "ype\030\001 \001(\0162=.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.QueryType\022\r\n\005quer" +
+      "y\030\002 \001(\014\"\036\n\010Collapse\022\022\n\nfield_name\030\001 \001(\t\"" +
+      "g\n\014NestedFilter\022\014\n\004path\030\001 \001(\t\022I\n\006filter\030" +
+      "\002 \001(\01329.com.alicloud.openservices.tables" +
+      "tore.core.protocol.Query\"Y\n\tScoreSort\022L\n" +
+      "\005order\030\001 \001(\0162=.com.alicloud.openservices" +
+      ".tablestore.core.protocol.SortOrder\"^\n\016P" +
+      "rimaryKeySort\022L\n\005order\030\001 \001(\0162=.com.alicl" +
+      "oud.openservices.tablestore.core.protoco",
+      "l.SortOrder\"\300\002\n\tFieldSort\022\022\n\nfield_name\030" +
+      "\001 \001(\t\022L\n\005order\030\002 \001(\0162=.com.alicloud.open" +
+      "services.tablestore.core.protocol.SortOr" +
+      "der\022J\n\004mode\030\003 \001(\0162<.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.SortMode\022" +
+      "W\n\rnested_filter\030\004 \001(\0132@.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Nest" +
+      "edFilter\022\025\n\rmissing_value\030\005 \001(\014\022\025\n\rmissi" +
+      "ng_field\030\006 \001(\t\"W\n\007DocSort\022L\n\005order\030\001 \001(\016" +
+      "2=.com.alicloud.openservices.tablestore.",
+      "core.protocol.SortOrder\"\204\003\n\017GeoDistanceS" +
+      "ort\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006points\030\002 \003(\t\022" +
+      "L\n\005order\030\003 \001(\0162=.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.SortOrder\022J\n" +
+      "\004mode\030\004 \001(\0162<.com.alicloud.openservices." +
+      "tablestore.core.protocol.SortMode\022Z\n\rdis" +
+      "tance_type\030\005 \001(\0162C.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.GeoDistanc" +
+      "eType\022W\n\rnested_filter\030\006 \001(\0132@.com.alicl" +
+      "oud.openservices.tablestore.core.protoco",
+      "l.NestedFilter\"\262\003\n\006Sorter\022Q\n\nfield_sort\030" +
+      "\001 \001(\0132=.com.alicloud.openservices.tables" +
+      "tore.core.protocol.FieldSort\022^\n\021geo_dist" +
+      "ance_sort\030\002 \001(\0132C.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.GeoDistance" +
+      "Sort\022Q\n\nscore_sort\030\003 \001(\0132=.com.alicloud." +
+      "openservices.tablestore.core.protocol.Sc" +
+      "oreSort\022S\n\007pk_sort\030\004 \001(\0132B.com.alicloud." +
+      "openservices.tablestore.core.protocol.Pr" +
+      "imaryKeySort\022M\n\010doc_sort\030\005 \001(\0132;.com.ali",
+      "cloud.openservices.tablestore.core.proto" +
+      "col.DocSort\"R\n\004Sort\022J\n\006sorter\030\001 \003(\0132:.co" +
       "m.alicloud.openservices.tablestore.core." +
-      "protocol.QueryFlowWeight\022\023\n\013create_time\030" +
-      "\006 \001(\003\022\024\n\014time_to_live\030\007 \001(\005\"\272\001\n\tScanQuer" +
-      "y\022H\n\005query\030\001 \001(\01329.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.Query\022\r\n\005l" +
-      "imit\030\002 \001(\005\022\022\n\nalive_time\030\003 \001(\005\022\r\n\005token\030",
-      "\004 \001(\014\022\033\n\023current_parallel_id\030\005 \001(\005\022\024\n\014ma" +
-      "x_parallel\030\006 \001(\005\"\222\002\n\023ParallelScanRequest" +
-      "\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t" +
-      "\022X\n\016columns_to_get\030\003 \001(\0132@.com.alicloud." +
-      "openservices.tablestore.core.protocol.Co" +
-      "lumnsToGet\022\022\n\nsession_id\030\004 \001(\014\022Q\n\nscan_q" +
-      "uery\030\005 \001(\0132=.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.ScanQuery\022\022\n\ntim" +
-      "eout_ms\030\006 \001(\005\"8\n\024ParallelScanResponse\022\014\n" +
-      "\004rows\030\001 \003(\014\022\022\n\nnext_token\030\002 \001(\014*\226\002\n\007AggT",
-      "ype\022\013\n\007AVG_AGG\020\001\022\023\n\017CARDINALITY_AGG\020\002\022\013\n" +
-      "\007MAX_AGG\020\003\022\013\n\007MIN_AGG\020\004\022\013\n\007SUM_AGG\020\005\022\r\n\t" +
-      "TERMS_AGG\020\006\022\016\n\nFILTER_AGG\020\007\022\016\n\nNESTED_AG" +
-      "G\020\010\022\022\n\016GEO_BOUNDS_AGG\020\t\022\024\n\020GEO_DISTANCE_" +
-      "AGG\020\n\022\r\n\tSTATS_AGG\020\013\022\026\n\022EXTENDED_STATS_A" +
-      "GG\020\014\022\023\n\017PERCENTILES_AGG\020\r\022\030\n\024PERCENTILE_" +
-      "RANKS_AGG\020\016\022\023\n\017VALUE_COUNT_AGG\020\017*\223\001\n\017Agg" +
-      "regationType\022\013\n\007AGG_AVG\020\001\022\026\n\022AGG_DISTINC" +
-      "T_COUNT\020\006\022\013\n\007AGG_MAX\020\002\022\013\n\007AGG_MIN\020\003\022\013\n\007A" +
-      "GG_SUM\020\004\022\r\n\tAGG_COUNT\020\005\022\020\n\014AGG_TOP_ROWS\020",
-      "\007\022\023\n\017AGG_PERCENTILES\020\010*\232\001\n\013GroupByType\022\022" +
-      "\n\016GROUP_BY_FIELD\020\001\022\022\n\016GROUP_BY_RANGE\020\002\022\023" +
-      "\n\017GROUP_BY_FILTER\020\003\022\031\n\025GROUP_BY_GEO_DIST" +
-      "ANCE\020\004\022\026\n\022GROUP_BY_HISTOGRAM\020\005\022\033\n\027GROUP_" +
-      "BY_DATE_HISTOGRAM\020\006*\321\002\n\tQueryType\022\017\n\013MAT" +
-      "CH_QUERY\020\001\022\026\n\022MATCH_PHRASE_QUERY\020\002\022\016\n\nTE" +
-      "RM_QUERY\020\003\022\017\n\013RANGE_QUERY\020\004\022\020\n\014PREFIX_QU" +
-      "ERY\020\005\022\016\n\nBOOL_QUERY\020\006\022\025\n\021CONST_SCORE_QUE" +
-      "RY\020\007\022\030\n\024FUNCTION_SCORE_QUERY\020\010\022\020\n\014NESTED" +
-      "_QUERY\020\t\022\022\n\016WILDCARD_QUERY\020\n\022\023\n\017MATCH_AL",
-      "L_QUERY\020\013\022\032\n\026GEO_BOUNDING_BOX_QUERY\020\014\022\026\n" +
-      "\022GEO_DISTANCE_QUERY\020\r\022\025\n\021GEO_POLYGON_QUE" +
-      "RY\020\016\022\017\n\013TERMS_QUERY\020\017\022\020\n\014EXISTS_QUERY\020\020*" +
-      " \n\rQueryOperator\022\006\n\002OR\020\001\022\007\n\003AND\020\002*r\n\tSco" +
-      "reMode\022\023\n\017SCORE_MODE_NONE\020\001\022\022\n\016SCORE_MOD" +
-      "E_AVG\020\002\022\022\n\016SCORE_MODE_MAX\020\003\022\024\n\020SCORE_MOD" +
-      "E_TOTAL\020\004\022\022\n\016SCORE_MODE_MIN\020\005*4\n\tSortOrd" +
-      "er\022\022\n\016SORT_ORDER_ASC\020\000\022\023\n\017SORT_ORDER_DES" +
-      "C\020\001*C\n\010SortMode\022\021\n\rSORT_MODE_MIN\020\000\022\021\n\rSO" +
-      "RT_MODE_MAX\020\001\022\021\n\rSORT_MODE_AVG\020\002*?\n\017GeoD",
-      "istanceType\022\024\n\020GEO_DISTANCE_ARC\020\000\022\026\n\022GEO" +
-      "_DISTANCE_PLANE\020\001*d\n\020ColumnReturnType\022\016\n" +
-      "\nRETURN_ALL\020\001\022\024\n\020RETURN_SPECIFIED\020\002\022\017\n\013R" +
-      "ETURN_NONE\020\003\022\031\n\025RETURN_ALL_FROM_INDEX\020\004*" +
-      "?\n\014IndexOptions\022\010\n\004DOCS\020\001\022\t\n\005FREQS\020\002\022\r\n\t" +
-      "POSITIONS\020\003\022\013\n\007OFFSETS\020\004*j\n\tFieldType\022\010\n" +
-      "\004LONG\020\001\022\n\n\006DOUBLE\020\002\022\013\n\007BOOLEAN\020\003\022\013\n\007KEYW" +
-      "ORD\020\004\022\010\n\004TEXT\020\005\022\n\n\006NESTED\020\006\022\r\n\tGEO_POINT" +
-      "\020\007\022\010\n\004DATE\020\010*j\n\014DateTimeUnit\022\010\n\004YEAR\020\001\022\020" +
-      "\n\014QUARTER_YEAR\020\002\022\t\n\005MONTH\020\003\022\010\n\004WEEK\020\004\022\007\n",
-      "\003DAY\020\005\022\010\n\004HOUR\020\006\022\n\n\006MINUTE\020\007\022\n\n\006SECOND\020\010" +
-      "*\037\n\tSyncPhase\022\010\n\004FULL\020\001\022\010\n\004INCR\020\002"
+      "protocol.Sorter\"\247\004\n\013SearchQuery\022\016\n\006offse" +
+      "t\030\001 \001(\005\022\r\n\005limit\030\002 \001(\005\022H\n\005query\030\004 \001(\01329." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.Query\022N\n\010collapse\030\005 \001(\0132<.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.Collapse\022F\n\004sort\030\006 \001(\01328.com.ali" +
+      "cloud.openservices.tablestore.core.proto",
+      "col.Sort\022\025\n\rgetTotalCount\030\010 \001(\010\022\r\n\005token" +
+      "\030\t \001(\014\022N\n\004aggs\030\n \001(\0132@.com.alicloud.open" +
+      "services.tablestore.core.protocol.Aggreg" +
+      "ations\022O\n\tgroup_bys\030\013 \001(\0132<.com.alicloud" +
+      ".openservices.tablestore.core.protocol.G" +
+      "roupBys\022P\n\thighlight\030\014 \001(\0132=.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "Highlight\"\336\001\n\tHighlight\022d\n\024highlight_par" +
+      "ameters\030\001 \003(\0132F.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.HighlightPara",
+      "meter\022k\n\021highlight_encoder\030\002 \001(\0162D.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.HighlightEncoder:\nPLAIN_MODE\"\363\001\n\022H" +
+      "ighlightParameter\022\022\n\nfield_name\030\001 \001(\t\022\033\n" +
+      "\023number_of_fragments\030\002 \001(\005\022\025\n\rfragment_s" +
+      "ize\030\003 \001(\005\022\017\n\007pre_tag\030\004 \001(\t\022\020\n\010post_tag\030\005" +
+      " \001(\t\022r\n\017fragments_order\030\006 \001(\0162J.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.HighlightFragmentOrder:\rTEXT_SEQUENCE" +
+      "\"\177\n\014ColumnsToGet\022Y\n\013return_type\030\001 \001(\0162D.",
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.ColumnReturnType\022\024\n\014column_na" +
+      "mes\030\002 \003(\t\"\323\001\n\rSearchRequest\022\022\n\ntable_nam" +
+      "e\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022X\n\016columns_t" +
+      "o_get\030\003 \001(\0132@.com.alicloud.openservices." +
+      "tablestore.core.protocol.ColumnsToGet\022\024\n" +
+      "\014search_query\030\004 \001(\014\022\026\n\016routing_values\030\005 " +
+      "\003(\014\022\022\n\ntimeout_ms\030\006 \001(\005\"\216\003\n\016SearchRespon" +
+      "se\022\022\n\ntotal_hits\030\001 \001(\003\022\014\n\004rows\030\002 \003(\014\022\030\n\020" +
+      "is_all_succeeded\030\003 \001(\010\022R\n\013search_hits\030\005 ",
+      "\003(\0132=.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.SearchHit\022\022\n\nnext_token" +
+      "\030\006 \001(\014\022\014\n\004aggs\030\007 \001(\014\022\021\n\tgroup_bys\030\010 \001(\014\022" +
+      "V\n\010consumed\030\t \001(\0132D.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.ConsumedC" +
+      "apacity\022_\n\021reserved_consumed\030\n \001(\0132D.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.ConsumedCapacity\"\363\001\n\tSearchHit\022\r" +
+      "\n\005score\030\003 \001(\001\022]\n\020highlight_result\030\004 \001(\0132" +
+      "C.com.alicloud.openservices.tablestore.c",
+      "ore.protocol.HighlightResult\022]\n\021search_i" +
+      "nner_hits\030\005 \003(\0132B.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.SearchInner" +
+      "Hit\022\031\n\021nested_doc_offset\030\006 \001(\005\"r\n\016Search" +
+      "InnerHit\022\014\n\004path\030\001 \001(\t\022R\n\013search_hits\030\002 " +
+      "\003(\0132=.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.SearchHit\"o\n\017HighlightR" +
+      "esult\022\\\n\020highlight_fields\030\001 \003(\0132B.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.HighlightField\"=\n\016HighlightField\022\022\n",
+      "\nfield_name\030\001 \001(\t\022\027\n\017field_fragments\030\002 \003" +
+      "(\t\"n\n\rDateTimeValue\022\r\n\005value\030\001 \001(\005\022N\n\004un" +
+      "it\030\002 \001(\0162@.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.DateTimeUnit\"K\n\033Si" +
+      "ngleWordAnalyzerParameter\022\026\n\016case_sensit" +
+      "ive\030\001 \001(\010\022\024\n\014delimit_word\030\002 \001(\010\"+\n\026Split" +
+      "AnalyzerParameter\022\021\n\tdelimiter\030\001 \001(\t\">\n\026" +
+      "FuzzyAnalyzerParameter\022\021\n\tmin_chars\030\001 \001(" +
+      "\005\022\021\n\tmax_chars\030\002 \001(\005\"\335\004\n\013FieldSchema\022\022\n\n" +
+      "field_name\030\001 \001(\t\022Q\n\nfield_type\030\002 \001(\0162=.c",
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.FieldType\022W\n\rindex_options\030\003 \001" +
+      "(\0162@.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.IndexOptions\022\020\n\010analyzer" +
+      "\030\004 \001(\t\022\r\n\005index\030\005 \001(\010\022\024\n\014sort_and_agg\030\006 " +
+      "\001(\010\022\r\n\005store\030\007 \001(\010\022V\n\rfield_schemas\030\010 \003(" +
+      "\0132?.com.alicloud.openservices.tablestore" +
+      ".core.protocol.FieldSchema\022\020\n\010is_array\030\t" +
+      " \001(\010\022\032\n\022analyzer_parameter\030\n \001(\014\022\030\n\020is_v" +
+      "irtual_field\030\013 \001(\010\022\032\n\022source_field_names",
+      "\030\014 \003(\t\022\024\n\014date_formats\030\r \003(\t\022\033\n\023enable_h" +
+      "ighlighting\030\016 \001(\010\022Y\n\016vector_options\030\017 \001(" +
+      "\0132A.com.alicloud.openservices.tablestore" +
+      ".core.protocol.VectorOptions\"\306\002\n\rVectorO" +
+      "ptions\022U\n\tdata_type\030\001 \001(\0162B.com.alicloud" +
+      ".openservices.tablestore.core.protocol.V" +
+      "ectorDataType\022\021\n\tdimension\030\002 \001(\005\022Y\n\013metr" +
+      "ic_type\030\003 \001(\0162D.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.VectorMetricT" +
+      "ype\022W\n\nindex_type\030\004 \001(\0162C.com.alicloud.o",
+      "penservices.tablestore.core.protocol.Vec" +
+      "torIndexType\022\027\n\017index_parameter\030\005 \001(\014\"8\n" +
+      "\022HNSWIndexParameter\022\t\n\001m\030\001 \001(\005\022\027\n\017ef_con" +
+      "struction\030\002 \001(\005\"\214\002\n\013IndexSchema\022V\n\rfield" +
+      "_schemas\030\001 \003(\0132?.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.FieldSchema\022" +
+      "W\n\rindex_setting\030\002 \001(\0132@.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Inde" +
+      "xSetting\022L\n\nindex_sort\030\003 \001(\01328.com.alicl" +
+      "oud.openservices.tablestore.core.protoco",
+      "l.Sort\"`\n\014IndexSetting\022\030\n\020number_of_shar" +
+      "ds\030\001 \001(\005\022\026\n\016routing_fields\030\002 \003(\t\022\036\n\026rout" +
+      "ing_partition_size\030\003 \001(\005\"\304\001\n\030CreateSearc" +
+      "hIndexRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nind" +
+      "ex_name\030\002 \002(\t\022O\n\006schema\030\003 \001(\0132?.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.IndexSchema\022\031\n\021source_index_name\030\004 \001(" +
+      "\t\022\024\n\014time_to_live\030\005 \001(\005\"\033\n\031CreateSearchI" +
+      "ndexResponse\"5\n\017QueryFlowWeight\022\022\n\nindex" +
+      "_name\030\001 \001(\t\022\016\n\006weight\030\002 \001(\005\"\323\001\n\030UpdateSe",
+      "archIndexRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\n" +
+      "index_name\030\002 \001(\t\022\031\n\021switch_index_name\030\003 " +
+      "\001(\t\022^\n\021query_flow_weight\030\004 \003(\0132C.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.QueryFlowWeight\022\024\n\014time_to_live\030\005 \001(" +
+      "\005\"\033\n\031UpdateSearchIndexResponse\"3\n\tIndexI" +
+      "nfo\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 " +
+      "\001(\t\",\n\026ListSearchIndexRequest\022\022\n\ntable_n" +
+      "ame\030\001 \001(\t\"i\n\027ListSearchIndexResponse\022N\n\007" +
+      "indices\030\001 \003(\0132=.com.alicloud.openservice",
+      "s.tablestore.core.protocol.IndexInfo\"B\n\030" +
+      "DeleteSearchIndexRequest\022\022\n\ntable_name\030\001" +
+      " \001(\t\022\022\n\nindex_name\030\002 \001(\t\"\033\n\031DeleteSearch" +
+      "IndexResponse\"}\n\010SyncStat\022Q\n\nsync_phase\030" +
+      "\001 \001(\0162=.com.alicloud.openservices.tables" +
+      "tore.core.protocol.SyncPhase\022\036\n\026current_" +
+      "sync_timestamp\030\002 \001(\003\"d\n\014MeteringInfo\022\024\n\014" +
+      "storage_size\030\001 \001(\003\022\021\n\trow_count\030\002 \001(\003\022\030\n" +
+      "\020reserved_read_cu\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001" +
+      "(\003\"D\n\032DescribeSearchIndexRequest\022\022\n\ntabl",
+      "e_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\"\226\004\n\033Des" +
+      "cribeSearchIndexResponse\022O\n\006schema\030\001 \001(\013" +
+      "2?.com.alicloud.openservices.tablestore." +
+      "core.protocol.IndexSchema\022O\n\tsync_stat\030\002" +
+      " \001(\0132<.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.SyncStat\022W\n\rmetering_i" +
+      "nfo\030\003 \001(\0132@.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.MeteringInfo\022\032\n\022b" +
+      "rother_index_name\030\004 \001(\t\022^\n\021query_flow_we" +
+      "ight\030\005 \003(\0132C.com.alicloud.openservices.t",
+      "ablestore.core.protocol.QueryFlowWeight\022" +
+      "\023\n\013create_time\030\006 \001(\003\022\024\n\014time_to_live\030\007 \001" +
+      "(\005\022U\n\014index_status\030\010 \001(\0132?.com.alicloud." +
+      "openservices.tablestore.core.protocol.In" +
+      "dexStatus\"~\n\013IndexStatus\022S\n\006status\030\001 \001(\016" +
+      "2C.com.alicloud.openservices.tablestore." +
+      "core.protocol.IndexStatusEnum\022\032\n\022status_" +
+      "description\030\002 \001(\t\"\272\001\n\tScanQuery\022H\n\005query" +
+      "\030\001 \001(\01329.com.alicloud.openservices.table" +
+      "store.core.protocol.Query\022\r\n\005limit\030\002 \001(\005",
+      "\022\022\n\nalive_time\030\003 \001(\005\022\r\n\005token\030\004 \001(\014\022\033\n\023c" +
+      "urrent_parallel_id\030\005 \001(\005\022\024\n\014max_parallel" +
+      "\030\006 \001(\005\"\222\002\n\023ParallelScanRequest\022\022\n\ntable_" +
+      "name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022X\n\016column" +
+      "s_to_get\030\003 \001(\0132@.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.ColumnsToGet" +
+      "\022\022\n\nsession_id\030\004 \001(\014\022Q\n\nscan_query\030\005 \001(\013" +
+      "2=.com.alicloud.openservices.tablestore." +
+      "core.protocol.ScanQuery\022\022\n\ntimeout_ms\030\006 " +
+      "\001(\005\"8\n\024ParallelScanResponse\022\014\n\004rows\030\001 \003(",
+      "\014\022\022\n\nnext_token\030\002 \001(\014*\226\002\n\007AggType\022\013\n\007AVG" +
+      "_AGG\020\001\022\023\n\017CARDINALITY_AGG\020\002\022\013\n\007MAX_AGG\020\003" +
+      "\022\013\n\007MIN_AGG\020\004\022\013\n\007SUM_AGG\020\005\022\r\n\tTERMS_AGG\020" +
+      "\006\022\016\n\nFILTER_AGG\020\007\022\016\n\nNESTED_AGG\020\010\022\022\n\016GEO" +
+      "_BOUNDS_AGG\020\t\022\024\n\020GEO_DISTANCE_AGG\020\n\022\r\n\tS" +
+      "TATS_AGG\020\013\022\026\n\022EXTENDED_STATS_AGG\020\014\022\023\n\017PE" +
+      "RCENTILES_AGG\020\r\022\030\n\024PERCENTILE_RANKS_AGG\020" +
+      "\016\022\023\n\017VALUE_COUNT_AGG\020\017*\223\001\n\017AggregationTy" +
+      "pe\022\013\n\007AGG_AVG\020\001\022\026\n\022AGG_DISTINCT_COUNT\020\006\022" +
+      "\013\n\007AGG_MAX\020\002\022\013\n\007AGG_MIN\020\003\022\013\n\007AGG_SUM\020\004\022\r",
+      "\n\tAGG_COUNT\020\005\022\020\n\014AGG_TOP_ROWS\020\007\022\023\n\017AGG_P" +
+      "ERCENTILES\020\010*\232\001\n\013GroupByType\022\022\n\016GROUP_BY" +
+      "_FIELD\020\001\022\022\n\016GROUP_BY_RANGE\020\002\022\023\n\017GROUP_BY" +
+      "_FILTER\020\003\022\031\n\025GROUP_BY_GEO_DISTANCE\020\004\022\026\n\022" +
+      "GROUP_BY_HISTOGRAM\020\005\022\033\n\027GROUP_BY_DATE_HI" +
+      "STOGRAM\020\006*\347\002\n\tQueryType\022\017\n\013MATCH_QUERY\020\001" +
+      "\022\026\n\022MATCH_PHRASE_QUERY\020\002\022\016\n\nTERM_QUERY\020\003" +
+      "\022\017\n\013RANGE_QUERY\020\004\022\020\n\014PREFIX_QUERY\020\005\022\016\n\nB" +
+      "OOL_QUERY\020\006\022\025\n\021CONST_SCORE_QUERY\020\007\022\030\n\024FU" +
+      "NCTION_SCORE_QUERY\020\010\022\020\n\014NESTED_QUERY\020\t\022\022",
+      "\n\016WILDCARD_QUERY\020\n\022\023\n\017MATCH_ALL_QUERY\020\013\022" +
+      "\032\n\026GEO_BOUNDING_BOX_QUERY\020\014\022\026\n\022GEO_DISTA" +
+      "NCE_QUERY\020\r\022\025\n\021GEO_POLYGON_QUERY\020\016\022\017\n\013TE" +
+      "RMS_QUERY\020\017\022\020\n\014EXISTS_QUERY\020\020\022\024\n\020KNN_VEC" +
+      "TOR_QUERY\020\021* \n\rQueryOperator\022\006\n\002OR\020\001\022\007\n\003" +
+      "AND\020\002*r\n\tScoreMode\022\023\n\017SCORE_MODE_NONE\020\001\022" +
+      "\022\n\016SCORE_MODE_AVG\020\002\022\022\n\016SCORE_MODE_MAX\020\003\022" +
+      "\024\n\020SCORE_MODE_TOTAL\020\004\022\022\n\016SCORE_MODE_MIN\020" +
+      "\005*4\n\tSortOrder\022\022\n\016SORT_ORDER_ASC\020\000\022\023\n\017SO" +
+      "RT_ORDER_DESC\020\001*C\n\010SortMode\022\021\n\rSORT_MODE",
+      "_MIN\020\000\022\021\n\rSORT_MODE_MAX\020\001\022\021\n\rSORT_MODE_A" +
+      "VG\020\002*?\n\017GeoDistanceType\022\024\n\020GEO_DISTANCE_" +
+      "ARC\020\000\022\026\n\022GEO_DISTANCE_PLANE\020\001*6\n\026Highlig" +
+      "htFragmentOrder\022\021\n\rTEXT_SEQUENCE\020\001\022\t\n\005SC" +
+      "ORE\020\002*1\n\020HighlightEncoder\022\016\n\nPLAIN_MODE\020" +
+      "\001\022\r\n\tHTML_MODE\020\002*d\n\020ColumnReturnType\022\016\n\n" +
+      "RETURN_ALL\020\001\022\024\n\020RETURN_SPECIFIED\020\002\022\017\n\013RE" +
+      "TURN_NONE\020\003\022\031\n\025RETURN_ALL_FROM_INDEX\020\004*?" +
+      "\n\014IndexOptions\022\010\n\004DOCS\020\001\022\t\n\005FREQS\020\002\022\r\n\tP" +
+      "OSITIONS\020\003\022\013\n\007OFFSETS\020\004*v\n\tFieldType\022\010\n\004",
+      "LONG\020\001\022\n\n\006DOUBLE\020\002\022\013\n\007BOOLEAN\020\003\022\013\n\007KEYWO" +
+      "RD\020\004\022\010\n\004TEXT\020\005\022\n\n\006NESTED\020\006\022\r\n\tGEO_POINT\020" +
+      "\007\022\010\n\004DATE\020\010\022\n\n\006VECTOR\020\t*{\n\014DateTimeUnit\022" +
+      "\010\n\004YEAR\020\001\022\020\n\014QUARTER_YEAR\020\002\022\t\n\005MONTH\020\003\022\010" +
+      "\n\004WEEK\020\004\022\007\n\003DAY\020\005\022\010\n\004HOUR\020\006\022\n\n\006MINUTE\020\007\022" +
+      "\n\n\006SECOND\020\010\022\017\n\013MILLISECOND\020\t*!\n\016VectorDa" +
+      "taType\022\017\n\013VD_FLOAT_32\020\002*G\n\020VectorMetricT" +
+      "ype\022\020\n\014VM_EUCLIDEAN\020\000\022\r\n\tVM_COSINE\020\001\022\022\n\016" +
+      "VM_DOT_PRODUCT\020\002*\036\n\017VectorIndexType\022\013\n\007V" +
+      "I_HNSW\020\001*\037\n\tSyncPhase\022\010\n\004FULL\020\001\022\010\n\004INCR\020",
+      "\002*7\n\017IndexStatusEnum\022\013\n\007PENDING\020\001\022\n\n\006FAI" +
+      "LED\020\002\022\013\n\007RUNNING\020\003"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -81833,7 +91010,7 @@ public final class Search {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupByDateHistogram_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupByDateHistogram_descriptor,
-              new java.lang.String[] { "FieldName", "Interval", "FieldRange", "Missing", "MinDocCount", "TimeZone", "Sort", "SubAggs", "SubGroupBys", },
+              new java.lang.String[] { "FieldName", "Interval", "FieldRange", "Missing", "MinDocCount", "TimeZone", "Sort", "SubAggs", "SubGroupBys", "Offset", },
               com.alicloud.openservices.tablestore.core.protocol.Search.GroupByDateHistogram.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GroupByDateHistogram.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupByHistogram_descriptor =
@@ -81841,7 +91018,7 @@ public final class Search {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupByHistogram_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupByHistogram_descriptor,
-              new java.lang.String[] { "FieldName", "Interval", "Missing", "MinDocCount", "Sort", "FieldRange", "SubAggs", "SubGroupBys", },
+              new java.lang.String[] { "FieldName", "Interval", "Missing", "MinDocCount", "Sort", "FieldRange", "SubAggs", "SubGroupBys", "Offset", },
               com.alicloud.openservices.tablestore.core.protocol.Search.GroupByHistogram.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GroupByHistogram.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GroupKeySort_descriptor =
@@ -82225,11 +91402,19 @@ public final class Search {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedQuery_descriptor,
-              new java.lang.String[] { "Path", "Query", "ScoreMode", "Weight", },
+              new java.lang.String[] { "Path", "Query", "ScoreMode", "Weight", "InnerHits", },
               com.alicloud.openservices.tablestore.core.protocol.Search.NestedQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.NestedQuery.Builder.class);
-          internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoBoundingBoxQuery_descriptor =
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_descriptor =
             getDescriptor().getMessageTypes().get(103);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_InnerHits_descriptor,
+              new java.lang.String[] { "Sort", "Offset", "Limit", "Highlight", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.InnerHits.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoBoundingBoxQuery_descriptor =
+            getDescriptor().getMessageTypes().get(104);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoBoundingBoxQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoBoundingBoxQuery_descriptor,
@@ -82237,7 +91422,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoBoundingBoxQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoBoundingBoxQuery.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceQuery_descriptor =
-            getDescriptor().getMessageTypes().get(104);
+            getDescriptor().getMessageTypes().get(105);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceQuery_descriptor,
@@ -82245,7 +91430,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoDistanceQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoDistanceQuery.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoPolygonQuery_descriptor =
-            getDescriptor().getMessageTypes().get(105);
+            getDescriptor().getMessageTypes().get(106);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoPolygonQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoPolygonQuery_descriptor,
@@ -82253,15 +91438,23 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoPolygonQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoPolygonQuery.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ExistsQuery_descriptor =
-            getDescriptor().getMessageTypes().get(106);
+            getDescriptor().getMessageTypes().get(107);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ExistsQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ExistsQuery_descriptor,
               new java.lang.String[] { "FieldName", },
               com.alicloud.openservices.tablestore.core.protocol.Search.ExistsQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ExistsQuery.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_descriptor =
+            getDescriptor().getMessageTypes().get(108);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_KnnVectorQuery_descriptor,
+              new java.lang.String[] { "FieldName", "TopK", "Float32QueryVector", "Filter", "Weight", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.KnnVectorQuery.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Query_descriptor =
-            getDescriptor().getMessageTypes().get(107);
+            getDescriptor().getMessageTypes().get(109);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Query_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Query_descriptor,
@@ -82269,7 +91462,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.Query.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.Query.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Collapse_descriptor =
-            getDescriptor().getMessageTypes().get(108);
+            getDescriptor().getMessageTypes().get(110);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Collapse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Collapse_descriptor,
@@ -82277,7 +91470,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.Collapse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.Collapse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedFilter_descriptor =
-            getDescriptor().getMessageTypes().get(109);
+            getDescriptor().getMessageTypes().get(111);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedFilter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_NestedFilter_descriptor,
@@ -82285,7 +91478,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.NestedFilter.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.NestedFilter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ScoreSort_descriptor =
-            getDescriptor().getMessageTypes().get(110);
+            getDescriptor().getMessageTypes().get(112);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ScoreSort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ScoreSort_descriptor,
@@ -82293,7 +91486,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ScoreSort.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ScoreSort.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_PrimaryKeySort_descriptor =
-            getDescriptor().getMessageTypes().get(111);
+            getDescriptor().getMessageTypes().get(113);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_PrimaryKeySort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_PrimaryKeySort_descriptor,
@@ -82301,15 +91494,23 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.PrimaryKeySort.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.PrimaryKeySort.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSort_descriptor =
-            getDescriptor().getMessageTypes().get(112);
+            getDescriptor().getMessageTypes().get(114);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSort_descriptor,
               new java.lang.String[] { "FieldName", "Order", "Mode", "NestedFilter", "MissingValue", "MissingField", },
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSort.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSort.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_descriptor =
+            getDescriptor().getMessageTypes().get(115);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_DocSort_descriptor,
+              new java.lang.String[] { "Order", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.DocSort.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceSort_descriptor =
-            getDescriptor().getMessageTypes().get(113);
+            getDescriptor().getMessageTypes().get(116);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceSort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_GeoDistanceSort_descriptor,
@@ -82317,15 +91518,15 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoDistanceSort.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.GeoDistanceSort.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Sorter_descriptor =
-            getDescriptor().getMessageTypes().get(114);
+            getDescriptor().getMessageTypes().get(117);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Sorter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Sorter_descriptor,
-              new java.lang.String[] { "FieldSort", "GeoDistanceSort", "ScoreSort", "PkSort", },
+              new java.lang.String[] { "FieldSort", "GeoDistanceSort", "ScoreSort", "PkSort", "DocSort", },
               com.alicloud.openservices.tablestore.core.protocol.Search.Sorter.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.Sorter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Sort_descriptor =
-            getDescriptor().getMessageTypes().get(115);
+            getDescriptor().getMessageTypes().get(118);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_Sort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_Sort_descriptor,
@@ -82333,15 +91534,31 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.Sort.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.Sort.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchQuery_descriptor =
-            getDescriptor().getMessageTypes().get(116);
+            getDescriptor().getMessageTypes().get(119);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchQuery_descriptor,
-              new java.lang.String[] { "Offset", "Limit", "Query", "Collapse", "Sort", "GetTotalCount", "Token", "Aggs", "GroupBys", },
+              new java.lang.String[] { "Offset", "Limit", "Query", "Collapse", "Sort", "GetTotalCount", "Token", "Aggs", "GroupBys", "Highlight", },
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchQuery.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_descriptor =
+            getDescriptor().getMessageTypes().get(120);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_Highlight_descriptor,
+              new java.lang.String[] { "HighlightParameters", "HighlightEncoder", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.Highlight.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_descriptor =
+            getDescriptor().getMessageTypes().get(121);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightParameter_descriptor,
+              new java.lang.String[] { "FieldName", "NumberOfFragments", "FragmentSize", "PreTag", "PostTag", "FragmentsOrder", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightParameter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnsToGet_descriptor =
-            getDescriptor().getMessageTypes().get(117);
+            getDescriptor().getMessageTypes().get(122);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnsToGet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ColumnsToGet_descriptor,
@@ -82349,7 +91566,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ColumnsToGet.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ColumnsToGet.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchRequest_descriptor =
-            getDescriptor().getMessageTypes().get(118);
+            getDescriptor().getMessageTypes().get(123);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchRequest_descriptor,
@@ -82357,15 +91574,47 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchResponse_descriptor =
-            getDescriptor().getMessageTypes().get(119);
+            getDescriptor().getMessageTypes().get(124);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchResponse_descriptor,
-              new java.lang.String[] { "TotalHits", "Rows", "IsAllSucceeded", "NextToken", "Aggs", "GroupBys", },
+              new java.lang.String[] { "TotalHits", "Rows", "IsAllSucceeded", "SearchHits", "NextToken", "Aggs", "GroupBys", "Consumed", "ReservedConsumed", },
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SearchResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_descriptor =
+            getDescriptor().getMessageTypes().get(125);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchHit_descriptor,
+              new java.lang.String[] { "Score", "HighlightResult", "SearchInnerHits", "NestedDocOffset", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchHit.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_descriptor =
+            getDescriptor().getMessageTypes().get(126);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_SearchInnerHit_descriptor,
+              new java.lang.String[] { "Path", "SearchHits", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.SearchInnerHit.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_descriptor =
+            getDescriptor().getMessageTypes().get(127);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightResult_descriptor,
+              new java.lang.String[] { "HighlightFields", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightResult.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_descriptor =
+            getDescriptor().getMessageTypes().get(128);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_HighlightField_descriptor,
+              new java.lang.String[] { "FieldName", "FieldFragments", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.HighlightField.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DateTimeValue_descriptor =
-            getDescriptor().getMessageTypes().get(120);
+            getDescriptor().getMessageTypes().get(129);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DateTimeValue_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DateTimeValue_descriptor,
@@ -82373,7 +91622,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.DateTimeValue.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleWordAnalyzerParameter_descriptor =
-            getDescriptor().getMessageTypes().get(121);
+            getDescriptor().getMessageTypes().get(130);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleWordAnalyzerParameter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SingleWordAnalyzerParameter_descriptor,
@@ -82381,7 +91630,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.SingleWordAnalyzerParameter.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SingleWordAnalyzerParameter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SplitAnalyzerParameter_descriptor =
-            getDescriptor().getMessageTypes().get(122);
+            getDescriptor().getMessageTypes().get(131);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SplitAnalyzerParameter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SplitAnalyzerParameter_descriptor,
@@ -82389,7 +91638,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.SplitAnalyzerParameter.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SplitAnalyzerParameter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FuzzyAnalyzerParameter_descriptor =
-            getDescriptor().getMessageTypes().get(123);
+            getDescriptor().getMessageTypes().get(132);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FuzzyAnalyzerParameter_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_FuzzyAnalyzerParameter_descriptor,
@@ -82397,15 +91646,31 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.FuzzyAnalyzerParameter.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.FuzzyAnalyzerParameter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_descriptor =
-            getDescriptor().getMessageTypes().get(124);
+            getDescriptor().getMessageTypes().get(133);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_FieldSchema_descriptor,
-              new java.lang.String[] { "FieldName", "FieldType", "IndexOptions", "Analyzer", "Index", "SortAndAgg", "Store", "FieldSchemas", "IsArray", "AnalyzerParameter", "IsVirtualField", "SourceFieldNames", "DateFormats", },
+              new java.lang.String[] { "FieldName", "FieldType", "IndexOptions", "Analyzer", "Index", "SortAndAgg", "Store", "FieldSchemas", "IsArray", "AnalyzerParameter", "IsVirtualField", "SourceFieldNames", "DateFormats", "EnableHighlighting", "VectorOptions", },
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSchema.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.FieldSchema.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_descriptor =
+            getDescriptor().getMessageTypes().get(134);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_VectorOptions_descriptor,
+              new java.lang.String[] { "DataType", "Dimension", "MetricType", "IndexType", "IndexParameter", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.VectorOptions.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_descriptor =
+            getDescriptor().getMessageTypes().get(135);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_HNSWIndexParameter_descriptor,
+              new java.lang.String[] { "M", "EfConstruction", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.HNSWIndexParameter.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSchema_descriptor =
-            getDescriptor().getMessageTypes().get(125);
+            getDescriptor().getMessageTypes().get(136);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSchema_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSchema_descriptor,
@@ -82413,7 +91678,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexSchema.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexSchema.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSetting_descriptor =
-            getDescriptor().getMessageTypes().get(126);
+            getDescriptor().getMessageTypes().get(137);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSetting_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexSetting_descriptor,
@@ -82421,7 +91686,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexSetting.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexSetting.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexRequest_descriptor =
-            getDescriptor().getMessageTypes().get(127);
+            getDescriptor().getMessageTypes().get(138);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexRequest_descriptor,
@@ -82429,7 +91694,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.CreateSearchIndexRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.CreateSearchIndexRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexResponse_descriptor =
-            getDescriptor().getMessageTypes().get(128);
+            getDescriptor().getMessageTypes().get(139);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateSearchIndexResponse_descriptor,
@@ -82437,7 +91702,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.CreateSearchIndexResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.CreateSearchIndexResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_QueryFlowWeight_descriptor =
-            getDescriptor().getMessageTypes().get(129);
+            getDescriptor().getMessageTypes().get(140);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_QueryFlowWeight_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_QueryFlowWeight_descriptor,
@@ -82445,7 +91710,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.QueryFlowWeight.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.QueryFlowWeight.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexRequest_descriptor =
-            getDescriptor().getMessageTypes().get(130);
+            getDescriptor().getMessageTypes().get(141);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexRequest_descriptor,
@@ -82453,7 +91718,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.UpdateSearchIndexRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.UpdateSearchIndexRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexResponse_descriptor =
-            getDescriptor().getMessageTypes().get(131);
+            getDescriptor().getMessageTypes().get(142);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_UpdateSearchIndexResponse_descriptor,
@@ -82461,7 +91726,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.UpdateSearchIndexResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.UpdateSearchIndexResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexInfo_descriptor =
-            getDescriptor().getMessageTypes().get(132);
+            getDescriptor().getMessageTypes().get(143);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexInfo_descriptor,
@@ -82469,7 +91734,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexInfo.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.IndexInfo.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexRequest_descriptor =
-            getDescriptor().getMessageTypes().get(133);
+            getDescriptor().getMessageTypes().get(144);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexRequest_descriptor,
@@ -82477,7 +91742,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ListSearchIndexRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ListSearchIndexRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexResponse_descriptor =
-            getDescriptor().getMessageTypes().get(134);
+            getDescriptor().getMessageTypes().get(145);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ListSearchIndexResponse_descriptor,
@@ -82485,7 +91750,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ListSearchIndexResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ListSearchIndexResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexRequest_descriptor =
-            getDescriptor().getMessageTypes().get(135);
+            getDescriptor().getMessageTypes().get(146);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexRequest_descriptor,
@@ -82493,7 +91758,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.DeleteSearchIndexRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.DeleteSearchIndexRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexResponse_descriptor =
-            getDescriptor().getMessageTypes().get(136);
+            getDescriptor().getMessageTypes().get(147);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DeleteSearchIndexResponse_descriptor,
@@ -82501,7 +91766,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.DeleteSearchIndexResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.DeleteSearchIndexResponse.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SyncStat_descriptor =
-            getDescriptor().getMessageTypes().get(137);
+            getDescriptor().getMessageTypes().get(148);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SyncStat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SyncStat_descriptor,
@@ -82509,7 +91774,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.SyncStat.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.SyncStat.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_MeteringInfo_descriptor =
-            getDescriptor().getMessageTypes().get(138);
+            getDescriptor().getMessageTypes().get(149);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_MeteringInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_MeteringInfo_descriptor,
@@ -82517,7 +91782,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.MeteringInfo.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.MeteringInfo.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexRequest_descriptor =
-            getDescriptor().getMessageTypes().get(139);
+            getDescriptor().getMessageTypes().get(150);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexRequest_descriptor,
@@ -82525,15 +91790,23 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.DescribeSearchIndexRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.DescribeSearchIndexRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexResponse_descriptor =
-            getDescriptor().getMessageTypes().get(140);
+            getDescriptor().getMessageTypes().get(151);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_DescribeSearchIndexResponse_descriptor,
-              new java.lang.String[] { "Schema", "SyncStat", "MeteringInfo", "BrotherIndexName", "QueryFlowWeight", "CreateTime", "TimeToLive", },
+              new java.lang.String[] { "Schema", "SyncStat", "MeteringInfo", "BrotherIndexName", "QueryFlowWeight", "CreateTime", "TimeToLive", "IndexStatus", },
               com.alicloud.openservices.tablestore.core.protocol.Search.DescribeSearchIndexResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.DescribeSearchIndexResponse.Builder.class);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_descriptor =
+            getDescriptor().getMessageTypes().get(152);
+          internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_com_alicloud_openservices_tablestore_core_protocol_IndexStatus_descriptor,
+              new java.lang.String[] { "Status", "StatusDescription", },
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.class,
+              com.alicloud.openservices.tablestore.core.protocol.Search.IndexStatus.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ScanQuery_descriptor =
-            getDescriptor().getMessageTypes().get(141);
+            getDescriptor().getMessageTypes().get(153);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ScanQuery_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ScanQuery_descriptor,
@@ -82541,7 +91814,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ScanQuery.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ScanQuery.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanRequest_descriptor =
-            getDescriptor().getMessageTypes().get(142);
+            getDescriptor().getMessageTypes().get(154);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanRequest_descriptor,
@@ -82549,7 +91822,7 @@ public final class Search {
               com.alicloud.openservices.tablestore.core.protocol.Search.ParallelScanRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.Search.ParallelScanRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanResponse_descriptor =
-            getDescriptor().getMessageTypes().get(143);
+            getDescriptor().getMessageTypes().get(155);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_ParallelScanResponse_descriptor,
@@ -82562,6 +91835,7 @@ public final class Search {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.getDescriptor(),
         }, assigner);
   }
   

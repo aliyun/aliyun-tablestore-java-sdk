@@ -8,6 +8,7 @@ import com.alicloud.openservices.tablestore.model.ReservedThroughput;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
 import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
 import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
+import com.alicloud.openservices.tablestore.model.search.DescribeSearchIndexResponse;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
 import com.alicloud.openservices.tablestore.model.search.FieldType;
 import com.alicloud.openservices.tablestore.model.search.IndexOptions;
@@ -28,6 +29,10 @@ import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.PrimaryKeySort;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
+import com.alicloud.openservices.tablestore.model.search.vector.HNSWIndexParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorDataType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorMetricType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -55,6 +60,8 @@ public class SearchProtocolParser {
                 return FieldType.GEO_POINT;
             case DATE:
                 return FieldType.DATE;
+            case VECTOR:
+                return FieldType.VECTOR;
             default:
                 return FieldType.UNKNOWN;
         }
@@ -114,6 +121,9 @@ public class SearchProtocolParser {
         if (fieldSchema.hasSortAndAgg()) {
             result.setEnableSortAndAgg(fieldSchema.getSortAndAgg());
         }
+        if (fieldSchema.hasEnableHighlighting()) {
+            result.setEnableHighlighting(fieldSchema.getEnableHighlighting());
+        }
         if (fieldSchema.hasStore()) {
             result.setStore(fieldSchema.getStore());
         }
@@ -163,7 +173,70 @@ public class SearchProtocolParser {
         }
         result.setSourceFieldNames(fieldSchema.getSourceFieldNamesList());
         result.setDateFormats(fieldSchema.getDateFormatsList());
+        if (fieldSchema.hasVectorOptions()) {
+            result.setVectorOptions(toVectorOptions(fieldSchema.getVectorOptions()));
+        }
         return result;
+    }
+
+    public static VectorOptions toVectorOptions(Search.VectorOptions pbOptions) {
+        VectorOptions vectorOptions = new VectorOptions();
+        if (pbOptions.hasDataType()) {
+            vectorOptions.setDataType(toVectorMetricType(pbOptions.getDataType()));
+        }
+        if (pbOptions.hasDimension()) {
+            vectorOptions.setDimension(pbOptions.getDimension());
+        }
+        if (pbOptions.hasMetricType()) {
+            vectorOptions.setMetricType(toVectorMetricType(pbOptions.getMetricType()));
+        }
+        if (pbOptions.hasIndexType()) {
+            Search.VectorIndexType indexType = pbOptions.getIndexType();
+            if (indexType.equals(Search.VectorIndexType.VI_HNSW)) {
+                if (pbOptions.hasIndexParameter()) {
+                    ByteString indexParameter = pbOptions.getIndexParameter();
+                    Search.HNSWIndexParameter pbParameter = null;
+                    try {
+                        pbParameter = Search.HNSWIndexParameter.parseFrom(indexParameter);
+                    } catch (InvalidProtocolBufferException e) {
+                        throw new ClientException("failed to parse vector options index parameter: " + e.getMessage(), e);
+                    }
+                    HNSWIndexParameter hnswIndexParameter = new HNSWIndexParameter();
+                    if (pbParameter.hasM()) {
+                        hnswIndexParameter.setM(pbParameter.getM());
+                    }
+                    if (pbParameter.hasEfConstruction()) {
+                        hnswIndexParameter.setEfConstruction(pbParameter.getEfConstruction());
+                    }
+                    vectorOptions.setIndexParameter(hnswIndexParameter);
+                }
+            } else {
+                throw new IllegalArgumentException("unknown index type:" + indexType + ", maybe you should update sdk version");
+            }
+        }
+        return vectorOptions;
+    }
+
+    private static VectorDataType toVectorMetricType(Search.VectorDataType type) {
+        switch (type) {
+            case VD_FLOAT_32:
+                return VectorDataType.FLOAT_32;
+            default:
+                throw new IllegalArgumentException("unknown vector data type type:" + type.name());
+        }
+    }
+
+    private static VectorMetricType toVectorMetricType(Search.VectorMetricType type) {
+        switch (type) {
+            case VM_EUCLIDEAN:
+                return VectorMetricType.EUCLIDEAN;
+            case VM_COSINE:
+                return VectorMetricType.COSINE;
+            case VM_DOT_PRODUCT:
+                return VectorMetricType.DOT_PRODUCT;
+            default:
+                throw new IllegalArgumentException("unknown vector metric type type:" + type.name());
+        }
     }
 
     private static IndexSetting toIndexSetting(Search.IndexSetting indexSetting) {
@@ -262,6 +335,35 @@ public class SearchProtocolParser {
         return result;
     }
 
+    static DescribeSearchIndexResponse.IndexStatus toIndexStatus(Search.IndexStatus pbIndexStatus) {
+        DescribeSearchIndexResponse.IndexStatus indexStatus = new DescribeSearchIndexResponse.IndexStatus();
+
+        if (pbIndexStatus.hasStatus()) {
+            switch (pbIndexStatus.getStatus()) {
+                case PENDING:
+                    indexStatus.indexStatusEnum = DescribeSearchIndexResponse.IndexStatusEnum.PENDING;
+                    break;
+                case FAILED:
+                    indexStatus.indexStatusEnum = DescribeSearchIndexResponse.IndexStatusEnum.FAILED;
+                    break;
+                case RUNNING:
+                    indexStatus.indexStatusEnum = DescribeSearchIndexResponse.IndexStatusEnum.RUNNING;
+                    break;
+                default:
+                    indexStatus.indexStatusEnum = DescribeSearchIndexResponse.IndexStatusEnum.UNKNOWN;
+                    break;
+            }
+        } else {
+            indexStatus.indexStatusEnum = DescribeSearchIndexResponse.IndexStatusEnum.UNKNOWN;
+        }
+
+        if (pbIndexStatus.hasStatusDescription()) {
+            indexStatus.statusDescription = pbIndexStatus.getStatusDescription();
+        }
+
+        return indexStatus;
+    }
+
     static QueryFlowWeight toQueryFlowWeight(Search.QueryFlowWeight queryFlowWeight) {
         if (!queryFlowWeight.hasIndexName()) {
             throw new ClientException("[query_flow_weight] has no index name");
@@ -287,6 +389,9 @@ public class SearchProtocolParser {
         }
         if (pb.hasQuery()) {
             searchQuery.setQuery(SearchQueryParser.toQuery(pb.getQuery()));
+        }
+        if (pb.hasHighlight()) {
+            searchQuery.setHighlight(SearchHighlightParser.toHighlight(pb.getHighlight()));
         }
         if (pb.hasSort()) {
             searchQuery.setSort(SearchSortParser.toSort(pb.getSort()));
@@ -445,12 +550,14 @@ public class SearchProtocolParser {
                 return DateTimeUnit.MINUTE;
             case SECOND:
                 return DateTimeUnit.SECOND;
+            case MILLISECOND:
+                return DateTimeUnit.MILLISECOND;
             default:
                 throw new IllegalArgumentException("Unknown DateTimeUnit: " + unit.name());
         }
     }
 
-    public static  DateTimeValue toDateTimeValue(Search.DateTimeValue pb) {
+    public static DateTimeValue toDateTimeValue(Search.DateTimeValue pb) {
         DateTimeValue dateTimeValue = new DateTimeValue();
         if (pb.hasValue()) {
             dateTimeValue.setValue(pb.getValue());

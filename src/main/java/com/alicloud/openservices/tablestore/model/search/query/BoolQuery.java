@@ -16,7 +16,7 @@ import com.google.protobuf.ByteString;
  */
 public class BoolQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_BoolQuery;
+    private final QueryType queryType = QueryType.QueryType_BoolQuery;
 
     /**
      * 文档必须完全匹配所有的子query

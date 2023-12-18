@@ -21,4 +21,5 @@ public enum QueryType {
     QueryType_GeoPolygonQuery,
     QueryType_TermsQuery,
     QueryType_ExistsQuery,
+    QueryType_KnnVectorQuery,
 }

@@ -4,6 +4,8 @@ import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.*;
 import com.google.protobuf.ByteString;
 
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsBuilder.buildInnerHits;
+
 /**
  * {@link Query} serialization tool class. For deserialization, please refer to {@link SearchQueryParser}
  */
@@ -43,6 +45,8 @@ public class SearchQueryBuilder {
                 return Search.QueryType.GEO_POLYGON_QUERY;
             case QueryType_ExistsQuery:
                 return Search.QueryType.EXISTS_QUERY;
+            case QueryType_KnnVectorQuery:
+                return Search.QueryType.KNN_VECTOR_QUERY;
             default:
                 throw new IllegalArgumentException("unknown queryType: " + type.name());
         }
@@ -219,6 +223,9 @@ public class SearchQueryBuilder {
             throw new IllegalArgumentException("nestedQuery must set score mode.");
         }
         builder.setScoreMode(buildScoreMode(query.getScoreMode()));
+        if (query.getInnerHits() != null) {
+            builder.setInnerHits(buildInnerHits(query.getInnerHits()));
+        }
         return builder.build();
     }
 
@@ -248,6 +255,28 @@ public class SearchQueryBuilder {
     public static Search.ExistsQuery buildExistsQuery(ExistsQuery query) {
         Search.ExistsQuery.Builder builder = Search.ExistsQuery.newBuilder();
         builder.setFieldName(query.getFieldName());
+        return builder.build();
+    }
+
+    public static Search.KnnVectorQuery buildKnnVectorQuery(KnnVectorQuery query) {
+        Search.KnnVectorQuery.Builder builder = Search.KnnVectorQuery.newBuilder();
+        if (query.getFieldName() != null) {
+            builder.setFieldName(query.getFieldName());
+        }
+        if (query.getTopK() != null) {
+            builder.setTopK(query.getTopK());
+        }
+        if (query.getFloat32QueryVector() != null) {
+            for (float v : query.getFloat32QueryVector()) {
+                builder.addFloat32QueryVector(v);
+            }
+        }
+        if (query.getFilter() != null) {
+            builder.setFilter(buildQuery(query.getFilter()));
+        }
+        if (query.getWeight() != null) {
+            builder.setWeight(query.getWeight());
+        }
         return builder.build();
     }
 }

@@ -7,6 +7,7 @@ import com.alicloud.openservices.tablestore.model.timeseries.PutTimeseriesDataRe
 import com.alicloud.openservices.tablestore.model.timeseries.PutTimeseriesDataResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesRow;
 import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesTableRow;
+import com.alicloud.openservices.tablestore.timeserieswriter.TimeseriesWriterException;
 import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesBucketConfig;
 import com.alicloud.openservices.tablestore.timeserieswriter.enums.TSWriteMode;
 import com.alicloud.openservices.tablestore.timeserieswriter.group.TimeseriesGroup;
@@ -168,6 +169,9 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
                     ((TableStoreException)ex).getErrorCode().equals("OTSParameterInvalid") &&
                     ((PutTimeseriesDataRequest) request).getRows().size() > 1) {
                 retryTimeseriesRow((PutTimeseriesDataRequest) request);
+            } else if (ex instanceof TimeseriesWriterException &&
+                    ((PutTimeseriesDataRequest) request).getRows().size() > 1) {
+                retryTimeseriesRow((PutTimeseriesDataRequest) request);
             } else {
                 failedOnException(request, ex);
             }
@@ -192,20 +196,15 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
     }
 
     private void retryTimeseriesRow(PutTimeseriesDataRequest request) {
-        for (int i = 0; i < request.getRows().size(); i++) {
-            TimeseriesGroup timeseriesGroup = groupList.get(i);
-            retrySingleTimeseriesRow(request.getRows().get(i), timeseriesGroup, request.getTimeseriesTableName());
-        }
-    }
-
-
-    private void retrySingleTimeseriesRow(TimeseriesRow timeseriesRow, TimeseriesGroup timeseriesGroup, String tableName) {
-        timeseriesWriterHandleStatistics.incrementAndGetTotalSingleRowRequestCount();
-        timeseriesWriterHandleStatistics.incrementAndGetTotalRequestCount();
         if (TSWriteMode.SEQUENTIAL.equals(timeseriesBucketConfig.getWriteMode())) {
-            retrySequentialWriteSingleTimeseries(timeseriesRow, timeseriesGroup, tableName);
+            retrySequentialWriteSingleTimeseries(request.getRows(), groupList, request.getTimeseriesTableName(), 0);
         } else {
-            retryParallelWriteSingleTimeseries(timeseriesRow, timeseriesGroup, tableName);
+            for (int i = 0; i < request.getRows().size(); i++) {
+                TimeseriesGroup timeseriesGroup = groupList.get(i);
+                timeseriesWriterHandleStatistics.incrementAndGetTotalSingleRowRequestCount();
+                timeseriesWriterHandleStatistics.incrementAndGetTotalRequestCount();
+                retryParallelWriteSingleTimeseries(request.getRows().get(i), timeseriesGroup, request.getTimeseriesTableName());
+            }
         }
     }
 
@@ -222,22 +221,61 @@ public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req
         request.addRows(list);
 
 
-        ots.putTimeseriesData(request, new TimeseriesFlushCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse>(ots, count, semaphore, callback,
-                executor, timeseriesWriterHandleStatistics, timeseriesBucketConfig, bucketSemaphore, subGroupList));
+        TableStoreCallback tableStoreCallback = new TimeseriesFlushCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse>(ots, count, semaphore, callback,
+                executor, timeseriesWriterHandleStatistics, timeseriesBucketConfig, bucketSemaphore, subGroupList);
+
+        tryPutTimeseriesData(request, tableStoreCallback);
     }
 
-    private void retrySequentialWriteSingleTimeseries(TimeseriesRow timeseriesRow, TimeseriesGroup timeseriesGroup, String tableName) {
-        PutTimeseriesDataRequest request = new PutTimeseriesDataRequest(tableName);
-        List<TimeseriesRow> list = new ArrayList<TimeseriesRow>();
-        list.add(timeseriesRow);
-        request.addRows(list);
-        try {
-            ots.asTimeseriesClientInterface().putTimeseriesData(request);
-            triggerSucceedCallback(new TimeseriesTableRow(timeseriesRow, tableName), timeseriesGroup);
-        } catch (Exception e) {
-            triggerFailedCallback(new TimeseriesTableRow(timeseriesRow, tableName), e, timeseriesGroup);
+    /**
+     * 调用异步putTimeseriesData接口，串行地重试数据
+     * @param timeseriesRows    待重试时序数据List
+     * @param timeseriesGroups  待重试时序数据的GroupList
+     * @param tableName         时序表名
+     * @param index             要重试的数据在List中的index
+     */
+    private void retrySequentialWriteSingleTimeseries(final List<TimeseriesRow> timeseriesRows, final List<TimeseriesGroup> timeseriesGroups, final String tableName, final int index) {
+        if (index >= timeseriesRows.size()) {
+            return;
         }
+        final List<TimeseriesGroup> subGroupList = new ArrayList<TimeseriesGroup>(1);
+        subGroupList.add(timeseriesGroups.get(index));
 
+        this.count.incrementAndGet();
+        timeseriesWriterHandleStatistics.incrementAndGetTotalSingleRowRequestCount();
+        timeseriesWriterHandleStatistics.incrementAndGetTotalRequestCount();
 
+        final PutTimeseriesDataRequest request = new PutTimeseriesDataRequest(tableName);
+        List<TimeseriesRow> list = new ArrayList<TimeseriesRow>();
+        list.add(timeseriesRows.get(index));
+        request.addRows(list);
+
+        final TableStoreCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse> timeseriesFlushCallback = new TimeseriesFlushCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse>(ots, count, semaphore, callback,
+                executor, timeseriesWriterHandleStatistics, timeseriesBucketConfig, bucketSemaphore, subGroupList);
+
+        TableStoreCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse> tableStoreCallback = new TableStoreCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse>() {
+            public void onCompleted(PutTimeseriesDataRequest req, PutTimeseriesDataResponse res) {
+                // 迭代遍历
+                retrySequentialWriteSingleTimeseries(timeseriesRows, timeseriesGroups, tableName, index + 1);
+                timeseriesFlushCallback.onCompleted(req, res);
+            }
+            public void onFailed(PutTimeseriesDataRequest req, Exception ex) {
+                // 迭代遍历
+                retrySequentialWriteSingleTimeseries(timeseriesRows, timeseriesGroups, tableName, index + 1);
+                timeseriesFlushCallback.onFailed(req, ex);
+            }
+        };
+
+        tryPutTimeseriesData(request, tableStoreCallback);
+    }
+
+    private void tryPutTimeseriesData(PutTimeseriesDataRequest request,
+            TableStoreCallback<PutTimeseriesDataRequest, PutTimeseriesDataResponse> callback) {
+        try{
+            ots.putTimeseriesData(request, callback);
+        } catch (Exception e) {
+            logger.error("Failed while send request:", e);
+            callback.onFailed(request, new TimeseriesWriterException(e.getMessage(), e, "SendRequestError"));
+        }
     }
 }

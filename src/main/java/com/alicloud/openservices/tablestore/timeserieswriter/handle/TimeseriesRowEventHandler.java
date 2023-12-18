@@ -107,18 +107,28 @@ public class TimeseriesRowEventHandler implements EventHandler<TimeseriesRowEven
                         callback,
                         callbackSemaphore, bucketSemaphore));
             }
-
             boolean succeed = map.get(timeseriesTableRow.getTableName()).appendTimeseriesRow(timeseriesRowWithGroup);
+            // The first failure may be due to:
+            // 1. The number of rows has reached the maximum limit
+            // 2. The size of rows has reached the maximum limit
+            // 3. Duplicate timeseries key in cache
+            // 4. The format of the row is incorrect
             if (!succeed) {
-                timeseriesRequestWithGroupsMap.put(timeseriesTableRow.getTableName(), map.get(timeseriesTableRow.getTableName()).makeRequest(timeseriesTableRow.getTableName()));
+                // For the case of 1、2、3 above, make request and try to add row to the cache again
+                TimeseriesRequestWithGroups timeseriesRequestWithGroups = map.get(timeseriesTableRow.getTableName()).makeRequest(timeseriesTableRow.getTableName());
+                if (timeseriesRequestWithGroups != null) {
+                    timeseriesRequestWithGroupsMap.put(timeseriesTableRow.getTableName(), timeseriesRequestWithGroups);
+                }
+                // The second failure may be due to:
+                // 1. Only one row size reaches the maximum limit
+                // 2. The format of the row is incorrect
                 succeed = map.get(timeseriesTableRow.getTableName()).appendTimeseriesRow(timeseriesRowWithGroup);
-
                 if (!succeed) {
                     executor.execute(new Runnable() {
                         @Override
                         public void run() {
                             timeseriesWriterHandleStatistics.totalFailedRowsCount.incrementAndGet();
-                            ClientException exception = new ClientException("Can not even append only one row into buffer.");
+                            ClientException exception = new ClientException("Failed to append timeseries row into buffer.");
                             logger.error("RowChange Failed: ", exception);
                             timeseriesRowWithGroup.timeseriesGroup.failedOneRow(timeseriesRowWithGroup.timeseriesTableRow, exception);
                             if (callback != null) {

@@ -24428,6 +24428,10 @@ public final class Timeseries {
     // required string store_name = 2;
     boolean hasStoreName();
     String getStoreName();
+    
+    // optional bool drop_mapping_table = 3;
+    boolean hasDropMappingTable();
+    boolean getDropMappingTable();
   }
   public static final class DeleteTimeseriesAnalyticalStoreRequest extends
       com.google.protobuf.GeneratedMessage
@@ -24522,9 +24526,20 @@ public final class Timeseries {
       }
     }
     
+    // optional bool drop_mapping_table = 3;
+    public static final int DROP_MAPPING_TABLE_FIELD_NUMBER = 3;
+    private boolean dropMappingTable_;
+    public boolean hasDropMappingTable() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public boolean getDropMappingTable() {
+      return dropMappingTable_;
+    }
+    
     private void initFields() {
       tableName_ = "";
       storeName_ = "";
+      dropMappingTable_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -24552,6 +24567,9 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getStoreNameBytes());
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, dropMappingTable_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -24568,6 +24586,10 @@ public final class Timeseries {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getStoreNameBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, dropMappingTable_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -24697,6 +24719,8 @@ public final class Timeseries {
         bitField0_ = (bitField0_ & ~0x00000001);
         storeName_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        dropMappingTable_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -24743,6 +24767,10 @@ public final class Timeseries {
           to_bitField0_ |= 0x00000002;
         }
         result.storeName_ = storeName_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.dropMappingTable_ = dropMappingTable_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -24764,6 +24792,9 @@ public final class Timeseries {
         }
         if (other.hasStoreName()) {
           setStoreName(other.getStoreName());
+        }
+        if (other.hasDropMappingTable()) {
+          setDropMappingTable(other.getDropMappingTable());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -24812,6 +24843,11 @@ public final class Timeseries {
             case 18: {
               bitField0_ |= 0x00000002;
               storeName_ = input.readBytes();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              dropMappingTable_ = input.readBool();
               break;
             }
           }
@@ -24890,6 +24926,27 @@ public final class Timeseries {
         bitField0_ |= 0x00000002;
         storeName_ = value;
         onChanged();
+      }
+      
+      // optional bool drop_mapping_table = 3;
+      private boolean dropMappingTable_ ;
+      public boolean hasDropMappingTable() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public boolean getDropMappingTable() {
+        return dropMappingTable_;
+      }
+      public Builder setDropMappingTable(boolean value) {
+        bitField0_ |= 0x00000004;
+        dropMappingTable_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearDropMappingTable() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        dropMappingTable_ = false;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.timeseries.DeleteTimeseriesAnalyticalStoreRequest)
@@ -27615,41 +27672,42 @@ public final class Timeseries {
       "re\030\002 \001(\0132X.com.alicloud.openservices.tab" +
       "lestore.core.protocol.timeseries.Timeser" +
       "iesAnalyticalStore\")\n\'CreateTimeseriesAn" +
-      "alyticalStoreResponse\"P\n&DeleteTimeserie" +
+      "alyticalStoreResponse\"l\n&DeleteTimeserie" +
       "sAnalyticalStoreRequest\022\022\n\ntable_name\030\001 " +
-      "\002(\t\022\022\n\nstore_name\030\002 \002(\t\")\n\'DeleteTimeser",
-      "iesAnalyticalStoreResponse\"R\n(DescribeTi" +
-      "meseriesAnalyticalStoreRequest\022\022\n\ntable_" +
-      "name\030\001 \002(\t\022\022\n\nstore_name\030\002 \002(\t\"\373\002\n)Descr" +
-      "ibeTimeseriesAnalyticalStoreResponse\022r\n\020" +
-      "analytical_store\030\001 \001(\0132X.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.time" +
-      "series.TimeseriesAnalyticalStore\022i\n\tsync" +
-      "_stat\030\002 \001(\0132V.com.alicloud.openservices." +
-      "tablestore.core.protocol.timeseries.Anal" +
-      "yticalStoreSyncStat\022o\n\014storage_size\030\003 \001(",
-      "\0132Y.com.alicloud.openservices.tablestore" +
-      ".core.protocol.timeseries.AnalyticalStor" +
-      "eStorageSize\"\260\001\n&UpdateTimeseriesAnalyti" +
-      "calStoreRequest\022\022\n\ntable_name\030\001 \002(\t\022r\n\020a" +
-      "nalytical_store\030\002 \002(\0132X.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.times" +
-      "eries.TimeseriesAnalyticalStore\")\n\'Updat" +
-      "eTimeseriesAnalyticalStoreResponse*\251\001\n\026M" +
-      "etaQueryConditionType\022\027\n\023COMPOSITE_CONDI" +
-      "TION\020\001\022\031\n\025MEASUREMENT_CONDITION\020\002\022\024\n\020SOU",
-      "RCE_CONDITION\020\003\022\021\n\rTAG_CONDITION\020\004\022\031\n\025UP" +
-      "DATE_TIME_CONDITION\020\005\022\027\n\023ATTRIBUTE_CONDI" +
-      "TION\020\006*?\n\032MetaQueryCompositeOperator\022\n\n\006" +
-      "OP_AND\020\001\022\t\n\005OP_OR\020\002\022\n\n\006OP_NOT\020\003*\206\001\n\027Meta" +
-      "QuerySingleOperator\022\014\n\010OP_EQUAL\020\001\022\023\n\017OP_" +
-      "GREATER_THAN\020\002\022\024\n\020OP_GREATER_EQUAL\020\003\022\020\n\014" +
-      "OP_LESS_THAN\020\004\022\021\n\rOP_LESS_EQUAL\020\005\022\r\n\tOP_" +
-      "PREFIX\020\006*>\n\021RowsSerializeType\022\023\n\017RST_FLA" +
-      "T_BUFFER\020\000\022\024\n\020RST_PLAIN_BUFFER\020\001*0\n\016Meta" +
-      "UpdateMode\022\016\n\nMUM_NORMAL\020\000\022\016\n\nMUM_IGNORE",
-      "\020\001*A\n\027AnalyticalStoreSyncType\022\022\n\016SYNC_TY" +
-      "PE_FULL\020\001\022\022\n\016SYNC_TYPE_INCR\020\002"
+      "\002(\t\022\022\n\nstore_name\030\002 \002(\t\022\032\n\022drop_mapping_",
+      "table\030\003 \001(\010\")\n\'DeleteTimeseriesAnalytica" +
+      "lStoreResponse\"R\n(DescribeTimeseriesAnal" +
+      "yticalStoreRequest\022\022\n\ntable_name\030\001 \002(\t\022\022" +
+      "\n\nstore_name\030\002 \002(\t\"\373\002\n)DescribeTimeserie" +
+      "sAnalyticalStoreResponse\022r\n\020analytical_s" +
+      "tore\030\001 \001(\0132X.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.timeseries.Times" +
+      "eriesAnalyticalStore\022i\n\tsync_stat\030\002 \001(\0132" +
+      "V.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.timeseries.AnalyticalStoreS",
+      "yncStat\022o\n\014storage_size\030\003 \001(\0132Y.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.timeseries.AnalyticalStoreStorageSize" +
+      "\"\260\001\n&UpdateTimeseriesAnalyticalStoreRequ" +
+      "est\022\022\n\ntable_name\030\001 \002(\t\022r\n\020analytical_st" +
+      "ore\030\002 \002(\0132X.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.timeseries.Timese" +
+      "riesAnalyticalStore\")\n\'UpdateTimeseriesA" +
+      "nalyticalStoreResponse*\251\001\n\026MetaQueryCond" +
+      "itionType\022\027\n\023COMPOSITE_CONDITION\020\001\022\031\n\025ME",
+      "ASUREMENT_CONDITION\020\002\022\024\n\020SOURCE_CONDITIO" +
+      "N\020\003\022\021\n\rTAG_CONDITION\020\004\022\031\n\025UPDATE_TIME_CO" +
+      "NDITION\020\005\022\027\n\023ATTRIBUTE_CONDITION\020\006*?\n\032Me" +
+      "taQueryCompositeOperator\022\n\n\006OP_AND\020\001\022\t\n\005" +
+      "OP_OR\020\002\022\n\n\006OP_NOT\020\003*\206\001\n\027MetaQuerySingleO" +
+      "perator\022\014\n\010OP_EQUAL\020\001\022\023\n\017OP_GREATER_THAN" +
+      "\020\002\022\024\n\020OP_GREATER_EQUAL\020\003\022\020\n\014OP_LESS_THAN" +
+      "\020\004\022\021\n\rOP_LESS_EQUAL\020\005\022\r\n\tOP_PREFIX\020\006*>\n\021" +
+      "RowsSerializeType\022\023\n\017RST_FLAT_BUFFER\020\000\022\024" +
+      "\n\020RST_PLAIN_BUFFER\020\001*0\n\016MetaUpdateMode\022\016",
+      "\n\nMUM_NORMAL\020\000\022\016\n\nMUM_IGNORE\020\001*A\n\027Analyt" +
+      "icalStoreSyncType\022\022\n\016SYNC_TYPE_FULL\020\001\022\022\n" +
+      "\016SYNC_TYPE_INCR\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -28021,7 +28079,7 @@ public final class Timeseries {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreRequest_descriptor,
-              new java.lang.String[] { "TableName", "StoreName", },
+              new java.lang.String[] { "TableName", "StoreName", "DropMappingTable", },
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.timeseries.Timeseries.DeleteTimeseriesAnalyticalStoreRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_timeseries_DeleteTimeseriesAnalyticalStoreResponse_descriptor =

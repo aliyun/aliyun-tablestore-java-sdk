@@ -5,7 +5,13 @@ import com.alicloud.openservices.tablestore.model.search.analysis.AnalyzerParame
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.HNSWIndexParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorDataType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorIndexParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorMetricType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 import com.google.common.base.Supplier;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -374,5 +380,37 @@ public class TestFieldSchema extends BaseSearchTest {
         Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
         assertEquals("f1", fieldSchemaMap.get("FieldName"));
         assertEquals(formats, fieldSchemaMap.get("DateFormats"));
+    }
+
+    @Test
+    public void testVectorOptions() {
+        FieldType fieldType = randomFrom(FieldType.values());
+        FieldSchema fieldSchema = new FieldSchema("f1", fieldType);
+        VectorOptions options = new VectorOptions(VectorDataType.FLOAT_32, 12, VectorMetricType.COSINE, new HNSWIndexParameter(13, 14));
+        fieldSchema.setVectorOptions(options);
+        assertNotNull(fieldSchema.getVectorOptions());
+        VectorOptions vectorOptions = fieldSchema.getVectorOptions();
+        assertEquals(VectorDataType.FLOAT_32, vectorOptions.getDataType());
+        assertEquals(12, vectorOptions.getDimension().intValue());
+        assertEquals(VectorMetricType.COSINE, vectorOptions.getMetricType());
+
+        VectorIndexParameter indexParameter = options.getIndexParameter();
+        Assert.assertTrue(indexParameter instanceof HNSWIndexParameter);
+        HNSWIndexParameter hnswIndexParameter = (HNSWIndexParameter) indexParameter;
+        Assert.assertEquals(13, hnswIndexParameter.getM().intValue());
+        Assert.assertEquals(14, hnswIndexParameter.getEfConstruction().intValue());
+    }
+
+    @Test
+    public void testVectorOptionsJsonize() {
+        FieldType fieldType = randomFrom(FieldType.values());
+        FieldSchema fieldSchema = new FieldSchema("f1", fieldType);
+        VectorOptions options = new VectorOptions(VectorDataType.FLOAT_32, 12, VectorMetricType.COSINE, new HNSWIndexParameter(13, 14));
+        fieldSchema.setVectorOptions(options);
+        assertNotNull(fieldSchema.getVectorOptions());
+        String jsonString = fieldSchema.jsonize();
+        System.out.println(jsonString);
+        Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertEquals("f1", fieldSchemaMap.get("FieldName"));
     }
 }

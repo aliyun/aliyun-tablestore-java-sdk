@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnType;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
+import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -156,6 +157,7 @@ public class GroupByBuildersTest extends BaseSearchTest {
             g1.setFieldName("g1");
             g1.setInterval(ValueUtil.toColumnValue(5.0));
             g1.setMissing(new ColumnValue(1, ColumnType.INTEGER));
+            g1.setOffset(ValueUtil.toColumnValue(1));
             g1.setMinDocCount(10L);
             g1.setFieldRange(
                 new FieldRange(new ColumnValue(1.0, ColumnType.DOUBLE), new ColumnValue(5.0, ColumnType.DOUBLE)));
@@ -172,6 +174,7 @@ public class GroupByBuildersTest extends BaseSearchTest {
             GroupByHistogram.Builder builder1 = GroupByBuilders.groupByHistogram("n1", "g1")
                 .interval(5.0)
                 .missing(1)
+                .offset(1)
                 .minDocCount(10L)
                 .addFieldRange(1.0, 5.0)
                 .addGroupBySorter(Arrays.asList(GroupBySorter.groupKeySortInAsc(), GroupBySorter.rowCountSortInDesc()));
@@ -225,6 +228,95 @@ public class GroupByBuildersTest extends BaseSearchTest {
                 .enableComplexMapKeySerialization().create();
 
             assertEquals(gson.toJson(builder1.build()), gson.toJson(g1));
+        }
+    }
+
+    /**
+     *  test group by date histogram
+     */
+    @Test
+    public void testGroupByDateHistogram() {
+        {
+            GroupByDateHistogram groupByDateHistogram = new GroupByDateHistogram();
+            groupByDateHistogram.setGroupByName("n1");
+            groupByDateHistogram.setFieldName("g1");
+            groupByDateHistogram.setInterval(1, DateTimeUnit.HOUR);
+            groupByDateHistogram.setOffset(30, DateTimeUnit.MINUTE);
+            groupByDateHistogram.setFieldRange(
+                    new FieldRange(new ColumnValue(1, ColumnType.INTEGER), new ColumnValue(10, ColumnType.INTEGER)));
+            groupByDateHistogram.setMissing(ValueUtil.toColumnValue(1));
+            GroupKeySort groupKeySort = new GroupKeySort();
+            groupKeySort.setOrder(SortOrder.ASC);
+            RowCountSort rowCountSort = new RowCountSort();
+            rowCountSort.setOrder(SortOrder.DESC);
+            GroupBySorter groupBySorter1 = new GroupBySorter();
+            GroupBySorter groupBySorter2 = new GroupBySorter();
+            groupBySorter1.setGroupKeySort(groupKeySort);
+            groupBySorter2.setRowCountSort(rowCountSort);
+            groupByDateHistogram.setGroupBySorters(Arrays.asList(groupBySorter1, groupBySorter2));
+            groupByDateHistogram.setSubAggregations(Arrays.asList(AggregationBuilders.max("m1", "m1").build(),
+                    AggregationBuilders.count("m2", "m2").build(),
+                    AggregationBuilders.count("m3", "m3").build()));
+
+            GroupByDateHistogram.Builder builder = GroupByBuilders.groupByDateHistogram("n1", "g1")
+                    .interval(1, DateTimeUnit.HOUR)
+                    .offset(30, DateTimeUnit.MINUTE)
+                    .fieldRange(1, 10)
+                    .missing(1)
+                    .addGroupBySorter(Arrays.asList(GroupBySorter.groupKeySortInAsc(), GroupBySorter.rowCountSortInDesc()))
+                    .addSubAggregation(AggregationBuilders.max("m1", "m1"))
+                    .addSubAggregation(AggregationBuilders.count("m2", "m2"))
+                    .addSubAggregation(AggregationBuilders.count("m3", "m3"));
+
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .disableInnerClassSerialization()
+                    .serializeNulls()
+                    .serializeSpecialFloatingPointValues()
+                    .enableComplexMapKeySerialization().create();
+
+            assertEquals(gson.toJson(builder.build()), gson.toJson(groupByDateHistogram));
+        }
+        {
+            GroupByDateHistogram groupByDateHistogram = new GroupByDateHistogram();
+            groupByDateHistogram.setGroupByName("n1");
+            groupByDateHistogram.setFieldName("g1");
+            groupByDateHistogram.setInterval(1, DateTimeUnit.HOUR);
+            groupByDateHistogram.setOffset(30, DateTimeUnit.MILLISECOND);
+            groupByDateHistogram.setFieldRange(
+                    new FieldRange(new ColumnValue(1, ColumnType.INTEGER), new ColumnValue(10, ColumnType.INTEGER)));
+            groupByDateHistogram.setMissing(ValueUtil.toColumnValue(1));
+            GroupKeySort groupKeySort = new GroupKeySort();
+            groupKeySort.setOrder(SortOrder.ASC);
+            RowCountSort rowCountSort = new RowCountSort();
+            rowCountSort.setOrder(SortOrder.DESC);
+            GroupBySorter groupBySorter1 = new GroupBySorter();
+            GroupBySorter groupBySorter2 = new GroupBySorter();
+            groupBySorter1.setGroupKeySort(groupKeySort);
+            groupBySorter2.setRowCountSort(rowCountSort);
+            groupByDateHistogram.setGroupBySorters(Arrays.asList(groupBySorter1, groupBySorter2));
+            groupByDateHistogram.setSubAggregations(Arrays.asList(AggregationBuilders.max("m1", "m1").build(),
+                    AggregationBuilders.count("m2", "m2").build(),
+                    AggregationBuilders.count("m3", "m3").build()));
+
+            GroupByDateHistogram.Builder builder = GroupByBuilders.groupByDateHistogram("n1", "g1")
+                    .interval(1, DateTimeUnit.HOUR)
+                    .offset(30, DateTimeUnit.MILLISECOND)
+                    .fieldRange(1, 10)
+                    .missing(1)
+                    .addGroupBySorter(Arrays.asList(GroupBySorter.groupKeySortInAsc(), GroupBySorter.rowCountSortInDesc()))
+                    .addSubAggregation(AggregationBuilders.max("m1", "m1"))
+                    .addSubAggregation(AggregationBuilders.count("m2", "m2"))
+                    .addSubAggregation(AggregationBuilders.count("m3", "m3"));
+
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .disableInnerClassSerialization()
+                    .serializeNulls()
+                    .serializeSpecialFloatingPointValues()
+                    .enableComplexMapKeySerialization().create();
+
+            assertEquals(gson.toJson(builder.build()), gson.toJson(groupByDateHistogram));
         }
     }
 } 
