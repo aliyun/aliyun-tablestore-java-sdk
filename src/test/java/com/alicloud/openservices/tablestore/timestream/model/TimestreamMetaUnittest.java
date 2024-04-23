@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimestreamMetaUnittest {
+public class TimestreamMetaUnitTest {
 
     @Test
     public void testAttribute() {

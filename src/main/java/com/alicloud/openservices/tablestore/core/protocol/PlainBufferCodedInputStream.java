@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,7 @@ public class PlainBufferCodedInputStream {
         int length = input.readRawLittleEndian32();
         byte type = input.readRawByte();
         ColumnValue columnValue = null;
+
         switch (type) {
             case VT_INTEGER: {
                 columnValue = ColumnValue.fromLong(input.readInt64());
@@ -72,11 +74,47 @@ public class PlainBufferCodedInputStream {
         return columnValue;
     }
 
+    public PrimaryKeyValue readCellPrimaryKeyValue() throws IOException {
+        if (!checkLastTagWas(TAG_CELL_VALUE)) {
+            throw new IOException("Expect TAG_CELL_VALUE but it was " + PlainBufferConsts.printTag(getLastTag()));
+        }
+        int length = input.readRawLittleEndian32();
+        byte type = input.readRawByte();
+        PrimaryKeyValue primaryKeyValue = null;
+
+        switch (type) {
+            case VT_INTEGER: {
+                primaryKeyValue = PrimaryKeyValue.fromLong(input.readInt64());
+                break;
+            }
+            case VT_BLOB: {
+                primaryKeyValue = PrimaryKeyValue.fromBinary(input.readBytes(input.readUInt32()));
+                break;
+            }
+            case VT_STRING: {
+                primaryKeyValue = PrimaryKeyValue.fromString(input.readUTFString(input.readUInt32()));
+                break;
+            }
+            case VT_INF_MAX: {
+                primaryKeyValue = PrimaryKeyValue.INF_MAX;
+                break;
+            }
+            case VT_INF_MIN: {
+                primaryKeyValue = PrimaryKeyValue.INF_MIN;
+                break;
+            }
+            default:
+                throw new IOException("Unsupported pk type: " + type);
+        }
+        readTag();
+        return primaryKeyValue;
+    }
+
     public void skipRawSize(int length) throws IOException {
           input.readBytes(length);
     }
 
-    public PlainBufferCell readCell() throws IOException {
+    public PlainBufferCell readCell(boolean isPK) throws IOException {
         if (!checkLastTagWas(TAG_CELL)) {
             throw new IOException("Expect TAG_CELL but it was " + PlainBufferConsts.printTag(getLastTag()));
         }
@@ -90,7 +128,11 @@ public class PlainBufferCodedInputStream {
         }
 
         if (getLastTag() == TAG_CELL_VALUE) {
-            cell.setCellValue(readCellValue());
+            if (isPK) {
+                cell.setPkCellValue(readCellPrimaryKeyValue());
+            } else {
+                cell.setCellValue(readCellValue());
+            }
         }
 
         if (getLastTag() == TAG_CELL_TYPE) {
@@ -129,7 +171,7 @@ public class PlainBufferCodedInputStream {
         List<PlainBufferCell> primaryKeyColumns = new ArrayList<PlainBufferCell>();
         readTag();
         while (checkLastTagWas(TAG_CELL)) {
-            PlainBufferCell cell = readCell();
+            PlainBufferCell cell = readCell(true);
             primaryKeyColumns.add(cell);
         }
         return primaryKeyColumns;
@@ -143,7 +185,7 @@ public class PlainBufferCodedInputStream {
         List<PlainBufferCell> columns = new ArrayList<PlainBufferCell>();
         readTag();
         while (checkLastTagWas(TAG_CELL)) {
-            columns.add(readCell());
+            columns.add(readCell(false));
         }
 
         return columns;

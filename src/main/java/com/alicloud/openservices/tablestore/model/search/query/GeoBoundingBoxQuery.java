@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class GeoBoundingBoxQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_GeoBoundingBoxQuery;
+    private final QueryType queryType = QueryType.QueryType_GeoBoundingBoxQuery;
 
     private String fieldName;
     /**

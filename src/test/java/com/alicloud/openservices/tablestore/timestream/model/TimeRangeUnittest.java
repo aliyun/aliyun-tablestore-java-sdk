@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimeRangeUnittest {
+public class TimeRangeUnitTest {
     @Test
     public void testRange() {
         long begin = (long)(Math.random() * 100000);

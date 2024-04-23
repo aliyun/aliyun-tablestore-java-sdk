@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.common.BaseFT;
+import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.google.gson.JsonSyntaxException;
 import org.junit.Before;
@@ -28,17 +29,7 @@ public class UpdateTableTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-        for (String table: r.getTableNames()) {
-            if (table.equals(tableName)) {
-                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-                client.deleteTable(deleteTableRequest);
-                LOG.info("Delete table: " + table);
-
-                Thread.sleep(1000);
-            }
-
-        }
+        OTSHelper.deleteAllTable(client);
     }
 
     /**

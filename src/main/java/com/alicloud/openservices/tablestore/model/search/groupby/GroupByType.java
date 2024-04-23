@@ -27,5 +27,13 @@ public enum GroupByType {
      * 对日期类型{@link FieldType#DATE}数据进行直方图统计
      */
     GROUP_BY_DATE_HISTOGRAM,
+    /**
+     * 对地理坐标根据GeoHash进行groupBy
+     */
+    GROUP_BY_GEO_GRID,
 
+    /**
+     * 对多种GroupBy类型进行组合，目前支持组合{@link GroupByField}, {@link GroupByHistogram}, {@link GroupByDateHistogram{
+     */
+    GROUP_BY_COMPOSITE,
 }

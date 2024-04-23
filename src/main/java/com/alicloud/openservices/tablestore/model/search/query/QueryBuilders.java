@@ -18,6 +18,10 @@ public final class QueryBuilders {
         return FunctionScoreQuery.newBuilder().fieldValueFactor(fieldName);
     }
 
+    public static FunctionsScoreQuery.Builder functionsScore() {
+        return FunctionsScoreQuery.newBuilder();
+    }
+
     public static GeoBoundingBoxQuery.Builder geoBoundingBox(String fieldName) {
         return GeoBoundingBoxQuery.newBuilder().field(fieldName);
     }
@@ -50,6 +54,10 @@ public final class QueryBuilders {
         return PrefixQuery.newBuilder().field(fieldName).prefix(prefix);
     }
 
+    public static SuffixQuery.Builder suffix(String fieldName, String suffix) {
+        return SuffixQuery.newBuilder().field(fieldName).suffix(suffix);
+    }
+
     public static RangeQuery.Builder range(String fieldName) {
         return RangeQuery.newBuilder().field(fieldName);
     }
@@ -66,4 +74,7 @@ public final class QueryBuilders {
         return WildcardQuery.newBuilder().field(fieldName).value(value);
     }
 
+    public static KnnVectorQuery.Builder knnVector(String fieldName, int topK, float[] queryVector) {
+        return KnnVectorQuery.newBuilder().field(fieldName).topK(topK).queryVector(queryVector);
+    }
 }

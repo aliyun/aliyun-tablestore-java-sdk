@@ -9,10 +9,8 @@ import org.junit.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -22,8 +20,9 @@ public class CapacityUnitTest extends BaseFT {
 
     private static final String tableName = "CapacityUnitTest";
     private static SyncClientInterface client;
-    private static Logger LOG = Logger.getLogger(BatchWriteTest.class.getName());
-    
+    private static Logger LOG = Logger.getLogger(CapacityUnitTest.class.getName());
+
+
     @BeforeClass
     public static void classBefore() throws JsonSyntaxException, IOException {
         client = Utils.getOTSInstance();
@@ -31,23 +30,18 @@ public class CapacityUnitTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            client.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(client);
     }
 
     private void CreateTable(SyncClientInterface otsForPublic, String tableName, Map<String, PrimaryKeyType> pk) throws Exception {
-        OTSHelper.createTable(otsForPublic, tableName, pk);
-        LOG.info("Create table: " + tableName);
-        Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
+        try {
+            OTSHelper.createTable(otsForPublic, tableName, pk);
+            Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
+        } catch (Exception e) {
+            LOG.warning("Errors during table creation process: " + e.getMessage());
+        }
     }
-    
+
     public static PrimaryKeyValue getPKColumnValue(PrimaryKeyType type, String value) throws UnsupportedEncodingException {
         switch (type) {
             case INTEGER:
@@ -76,33 +70,35 @@ public class CapacityUnitTest extends BaseFT {
 
     /**
      * 建一个表,不写数据,期望GetRow返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowNonexistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
 
-        GetRowResponse result =  OTSHelper.getRowForAll(client, tableName, new PrimaryKey(pk));
+        GetRowResponse result = OTSHelper.getRowForAll(client, modifiedTableName, new PrimaryKey(pk));
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
     }
 
     /**
      * 建一个表,写行"x",值大小为5K,读行"x",期望GetRow返回CU为2
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowExistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
@@ -110,49 +106,51 @@ public class CapacityUnitTest extends BaseFT {
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 5000))));
 
-        OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+        OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
 
-        GetRowResponse result =  OTSHelper.getRowForAll(client, tableName, new PrimaryKey(pk));
+        GetRowResponse result = OTSHelper.getRowForAll(client, modifiedTableName, new PrimaryKey(pk));
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(2, 0));
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,期望GetRow('a')返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowNonexistentSelect() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
-
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
 
         List<String> columns = new ArrayList<String>();
         columns.add("a");
 
-        GetRowResponse result =  OTSHelper.getRow(client, tableName, new PrimaryKey(pk), null, 1, columns);
+        GetRowResponse result = OTSHelper.getRow(client, modifiedTableName, new PrimaryKey(pk), null, 1, columns);
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"x",列"a","b","c","d","e",每列值大小2K,读行"x",期望GetRow("a", "b")返回CU为2
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowSelectAllExistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
@@ -165,30 +163,32 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("d", ColumnValue.fromString(fixedSizeString('a', 2048))));
             columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 2048))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
         {
             List<String> columns = new ArrayList<String>();
             columns.add("a");
             columns.add("b");
 
-            GetRowResponse result = OTSHelper.getRow(client, tableName, new PrimaryKey(pk), null, 1, columns);
+            GetRowResponse result = OTSHelper.getRow(client, modifiedTableName, new PrimaryKey(pk), null, 1, columns);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(2, 0));
         }
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"x",列"a","c","d",每列值大小2K,读行"x",期望GetRow("a", "b")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowSelectPartialExistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
@@ -199,30 +199,32 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 2048))));
             columns.add(new Column("d", ColumnValue.fromString(fixedSizeString('a', 2048))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
         {
             List<String> columns = new ArrayList<String>();
             columns.add("a");
             columns.add("b");
 
-            GetRowResponse result = OTSHelper.getRow(client, tableName, new PrimaryKey(pk), null, 1, columns);
+            GetRowResponse result = OTSHelper.getRow(client, modifiedTableName, new PrimaryKey(pk), null, 1, columns);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
         }
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"x",列"a","b","e",每列值大小4K,读行"x",期望GetRow("c", "d")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRowSelectAllNonxistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
         pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "x")));
@@ -233,30 +235,32 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
         {
             List<String> columns = new ArrayList<String>();
             columns.add("c");
             columns.add("d");
 
-            GetRowResponse result = OTSHelper.getRow(client, tableName, new PrimaryKey(pk), null, 1, columns);
+            GetRowResponse result = OTSHelper.getRow(client, modifiedTableName, new PrimaryKey(pk), null, 1, columns);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
         }
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"x","y","z",列"a","b","c","d","e",每列值大小2K,读行"x",期望BatchGetRow("x", "y", "z")返回每行CU为3
+     *
      * @throws Exception
      */
     @Test
     public void testBatchGetRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 2048))));
@@ -266,15 +270,15 @@ public class CapacityUnitTest extends BaseFT {
         columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 2048))));
 
         String[] pkList = {"x", "y", "z"};
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pkc), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pkc), columns);
         }
 
-        MultiRowQueryCriteria multiRows = new MultiRowQueryCriteria(tableName);
-        for (String pk: pkList) {
+        MultiRowQueryCriteria multiRows = new MultiRowQueryCriteria(modifiedTableName);
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
 
@@ -284,26 +288,28 @@ public class CapacityUnitTest extends BaseFT {
         List<MultiRowQueryCriteria> request = new ArrayList<MultiRowQueryCriteria>();
         request.add(multiRows);
         BatchGetRowResponse result = OTSHelper.batchGetRow(client, request);
-        List<BatchGetRowResponse.RowResult> rowRets = result.getBatchGetRowResult(tableName);
+        List<BatchGetRowResponse.RowResult> rowRets = result.getBatchGetRowResult(modifiedTableName);
 
-        for (BatchGetRowResponse.RowResult ret: rowRets) {
+        for (BatchGetRowResponse.RowResult ret : rowRets) {
             CapacityUnit cu = ret.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(3, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,期望GetRange("a", "b")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeEmptyRange() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> startPK = new ArrayList<PrimaryKeyColumn>();
         startPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
@@ -311,7 +317,7 @@ public class CapacityUnitTest extends BaseFT {
         List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
         endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "b")));
 
-        RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+        RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
         query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
         query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
         query.setMaxVersions(1);
@@ -320,19 +326,21 @@ public class CapacityUnitTest extends BaseFT {
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a",列"a","b","c",每列值大小4K,期望GetRange("a", "b")返回CU为4
+     *
      * @throws Exception
      */
     @Test
     public void testGetRange() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -343,7 +351,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -353,7 +361,7 @@ public class CapacityUnitTest extends BaseFT {
             List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
             endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "b")));
 
-            RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+            RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
             query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
             query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
             query.setMaxVersions(1);
@@ -363,19 +371,21 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(4, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a"和"b",列"a","b","c",每列值大小4K,期望GetRange("a", "c")返回CU为7
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeMultiRows() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -386,7 +396,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -398,7 +408,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -408,7 +418,7 @@ public class CapacityUnitTest extends BaseFT {
             List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
             endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "c")));
 
-            RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+            RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
             query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
             query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
             query.setMaxVersions(1);
@@ -418,19 +428,21 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(7, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,期望GetRange("a", "b")("a")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeEmptyRangeSelect() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<PrimaryKeyColumn> startPK = new ArrayList<PrimaryKeyColumn>();
         startPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
@@ -438,7 +450,7 @@ public class CapacityUnitTest extends BaseFT {
         List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
         endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "b")));
 
-        RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+        RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
         query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
         query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
         query.setMaxVersions(1);
@@ -448,19 +460,21 @@ public class CapacityUnitTest extends BaseFT {
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a"和"b",列"a","b","c",列"a每列值大小4K,期望GetRange("a", "c")("a", "b")返回CU为5
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeSelectAllExistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -471,7 +485,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -483,7 +497,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -493,7 +507,7 @@ public class CapacityUnitTest extends BaseFT {
             List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
             endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "c")));
 
-            RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+            RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
             query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
             query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
             query.setMaxVersions(1);
@@ -505,19 +519,21 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(5, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a"和"b",列"a","b","c",列"a每列值大小4K,期望GetRange("a", "c")("d", "e")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeSelectAllNonexistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -528,7 +544,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -540,7 +556,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -550,7 +566,7 @@ public class CapacityUnitTest extends BaseFT {
             List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
             endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "c")));
 
-            RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+            RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
             query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
             query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
             query.setMaxVersions(1);
@@ -562,19 +578,21 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a",列"a","b","c",行"b",列"a","c","e",每列值大小4K,期望GetRange("a", "c")("b", "e")返回CU为3
+     *
      * @throws Exception
      */
     @Test
     public void testGetRangeSelectPartialExistent() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -585,7 +603,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -597,7 +615,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -607,7 +625,7 @@ public class CapacityUnitTest extends BaseFT {
             List<PrimaryKeyColumn> endPK = new ArrayList<PrimaryKeyColumn>();
             endPK.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "c")));
 
-            RangeRowQueryCriteria query = new RangeRowQueryCriteria(tableName);
+            RangeRowQueryCriteria query = new RangeRowQueryCriteria(modifiedTableName);
             query.setInclusiveStartPrimaryKey(new PrimaryKey(startPK));
             query.setExclusiveEndPrimaryKey(new PrimaryKey(endPK));
             query.setMaxVersions(1);
@@ -619,19 +637,21 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(3, 0));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a",列"a","b","c",每列值大小4K,期望PutRow("a")("b": 4096, "e": 4096)返回CU为3
+     *
      * @throws Exception
      */
     @Test
     public void testPutRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -642,7 +662,7 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
@@ -653,12 +673,12 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            PutRowResponse result =  OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            PutRowResponse result = OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     @Test
@@ -666,7 +686,8 @@ public class CapacityUnitTest extends BaseFT {
         Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
 
-        CreateTable(client, tableName, pks);
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
             pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
@@ -675,34 +696,36 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            RowPutChange rowChange = new RowPutChange(tableName, new PrimaryKey(pk));
+            RowPutChange rowChange = new RowPutChange(modifiedTableName, new PrimaryKey(pk));
             for (Column col : columns) {
                 rowChange.addColumn(col);
             }
             rowChange.setCondition(new Condition(RowExistenceExpectation.EXPECT_NOT_EXIST));
-            PutRowResponse result =  OTSHelper.putRow(client, rowChange);
+            PutRowResponse result = OTSHelper.putRow(client, rowChange);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 3));
 
             rowChange.setCondition(new Condition(RowExistenceExpectation.EXPECT_EXIST));
-            result =  OTSHelper.putRow(client, rowChange);
+            result = OTSHelper.putRow(client, rowChange);
             cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 3));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a",列"a","b","c",每列值大小4K,期望UpdateRow("a")("b": 4096, "e": 4096)返回CU为3
+     *
      * @throws Exception
      */
     @Test
     public void testUpdateRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -713,23 +736,23 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
             pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
 
-            RowUpdateChange row = new RowUpdateChange(tableName, new PrimaryKey(pk));
+            RowUpdateChange row = new RowUpdateChange(modifiedTableName, new PrimaryKey(pk));
             row.put(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             row.put(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            UpdateRowResponse result =  OTSHelper.updateRow(client, row);
+            UpdateRowResponse result = OTSHelper.updateRow(client, row);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     @Test
@@ -737,7 +760,8 @@ public class CapacityUnitTest extends BaseFT {
         Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
 
-        CreateTable(client, tableName, pks);
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -748,37 +772,38 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
         }
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
             pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
 
-            RowUpdateChange row = new RowUpdateChange(tableName, new PrimaryKey(pk));
+            RowUpdateChange row = new RowUpdateChange(modifiedTableName, new PrimaryKey(pk));
             row.put(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             row.put(new Column("e", ColumnValue.fromString(fixedSizeString('a', 4096))));
             row.deleteColumns("a");
             row.deleteColumns("c");
             row.setCondition(new Condition(RowExistenceExpectation.EXPECT_EXIST));
-            UpdateRowResponse result =  OTSHelper.updateRow(client, row);
+            UpdateRowResponse result = OTSHelper.updateRow(client, row);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 3));
         }
-
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a",列"a","b","c",每列值大小4K,期望DeleteRow("a")返回CU为1
+     *
      * @throws Exception
      */
     @Test
     public void testDeleteRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
@@ -788,17 +813,20 @@ public class CapacityUnitTest extends BaseFT {
             columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("b", ColumnValue.fromString(fixedSizeString('a', 4096))));
             columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
-
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pk), columns);
+            try {
+                OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pk), columns);
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         {
             List<PrimaryKeyColumn> pk = new ArrayList<PrimaryKeyColumn>();
             pk.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, "a")));
 
-            RowDeleteChange row = new RowDeleteChange(tableName, new PrimaryKey(pk));
+            RowDeleteChange row = new RowDeleteChange(modifiedTableName, new PrimaryKey(pk));
 
-            DeleteRowResponse result =  OTSHelper.deleteRow(client, row);
+            DeleteRowResponse result = OTSHelper.deleteRow(client, row);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
             assertCapacityUnitEqual(cu, new CapacityUnit(0, 1));
 
@@ -808,21 +836,23 @@ public class CapacityUnitTest extends BaseFT {
             assertCapacityUnitEqual(cu, new CapacityUnit(1, 1));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a","b","c",列"a","b","c",每列值大小4K,
      * BatchWriteRow分别PutRow("a", "b", "c")("b": 4096, "e": 4096),
      * 期望返回CU分别为3,3,3
+     *
      * @throws Exception
      */
     @Test
     public void testBatchPutRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 4096))));
@@ -830,18 +860,18 @@ public class CapacityUnitTest extends BaseFT {
         columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
         String[] pkList = {"a", "b", "c"};
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pkc), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pkc), columns);
         }
 
         List<RowPutChange> putRows = new ArrayList<RowPutChange>();
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
-            RowPutChange putRow = new RowPutChange(tableName, new PrimaryKey(pkc));
+            RowPutChange putRow = new RowPutChange(modifiedTableName, new PrimaryKey(pkc));
             putRow.addColumn("b", ColumnValue.fromString(fixedSizeString('a', 4096)));
             putRow.addColumn("e", ColumnValue.fromString(fixedSizeString('a', 4096)));
             putRows.add(putRow);
@@ -849,26 +879,28 @@ public class CapacityUnitTest extends BaseFT {
 
         BatchWriteRowResponse result = OTSHelper.batchWriteRow(client, putRows, null, null);
 
-        List<BatchWriteRowResponse.RowResult> putRets = result.getRowStatus(tableName);
-        for (BatchWriteRowResponse.RowResult ret: putRets) {
+        List<BatchWriteRowResponse.RowResult> putRets = result.getRowStatus(modifiedTableName);
+        for (BatchWriteRowResponse.RowResult ret : putRets) {
             assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 3));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a","b","c",列"a","b","c",每列值大小4K,
      * BatchWriteRow分别UpdateRow("a", "b", "c")("b": 4096, "e": 4096),
      * 期望返回CU分别为3,3,3
+     *
      * @throws Exception
      */
     @Test
     public void testBatchUpdateRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedTableName, pks);
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 4096))));
@@ -876,18 +908,18 @@ public class CapacityUnitTest extends BaseFT {
         columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
         String[] pkList = {"a", "b", "c"};
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pkc), columns);
+            OTSHelper.putRow(client, modifiedTableName, new PrimaryKey(pkc), columns);
         }
 
         List<RowUpdateChange> updateRows = new ArrayList<RowUpdateChange>();
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
-            RowUpdateChange updateRow = new RowUpdateChange(tableName, new PrimaryKey(pkc));
+            RowUpdateChange updateRow = new RowUpdateChange(modifiedTableName, new PrimaryKey(pkc));
             updateRow.put("b", ColumnValue.fromString(fixedSizeString('a', 4096)));
             updateRow.put("e", ColumnValue.fromString(fixedSizeString('a', 4096)));
             updateRows.add(updateRow);
@@ -895,26 +927,28 @@ public class CapacityUnitTest extends BaseFT {
 
         BatchWriteRowResponse result = OTSHelper.batchWriteRow(client, null, updateRows, null);
 
-        List<BatchWriteRowResponse.RowResult> updateRets = result.getRowStatus(tableName);
-        for (BatchWriteRowResponse.RowResult ret: updateRets) {
+        List<BatchWriteRowResponse.RowResult> updateRets = result.getRowStatus(modifiedTableName);
+        for (BatchWriteRowResponse.RowResult ret : updateRets) {
             assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 3));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**
      * 建一个表,写行"a","b","c",列"a","b","c",每列值大小4K,
      * BatchWriteRow分别DeleteRow("a", "b", "c"),
      * 期望返回CU分别为1,1,1
+     *
      * @throws Exception
      */
     @Test
     public void testBatchDeleteRow() throws Exception {
-    	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
+        Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
-        
-    	CreateTable(client, tableName, pks);
+
+        String modifiedmodifiedTableName = tableName + System.currentTimeMillis();
+        CreateTable(client, modifiedmodifiedTableName, pks);
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("a", ColumnValue.fromString(fixedSizeString('a', 4096))));
@@ -922,28 +956,28 @@ public class CapacityUnitTest extends BaseFT {
         columns.add(new Column("c", ColumnValue.fromString(fixedSizeString('a', 4096))));
 
         String[] pkList = {"a", "b", "c"};
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
 
-            OTSHelper.putRow(client, tableName, new PrimaryKey(pkc), columns);
+            OTSHelper.putRow(client, modifiedmodifiedTableName, new PrimaryKey(pkc), columns);
         }
 
         List<RowDeleteChange> deleteRows = new ArrayList<RowDeleteChange>();
-        for (String pk: pkList) {
+        for (String pk : pkList) {
             List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
             pkc.add(new PrimaryKeyColumn("PK1", getPKColumnValue(PrimaryKeyType.STRING, pk)));
-            RowDeleteChange deleteRow = new RowDeleteChange(tableName, new PrimaryKey(pkc));
+            RowDeleteChange deleteRow = new RowDeleteChange(modifiedmodifiedTableName, new PrimaryKey(pkc));
             deleteRows.add(deleteRow);
         }
 
         BatchWriteRowResponse result = OTSHelper.batchWriteRow(client, null, null, deleteRows);
 
-        List<BatchWriteRowResponse.RowResult> deleteRets = result.getRowStatus(tableName);
-        for (BatchWriteRowResponse.RowResult ret: deleteRets) {
+        List<BatchWriteRowResponse.RowResult> deleteRets = result.getRowStatus(modifiedmodifiedTableName);
+        for (BatchWriteRowResponse.RowResult ret : deleteRets) {
             assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 1));
         }
 
-        OTSHelper.deleteTable(client, tableName);
+        OTSHelper.deleteTable(client, modifiedmodifiedTableName);
     }
 }

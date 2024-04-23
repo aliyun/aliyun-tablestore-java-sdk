@@ -39,15 +39,7 @@ public class UnifiedFilterAdvanceTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(ots);
     }
 
 

@@ -18,6 +18,8 @@ public enum FieldType {
     NESTED,
     GEO_POINT,
     DATE,
+    VECTOR,
+    FUZZY_KEYWORD,
     /**
      * 未知的类型，遇到该类型请升级到最新SDK版本
      */

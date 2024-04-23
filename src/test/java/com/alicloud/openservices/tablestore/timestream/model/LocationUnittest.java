@@ -1,10 +1,9 @@
 package com.alicloud.openservices.tablestore.timestream.model;
 
-import com.alicloud.openservices.tablestore.timestream.model.filter.*;
 import junit.framework.Assert;
 import org.junit.Test;
 
-public class LocationUnittest {
+public class LocationUnitTest {
     @Test
     public void testBasic() {
         Location loc = new Location();

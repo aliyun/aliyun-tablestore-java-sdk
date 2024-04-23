@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
  */
 public class ExistsQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_ExistsQuery;
+    private final QueryType queryType = QueryType.QueryType_ExistsQuery;
 
     private String fieldName;
 

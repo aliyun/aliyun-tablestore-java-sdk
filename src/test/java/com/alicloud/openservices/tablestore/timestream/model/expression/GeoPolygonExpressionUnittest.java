@@ -1,6 +1,5 @@
 package com.alicloud.openservices.tablestore.timestream.model.expression;
 
-import com.alicloud.openservices.tablestore.model.search.query.GeoDistanceQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoPolygonQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import org.junit.Assert;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Created by yanglian on 2019/4/10.
  */
-public class GeoPolygonExpressionUnittest {
+public class GeoPolygonExpressionUnitTest {
     @Test
     public void testBasic1() {
         List<String> points = new ArrayList<String>();

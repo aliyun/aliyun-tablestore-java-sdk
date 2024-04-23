@@ -5,12 +5,11 @@ import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.timestream.bench.wrapper.RowWrapper;
 import com.alicloud.openservices.tablestore.timestream.model.annotation.Field;
 import org.junit.Assert;
-import com.google.gson.Gson;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class PointUnittest {
+public class PointUnitTest {
 
     @Test
     public void testBuildByRow() {

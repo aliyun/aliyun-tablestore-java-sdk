@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * Created by yanglian on 2019/7/31.
  */
-public class AttributeIndexSchemaUnittest {
+public class AttributeIndexSchemaUnitTest {
 	@Test
 	public void testSort() {
 		AttributeIndexSchema schema = new AttributeIndexSchema("col1", AttributeIndexSchema.Type.KEYWORD);

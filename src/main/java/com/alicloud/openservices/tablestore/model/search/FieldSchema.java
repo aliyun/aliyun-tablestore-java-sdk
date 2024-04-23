@@ -6,6 +6,7 @@ import com.alicloud.openservices.tablestore.model.search.analysis.AnalyzerParame
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,22 +53,32 @@ public class FieldSchema implements Jsonizable {
      * 字段名
      */
     private String fieldName;
+
     /**
      * 字段类型,详见{@link FieldType}
      */
     private FieldType fieldType;
+
     /**
      * 是否开启索引，默认开启
      */
     private Boolean index = true;
+
     /**
      *  倒排索引的配置选项
      */
     private IndexOptions indexOptions;
+
+    /**
+     * 字段是否允许摘要和高亮
+     */
+    private Boolean enableHighlighting;
+
     /**
      * analyzer
      */
     private Analyzer analyzer;
+
     /**
      * analyzer parameter
      */
@@ -110,6 +121,11 @@ public class FieldSchema implements Jsonizable {
      */
     private List<String> dateFormats;
 
+    /**
+     * 当字段类型是{@link FieldType#VECTOR}向量类型时候，可以设置向量配置
+     */
+    private VectorOptions vectorOptions;
+
     public FieldSchema(String fieldName, FieldType fieldType) {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
@@ -149,6 +165,15 @@ public class FieldSchema implements Jsonizable {
     public FieldSchema setIndexOptions(IndexOptions indexOptions) {
         this.indexOptions = indexOptions;
         return this;
+    }
+
+    public FieldSchema setEnableHighlighting(boolean enableHighlighting) {
+        this.enableHighlighting = enableHighlighting;
+        return this;
+    }
+
+    public Boolean isEnableHighlighting() {
+        return enableHighlighting;
     }
 
     public Analyzer getAnalyzer() {
@@ -237,6 +262,15 @@ public class FieldSchema implements Jsonizable {
         return this;
     }
 
+    public VectorOptions getVectorOptions() {
+        return vectorOptions;
+    }
+
+    public FieldSchema setVectorOptions(VectorOptions vectorOptions) {
+        this.vectorOptions = vectorOptions;
+        return this;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -311,6 +345,12 @@ public class FieldSchema implements Jsonizable {
             sb.append(",");
             sb.append(newline);
         }
+        if (enableHighlighting != null) {
+            sb.append("\"EnableHighlighting\": ");
+            sb.append(enableHighlighting.toString());
+            sb.append(",");
+            sb.append(newline);
+        }
         if (store != null) {
             sb.append("\"Store\": ");
             sb.append(store.toString());
@@ -366,6 +406,13 @@ public class FieldSchema implements Jsonizable {
                 }
             }
             sb.append("]");
+        }
+        if (vectorOptions != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"VectorOptions\": ");
+            sb.append(newline);
+            vectorOptions.jsonize(sb, newline);
         }
         sb.append(newline);
         sb.append("}");

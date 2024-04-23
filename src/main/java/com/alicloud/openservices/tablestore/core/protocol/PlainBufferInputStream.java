@@ -44,7 +44,7 @@ public class PlainBufferInputStream {
 
     public byte readRawByte() throws IOException {
         if (isAtEnd()) {
-            throw new IOException("Read raw byte encountered EOF.");
+            throw new IOException(PlainBufferConsts.READ_ROW_BYTE_EOF);
         }
         return buffer.get();
     }
@@ -97,7 +97,7 @@ public class PlainBufferInputStream {
 
     public byte[] readBytes(int size) throws IOException {
         if (buffer.remaining() < size) {
-            throw new IOException("Read bytes encountered EOF.");
+            throw new IOException(PlainBufferConsts.READ_BYTE_EOF);
         }
 
         byte[] result = new byte[size];

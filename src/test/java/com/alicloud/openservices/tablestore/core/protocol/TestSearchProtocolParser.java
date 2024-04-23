@@ -4,25 +4,30 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBySort;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys;
-import com.alicloud.openservices.tablestore.model.search.FieldSchema;
-import com.alicloud.openservices.tablestore.model.search.ParallelScanRequest;
-import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
-import com.alicloud.openservices.tablestore.model.search.ScanQuery;
-import com.alicloud.openservices.tablestore.model.search.SearchQuery;
-import com.alicloud.openservices.tablestore.model.search.SearchRequest;
+import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGrid;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.sort.GroupBySorter;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
+import com.google.protobuf.ByteString;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.alicloud.openservices.tablestore.core.protocol.SearchGroupByParser.toGroupBy;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsBuilder.buildInnerHits;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsBuilder.buildInnerHitsToBytes;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toInnerHits;
 import static org.junit.Assert.*;
 
 public class TestSearchProtocolParser extends BaseSearchTest {
@@ -36,6 +41,32 @@ public class TestSearchProtocolParser extends BaseSearchTest {
         assertNull(result.isEnableSortAndAgg());
         assertNull(result.isStore());
         assertNull(result.isArray());
+    }
+
+    @Test
+    public void toFieldSchema_FieldType() {
+        Map<FieldType, Search.FieldType> modelToPbFieldType = new HashMap<>();
+        modelToPbFieldType.put(FieldType.LONG, Search.FieldType.LONG);
+        modelToPbFieldType.put(FieldType.DOUBLE, Search.FieldType.DOUBLE);
+        modelToPbFieldType.put(FieldType.BOOLEAN, Search.FieldType.BOOLEAN);
+        modelToPbFieldType.put(FieldType.KEYWORD, Search.FieldType.KEYWORD);
+        modelToPbFieldType.put(FieldType.TEXT, Search.FieldType.TEXT);
+        modelToPbFieldType.put(FieldType.NESTED, Search.FieldType.NESTED);
+        modelToPbFieldType.put(FieldType.GEO_POINT, Search.FieldType.GEO_POINT);
+        modelToPbFieldType.put(FieldType.DATE, Search.FieldType.DATE);
+        modelToPbFieldType.put(FieldType.VECTOR, Search.FieldType.VECTOR);
+        modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
+
+        for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
+            FieldType modelFieldType = entry.getKey();
+            Search.FieldType pbFieldType = entry.getValue();
+
+            Search.FieldSchema.Builder builder = Search.FieldSchema.newBuilder();
+            builder.setFieldType(pbFieldType);
+
+            FieldSchema result = SearchProtocolParser.toFieldSchema(builder.build());
+            assertEquals(modelFieldType, result.getFieldType());
+        }
     }
 
     @Test
@@ -390,6 +421,38 @@ public class TestSearchProtocolParser extends BaseSearchTest {
     }
 
     @Test
+    public void testHighlightSerialization() throws IOException {
+        {
+            Highlight originHighlight = randomHighlight();
+            Search.Highlight pbHighlight = SearchHighlightBuilder.buildHighlight(originHighlight);
+            Highlight newHighlight = SearchHighlightParser.toHighlight(pbHighlight);
+            assertJsonEquals(originHighlight, newHighlight);
+        }
+        {
+            Highlight originHighlight = randomHighlight();
+            byte[] pbHighlightBytes = SearchHighlightBuilder.buildHighlightToBytes(originHighlight);
+            Highlight newHighlight = SearchHighlightParser.toHighlight(pbHighlightBytes);
+            assertJsonEquals(originHighlight, newHighlight);
+        }
+    }
+
+    @Test
+    public void testInnerHitsSerialization() throws IOException {
+        {
+            InnerHits origiInnerHits = randomInnerHits();
+            Search.InnerHits pbInnerHits = buildInnerHits(origiInnerHits);
+            InnerHits newInnerHits = toInnerHits(pbInnerHits);
+            assertJsonEquals(origiInnerHits, newInnerHits);
+        }
+        {
+            InnerHits originInnerHits = randomInnerHits();
+            byte[] pbInnerHitsBytes = buildInnerHitsToBytes(originInnerHits);
+            InnerHits newInnerHits = toInnerHits(pbInnerHitsBytes);
+            assertJsonEquals(originInnerHits, newInnerHits);
+        }
+    }
+
+    @Test
     public void testSearchQuerySerialization() throws IOException {
         {
             SearchQuery origin = randomSearchQuery();
@@ -450,6 +513,25 @@ public class TestSearchProtocolParser extends BaseSearchTest {
             byte[] pb = SearchProtocolBuilder.buildParallelScanRequestToBytes(origin);
             ParallelScanRequest newObj = SearchProtocolParser.toParallelScanRequest(pb);
             assertJsonEquals(origin, newObj);
+        }
+    }
+
+    @Test
+    public void testToGeoHashPrecision() throws IOException {
+        GeoHashPrecision[] precision = {GeoHashPrecision.GHP_5009KM_4992KM_1, GeoHashPrecision.GHP_1252KM_624KM_2, GeoHashPrecision.GHP_156KM_156KM_3,
+                GeoHashPrecision.GHP_39KM_19KM_4, GeoHashPrecision.GHP_4900M_4900M_5, GeoHashPrecision.GHP_1200M_609M_6, GeoHashPrecision.GHP_152M_152M_7,
+                GeoHashPrecision.GHP_38M_19M_8, GeoHashPrecision.GHP_480CM_480CM_9, GeoHashPrecision.GHP_120CM_595MM_10, GeoHashPrecision.GHP_149MM_149MM_11,
+                GeoHashPrecision.GHP_37MM_19MM_12};
+
+        Search.GeoHashPrecision[] pbPrecision = {Search.GeoHashPrecision.GHP_5009KM_4992KM_1, Search.GeoHashPrecision.GHP_1252KM_624KM_2, Search.GeoHashPrecision.GHP_156KM_156KM_3,
+                Search.GeoHashPrecision.GHP_39KM_19KM_4, Search.GeoHashPrecision.GHP_4900M_4900M_5, Search.GeoHashPrecision.GHP_1200M_609M_6, Search.GeoHashPrecision.GHP_152M_152M_7,
+                Search.GeoHashPrecision.GHP_38M_19M_8, Search.GeoHashPrecision.GHP_480CM_480CM_9, Search.GeoHashPrecision.GHP_120CM_595MM_10, Search.GeoHashPrecision.GHP_149MM_149MM_11,
+                Search.GeoHashPrecision.GHP_37MM_19MM_12};
+        for (int i = 0; i < 12; i++) {
+            ByteString body =  Search.GroupByGeoGrid.newBuilder().setPrecision(pbPrecision[i]).build().toByteString();
+            Search.GroupBy pbGroupBy =  Search.GroupBy.newBuilder().setName("group_by_geo_grid").setType(Search.GroupByType.GROUP_BY_GEO_GRID).setBody(body).build();
+            GroupByGeoGrid groupBy = (GroupByGeoGrid)toGroupBy(pbGroupBy);
+            assertEquals(precision[i], groupBy.getPrecision());
         }
     }
 }

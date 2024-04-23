@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import java.util.List;
 
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
 import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GeoDistanceType;
@@ -118,6 +119,12 @@ class SearchSortBuilder {
         return builder.build();
     }
 
+    private static Search.DocSort buildDocSort(DocSort docSort) {
+        Search.DocSort.Builder builder = Search.DocSort.newBuilder();
+        builder.setOrder(buildSortOrder(docSort.getOrder()));
+        return builder.build();
+    }
+
     private static Search.Sorter buildSorter(Sort.Sorter sorter) {
         Search.Sorter.Builder builder = Search.Sorter.newBuilder();
         if (sorter instanceof FieldSort) {
@@ -128,6 +135,8 @@ class SearchSortBuilder {
             builder.setGeoDistanceSort(buildGeoDistanceSort((GeoDistanceSort)sorter));
         } else if (sorter instanceof PrimaryKeySort) {
             builder.setPkSort(buildPrimaryKeySort((PrimaryKeySort)sorter));
+        } else if (sorter instanceof DocSort) {
+            builder.setDocSort(buildDocSort((DocSort) sorter));
         } else {
             throw new IllegalArgumentException("Unknown sorter type: " + sorter.getClass());
         }

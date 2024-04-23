@@ -10,4 +10,5 @@ public enum DateTimeUnit {
     HOUR,
     MINUTE,
     SECOND,
+    MILLISECOND
 }

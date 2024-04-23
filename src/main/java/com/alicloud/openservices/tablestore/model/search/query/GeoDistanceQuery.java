@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class GeoDistanceQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_GeoDistanceQuery;
+    private final QueryType queryType = QueryType.QueryType_GeoDistanceQuery;
 
     /**
      * 字段名

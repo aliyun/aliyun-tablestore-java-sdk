@@ -29,4 +29,12 @@ public final class GroupByBuilders {
     public static GroupByGeoDistance.Builder groupByGeoDistance(String groupByName, String field) {
         return GroupByGeoDistance.newBuilder().groupByName(groupByName).fieldName(field);
     }
+
+    public static GroupByGeoGrid.Builder groupByGeoGrid(String groupByName, String field) {
+        return GroupByGeoGrid.newBuilder().groupByName(groupByName).fieldName(field);
+    }
+
+    public static GroupByComposite.Builder groupByComposite(String groupByName) {
+        return GroupByComposite.newBuilder().groupByName(groupByName);
+    }
 }

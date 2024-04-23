@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
  */
 public class MatchPhraseQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_MatchPhraseQuery;
+    private final QueryType queryType = QueryType.QueryType_MatchPhraseQuery;
 
     private String fieldName;
     private String text;

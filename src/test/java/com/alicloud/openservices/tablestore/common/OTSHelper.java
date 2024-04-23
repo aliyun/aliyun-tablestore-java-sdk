@@ -1,16 +1,62 @@
 package com.alicloud.openservices.tablestore.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.alicloud.openservices.tablestore.SyncClientInterface;
+import com.alicloud.openservices.tablestore.TimeseriesClient;
+import com.alicloud.openservices.tablestore.core.utils.Pair;
+import com.alicloud.openservices.tablestore.model.BatchGetRowRequest;
+import com.alicloud.openservices.tablestore.model.BatchGetRowResponse;
+import com.alicloud.openservices.tablestore.model.BatchGetRowResponse.RowResult;
+import com.alicloud.openservices.tablestore.model.BatchWriteRowRequest;
+import com.alicloud.openservices.tablestore.model.BatchWriteRowResponse;
+import com.alicloud.openservices.tablestore.model.CapacityUnit;
+import com.alicloud.openservices.tablestore.model.Column;
+import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.Condition;
+import com.alicloud.openservices.tablestore.model.CreateTableRequest;
+import com.alicloud.openservices.tablestore.model.DeleteRowRequest;
+import com.alicloud.openservices.tablestore.model.DeleteRowResponse;
+import com.alicloud.openservices.tablestore.model.DeleteTableRequest;
+import com.alicloud.openservices.tablestore.model.DescribeTableRequest;
+import com.alicloud.openservices.tablestore.model.DescribeTableResponse;
+import com.alicloud.openservices.tablestore.model.GetRangeRequest;
+import com.alicloud.openservices.tablestore.model.GetRangeResponse;
+import com.alicloud.openservices.tablestore.model.GetRowRequest;
+import com.alicloud.openservices.tablestore.model.GetRowResponse;
+import com.alicloud.openservices.tablestore.model.ListTableResponse;
+import com.alicloud.openservices.tablestore.model.MultiRowQueryCriteria;
+import com.alicloud.openservices.tablestore.model.PrimaryKey;
+import com.alicloud.openservices.tablestore.model.PrimaryKeySchema;
+import com.alicloud.openservices.tablestore.model.PrimaryKeyType;
+import com.alicloud.openservices.tablestore.model.PutRowRequest;
+import com.alicloud.openservices.tablestore.model.PutRowResponse;
+import com.alicloud.openservices.tablestore.model.RangeRowQueryCriteria;
+import com.alicloud.openservices.tablestore.model.RequestExtension;
+import com.alicloud.openservices.tablestore.model.ReservedThroughput;
+import com.alicloud.openservices.tablestore.model.Row;
+import com.alicloud.openservices.tablestore.model.RowDeleteChange;
+import com.alicloud.openservices.tablestore.model.RowExistenceExpectation;
+import com.alicloud.openservices.tablestore.model.RowPutChange;
+import com.alicloud.openservices.tablestore.model.RowUpdateChange;
+import com.alicloud.openservices.tablestore.model.SingleRowQueryCriteria;
+import com.alicloud.openservices.tablestore.model.TableMeta;
+import com.alicloud.openservices.tablestore.model.TableOptions;
+import com.alicloud.openservices.tablestore.model.TimeRange;
+import com.alicloud.openservices.tablestore.model.UpdateRowRequest;
+import com.alicloud.openservices.tablestore.model.UpdateRowResponse;
+import com.alicloud.openservices.tablestore.model.UpdateTableRequest;
+import com.alicloud.openservices.tablestore.model.UpdateTableResponse;
+import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.ListSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
+import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesTableRequest;
+import com.alicloud.openservices.tablestore.model.timeseries.ListTimeseriesTableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alicloud.openservices.tablestore.SyncClientInterface;
-import com.alicloud.openservices.tablestore.model.*;
-import com.alicloud.openservices.tablestore.model.BatchGetRowResponse.RowResult;
-import com.alicloud.openservices.tablestore.core.utils.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OTSHelper {
 
@@ -107,10 +153,30 @@ public class OTSHelper {
         ListTableResponse r = ots.listTable();
 
         for (String name : r.getTableNames()) {
+            LOG.info("delete search index: ");
+            List<String> indices = listSearchIndex(ots, name);
+            for (String index : indices) {
+                LOG.info("delete search index: " + index);
+                deleteSearchIndex(ots, name, index);
+            }
+
             LOG.info("delete : " + name);
             deleteTable(ots, name);
+
+            Thread.sleep(1000L);
         }
         LOG.info("End deleteAllTable");
+    }
+
+    public static void deleteTsTable(TimeseriesClient client) throws Exception {
+        LOG.info("Begin deleteTsTable");
+        ListTimeseriesTableResponse r = client.listTimeseriesTable();
+
+        for (String name : r.getTimeseriesTableNames()) {
+            LOG.info("delete : " + name);
+            client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(name));
+        }
+        LOG.info("End deleteTsTable");
     }
     
     public static TableMeta getTableMeta(String tableName, List<PrimaryKeySchema> pk) {
@@ -171,9 +237,22 @@ public class OTSHelper {
         ots.deleteTable(deleteTableRequest);
     }
 
+    public static void deleteSearchIndex(SyncClientInterface ots, String tableName, String indexName) {
+        DeleteSearchIndexRequest req = new DeleteSearchIndexRequest();
+        req.setTableName(tableName);
+        req.setIndexName(indexName);
+        ots.deleteSearchIndex(req);
+    }
+
     public static List<String> listTable(SyncClientInterface ots) {
         ListTableResponse r = ots.listTable();
         return r.getTableNames();
+    }
+
+    public static List<String> listSearchIndex(SyncClientInterface ots, String tableName) {
+        ListSearchIndexRequest req = new ListSearchIndexRequest();
+        req.setTableName(tableName);
+        return ots.listSearchIndex(req).getIndexInfos().stream().map(SearchIndexInfo::getIndexName).collect(Collectors.toList());
     }
 
     public static DescribeTableResponse describeTable(SyncClientInterface ots, String tableName) {

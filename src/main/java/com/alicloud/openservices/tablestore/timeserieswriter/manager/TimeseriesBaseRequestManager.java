@@ -11,7 +11,6 @@ import com.alicloud.openservices.tablestore.timeserieswriter.group.TimeseriesRow
 import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesBucketConfig;
 import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesWriterConfig;
 import com.alicloud.openservices.tablestore.timeserieswriter.handle.TimeseriesWriterHandleStatistics;
-import com.alicloud.openservices.tablestore.writer.handle.BaseRequestManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
 public abstract class TimeseriesBaseRequestManager implements TimeseriesRequestManager {
-    private Logger logger = LoggerFactory.getLogger(BaseRequestManager.class);
+    private Logger logger = LoggerFactory.getLogger(TimeseriesBaseRequestManager.class);
 
     protected AsyncTimeseriesClientInterface ots;
     protected TimeseriesBucketConfig timeseriesBucketConfig;
@@ -63,29 +62,33 @@ public abstract class TimeseriesBaseRequestManager implements TimeseriesRequestM
                 timeseriesWriterHandleStatistics, timeseriesBucketConfig, bucketSemaphore);
     }
 
-
     @Override
     public boolean appendTimeseriesRow(TimeseriesRowWithGroup timeseriesRowWithGroup) {
-        if (totalSize + timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesRowDataSize() > timeseriesWriterConfig.getMaxBatchSize()) {
-            return false;
-        }
-
-        if (totalRowsCount >= timeseriesWriterConfig.getMaxBatchRowsCount()) {
-            return false;
-        }
-
-        if (!allowDuplicatedRowInBatchRequest) {
-            if (sendingTimeseriesKeys.contains(timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesKey())) {
+        try {
+            if (totalSize + timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesRowDataSize() > timeseriesWriterConfig.getMaxBatchSize()) {
                 return false;
-            } else {
-                sendingTimeseriesKeys.add(timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesKey());
             }
-        }
 
-        timeseriesRowWithGroups.add(timeseriesRowWithGroup);
-        this.totalSize += timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesRowDataSize();
-        this.totalRowsCount += 1;
-        return true;
+            if (totalRowsCount >= timeseriesWriterConfig.getMaxBatchRowsCount()) {
+                return false;
+            }
+
+            if (!allowDuplicatedRowInBatchRequest) {
+                if (sendingTimeseriesKeys.contains(timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesKey())) {
+                    return false;
+                } else {
+                    sendingTimeseriesKeys.add(timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesKey());
+                }
+            }
+
+            timeseriesRowWithGroups.add(timeseriesRowWithGroup);
+            this.totalSize += timeseriesRowWithGroup.timeseriesTableRow.getTimeseriesRow().getTimeseriesRowDataSize();
+            this.totalRowsCount += 1;
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed while append TimeseriesRow:", e);
+            return false;
+        }
     }
 
 

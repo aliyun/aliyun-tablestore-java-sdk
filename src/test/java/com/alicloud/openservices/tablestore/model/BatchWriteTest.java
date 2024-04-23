@@ -1,11 +1,14 @@
 package com.alicloud.openservices.tablestore.model;
 
-import com.alicloud.openservices.tablestore.*;
+import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.common.BaseFT;
 import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.Utils;
+import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.ListSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.ListSearchIndexResponse;
+import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
 import com.google.gson.JsonSyntaxException;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,8 +21,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BatchWriteTest extends BaseFT {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
@@ -40,20 +43,11 @@ public class BatchWriteTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            client.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(client);
     }
 
     private void CreateTable(SyncClientInterface ots, String tableName, Map<String, PrimaryKeyType> pk) throws Exception {
         OTSHelper.createTable(ots, tableName, pk);
-        LOG.info("Create table: " + tableName);
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
     }
     

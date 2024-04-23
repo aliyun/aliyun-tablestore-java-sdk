@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class UtilsUnittest {
+public class UtilsUnitTest {
 
     /**
      * tags序列化和反序列化，正常case

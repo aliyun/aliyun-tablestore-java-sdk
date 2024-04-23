@@ -58,7 +58,10 @@ public class SearchQueryTest extends BaseSearchTest {
                 methodList.add(method);
             }
         }
-        assertEquals("QueryBuilders is incomplete", QueryType.values().length - 1, methodList.size());
+        assertEquals("QueryBuilders is incomplete, Maybe the new query lacks builders implementation",
+                QueryType.values().length - 1,
+                methodList.size()
+        );
     }
 
     /**
@@ -338,9 +341,11 @@ public class SearchQueryTest extends BaseSearchTest {
         Assert.assertEquals(QueryType.QueryType_TermQuery, QueryBuilders.term("","").build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_RangeQuery, QueryBuilders.range("").build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_PrefixQuery, QueryBuilders.prefix("","").build().getQueryType());
+        Assert.assertEquals(QueryType.QueryType_SuffixQuery, QueryBuilders.suffix("","").build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_BoolQuery, QueryBuilders.bool().build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_ConstScoreQuery, QueryBuilders.constScore().build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_FunctionScoreQuery, QueryBuilders.functionScore("").build().getQueryType());
+        Assert.assertEquals(QueryType.QueryType_FunctionsScoreQuery, QueryBuilders.functionsScore().build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_NestedQuery, QueryBuilders.nested().build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_WildcardQuery, QueryBuilders.wildcard("", "").build().getQueryType());
         Assert.assertEquals(QueryType.QueryType_MatchAllQuery, QueryBuilders.matchAll().build().getQueryType());

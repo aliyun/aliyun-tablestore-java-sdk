@@ -4,15 +4,18 @@ import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
+import com.alicloud.openservices.tablestore.model.search.GeoHashPrecision;
 import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGrid;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.Range;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByComposite;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.google.protobuf.ByteString;
 
@@ -50,6 +53,29 @@ public class SearchGroupByParser {
         return groupBy;
     }
 
+    private static GroupByComposite toGroupByComposite(String groupByName, ByteString groupByByteString) throws IOException {
+        Search.GroupByComposite pb = Search.GroupByComposite.parseFrom(groupByByteString);
+        GroupByComposite groupByComposite = new GroupByComposite();
+        groupByComposite.setGroupByName(groupByName);
+        if (pb.hasSize()) {
+            groupByComposite.setSize(pb.getSize());
+        }
+        if (pb.hasNextToken()) {
+            groupByComposite.setNextToken(pb.getNextToken());
+        }
+        if (pb.hasSources()) {
+            groupByComposite.setSources(toGroupBys(pb.getSources()));
+        }
+        if (pb.hasSubGroupBys()) {
+            groupByComposite.setSubGroupBys(toGroupBys(pb.getSubGroupBys()));
+        }
+        if (pb.hasSubAggs()) {
+            groupByComposite.setSubAggregations(SearchAggregationParser.toAggregations(pb.getSubAggs()));
+        }
+
+        return groupByComposite;
+    }
+
     private static GroupByDateHistogram toGroupByDateHistogram(String groupByName, ByteString groupByByteString) throws IOException {
         Search.GroupByDateHistogram pb = Search.GroupByDateHistogram.parseFrom(groupByByteString);
         GroupByDateHistogram groupBy = new GroupByDateHistogram();
@@ -64,6 +90,10 @@ public class SearchGroupByParser {
         if (pb.hasMissing()) {
             ColumnValue missing = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getMissing().toByteArray()));
             groupBy.setMissing(missing);
+        }
+        if (pb.hasOffset()) {
+            DateTimeValue dateTimeValue = SearchProtocolParser.toDateTimeValue(pb.getOffset());
+            groupBy.setOffset(dateTimeValue);
         }
         if (pb.hasSort()) {
             groupBy.setGroupBySorters(SearchSortParser.toGroupBySort(pb.getSort()));
@@ -112,6 +142,10 @@ public class SearchGroupByParser {
         if (pb.hasMissing()) {
             ColumnValue missing = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getMissing().toByteArray()));
             groupBy.setMissing(missing);
+        }
+        if (pb.hasOffset()) {
+            ColumnValue columnValue = ValueUtil.toColumnValue(SearchVariantType.getValue(pb.getOffset().toByteArray()));
+            groupBy.setOffset(columnValue);
         }
         if (pb.hasSubGroupBys()) {
             groupBy.setSubGroupBys(toGroupBys(pb.getSubGroupBys()));
@@ -191,6 +225,59 @@ public class SearchGroupByParser {
         return groupBy;
     }
 
+    private static GeoHashPrecision toGeoHashPrecision(Search.GeoHashPrecision pbGeoHashPrecision) {
+        switch (pbGeoHashPrecision) {
+            case GHP_5009KM_4992KM_1:
+                return GeoHashPrecision.GHP_5009KM_4992KM_1;
+            case GHP_1252KM_624KM_2:
+                return GeoHashPrecision.GHP_1252KM_624KM_2;
+            case GHP_156KM_156KM_3:
+                return GeoHashPrecision.GHP_156KM_156KM_3;
+            case GHP_39KM_19KM_4:
+                return GeoHashPrecision.GHP_39KM_19KM_4;
+            case GHP_4900M_4900M_5:
+                return GeoHashPrecision.GHP_4900M_4900M_5;
+            case GHP_1200M_609M_6:
+                return GeoHashPrecision.GHP_1200M_609M_6;
+            case GHP_152M_152M_7:
+                return GeoHashPrecision.GHP_152M_152M_7;
+            case GHP_38M_19M_8:
+                return GeoHashPrecision.GHP_38M_19M_8;
+            case GHP_480CM_480CM_9:
+                return GeoHashPrecision.GHP_480CM_480CM_9;
+            case GHP_120CM_595MM_10:
+                return GeoHashPrecision.GHP_120CM_595MM_10;
+            case GHP_149MM_149MM_11:
+                return GeoHashPrecision.GHP_149MM_149MM_11;
+            case GHP_37MM_19MM_12:
+                return GeoHashPrecision.GHP_37MM_19MM_12;
+            default:
+                return GeoHashPrecision.UNKNOWN;
+        }
+    }
+
+    private static GroupByGeoGrid toGroupByGeoGrid(String groupByName, ByteString groupByByteString) throws IOException {
+        Search.GroupByGeoGrid pb = Search.GroupByGeoGrid.parseFrom(groupByByteString);
+        GroupByGeoGrid groupBy = new GroupByGeoGrid();
+        groupBy.setGroupByName(groupByName);
+        if (pb.hasFieldName()) {
+            groupBy.setFieldName(pb.getFieldName());
+        }
+        if (pb.hasPrecision()) {
+            groupBy.setPrecision(toGeoHashPrecision(pb.getPrecision()));
+        }
+        if (pb.hasSize()) {
+            groupBy.setSize(pb.getSize());
+        }
+        if (pb.hasSubGroupBys()) {
+            groupBy.setSubGroupBys(toGroupBys(pb.getSubGroupBys()));
+        }
+        if (pb.hasSubAggs()) {
+            groupBy.setSubAggregations(SearchAggregationParser.toAggregations(pb.getSubAggs()));
+        }
+        return groupBy;
+    }
+
     private static Range toRange(Search.Range pb) {
         Preconditions.checkArgument(pb.hasFrom(), "Search.Range must has 'from'");
         Preconditions.checkArgument(pb.hasTo(), "Search.Range must has 'to'");
@@ -220,6 +307,10 @@ public class SearchGroupByParser {
                 return toGroupByHistogram(groupByName, body);
             case GROUP_BY_DATE_HISTOGRAM:
                 return toGroupByDateHistogram(groupByName, body);
+            case GROUP_BY_GEO_GRID:
+                return toGroupByGeoGrid(groupByName, body);
+            case GROUP_BY_COMPOSITE:
+                return toGroupByComposite(groupByName, body);
             default:
                 throw new IllegalArgumentException("unknown GroupByType: " + type.name());
         }

@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class ConstScoreQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_ConstScoreQuery;
+    private final QueryType queryType = QueryType.QueryType_ConstScoreQuery;
 
     private Query filter;
 

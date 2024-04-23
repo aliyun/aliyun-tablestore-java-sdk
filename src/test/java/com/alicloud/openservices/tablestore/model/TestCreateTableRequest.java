@@ -2,16 +2,16 @@ package com.alicloud.openservices.tablestore.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.fail;
 
 public class TestCreateTableRequest {
 
     @Test
     public void testInvalidArguments() {
+        TableMeta tableMeta = new TableMeta("TableName");
+        tableMeta.addPrimaryKeyColumn("PK1", PrimaryKeyType.INTEGER);
         CreateTableRequest request =
-            new CreateTableRequest(new TableMeta("TableName"), new TableOptions());
+            new CreateTableRequest(tableMeta, new TableOptions());
         try {
             request.setTableMeta(null);
             fail();
@@ -34,8 +34,10 @@ public class TestCreateTableRequest {
 
     @Test
     public void testInvalidArgumentsEx() {
+        TableMeta tableMeta = new TableMeta("TableName");
+        tableMeta.addPrimaryKeyColumn("PK1", PrimaryKeyType.INTEGER);
         CreateTableRequest request =
-                new CreateTableRequest(new TableMeta("TableName"), new TableOptions());
+                new CreateTableRequest(tableMeta, new TableOptions());
         try {
             request.setTableMeta(null);
             fail();

@@ -36,6 +36,10 @@ public class PlainBufferConsts {
     public final static byte VT_INF_MAX = 0xa;
     public final static byte VT_AUTO_INCREMENT = 0xb;
 
+    // error message
+    public final static String READ_ROW_BYTE_EOF = "Read raw byte encountered EOF.";
+    public final static String READ_BYTE_EOF = "Read bytes encountered EOF.";
+
     public static String printTag(int tag) {
         switch (tag) {
             case TAG_ROW_PK:

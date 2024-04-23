@@ -12,10 +12,9 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Future;
 
-public class MetaCacheManagerUnittest {
+public class MetaCacheManagerUnitTest {
 
     @Test
     public void testWeigh() {

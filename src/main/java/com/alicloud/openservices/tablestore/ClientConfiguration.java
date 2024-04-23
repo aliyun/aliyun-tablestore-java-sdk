@@ -49,11 +49,18 @@ public class ClientConfiguration {
     private int dnsCacheExpireAfterWriteSec = 600;
     private int dnsCacheRefreshAfterWriteSec = 300;
 
-
     /**
      * 链路追踪系统接口
      */
     private RequestTracer requestTracer;
+
+    /**
+     * 设置SSL session的cache size和timeout；
+     * 没有配置则使用JDK默认值：
+     * 通过SSLContexts.createDefault().getSessionCacheSize()和SSLContexts.createDefault().getSessionTimeout()查看默认值
+     */
+    private int sslSessionCacheSize = -1; // -1代表没有配置
+    private int sslSessionTimeoutInSec = -1; // -1代表没有配置
 
     /**
      * 构造新实例。
@@ -542,4 +549,38 @@ public class ClientConfiguration {
     public RequestTracer getRequestTracer() {
         return requestTracer;
     }
+
+    /**
+     * 设置ssl session的cache size
+     *
+     * @param sslSessionCacheSize ssl session的cache size
+     */
+    public void setSslSessionCacheSize(int sslSessionCacheSize) {
+        Preconditions.checkArgument(sslSessionCacheSize >= 0, "SSL session cache size should be no less than 0.");
+        this.sslSessionCacheSize = sslSessionCacheSize;
+    }
+
+    /**
+     * 获取ssl session的cache size
+     *
+     * @return sslSessionCacheSize
+     */
+    public int getSslSessionCacheSize() { return sslSessionCacheSize; }
+
+    /**
+     * 设置ssl session的timeout
+     *
+     * @param seconds ssl session的timeout，0代表没有限制；timeout大小应不小于0，秒为单位
+     */
+    public void setSslSessionTimeoutInSec(int seconds) {
+        Preconditions.checkArgument(seconds >= 0, "SSL session timeout should be no less than 0.");
+        this.sslSessionTimeoutInSec = seconds;
+    }
+
+    /**
+     * 获取ssl session的timeout
+     *
+     * @return sslSessionTimeout ssl session的timeout，0代表没有限制，-1代表没有配置；timeout以秒为单位
+     */
+    public int getSslSessionTimeoutInSec() { return sslSessionTimeoutInSec; }
 }

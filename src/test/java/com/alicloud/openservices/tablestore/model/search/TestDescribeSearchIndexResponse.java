@@ -29,6 +29,10 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 .setSubFieldSchemas(new ArrayList<FieldSchema>())
                 .setVirtualField(true)
                 .setSourceFieldNames(Arrays.asList("n1", "f2", "f3")));
+        indexSchema.addFieldSchema(new FieldSchema("col_fuzzy_keyword", FieldType.FUZZY_KEYWORD)
+                .setSubFieldSchemas(new ArrayList<FieldSchema>())
+                .setVirtualField(true)
+                .setSourceFieldNames(Arrays.asList("n1", "f2", "f3")));
         indexSchema.addFieldSchema(new FieldSchema("col_text", FieldType.TEXT)
                 .setSubFieldSchemas(new ArrayList<FieldSchema>())
                 .setVirtualField(true)
@@ -67,6 +71,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
         JsonElement jsonElement = new Gson().toJsonTree(json);
         assertNotNull(jsonElement);
         assertEquals("{\n" +
+                "  \"IndexStatus\": null,\n" +
                 "  \"IndexSchema\": {\n" +
                 "    \"IndexSetting\": {\"RoutingFields\": [\"routing_field1\", \"routing_field2\"]},\n" +
                 "    \"FieldSchemas\": [{\n" +
@@ -90,6 +95,14 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 "     {\n" +
                 "     \"FieldName\": \"col_keyword\",\n" +
                 "     \"FieldType\": \"KEYWORD\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\", \"f2\", \"f3\"]\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_fuzzy_keyword\",\n" +
+                "     \"FieldType\": \"FUZZY_KEYWORD\",\n" +
                 "     \"Index\": true,\n" +
                 "     \"SubFieldSchemas\": [],\n" +
                 "     \"IsVirtualField\": true,\n" +

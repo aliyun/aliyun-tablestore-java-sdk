@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class RangeQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_RangeQuery;
+    private final QueryType queryType = QueryType.QueryType_RangeQuery;
     /**
      * 字段名
      */

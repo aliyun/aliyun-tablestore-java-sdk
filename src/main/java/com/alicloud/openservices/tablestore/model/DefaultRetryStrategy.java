@@ -41,21 +41,6 @@ public class DefaultRetryStrategy implements RetryStrategy {
         return retries;
     }
 
-    protected boolean isIdempotent(String action) {
-        /**
-         * all read operations are idempotent
-         */
-        if (action.equals(OP_BATCH_GET_ROW) || action.equals(OP_DESCRIBE_TABLE) ||
-            action.equals(OP_GET_RANGE) || action.equals(OP_GET_ROW) ||
-            action.equals(OP_LIST_TABLE) || action.equals(OP_LIST_TUNNEL) ||
-            action.equals(OP_SEARCH) || action.equals(OP_DESCRIBE_SEARCH_INDEX) ||
-            action.equals(OP_DESCRIBE_TUNNEL) || action.equals(OP_READRECORDS)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     protected boolean retryNotMatterActions(String errorCode, String errorMessage) {
         if (errorCode.equals(ErrorCode.ROW_OPERATION_CONFLICT) || errorCode.equals(ErrorCode.NOT_ENOUGH_CAPACITY_UNIT)
             || errorCode.equals(ErrorCode.TABLE_NOT_READY) || errorCode.equals(ErrorCode.PARTITION_UNAVAILABLE)
@@ -102,7 +87,7 @@ public class DefaultRetryStrategy implements RetryStrategy {
      * @return
      */
     public boolean shouldRetry(String action, Exception ex) {
-        boolean isIdempotent = isIdempotent(action);
+        boolean isIdempotent = IdempotentActionTool.isIdempotentAction(action);
         if (ex instanceof TableStoreException) {
             if (ex instanceof PartialResultFailedException) {
                 PartialResultFailedException prfe = (PartialResultFailedException)ex;

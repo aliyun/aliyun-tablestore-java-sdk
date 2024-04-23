@@ -13,7 +13,7 @@ import com.google.protobuf.ByteString;
  */
 public class TermsQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_TermsQuery;
+    private final QueryType queryType = QueryType.QueryType_TermsQuery;
 
     private String fieldName;
     private List<ColumnValue> terms;

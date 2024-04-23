@@ -39,19 +39,11 @@ public class PutRowTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            client.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(client);
     }   
 
     private void CreateTable(SyncClientInterface ots, String tableName, Map<String, PrimaryKeyType> pk) throws Exception {
         OTSHelper.createTable(ots, tableName, pk);
-        LOG.info("Create table: " + tableName);
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
     }
     
@@ -78,7 +70,6 @@ public class PutRowTest extends BaseFT {
             OTSHelper.putRow(client, tableName, pk, columns);
         	assertTrue(false);
         } catch (TableStoreException e) {
-        	LOG.info(e.toString());
         	assertTableStoreException(ErrorCode.INVALID_PK, "Validate PK name fail. Input: PK2, Meta: PK1.", 400, e);
         }
     }
@@ -133,7 +124,6 @@ public class PutRowTest extends BaseFT {
             OTSHelper.putRow(client, tableName, pk, columns, RowExistenceExpectation.EXPECT_EXIST);
         	assertTrue(false);
         } catch (TableStoreException e) {
-        	LOG.info(e.toString());
         	assertEquals(ErrorCode.CONDITION_CHECK_FAIL, e.getErrorCode());
         }
     }
@@ -257,7 +247,6 @@ public class PutRowTest extends BaseFT {
             columns.put("attr1", ColumnValue.fromString("hello world"));
             OTSHelper.putRow(client, tableName, pk, columns, RowExistenceExpectation.EXPECT_NOT_EXIST);
         } catch (TableStoreException e) {
-        	LOG.info(e.toString());
         	assertEquals(ErrorCode.CONDITION_CHECK_FAIL, e.getErrorCode());
         }
     }

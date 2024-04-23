@@ -1,5 +1,8 @@
 package com.alicloud.openservices.tablestore.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OperationNames {
     public static final String OP_CREATE_TABLE = "CreateTable";
 
@@ -132,4 +135,55 @@ public class OperationNames {
     public static final String OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE = "DescribeTimeseriesAnalyticalStore";
 
     public static final String OP_SQL_Query = "SQLQuery";
+
+    public static class IdempotentActionTool {
+        private static final Map<String, Boolean> IDEMPOTENT_ACTIONS = new HashMap<String, Boolean>();
+
+        static {
+            // table operations
+            IDEMPOTENT_ACTIONS.put(OP_LIST_TABLE, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_TABLE, true);
+            // row operations
+            IDEMPOTENT_ACTIONS.put(OP_GET_ROW, true);
+            IDEMPOTENT_ACTIONS.put(OP_BATCH_GET_ROW, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_RANGE, true);
+            IDEMPOTENT_ACTIONS.put(OP_BULK_EXPORT, true);
+            // stream operations
+            IDEMPOTENT_ACTIONS.put(OP_LIST_STREAM, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_STREAM, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_SHARD_ITERATOR, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_STREAM_RECORD, true);
+            IDEMPOTENT_ACTIONS.put(OP_COMPUTE_SPLITS_BY_SIZE, true);
+            // deliveryTask operations
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_DELIVERY_TASK, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_DELIVERY_TASK, true);
+            // searchIndex operations
+            IDEMPOTENT_ACTIONS.put(OP_LIST_SEARCH_INDEX, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_SEARCH_INDEX, true);
+            IDEMPOTENT_ACTIONS.put(OP_SEARCH, true);
+            // timeseries operations
+            IDEMPOTENT_ACTIONS.put(OP_GET_TIMESERIES_DATA, true);
+            IDEMPOTENT_ACTIONS.put(OP_QUERY_TIMESERIES_META, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_TIMESERIES_TABLE, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_TIMESERIES_TABLE, true);
+            IDEMPOTENT_ACTIONS.put(OP_SCAN_TIMESERIES_DATA, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE, true);
+            // deliveryTask operations
+            IDEMPOTENT_ACTIONS.put(OP_PARALLEL_SCAN, true);
+            IDEMPOTENT_ACTIONS.put(OP_COMPUTE_SPLITS, true);
+            // tunnel operations
+            IDEMPOTENT_ACTIONS.put(OP_LIST_TUNNEL, true);
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_TUNNEL, true);
+            IDEMPOTENT_ACTIONS.put(OP_READRECORDS, true);
+            IDEMPOTENT_ACTIONS.put(OP_GETCHECKPOINT, true);
+        }
+
+        public static boolean isIdempotentAction(String action) {
+            /**
+             * all read operations are idempotent
+             */
+            Boolean isIdempotent = IDEMPOTENT_ACTIONS.get(action);
+            return isIdempotent != null && isIdempotent;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import com.alicloud.openservices.tablestore.model.search.GeoHashPrecision;
 import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.groupby.FieldRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
@@ -7,10 +8,12 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHist
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByField;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoDistance;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGrid;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByHistogram;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByType;
 import com.alicloud.openservices.tablestore.model.search.groupby.Range;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByComposite;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.google.protobuf.ByteString;
 
@@ -35,9 +38,37 @@ public class SearchGroupByBuilder {
                 return Search.GroupByType.GROUP_BY_HISTOGRAM;
             case GROUP_BY_DATE_HISTOGRAM:
                 return Search.GroupByType.GROUP_BY_DATE_HISTOGRAM;
+            case GROUP_BY_GEO_GRID:
+                return Search.GroupByType.GROUP_BY_GEO_GRID;
+            case GROUP_BY_COMPOSITE:
+                return Search.GroupByType.GROUP_BY_COMPOSITE;
             default:
                 throw new IllegalArgumentException("unknown GroupByType: " + type.name());
         }
+    }
+
+    public static Search.GroupByComposite buildGroupByComposite(GroupByComposite groupBy) {
+        Search.GroupByComposite.Builder builder = Search.GroupByComposite.newBuilder();
+        if (groupBy.getSize() != null) {
+            builder.setSize(groupBy.getSize());
+        }
+        if(groupBy.getSuggestedSize() != null) {
+            builder.setSuggestedSize(groupBy.getSuggestedSize());
+        }
+        if (groupBy.getNextToken() != null) {
+            builder.setNextToken(groupBy.getNextToken());
+        }
+        if (groupBy.getSources() != null) {
+            builder.setSources(buildGroupBys(groupBy.getSources()));
+        }
+        if (groupBy.getSubGroupBys() != null) {
+            builder.setSubGroupBys(buildGroupBys(groupBy.getSubGroupBys()));
+        }
+        if (groupBy.getSubAggregations() != null) {
+            builder.setSubAggs(SearchAggregationBuilder.buildAggregations(groupBy.getSubAggregations()));
+        }
+
+        return builder.build();
     }
 
     public static Search.GroupByField buildGroupByField(GroupByField groupBy) {
@@ -75,6 +106,9 @@ public class SearchGroupByBuilder {
         if (groupBy.getMissing() != null) {
             builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMissing())));
         }
+        if (groupBy.getOffset() != null) {
+            builder.setOffset(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getOffset())));
+        }
         if (groupBy.getGroupBySorters() != null) {
             builder.setSort(SearchSortBuilder.buildGroupBySort(groupBy.getGroupBySorters()));
         }
@@ -100,6 +134,9 @@ public class SearchGroupByBuilder {
         }
         if (groupBy.getMissing() != null) {
             builder.setMissing(ByteString.copyFrom(SearchVariantType.toVariant(groupBy.getMissing())));
+        }
+        if (groupBy.getOffset() != null) {
+            builder.setOffset(SearchProtocolBuilder.buildDateTimeValue(groupBy.getOffset()));
         }
         if (groupBy.getGroupBySorters() != null) {
             builder.setSort(SearchSortBuilder.buildGroupBySort(groupBy.getGroupBySorters()));
@@ -179,12 +216,63 @@ public class SearchGroupByBuilder {
         return builder.build();
     }
 
+    public static Search.GeoHashPrecision buildPbGeoHashPrecision(GeoHashPrecision geoHashPrecision) {
+        switch (geoHashPrecision) {
+            case GHP_5009KM_4992KM_1:
+                return Search.GeoHashPrecision.GHP_5009KM_4992KM_1;
+            case GHP_1252KM_624KM_2:
+                return Search.GeoHashPrecision.GHP_1252KM_624KM_2;
+            case GHP_156KM_156KM_3:
+                return Search.GeoHashPrecision.GHP_156KM_156KM_3;
+            case GHP_39KM_19KM_4:
+                return Search.GeoHashPrecision.GHP_39KM_19KM_4;
+            case GHP_4900M_4900M_5:
+                return Search.GeoHashPrecision.GHP_4900M_4900M_5;
+            case GHP_1200M_609M_6:
+                return Search.GeoHashPrecision.GHP_1200M_609M_6;
+            case GHP_152M_152M_7:
+                return Search.GeoHashPrecision.GHP_152M_152M_7;
+            case GHP_38M_19M_8:
+                return Search.GeoHashPrecision.GHP_38M_19M_8;
+            case GHP_480CM_480CM_9:
+                return Search.GeoHashPrecision.GHP_480CM_480CM_9;
+            case GHP_120CM_595MM_10:
+                return Search.GeoHashPrecision.GHP_120CM_595MM_10;
+            case GHP_149MM_149MM_11:
+                return Search.GeoHashPrecision.GHP_149MM_149MM_11;
+            case GHP_37MM_19MM_12:
+                return Search.GeoHashPrecision.GHP_37MM_19MM_12;
+            default:
+                throw new IllegalArgumentException("unknown GeoHashPrecision: " + geoHashPrecision.name());
+        }
+    }
+
+    public static Search.GroupByGeoGrid buildGroupByGeoGrid(GroupByGeoGrid groupBy) {
+        Search.GroupByGeoGrid.Builder builder = Search.GroupByGeoGrid.newBuilder();
+        if (groupBy.getFieldName() != null) {
+            builder.setFieldName(groupBy.getFieldName());
+        }
+        if (groupBy.getPrecision() != null) {
+            builder.setPrecision(buildPbGeoHashPrecision(groupBy.getPrecision()));
+        }
+        if (groupBy.getSize() != null) {
+            builder.setSize(groupBy.getSize());
+        }
+        if (groupBy.getSubAggregations() != null) {
+            builder.setSubAggs(SearchAggregationBuilder.buildAggregations(groupBy.getSubAggregations()));
+        }
+        if (groupBy.getSubGroupBys() != null) {
+            builder.setSubGroupBys(buildGroupBys(groupBy.getSubGroupBys()));
+        }
+        return builder.build();
+    }
+
     private static Search.Range buildRange(Range range) {
         Search.Range.Builder builder = Search.Range.newBuilder();
-        if (!range.getFrom().equals(Double.MIN_VALUE)){
+        if (!range.getFrom().equals(Double.MIN_VALUE)) {
             builder.setFrom(range.getFrom());
         }
-        if (!range.getTo().equals(Double.MAX_VALUE)){
+        if (!range.getTo().equals(Double.MAX_VALUE)) {
             builder.setTo(range.getTo());
         }
         return builder.build();

@@ -1,13 +1,11 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
 import com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ComputeSplitPointsBySizeResponse.SplitLocation;
-import com.alicloud.openservices.tablestore.core.protocol.sql.flatbuffers.SQLResponseColumns;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexResponse;
@@ -31,12 +29,17 @@ import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatRespo
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelResponse;
 import com.google.protobuf.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.alicloud.openservices.tablestore.core.protocol.SearchAggregationResultBuilder.buildAggregationResultsFromByteString;
 import static com.alicloud.openservices.tablestore.core.protocol.SearchGroupByResultBuilder.buildGroupByResultsFromByteString;
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toSearchHit;
 import static com.alicloud.openservices.tablestore.core.protocol.TunnelProtocolBuilder.MILLIS_TO_NANO;
 
 public class ResponseFactory {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(ResponseFactory.class);
 
     public static CreateTableResponse createCreateTableResponse(ResponseContentWithMeta response,
         OtsInternalApi.CreateTableResponse createTableResponse) {
@@ -732,6 +735,9 @@ public class ResponseFactory {
         if (describeSearchIndexResponse.hasTimeToLive()) {
             result.setTimeToLive(describeSearchIndexResponse.getTimeToLive());
         }
+        if(describeSearchIndexResponse.hasIndexStatus()) {
+            result.setIndexStatus(SearchProtocolParser.toIndexStatus(describeSearchIndexResponse.getIndexStatus()));
+        }
         return result;
     }
 
@@ -777,6 +783,7 @@ public class ResponseFactory {
         result.setAllSuccess(searchResponse.getIsAllSucceeded());
         result.setBodyBytes(searchResponse.getSerializedSize());
         List<Row> rows = new ArrayList<Row>();
+        List<SearchHit> searchHits = new ArrayList<SearchHit>();
         for (int i = 0; i < searchResponse.getRowsCount(); ++i) {
             com.google.protobuf.ByteString bytes = searchResponse.getRows(i);
             PlainBufferCodedInputStream coded = new PlainBufferCodedInputStream(
@@ -788,7 +795,17 @@ public class ResponseFactory {
             Row row = PlainBufferConversion.toRow(plainBufferRows.get(0));
             rows.add(row);
         }
+
+        if(searchResponse.getRowsCount() != searchResponse.getSearchHitsCount() && searchResponse.getSearchHitsCount() != 0) {
+            LOGGER.error("the row count is not equal to search extra result item count in server response body, ignore the search extra result items.");
+        } else {
+            for (int i = 0; i < searchResponse.getSearchHitsCount(); i++) {
+                searchHits.add(toSearchHit(searchResponse.getSearchHits(i), rows.get(i)));
+            }
+        }
         result.setRows(rows);
+        result.setSearchHits(searchHits);
+
         if (searchResponse.hasNextToken()) {
             result.setNextToken(searchResponse.getNextToken().toByteArray());
         }
@@ -797,6 +814,12 @@ public class ResponseFactory {
         }
         if (searchResponse.hasGroupBys()) {
             result.setGroupByResults(buildGroupByResultsFromByteString(searchResponse.getGroupBys()));
+        }
+        if (searchResponse.hasConsumed() && searchResponse.getConsumed().hasCapacityUnit()) {
+            result.setConsumed(new ConsumedCapacity(OTSProtocolParser.parseCapacityUnit(searchResponse.getConsumed().getCapacityUnit())));
+        }
+        if (searchResponse.hasReservedConsumed() && searchResponse.getReservedConsumed().hasCapacityUnit()) {
+            result.setReservedConsumed(new ConsumedCapacity(OTSProtocolParser.parseCapacityUnit(searchResponse.getReservedConsumed().getCapacityUnit())));
         }
         return result;
     }

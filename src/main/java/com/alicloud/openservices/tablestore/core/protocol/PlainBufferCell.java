@@ -163,11 +163,11 @@ public class PlainBufferCell {
     }
 
     public boolean isPk() {
-	return isPk;
+	    return isPk;
     }
 
     public PrimaryKeyValue getPkCellValue() {
-	return pkCellValue;
+	    return pkCellValue;
     }
 
     public void setPkCellValue(PrimaryKeyValue pkCellValue) {

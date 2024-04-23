@@ -2,12 +2,10 @@ package com.alicloud.openservices.tablestore.timestream.model.expression;
 
 import com.alicloud.openservices.tablestore.model.search.query.PrefixQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
-import com.alicloud.openservices.tablestore.model.search.query.TermQuery;
-import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PrefixExpressionUnittest {
+public class PrefixExpressionUnitTest {
     @Test
     public void testBasic() {
         long now = System.currentTimeMillis();

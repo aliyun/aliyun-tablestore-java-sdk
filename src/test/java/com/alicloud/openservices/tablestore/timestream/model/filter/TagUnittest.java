@@ -6,7 +6,7 @@ import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TagUnittest {
+public class TagUnitTest {
     @Test
     public void testIn() {
         long now = System.currentTimeMillis();

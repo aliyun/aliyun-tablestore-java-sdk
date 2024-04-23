@@ -1,17 +1,14 @@
 package com.alicloud.openservices.tablestore.timestream.model.expression;
 
-import com.alicloud.openservices.tablestore.model.search.query.PrefixQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.query.WildcardQuery;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by yanglian on 2019/4/10.
  */
-public class WildcardExpressionUnittest {
+public class WildcardExpressionUnitTest {
     @Test
     public void testBasic() {
         long now = System.currentTimeMillis();

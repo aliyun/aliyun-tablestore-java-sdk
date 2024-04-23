@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
  */
 public class PrefixQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_PrefixQuery;
+    private final QueryType queryType = QueryType.QueryType_PrefixQuery;
 
     private String fieldName;
     /**

@@ -74,7 +74,7 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
                 } else if (shouldRefreshCredentials()) {
                     try {
                         isFetching.set(true);
-                        credentials = (InstanceProfileCredentials) fetcher.fetch();
+                        credentials = (InstanceProfileCredentials) fetcher.fetch(maxRetryTimes);
                     } catch (ClientException e) {
                         // Use the current expiring session token and wait for next round
                         credentials.setLastFailedRefreshTime();

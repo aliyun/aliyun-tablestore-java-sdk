@@ -106,10 +106,10 @@ public class TimeseriesResponseFactory {
     }
 
     public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow) {
-        String measurement = plainBufferRow.getPrimaryKey().get(1).getCellValue().asString();
-        String source = plainBufferRow.getPrimaryKey().get(2).getCellValue().asString();
-        String tagsStr = plainBufferRow.getPrimaryKey().get(3).getCellValue().asString();
-        long time = plainBufferRow.getPrimaryKey().get(4).getCellValue().asLong();
+        String measurement = plainBufferRow.getPrimaryKey().get(1).getPkCellValue().asString();
+        String source = plainBufferRow.getPrimaryKey().get(2).getPkCellValue().asString();
+        String tagsStr = plainBufferRow.getPrimaryKey().get(3).getPkCellValue().asString();
+        long time = plainBufferRow.getPrimaryKey().get(4).getPkCellValue().asLong();
         TimeseriesRow row = new TimeseriesRow(new TimeseriesKey(measurement, source, parseTagsOrAttrs(tagsStr)), time);
         for (PlainBufferCell cell : plainBufferRow.getCells()) {
             row.addField(convertColumnName(cell.getCellName()), cell.getCellValue());
@@ -118,7 +118,7 @@ public class TimeseriesResponseFactory {
     }
 
     public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow, TimeseriesKey key) {
-        long time = plainBufferRow.getPrimaryKey().get(4).getCellValue().asLong();
+        long time = plainBufferRow.getPrimaryKey().get(4).getPkCellValue().asLong();
         TimeseriesRow row = new TimeseriesRow(key, time);
         for (PlainBufferCell cell : plainBufferRow.getCells()) {
             row.addField(convertColumnName(cell.getCellName()), cell.getCellValue());

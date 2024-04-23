@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
+import com.alicloud.openservices.tablestore.model.search.SyncStat;
 
 import java.util.*;
 
@@ -28,6 +29,8 @@ public class IndexMeta implements Jsonizable {
     private IndexType indexType = IndexType.IT_GLOBAL_INDEX;
 
     private IndexUpdateMode indexUpdateMode = IndexUpdateMode.IUM_ASYNC_INDEX;
+
+    private SyncStat.SyncPhase indexSyncPhase;
 
 
     /**
@@ -134,6 +137,23 @@ public class IndexMeta implements Jsonizable {
      */
     public void setIndexUpdateMode(IndexUpdateMode indexUpdateMode) {
         this.indexUpdateMode = indexUpdateMode;
+    }
+
+    /**
+     * 得到索引表同步阶段
+     * @return 索引表同步阶段
+     */
+    public SyncStat.SyncPhase getIndexSyncPhase() {
+        return indexSyncPhase;
+    }
+
+    /**
+     * 设置索引表同步阶段
+     *
+     * @param indexSyncPhase 索引表同步阶段
+     */
+    public void setIndexSyncPhase(SyncStat.SyncPhase indexSyncPhase) {
+        this.indexSyncPhase = indexSyncPhase;
     }
 
     @Override

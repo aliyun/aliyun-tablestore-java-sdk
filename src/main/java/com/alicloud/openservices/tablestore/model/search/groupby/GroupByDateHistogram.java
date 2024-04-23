@@ -42,6 +42,10 @@ public class GroupByDateHistogram implements GroupBy {
      */
     private ColumnValue missing;
     /**
+     * 分组偏差量
+     */
+    private DateTimeValue offset;
+    /**
      * 最小文档数
      */
     private Long minDocCount;
@@ -73,6 +77,7 @@ public class GroupByDateHistogram implements GroupBy {
         fieldRange = builder.fieldRange;
         groupBySorters = builder.groupBySorters;
         missing = builder.missing;
+        offset = builder.offset;
         minDocCount = builder.minDocCount;
         timeZone = builder.timeZone;
         subAggregations = builder.subAggregations;
@@ -132,6 +137,20 @@ public class GroupByDateHistogram implements GroupBy {
 
     public GroupByDateHistogram setMissing(ColumnValue missing) {
         this.missing = missing;
+        return this;
+    }
+
+    public DateTimeValue getOffset() {
+        return offset;
+    }
+
+    public GroupByDateHistogram setOffset(DateTimeValue offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public GroupByDateHistogram setOffset(Integer value, DateTimeUnit unit) {
+        this.offset = new DateTimeValue(value, unit);
         return this;
     }
 
@@ -205,6 +224,7 @@ public class GroupByDateHistogram implements GroupBy {
         private DateTimeValue interval;
         private FieldRange fieldRange;
         private ColumnValue missing;
+        private DateTimeValue offset;
         private String timeZone;
         private Long minDocCount;
         private List<GroupBySorter> groupBySorters;
@@ -260,6 +280,11 @@ public class GroupByDateHistogram implements GroupBy {
          */
         public Builder missing(Object missing) {
             this.missing = ValueUtil.toColumnValue(missing);
+            return this;
+        }
+
+        public Builder offset(Integer value, DateTimeUnit unit) {
+            this.offset = new DateTimeValue(value, unit);
             return this;
         }
 

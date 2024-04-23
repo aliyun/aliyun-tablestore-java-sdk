@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static com.alicloud.openservices.tablestore.timestream.model.filter.FilterFactory.*;
 
-public class OrFilterUnittest {
+public class OrFilterUnitTest {
     @Test
     public void testBasic() {
         Tag tagFilter = Tag.equal("t1", "v1");

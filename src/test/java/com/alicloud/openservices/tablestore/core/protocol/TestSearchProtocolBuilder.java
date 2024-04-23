@@ -4,20 +4,56 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
 import com.alicloud.openservices.tablestore.model.search.FieldType;
 import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
+import com.alicloud.openservices.tablestore.model.search.SearchInnerHit;
 import com.alicloud.openservices.tablestore.model.search.UpdateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightEncoder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightFragmentOrder;
+import com.alicloud.openservices.tablestore.model.search.highlight.HighlightParameter;
+import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
+import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
+import com.alicloud.openservices.tablestore.model.search.sort.ScoreSort;
+import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
 public class TestSearchProtocolBuilder extends BaseSearchTest {
+
+    @Test
+    public void buildFieldSchema_FieldType() throws InvalidProtocolBufferException {
+        Map<FieldType, Search.FieldType> modelToPbFieldType = new HashMap<>();
+        modelToPbFieldType.put(FieldType.LONG, Search.FieldType.LONG);
+        modelToPbFieldType.put(FieldType.DOUBLE, Search.FieldType.DOUBLE);
+        modelToPbFieldType.put(FieldType.BOOLEAN, Search.FieldType.BOOLEAN);
+        modelToPbFieldType.put(FieldType.KEYWORD, Search.FieldType.KEYWORD);
+        modelToPbFieldType.put(FieldType.TEXT, Search.FieldType.TEXT);
+        modelToPbFieldType.put(FieldType.NESTED, Search.FieldType.NESTED);
+        modelToPbFieldType.put(FieldType.GEO_POINT, Search.FieldType.GEO_POINT);
+        modelToPbFieldType.put(FieldType.DATE, Search.FieldType.DATE);
+        modelToPbFieldType.put(FieldType.VECTOR, Search.FieldType.VECTOR);
+        modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
+
+        for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
+            FieldType modelFieldType = entry.getKey();
+            Search.FieldType pbFieldType = entry.getValue();
+
+            FieldSchema fieldSchema = new FieldSchema("Col_Name", modelFieldType);
+            Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
+            assertEquals(pbFieldType, pbFieldSchema.getFieldType());
+        }
+    }
+
     @Test
     public void buildFieldSchema_SingleWord() throws InvalidProtocolBufferException {
         // model
@@ -327,6 +363,75 @@ public class TestSearchProtocolBuilder extends BaseSearchTest {
         // assert
         assertEquals("max_word", pbFieldSchema.getAnalyzer());
         assertFalse(pbFieldSchema.hasAnalyzerParameter());
+    }
+
+    @Test
+    public void buildInnerHits() {
+        InnerHits.Builder innerHitsBuilder = InnerHits.newBuilder()
+                .limit(10)
+                .offset(0)
+                .sort(new Sort(Arrays.asList(
+                        new DocSort(),
+                        new ScoreSort())))
+                .highlight(Highlight.newBuilder()
+                        .highlightEncoder(HighlightEncoder.HTML)
+                        .addFieldHighlightParam("col1", HighlightParameter.newBuilder()
+                                .highlightFragmentOrder(HighlightFragmentOrder.SCORE)
+                                .fragmentSize(100)
+                                .numberOfFragments(50)
+                                .preTag("<em>")
+                                .postTag("</em>")
+                                .build())
+                        .build());
+        Search.InnerHits pbInnerHits = SearchInnerHitsBuilder.buildInnerHits(innerHitsBuilder.build());
+        assertEquals(0, pbInnerHits.getOffset());
+        assertEquals(10, pbInnerHits.getLimit());
+        assertEquals(2, pbInnerHits.getSort().getSorterCount());
+        assertTrue(pbInnerHits.getSort().getSorterList().get(0).hasDocSort());
+        assertTrue(pbInnerHits.getSort().getSorterList().get(1).hasScoreSort());
+        assertNotNull(pbInnerHits.getHighlight());
+
+        Search.Highlight pbHighlight = pbInnerHits.getHighlight();
+        assertEquals(Search.HighlightEncoder.HTML_MODE, pbHighlight.getHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersCount());
+        assertEquals(Search.HighlightFragmentOrder.SCORE, pbHighlight.getHighlightParameters(0).getFragmentsOrder());
+        assertEquals(100, pbHighlight.getHighlightParameters(0).getFragmentSize());
+        assertEquals(50, pbHighlight.getHighlightParameters(0).getNumberOfFragments());
+        assertEquals("<em>", pbHighlight.getHighlightParameters(0).getPreTag());
+        assertEquals("</em>", pbHighlight.getHighlightParameters(0).getPostTag());
+    }
+
+    @Test
+    public void buildHighlight() {
+        Highlight.Builder highlightBuilder = Highlight.newBuilder()
+                .highlightEncoder(HighlightEncoder.HTML)
+                .addFieldHighlightParam("col_name", HighlightParameter.newBuilder()
+                        .highlightFragmentOrder(HighlightFragmentOrder.SCORE)
+                        .fragmentSize(100)
+                        .numberOfFragments(50)
+                        .preTag("<em>")
+                        .postTag("</em>").build());
+        Search.Highlight pbHighlight = SearchHighlightBuilder.buildHighlight(highlightBuilder.build());
+        assertEquals(Search.HighlightEncoder.HTML_MODE, pbHighlight.getHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersCount());
+        assertEquals(Search.HighlightFragmentOrder.SCORE, pbHighlight.getHighlightParameters(0).getFragmentsOrder());
+        assertEquals(100, pbHighlight.getHighlightParameters(0).getFragmentSize());
+        assertEquals(50, pbHighlight.getHighlightParameters(0).getNumberOfFragments());
+        assertEquals("<em>", pbHighlight.getHighlightParameters(0).getPreTag());
+        assertEquals("</em>", pbHighlight.getHighlightParameters(0).getPostTag());
+
+        highlightBuilder = Highlight.newBuilder()
+                .highlightEncoder(null)
+                .addFieldHighlightParam(null, null);
+        pbHighlight = SearchHighlightBuilder.buildHighlight(highlightBuilder.build());
+        assertFalse(pbHighlight.hasHighlightEncoder());
+        assertEquals(1, pbHighlight.getHighlightParametersList().size());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFieldName());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasPreTag());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasPostTag());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFragmentSize());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasNumberOfFragments());
+        assertFalse(pbHighlight.getHighlightParameters(0).hasFragmentsOrder());
     }
 
     @Test

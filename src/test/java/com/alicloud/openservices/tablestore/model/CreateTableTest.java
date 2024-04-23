@@ -36,15 +36,7 @@ public class CreateTableTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            client.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(client);
     }
     
     public static boolean checkNameExiste(List<String> names, String name) {

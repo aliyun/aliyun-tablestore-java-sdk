@@ -19,15 +19,15 @@
 
 package com.alicloud.openservices.tablestore.core.auth;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.utils.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class InstanceProfileCredentialsFetcher extends HttpCredentialsFetcher {
 
@@ -76,18 +76,23 @@ public class InstanceProfileCredentialsFetcher extends HttpCredentialsFetcher {
 
     @Override
     public ServiceCredentials parse(HttpResponse response) throws ClientException {
+        if (response.getHttpContent() == null) {
+            logger.error("Invalid response from ECS Metadata service: null.");
+            throw new ClientException("Invalid json got from ECS Metadata service.");
+        }
+
         String jsonContent = new String(response.getHttpContent());
 
         try {
             MetadataResponse res = new Gson().fromJson(jsonContent, MetadataResponse.class);
             if (res == null) {
-                logger.error("Invalid response form ECS Metadata service: {}.", jsonContent);
+                logger.error("Invalid response from ECS Metadata service: {}.", jsonContent);
                 throw new ClientException("Invalid json got from ECS Metadata service.");
             }
 
             if (!(res.code != null && res.accessKeyId != null && res.accessKeySecret != null
                 && res.securityToken != null && res.expiration != null)) {
-                logger.error("Invalid response form ECS Metadata service: {}.", jsonContent);
+                logger.error("Invalid response from ECS Metadata service: {}.", jsonContent);
                 throw new ClientException("Invalid json got from ECS Metadata service.");
             }
 

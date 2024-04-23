@@ -4,12 +4,14 @@ import com.alicloud.openservices.tablestore.core.protocol.SearchQueryBuilder;
 import com.google.protobuf.ByteString;
 
 /**
- * 用于处理文档分值的Query，它会在查询结束后对每一个匹配的文档进行一系列的重打分操作，最后以生成的最终分数进行排序。
+ * @Deprecated 请使用 {@link FunctionsScoreQuery}代替
+ * <p>用于处理文档分值的Query，它会在查询结束后对每一个匹配的文档进行一系列的重打分操作，最后以生成的最终分数进行排序。</p>
  * <p>举例见{@link FieldValueFactor}</p>
  */
+@Deprecated
 public class FunctionScoreQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_FunctionScoreQuery;
+    private final QueryType queryType = QueryType.QueryType_FunctionScoreQuery;
 
     /**
      * 正常的{@link Query}

@@ -1,9 +1,12 @@
 package com.alicloud.openservices.tablestore.timeserieswriter.manager;
 
 import com.alicloud.openservices.tablestore.AsyncTimeseriesClientInterface;
+import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.TableStoreCallback;
+import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.model.timeseries.PutTimeseriesDataRequest;
 import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesTableRow;
+import com.alicloud.openservices.tablestore.timeserieswriter.TimeseriesWriterException;
 import com.alicloud.openservices.tablestore.timeserieswriter.callback.TimeseriesRowResult;
 import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesBucketConfig;
 import com.alicloud.openservices.tablestore.timeserieswriter.config.TimeseriesWriterConfig;
@@ -51,6 +54,12 @@ public class TimeseriesBatchRequestManager extends TimeseriesBaseRequestManager{
     public void sendRequest(TimeseriesRequestWithGroups timeseriesRequestWithGroups) {
         PutTimeseriesDataRequest finalRequest = (PutTimeseriesDataRequest) timeseriesRequestWithGroups.getRequest();
         List<TimeseriesGroup> finalGroupFuture = timeseriesRequestWithGroups.getGroupList();
-        ots.putTimeseriesData(finalRequest, callbackFactory.newInstance(finalGroupFuture));
+        TableStoreCallback tableStoreCallback = callbackFactory.newInstance(finalGroupFuture);
+        try{
+            ots.putTimeseriesData(finalRequest, tableStoreCallback);
+        } catch (Exception e) {
+            logger.error("Failed while send request:", e);
+            tableStoreCallback.onFailed(finalRequest, new TimeseriesWriterException(e.getMessage(), e, "SendRequestError"));
+        }
     }
 }

@@ -2,14 +2,10 @@ package com.alicloud.openservices.tablestore.timestream.model;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.timestream.TimestreamRestrict;
-import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Map;
-import java.util.TreeMap;
-
-public class TimestreamIdentifierUnittest {
+public class TimestreamIdentifierUnitTest {
 
     @Test
     public void testBaisc() {

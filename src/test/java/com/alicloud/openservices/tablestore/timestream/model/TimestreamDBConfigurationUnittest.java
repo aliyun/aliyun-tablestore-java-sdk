@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimestreamDBConfigurationUnittest {
+public class TimestreamDBConfigurationUnitTest {
 
     @Test
     public void testBasic() {

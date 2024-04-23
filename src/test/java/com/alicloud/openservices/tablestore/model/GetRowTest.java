@@ -37,20 +37,11 @@ public class GetRowTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = client.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            client.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(client);
     }
 
     private void CreateTable(SyncClientInterface ots, String tableName, Map<String, PrimaryKeyType> pk) throws Exception {
         OTSHelper.createTable(ots, tableName, pk);
-        LOG.info("Create table: " + tableName);
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
     }
 

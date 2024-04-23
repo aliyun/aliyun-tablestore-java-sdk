@@ -52,21 +52,6 @@ public class CustomRetryStrategy implements RetryStrategy {
         return retries;
     }
 
-    private boolean isIdempotent(String action) {
-        /**
-         * all read operations are idempotent
-         */
-        if (action.equals(OP_BATCH_GET_ROW) || action.equals(OP_DESCRIBE_TABLE) ||
-                action.equals(OP_GET_RANGE) || action.equals(OP_GET_ROW) ||
-                action.equals(OP_LIST_TABLE) || action.equals(OP_LIST_TUNNEL) ||
-                action.equals(OP_SEARCH) || action.equals(OP_DESCRIBE_SEARCH_INDEX) ||
-                action.equals(OP_DESCRIBE_TUNNEL) || action.equals(OP_READRECORDS)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * 对于以下错误类型，可以明确操作并未实际执行(不影响幂等性)，所以不论是读操作或者写操作，都是明确可以重试的。
      * @param errorCode
@@ -130,7 +115,7 @@ public class CustomRetryStrategy implements RetryStrategy {
      * @return
      */
     public boolean shouldRetry(String action, Exception ex) {
-        boolean isIdempotent = isIdempotent(action);
+        boolean isIdempotent = IdempotentActionTool.isIdempotentAction(action);
         if (ex instanceof TableStoreException) {
             if (ex instanceof PartialResultFailedException) {
                 PartialResultFailedException prfe = (PartialResultFailedException)ex;

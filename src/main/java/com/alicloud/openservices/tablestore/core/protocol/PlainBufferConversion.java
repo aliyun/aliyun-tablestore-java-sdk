@@ -117,20 +117,21 @@ public class PlainBufferConversion {
         List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<PrimaryKeyColumn>();
         for (PlainBufferCell cell : pkCells) {
             primaryKeyColumns.add(
-                    new PrimaryKeyColumn(cell.getCellName(), PrimaryKeyValue.fromColumn(cell.getCellValue())));
+                    new PrimaryKeyColumn(cell.getCellName(), cell.getPkCellValue()));
         }
         return new PrimaryKey(primaryKeyColumns);
     }
 
     public static PrimaryKey toTimeseriesPrimaryKey(List<PlainBufferCell> pkCells) throws IOException {
-        List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<PrimaryKeyColumn>();
+        List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<>();
         for (int i = 0; i < pkCells.size(); i++) {
-            if (i == 0 && !pkCells.get(i).getCellName().equals(TIMESERIES_HIDDEN_PK)) {
+            PlainBufferCell pkCell = pkCells.get(i);
+            if (i == 0 && !pkCell.getCellName().equals(TIMESERIES_HIDDEN_PK)) {
                 throw new IOException(
-                        "The expected primary key name is '_#h'. Actually : " + pkCells.get(i).getCellName() + ".");
+                        "The expected primary key name is '_#h'. Actually : " + pkCell.getCellName() + ".");
             } else if (i > 0) {
                 primaryKeyColumns.add(
-                        new PrimaryKeyColumn(pkCells.get(i).getCellName(), PrimaryKeyValue.fromColumn(pkCells.get(i).getCellValue())));
+                        new PrimaryKeyColumn(pkCell.getCellName(), pkCell.getPkCellValue()));
             }
         }
         return new PrimaryKey(primaryKeyColumns);

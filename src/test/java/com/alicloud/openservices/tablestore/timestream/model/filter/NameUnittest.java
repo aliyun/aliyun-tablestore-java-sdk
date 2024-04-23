@@ -5,7 +5,7 @@ import com.alicloud.openservices.tablestore.timestream.internal.TableMetaGenerat
 import org.junit.Assert;
 import org.junit.Test;
 
-public class NameUnittest {
+public class NameUnitTest {
     @Test
     public void testIn() {
         long now = System.currentTimeMillis();

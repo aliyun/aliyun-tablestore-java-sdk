@@ -13,7 +13,7 @@ import com.google.protobuf.ByteString;
  */
 public class GeoPolygonQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_GeoPolygonQuery;
+    private final QueryType queryType = QueryType.QueryType_GeoPolygonQuery;
 
     /**
      * 字段名

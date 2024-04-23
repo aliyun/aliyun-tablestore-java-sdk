@@ -1,17 +1,15 @@
 package com.alicloud.openservices.tablestore.timestream.model.expression;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
-import com.alicloud.openservices.tablestore.model.search.query.PrefixQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.query.RangeQuery;
-import com.alicloud.openservices.tablestore.timestream.internal.Utils;
 import com.alicloud.openservices.tablestore.timestream.model.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class RangeExpressionUnittest {
+public class RangeExpressionUnitTest {
     @Test
     public void testBasic() {
         long now = System.currentTimeMillis();

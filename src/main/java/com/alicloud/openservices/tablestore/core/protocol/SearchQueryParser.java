@@ -5,21 +5,33 @@ import com.alicloud.openservices.tablestore.core.utils.ValueUtil;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.BoolQuery;
 import com.alicloud.openservices.tablestore.model.search.query.ConstScoreQuery;
+import com.alicloud.openservices.tablestore.model.search.query.DecayFuncDateParam;
+import com.alicloud.openservices.tablestore.model.search.query.DecayFuncGeoParam;
+import com.alicloud.openservices.tablestore.model.search.query.DecayFuncNumericParam;
+import com.alicloud.openservices.tablestore.model.search.query.DecayFunction;
+import com.alicloud.openservices.tablestore.model.search.query.DecayParam;
 import com.alicloud.openservices.tablestore.model.search.query.ExistsQuery;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactor;
+import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactorFunction;
 import com.alicloud.openservices.tablestore.model.search.query.FunctionScoreQuery;
+import com.alicloud.openservices.tablestore.model.search.query.FunctionsScoreQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoBoundingBoxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoDistanceQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoPolygonQuery;
+import com.alicloud.openservices.tablestore.model.search.query.KnnVectorQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchAllQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchPhraseQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchQuery;
+import com.alicloud.openservices.tablestore.model.search.query.MultiValueMode;
 import com.alicloud.openservices.tablestore.model.search.query.NestedQuery;
 import com.alicloud.openservices.tablestore.model.search.query.PrefixQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.query.QueryOperator;
+import com.alicloud.openservices.tablestore.model.search.query.RandomFunction;
 import com.alicloud.openservices.tablestore.model.search.query.RangeQuery;
+import com.alicloud.openservices.tablestore.model.search.query.ScoreFunction;
 import com.alicloud.openservices.tablestore.model.search.query.ScoreMode;
+import com.alicloud.openservices.tablestore.model.search.query.SuffixQuery;
 import com.alicloud.openservices.tablestore.model.search.query.TermQuery;
 import com.alicloud.openservices.tablestore.model.search.query.TermsQuery;
 import com.alicloud.openservices.tablestore.model.search.query.WildcardQuery;
@@ -28,6 +40,8 @@ import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toInnerHits;
 
 
 /**
@@ -57,12 +71,16 @@ public class SearchQueryParser {
                 return toRangeQuery(queryByteString);
             case PREFIX_QUERY:
                 return toPrefixQuery(queryByteString);
+            case SUFFIX_QUERY:
+                return toSuffixQuery(queryByteString);
             case BOOL_QUERY:
                 return toBoolQuery(queryByteString);
             case CONST_SCORE_QUERY:
                 return toConstScoreQuery(queryByteString);
             case FUNCTION_SCORE_QUERY:
                 return toFunctionScoreQuery(queryByteString);
+            case FUNCTIONS_SCORE_QUERY:
+                return toFunctionsScoreQuery(queryByteString);
             case NESTED_QUERY:
                 return toNestedQuery(queryByteString);
             case WILDCARD_QUERY:
@@ -77,6 +95,8 @@ public class SearchQueryParser {
                 return toGeoPolygonQuery(queryByteString);
             case EXISTS_QUERY:
                 return toExistsQuery(queryByteString);
+            case KNN_VECTOR_QUERY:
+                return toKnnVectorQuery(queryByteString);
             default:
                 throw new IllegalArgumentException("unknown queryType: " + query.getType().name());
         }
@@ -212,6 +232,21 @@ public class SearchQueryParser {
         return query;
     }
 
+    private static SuffixQuery toSuffixQuery(ByteString queryByteString) throws IOException {
+        Search.SuffixQuery pb = Search.SuffixQuery.parseFrom(queryByteString);
+        SuffixQuery query = new SuffixQuery();
+        if (pb.hasFieldName()) {
+            query.setFieldName(pb.getFieldName());
+        }
+        if (pb.hasWeight()) {
+            query.setWeight(pb.getWeight());
+        }
+        if (pb.hasSuffix()) {
+            query.setSuffix(pb.getSuffix());
+        }
+        return query;
+    }
+
     private static WildcardQuery toWildcardQuery(ByteString queryByteString) throws IOException {
         Search.WildcardQuery pb = Search.WildcardQuery.parseFrom(queryByteString);
         WildcardQuery query = new WildcardQuery();
@@ -261,6 +296,226 @@ public class SearchQueryParser {
         return new FunctionScoreQuery(toQuery(pb.getQuery()), toFieldValueFactor(pb.getFieldValueFactor()));
     }
 
+    private static FunctionsScoreQuery.ScoreMode toFunctionScoreMode(Search.FunctionScoreMode scoreMode) {
+        switch (scoreMode) {
+            case FSM_AVG:
+                return FunctionsScoreQuery.ScoreMode.AVG;
+            case FSM_MAX:
+                return FunctionsScoreQuery.ScoreMode.MAX;
+            case FSM_SUM:
+                return FunctionsScoreQuery.ScoreMode.SUM;
+            case FSM_MIN:
+                return FunctionsScoreQuery.ScoreMode.MIN;
+            case FSM_MULTIPLY:
+                return FunctionsScoreQuery.ScoreMode.MULTIPLY;
+            case FSM_FIRST:
+                return FunctionsScoreQuery.ScoreMode.FIRST;
+            default:
+                return FunctionsScoreQuery.ScoreMode.UNKNOWN;
+        }
+    }
+
+    private static FunctionsScoreQuery.CombineMode toCombineMode(Search.FunctionCombineMode combineMode) {
+        switch (combineMode) {
+            case FCM_MULTIPLY:
+                return FunctionsScoreQuery.CombineMode.MULTIPLY;
+            case FCM_AVG:
+                return FunctionsScoreQuery.CombineMode.AVG;
+            case FCM_MAX:
+                return FunctionsScoreQuery.CombineMode.MAX;
+            case FCM_SUM:
+                return FunctionsScoreQuery.CombineMode.SUM;
+            case FCM_MIN:
+                return FunctionsScoreQuery.CombineMode.MIN;
+            case FCM_REPLACE:
+                return FunctionsScoreQuery.CombineMode.REPLACE;
+            default:
+                return FunctionsScoreQuery.CombineMode.UNKNOWN;
+        }
+    }
+
+    private static DecayFunction.MathFunction toDecayMathFunction(Search.DecayMathFunction mathFunction) {
+        switch (mathFunction) {
+            case GAUSS:
+                return DecayFunction.MathFunction.GAUSS;
+            case EXP:
+                return DecayFunction.MathFunction.EXP;
+            case LINEAR:
+                return DecayFunction.MathFunction.LINEAR;
+            default:
+                return DecayFunction.MathFunction.UNKNOWN;
+        }
+    }
+
+    private static MultiValueMode toMultiValueMode(Search.MultiValueMode multiValueMode) {
+        switch (multiValueMode) {
+            case MVM_MIN:
+                return MultiValueMode.MIN;
+            case MVM_MAX:
+                return MultiValueMode.MAX;
+            case MVM_AVG:
+                return MultiValueMode.AVG;
+            case MVM_SUM:
+                return MultiValueMode.SUM;
+            default:
+                return MultiValueMode.UNKNOWN;
+        }
+    }
+
+    private static FieldValueFactorFunction.FunctionModifier toModifier(Search.FunctionModifier modifier) {
+        switch (modifier) {
+            case FM_NONE:
+                return FieldValueFactorFunction.FunctionModifier.NONE;
+            case FM_LOG:
+                return FieldValueFactorFunction.FunctionModifier.LOG;
+            case FM_LOG1P:
+                return FieldValueFactorFunction.FunctionModifier.LOG1P;
+            case FM_LOG2P:
+                return FieldValueFactorFunction.FunctionModifier.LOG2P;
+            case FM_LN:
+                return FieldValueFactorFunction.FunctionModifier.LN;
+            case FM_LN1P:
+                return FieldValueFactorFunction.FunctionModifier.LN1P;
+            case FM_LN2P:
+                return FieldValueFactorFunction.FunctionModifier.LN2P;
+            case FM_SQUARE:
+                return FieldValueFactorFunction.FunctionModifier.SQUARE;
+            case FM_SQRT:
+                return FieldValueFactorFunction.FunctionModifier.SQRT;
+            case FM_RECIPROCAL:
+                return FieldValueFactorFunction.FunctionModifier.RECIPROCAL;
+            default:
+                return FieldValueFactorFunction.FunctionModifier.UNKNOWN;
+        }
+    }
+
+    private static ScoreFunction toScoreFunction(Search.Function pb) throws IOException {
+        ScoreFunction scoreFunction = new ScoreFunction();
+        if (pb.hasFilter()) {
+            scoreFunction.setFilter(toQuery(pb.getFilter()));
+        }
+        if (pb.hasWeight()) {
+            scoreFunction.setWeight(pb.getWeight());
+        }
+
+        if (pb.hasFieldValueFactor()) {
+            Search.FieldValueFactorFunction pbFvfFunction = pb.getFieldValueFactor();
+            FieldValueFactorFunction fvfFunction = new FieldValueFactorFunction();
+            if (pbFvfFunction.hasFieldName()) {
+                fvfFunction.setFieldName(pbFvfFunction.getFieldName());
+            }
+            if (pbFvfFunction.hasFactor()) {
+                fvfFunction.setFactor(pbFvfFunction.getFactor());
+            }
+            if (pbFvfFunction.hasModifier()) {
+                fvfFunction.setModifier(toModifier(pbFvfFunction.getModifier()));
+            }
+            if (pbFvfFunction.hasMissing()) {
+                fvfFunction.setMissing(pbFvfFunction.getMissing());
+            }
+            scoreFunction.setFieldValueFactorFunction(fvfFunction);
+        }
+        if (pb.hasDecay()) {
+            Search.DecayFunction pbDFunction = pb.getDecay();
+            DecayFunction dFunction = new DecayFunction();
+            if (pbDFunction.hasParamType() && pbDFunction.hasParam()) {
+                Search.DecayFuncParamType decayParamType = pbDFunction.getParamType();
+                switch (decayParamType) {
+                    case DF_DATE_PARAM:
+                        DecayFuncDateParam decayFuncDateParam = new DecayFuncDateParam();
+                        Search.DecayFuncDateParam pbDateParam = Search.DecayFuncDateParam.parseFrom(pbDFunction.getParam().toByteArray());
+                        if (pbDateParam.hasOriginString()) {
+                            decayFuncDateParam.setOriginString(pbDateParam.getOriginString());
+                        }
+                        if (pbDateParam.hasOriginLong()) {
+                            decayFuncDateParam.setOriginLong(pbDateParam.getOriginLong());
+                        }
+                        if (pbDateParam.hasScale()) {
+                            decayFuncDateParam.setScale(SearchProtocolParser.toDateTimeValue(pbDateParam.getScale()));
+                        }
+                        if (pbDateParam.hasOffset()) {
+                            decayFuncDateParam.setOffset(SearchProtocolParser.toDateTimeValue(pbDateParam.getOffset()));
+                        }
+                        dFunction.setDecayParam(decayFuncDateParam);
+                        break;
+                    case DF_GEO_PARAM:
+                        DecayFuncGeoParam decayFuncGeoParam = new DecayFuncGeoParam();
+                        Search.DecayFuncGeoParam pbGeoParam = Search.DecayFuncGeoParam.parseFrom(pbDFunction.getParam().toByteArray());
+                        if (pbGeoParam.hasOrigin()) {
+                            decayFuncGeoParam.setOrigin(pbGeoParam.getOrigin());
+                        }
+                        if (pbGeoParam.hasScale()) {
+                            decayFuncGeoParam.setScale(pbGeoParam.getScale());
+                        }
+                        if (pbGeoParam.hasOffset()) {
+                            decayFuncGeoParam.setOffset(pbGeoParam.getOffset());
+                        }
+                        dFunction.setDecayParam(decayFuncGeoParam);
+                        break;
+                    case DF_NUMERIC_PARAM:
+                        DecayFuncNumericParam decayFuncNumericParam = new DecayFuncNumericParam();
+                        Search.DecayFuncNumericParam pbDoubleParam = Search.DecayFuncNumericParam.parseFrom(pbDFunction.getParam().toByteArray());
+                        if (pbDoubleParam.hasOrigin()) {
+                            decayFuncNumericParam.setOrigin(pbDoubleParam.getOrigin());
+                        }
+                        if (pbDoubleParam.hasScale()) {
+                            decayFuncNumericParam.setScale(pbDoubleParam.getScale());
+                        }
+                        if (pbDoubleParam.hasOffset()) {
+                            decayFuncNumericParam.setOffset(pbDoubleParam.getOffset());
+                        }
+                        dFunction.setDecayParam(decayFuncNumericParam);
+                        break;
+                    default:
+                        dFunction.setDecayParam(DecayParam.unknownTypeParam());
+                }
+            }
+            if (pbDFunction.hasFieldName()) {
+                dFunction.setFieldName(pbDFunction.getFieldName());
+            }
+            if (pbDFunction.hasMathFunction()) {
+                dFunction.setMathFunction(toDecayMathFunction(pbDFunction.getMathFunction()));
+            }
+            if (pbDFunction.hasDecay()) {
+                dFunction.setDecay(pbDFunction.getDecay());
+            }
+            if (pbDFunction.hasMultiValueMode()) {
+                dFunction.setMultiValueMode(toMultiValueMode(pbDFunction.getMultiValueMode()));
+            }
+            scoreFunction.setDecayFunction(dFunction);
+        }
+        if (pb.hasRandom()) {
+            scoreFunction.setRandomFunction(new RandomFunction());
+        }
+        return scoreFunction;
+    }
+
+    private static Query toFunctionsScoreQuery(ByteString queryByteString) throws IOException {
+        Search.FunctionsScoreQuery pb = Search.FunctionsScoreQuery.parseFrom(queryByteString);
+        FunctionsScoreQuery query = new FunctionsScoreQuery();
+        if (pb.hasQuery()) {
+            query.setQuery(toQuery(pb.getQuery()));
+        }
+        List<ScoreFunction> functions = new ArrayList<ScoreFunction>();
+        for(Search.Function function : pb.getFunctionsList()) {
+            functions.add(toScoreFunction(function));
+        }
+        query.setFunctions(functions);
+        if (pb.hasScoreMode()) {
+            query.setScoreMode(toFunctionScoreMode(pb.getScoreMode()));
+        }
+        if (pb.hasCombineMode()) {
+            query.setCombineMode(toCombineMode(pb.getCombineMode()));
+        }
+        if (pb.hasMinScore()) {
+            query.setMinScore(pb.getMinScore());
+        }
+        if (pb.hasMaxScore()) {
+            query.setMaxScore(pb.getMaxScore());
+        }
+        return query;
+    }
+
     private static ScoreMode toScoreMode(Search.ScoreMode scoreMode) {
         switch (scoreMode) {
             case SCORE_MODE_MAX:
@@ -292,6 +547,9 @@ public class SearchQueryParser {
         }
         if (pb.hasScoreMode()) {
             query.setScoreMode(toScoreMode(pb.getScoreMode()));
+        }
+        if (pb.hasInnerHits()) {
+            query.setInnerHits(toInnerHits(pb.getInnerHits()));
         }
         return query;
     }
@@ -341,6 +599,30 @@ public class SearchQueryParser {
         ExistsQuery query = new ExistsQuery();
         if (pb.hasFieldName()) {
             query.setFieldName(pb.getFieldName());
+        }
+        return query;
+    }
+
+    private static KnnVectorQuery toKnnVectorQuery(ByteString queryByteString) throws IOException {
+        Search.KnnVectorQuery pb = Search.KnnVectorQuery.parseFrom(queryByteString);
+        KnnVectorQuery query = new KnnVectorQuery();
+        if (pb.hasFieldName()) {
+            query.setFieldName(pb.getFieldName());
+        }
+        if (pb.hasTopK()) {
+            query.setTopK(pb.getTopK());
+        }
+        List<Float> floatList = pb.getFloat32QueryVectorList();
+        float[] floats = new float[floatList.size()];
+        for (int i = 0; i < floats.length; i++) {
+            floats[i] = floatList.get(i);
+        }
+        query.setFloat32QueryVector(floats);
+        if (pb.hasFilter()) {
+            query.setFilter(toQuery(pb.getFilter()));
+        }
+        if (pb.hasWeight()) {
+            query.setWeight(pb.getWeight());
         }
         return query;
     }

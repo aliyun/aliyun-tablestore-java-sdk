@@ -11,6 +11,7 @@ import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.DnsResolver;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
@@ -29,6 +30,8 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.TraceLogger;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
+import javax.net.ssl.SSLContext;
+
 import static com.alicloud.openservices.tablestore.core.utils.LogUtil.*;
 
 public class AsyncServiceClient {
@@ -42,9 +45,19 @@ public class AsyncServiceClient {
                     .setIoThreadCount(config.getIoThreadCount()).build();
             ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(
                     ioReactorConfig);
+
+            SSLContext sslContext = SSLContexts.createDefault();
+            if (config.getSslSessionCacheSize() >= 0) {
+                sslContext.getClientSessionContext().setSessionCacheSize(config.getSslSessionCacheSize());
+            }
+            if (config.getSslSessionTimeoutInSec() >= 0) {
+                sslContext.getClientSessionContext().setSessionTimeout(config.getSslSessionTimeoutInSec());
+            }
+            SSLIOSessionStrategy sslioSessionStrategy = new SSLIOSessionStrategy(sslContext, SSLIOSessionStrategy.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+
             Registry<SchemeIOSessionStrategy> iosessionFactoryRegistry = RegistryBuilder.<SchemeIOSessionStrategy>create()
                     .register("http", NoopIOSessionStrategy.INSTANCE)
-                    .register("https", SSLIOSessionStrategy.getDefaultStrategy())
+                    .register("https", sslioSessionStrategy)
                     .build();
             DnsResolver dnsResolver = null;
             if (config.isEnableDnsCache()) {

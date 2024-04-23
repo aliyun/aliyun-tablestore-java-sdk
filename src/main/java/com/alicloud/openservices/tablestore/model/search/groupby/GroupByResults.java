@@ -20,6 +20,21 @@ public class GroupByResults {
         return groupByResultMap;
     }
 
+    public GroupByCompositeResult getAsGroupByCompositeResult(String groupByName) {
+        if (groupByResultMap != null && !groupByResultMap.containsKey(groupByName)) {
+            throw new IllegalArgumentException("GroupByResults don't contains: " + groupByName);
+        } else {
+            assert groupByResultMap != null;
+            GroupByResult result = groupByResultMap.get(groupByName);
+            if (result.getGroupByType() == GroupByType.GROUP_BY_COMPOSITE) {
+                return (GroupByCompositeResult) result;
+            } else {
+                throw new IllegalArgumentException(
+                        "the result with this groupByName can't cast to GroupByCompositeResult.");
+            }
+        }
+    }
+
     public GroupByFieldResult getAsGroupByFieldResult(String groupByName) {
         if (groupByResultMap != null && !groupByResultMap.containsKey(groupByName)) {
             throw new IllegalArgumentException("GroupByResults don't contains: " + groupByName);
@@ -107,6 +122,21 @@ public class GroupByResults {
             } else {
                 throw new IllegalArgumentException(
                         "the result with this groupByName can't cast to GroupByDateHistogramResult.");
+            }
+        }
+    }
+
+    public GroupByGeoGridResult getAsGroupByGeoGridResult(String groupByName) {
+        if (groupByResultMap != null && !groupByResultMap.containsKey(groupByName)) {
+            throw new IllegalArgumentException("GroupByResults don't contains: " + groupByName);
+        } else {
+            assert groupByResultMap != null;
+            GroupByResult result = groupByResultMap.get(groupByName);
+            if (result.getGroupByType() == GroupByType.GROUP_BY_GEO_GRID) {
+                return (GroupByGeoGridResult) result;
+            } else {
+                throw new IllegalArgumentException(
+                        "the result with this groupByName can't cast to GroupByGeoGridResult.");
             }
         }
     }

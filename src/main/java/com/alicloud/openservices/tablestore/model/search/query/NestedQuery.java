@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
  */
 public class NestedQuery implements Query {
 
-    private QueryType queryType = QueryType.QueryType_NestedQuery;
+    private final QueryType queryType = QueryType.QueryType_NestedQuery;
 
     /**
      * 嵌套文档的路径
@@ -24,6 +24,11 @@ public class NestedQuery implements Query {
      * 多值字段获取文档得分的模式
      */
     private ScoreMode scoreMode;
+
+    /**
+     * 获取嵌套文档子文档信息的相关参数
+     */
+    private InnerHits innerHits;
 
     private float weight = 1.0f;
 
@@ -53,6 +58,14 @@ public class NestedQuery implements Query {
         this.query = query;
     }
 
+    public void setInnerHits(InnerHits innerHits) {
+        this.innerHits = innerHits;
+    }
+
+    public InnerHits getInnerHits() {
+        return this.innerHits;
+    }
+
     public ScoreMode getScoreMode() {
         return scoreMode;
     }
@@ -77,6 +90,7 @@ public class NestedQuery implements Query {
         private String path;
         private Query query;
         private ScoreMode scoreMode;
+        private InnerHits innerHits;
         private float weight = 1.0f;
 
         public Builder weight(float weight) {
@@ -88,6 +102,11 @@ public class NestedQuery implements Query {
 
         public Builder path(String path) {
             this.path = path;
+            return this;
+        }
+
+        public Builder innerHits(InnerHits innerHits) {
+            this.innerHits = innerHits;
             return this;
         }
 
@@ -113,6 +132,7 @@ public class NestedQuery implements Query {
             nestedQuery.setQuery(this.query);
             nestedQuery.setWeight(this.weight);
             nestedQuery.setScoreMode(this.scoreMode);
+            nestedQuery.setInnerHits(this.innerHits);
             return nestedQuery;
         }
     }

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.model.search.GeoGrid;
+import com.alicloud.openservices.tablestore.model.search.GeoPoint;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogramResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByFieldResult;
@@ -21,6 +23,10 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRangeRes
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByRangeResultItem;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByResult;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByResults;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGridResult;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGridResultItem;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByCompositeResult;
+import com.alicloud.openservices.tablestore.model.search.groupby.GroupByCompositeResultItem;
 import com.google.protobuf.ByteString;
 
 import static com.alicloud.openservices.tablestore.core.protocol.SearchAggregationResultBuilder.buildAggregationResults;
@@ -155,6 +161,25 @@ class SearchGroupByResultBuilder {
         return result;
     }
 
+    static GroupByCompositeResult buildGroupByCompositeResult(String groupByName, ByteString groupByBody) throws IOException {
+        Search.GroupByCompositeResult groupByCompositeResult = Search.GroupByCompositeResult.parseFrom(groupByBody);
+        GroupByCompositeResult result = new GroupByCompositeResult();
+        result.setGroupByName(groupByName);
+        result.setSourceNames(groupByCompositeResult.getSourceGroupByNamesList());
+
+        if (groupByCompositeResult.hasNextToken()) {
+            result.setNextToken(groupByCompositeResult.getNextToken());
+        }
+
+        List<GroupByCompositeResultItem> items = new ArrayList<GroupByCompositeResultItem>();
+        for (Search.GroupByCompositeResultItem item : groupByCompositeResult.getGroupByCompositeResultItemsList()) {
+            items.add(buildGroupByCompositeResultItem(item));
+        }
+        result.setGroupByCompositeResultItems(items);
+
+        return result;
+    }
+
     private static GroupByDateHistogramResult buildGroupByDateHistogramResult(String groupByName, ByteString groupByBody) throws IOException {
         Search.GroupByDateHistogramResult groupByResult = Search.GroupByDateHistogramResult.parseFrom(groupByBody);
         GroupByDateHistogramResult result = new GroupByDateHistogramResult();
@@ -166,6 +191,37 @@ class SearchGroupByResultBuilder {
         }
         result.setGroupByDateHistogramItems(items);
         return result;
+    }
+
+    static GroupByCompositeResultItem buildGroupByCompositeResultItem(Search.GroupByCompositeResultItem groupByCompositeResultItem) throws IOException {
+        GroupByCompositeResultItem item = new GroupByCompositeResultItem();
+        item.setRowCount(groupByCompositeResultItem.getRowCount());
+
+        int keysCount = groupByCompositeResultItem.getKeysCount();
+        int isNullKeysCount = groupByCompositeResultItem.getIsNullKeysCount();
+        if (isNullKeysCount != keysCount) {
+            item.setKeys(groupByCompositeResultItem.getKeysList());
+        } else {
+            List<String> keys = new ArrayList<>();
+            for (int idx = 0; idx < keysCount; idx++) {
+                if (groupByCompositeResultItem.getIsNullKeys(idx)) {
+                    keys.add(null);
+                } else {
+                    keys.add(groupByCompositeResultItem.getKeys(idx));
+                }
+            }
+            item.setKeys(keys);
+        }
+
+        if (groupByCompositeResultItem.hasSubGroupBysResult()) {
+            item.setSubGroupByResults(buildGroupByResults(groupByCompositeResultItem.getSubGroupBysResult()));
+        }
+
+        if (groupByCompositeResultItem.hasSubAggsResult()) {
+            item.setSubAggregationResults(buildAggregationResults(groupByCompositeResultItem.getSubAggsResult()));
+        }
+
+        return item;
     }
 
     private static GroupByDateHistogramItem buildGroupByDateHistogramItem(Search.GroupByDateHistogramItem groupByItem) throws IOException {
@@ -196,6 +252,37 @@ class SearchGroupByResultBuilder {
         return result;
     }
 
+    private static GroupByGeoGridResultItem buildGroupByGeoGridItem(Search.GroupByGeoGridResultItem groupByItem) throws IOException {
+        GroupByGeoGridResultItem result = new GroupByGeoGridResultItem();
+        result.setKey(groupByItem.getKey());
+        Search.GeoGrid geoGrid = groupByItem.getGeoGrid();
+        result.setGeoGrid(new GeoGrid(
+                new GeoPoint(geoGrid.getTopLeft().getLat(), geoGrid.getTopLeft().getLon()),
+                new GeoPoint(geoGrid.getBottomRight().getLat(), geoGrid.getBottomRight().getLon())
+        ));
+        result.setRowCount(groupByItem.getRowCount());
+        if (groupByItem.hasSubAggsResult()) {
+            result.setSubAggregationResults(buildAggregationResults(groupByItem.getSubAggsResult()));
+        }
+        if (groupByItem.hasSubGroupBysResult()) {
+            result.setSubGroupByResults(buildGroupByResults(groupByItem.getSubGroupBysResult()));
+        }
+        return result;
+    }
+
+    private static GroupByGeoGridResult buildGroupByGeoGridResult(String groupByName, ByteString groupByBody) throws IOException {
+        Search.GroupByGeoGridResult groupByResult = Search.GroupByGeoGridResult.parseFrom(groupByBody);
+        GroupByGeoGridResult result = new GroupByGeoGridResult();
+        result.setGroupByName(groupByName);
+
+        List<GroupByGeoGridResultItem> items = new ArrayList<GroupByGeoGridResultItem>();
+        for (Search.GroupByGeoGridResultItem item : groupByResult.getGroupByGeoGridResultItemsList()) {
+            items.add(buildGroupByGeoGridItem(item));
+        }
+        result.setGroupByGeoGridResultItems(items);
+        return result;
+    }
+
     private static GroupByResult buildGroupByResult(Search.GroupByResult groupByResult)
         throws IOException {
         switch (groupByResult.getType()) {
@@ -211,6 +298,10 @@ class SearchGroupByResultBuilder {
                 return buildGroupByHistogramResult(groupByResult.getName(), groupByResult.getGroupByResult());
             case GROUP_BY_DATE_HISTOGRAM:
                 return buildGroupByDateHistogramResult(groupByResult.getName(), groupByResult.getGroupByResult());
+            case GROUP_BY_GEO_GRID:
+                return buildGroupByGeoGridResult(groupByResult.getName(), groupByResult.getGroupByResult());
+            case GROUP_BY_COMPOSITE:
+                return buildGroupByCompositeResult(groupByResult.getName(), groupByResult.getGroupByResult());
             default:
                 throw new ClientException("unsupported GroupByType: " + groupByResult.getType());
         }

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class LastUpdateTimeUnittest {
+public class LastUpdateTimeUnitTest {
     @Test
     public void testBasic() {
         long now = System.currentTimeMillis();

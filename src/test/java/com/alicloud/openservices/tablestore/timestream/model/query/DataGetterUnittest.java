@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Created by yanglian on 2019/8/14.
  */
-public class DataGetterUnittest {
+public class DataGetterUnitTest {
 	@Test
 	public void testDescTimestamp() {
 		DataGetter getter = new DataGetter(null, null, null);

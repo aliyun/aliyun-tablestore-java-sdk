@@ -169,17 +169,29 @@ public class SQLRowsFBsColumnBased implements SQLRows {
                         if(encodingType != DataType.LONG){
                             throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
                         }
-                        return resolveDateTime(columnValue.longValues(rowIndex));
+                        if (columnValue.isNullvalues(rowIndex)) {
+                            return null;
+                        } else {
+                            return resolveDateTime(columnValue.longValues(rowIndex));
+                        }
                     case LogicType.TIME:
                         if(encodingType != DataType.LONG){
                             throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
                         }
-                        return resolveTime(columnValue.longValues(rowIndex));
+                        if (columnValue.isNullvalues(rowIndex)) {
+                            return null;
+                        } else {
+                            return resolveTime(columnValue.longValues(rowIndex));
+                        }
                     case LogicType.DATE:
                         if(encodingType != DataType.LONG){
                             throw new UnsupportedOperationException("encoding Type need to be: " + DataType.LONG +" , but get: " + encodingType);
                         }
-                        return resolveDate(columnValue.longValues(rowIndex));
+                        if (columnValue.isNullvalues(rowIndex)) {
+                            return null;
+                        } else {
+                            return resolveDate(columnValue.longValues(rowIndex));
+                        }
                     default:
                         throw new UnsupportedOperationException("not supported Logic type in flatbuffers: " + logicType);
                 }

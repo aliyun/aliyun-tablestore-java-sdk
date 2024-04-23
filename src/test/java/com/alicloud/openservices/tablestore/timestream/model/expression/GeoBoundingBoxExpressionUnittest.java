@@ -8,7 +8,7 @@ import org.junit.Test;
 /**
  * Created by yanglian on 2019/4/10.
  */
-public class GeoBoundingBoxExpressionUnittest {
+public class GeoBoundingBoxExpressionUnitTest {
     @Test
     public void testBasic() {
         String left = "123,345";

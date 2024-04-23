@@ -179,7 +179,7 @@ public class MockReaderAsyncClient implements AsyncClientInterface {
         BatchGetRowResponse response = new BatchGetRowResponse(meta);
         for (Entry<String, MultiRowQueryCriteria> entry : batchGetRowRequest.getCriteriasByTable().entrySet()) {
             // 使用不同的tableName，mock不同的返回结果
-            if (entry.getKey() == "normalTable") {
+            if ("normalTable".equals(entry.getKey())) {
                 int index = 0;
                 for (PrimaryKey pk : entry.getValue().getRowKeys()) {
                     List<Column> columns = new ArrayList<Column>();
@@ -200,7 +200,7 @@ public class MockReaderAsyncClient implements AsyncClientInterface {
                     ));
                     index += 1;
                 }
-            } else if (entry.getKey() == "partitionFailedTable") {
+            } else if ("partitionFailedTable".equals(entry.getKey())) {
                 int index = 0;
                 for (PrimaryKey pk : entry.getValue().getRowKeys()) {
                     if (pk.hashCode() % 2 == 0) {
@@ -229,10 +229,10 @@ public class MockReaderAsyncClient implements AsyncClientInterface {
                     }
                     index += 1;
                 }
-            } else if (entry.getKey() == "tableStoreExceptionFailedTable") {
+            } else if ("tableStoreExceptionFailedTable".equals(entry.getKey())) {
                 callback.onFailed(batchGetRowRequest, new TableStoreException("Test TableStoreException msg", "testErrorCode"));
                 return null;
-            } else if (entry.getKey() == "clientExceptionFailedTable") {
+            } else if ("clientExceptionFailedTable".equals(entry.getKey())) {
                 callback.onFailed(batchGetRowRequest, new ClientException("Test ClientException msg"));
                 return null;
             }

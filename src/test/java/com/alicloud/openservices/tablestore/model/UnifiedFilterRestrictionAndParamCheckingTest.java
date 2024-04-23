@@ -50,16 +50,6 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
     public void setup() throws Exception {
         OTSHelper.deleteAllTable(ots);
 
-        ListTableResponse r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
-
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("PK0", PrimaryKeyType.INTEGER);
 

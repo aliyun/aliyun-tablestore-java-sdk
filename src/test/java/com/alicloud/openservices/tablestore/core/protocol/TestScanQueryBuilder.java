@@ -44,7 +44,7 @@ public class TestScanQueryBuilder extends BaseSearchTest {
         builder1.setScanQuery(sq2);
         Search.ParallelScanRequest request2 = builder1.build();
 
-        assertEquals(request1, request2);
+        assertEquals(request1.toByteString(), request2.toByteString());
 
     }
 
@@ -72,7 +72,7 @@ public class TestScanQueryBuilder extends BaseSearchTest {
         builder.setAliveTime(98);
         Search.ScanQuery sq2 = builder.build();
 
-        assertEquals(sq1, sq2);
+        assertEquals(sq1.toByteString(), sq2.toByteString());
 
 
     }

@@ -86,6 +86,12 @@ public class BatchWriteRowRequest extends TxnRequest {
             }
             request.addRowChange(rowChange);
         }
+        if (this.hasSetTransactionId()) {
+            request.setTransactionId(this.getTransactionId());
+        }
+        if (this.isAtomicSet()) {
+            request.setAtomic(this.isAtomic());
+        }
         return request;
     }
 

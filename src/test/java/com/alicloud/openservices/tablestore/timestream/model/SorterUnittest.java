@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by yanglian on 2019/7/22.
  */
-public class SorterUnittest {
+public class SorterUnitTest {
 	@Test
 	public void testBasic() {
 		Sorter sorter = Sorter.Builder.newBuilder().sortByName(Sorter.SortOrder.DESC).build();

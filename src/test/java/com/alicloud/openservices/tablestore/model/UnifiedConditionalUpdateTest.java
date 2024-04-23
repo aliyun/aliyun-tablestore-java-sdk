@@ -8,6 +8,7 @@
 package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.*;
+import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.condition.ColumnCondition;
 import com.alicloud.openservices.tablestore.model.condition.CompositeColumnValueCondition;
@@ -41,15 +42,7 @@ public class UnifiedConditionalUpdateTest {
 
     @Before
     public void setup() throws Exception {
-        ListTableResponse r = ots.listTable();
-
-        for (String table: r.getTableNames()) {
-            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(table);
-            ots.deleteTable(deleteTableRequest);
-            LOG.info("Delete table: " + table);
-
-            Thread.sleep(1000);
-        }
+        OTSHelper.deleteAllTable(ots);
     }
 
     @Test
@@ -406,7 +399,6 @@ public class UnifiedConditionalUpdateTest {
         request.setReservedThroughput(new ReservedThroughput(tableCU));
         ots.createTable(request);
 
-        LOG.info("Create table: " + tableName);
         Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
     }
 
@@ -425,7 +417,6 @@ public class UnifiedConditionalUpdateTest {
         try {
             ots.putRow(request);
         } catch (TableStoreException e) {
-            LOG.warning("PutRow fails: " + e.toString());
             success = false;
         }
 
@@ -447,7 +438,6 @@ public class UnifiedConditionalUpdateTest {
         try {
             ots.updateRow(request);
         } catch (TableStoreException e) {
-            LOG.warning("UpdateRow fails: " + e.toString());
             success = false;
         }
 
@@ -489,7 +479,6 @@ public class UnifiedConditionalUpdateTest {
         try {
             ots.deleteRow(request);
         } catch (TableStoreException e) {
-            LOG.warning("DeleteRow fails: " + e.toString());
             success = false;
         }
 

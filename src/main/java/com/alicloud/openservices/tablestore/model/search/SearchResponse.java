@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.model.search;
 
 import java.util.List;
 
+import com.alicloud.openservices.tablestore.model.ConsumedCapacity;
 import com.alicloud.openservices.tablestore.model.Response;
 import com.alicloud.openservices.tablestore.model.Row;
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationResults;
@@ -25,6 +26,11 @@ public class SearchResponse extends Response {
     private List<Row> rows;
 
     /**
+     * Search查询相关结果，封装Row行数据、Highlight高亮结果数据。
+     */
+    private List<SearchHit> searchHits;
+    
+    /**
      * 是否查询成功
      */
     private boolean isAllSuccess;
@@ -32,6 +38,10 @@ public class SearchResponse extends Response {
     private byte[] nextToken;
 
     private long bodyBytes;
+
+    private ConsumedCapacity consumed;
+
+    private ConsumedCapacity reservedConsumed;
 
     private AggregationResults aggregationResults;
 
@@ -77,6 +87,14 @@ public class SearchResponse extends Response {
         this.rows = rows;
     }
 
+    public List<SearchHit> getSearchHits() {
+        return searchHits;
+    }
+
+    public void setSearchHits(List<SearchHit> searchHits) {
+        this.searchHits = searchHits;
+    }
+
     public boolean isAllSuccess() {
         return isAllSuccess;
     }
@@ -98,6 +116,22 @@ public class SearchResponse extends Response {
     }
     public void setBodyBytes(long bodyBytes) {
         this.bodyBytes = bodyBytes;
+    }
+
+    public void setConsumed(ConsumedCapacity consumed) {
+        this.consumed = consumed;
+    }
+
+    public ConsumedCapacity getConsumed() {
+        return this.consumed;
+    }
+
+    public void setReservedConsumed(ConsumedCapacity reservedConsumed) {
+        this.reservedConsumed = reservedConsumed;
+    }
+
+    public ConsumedCapacity getReservedConsumed() {
+        return this.reservedConsumed;
     }
 
     public String getResponseInfo(boolean prettyFormat) {

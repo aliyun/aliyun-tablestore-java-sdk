@@ -1,6 +1,5 @@
 package com.alicloud.openservices.tablestore.timestream.model.expression;
 
-import com.alicloud.openservices.tablestore.model.search.query.GeoBoundingBoxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.GeoDistanceQuery;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import org.junit.Assert;
@@ -9,7 +8,7 @@ import org.junit.Test;
 /**
  * Created by yanglian on 2019/4/10.
  */
-public class GeoDistanceExpressionUnittest {
+public class GeoDistanceExpressionUnitTest {
     @Test
     public void testBasic() {
         String pos = "123,345";

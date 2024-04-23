@@ -13,6 +13,7 @@ public enum QueryType {
     QueryType_BoolQuery,
     QueryType_ConstScoreQuery,
     QueryType_FunctionScoreQuery,
+    QueryType_FunctionsScoreQuery,
     QueryType_NestedQuery,
     QueryType_WildcardQuery,
     QueryType_MatchAllQuery,
@@ -21,4 +22,6 @@ public enum QueryType {
     QueryType_GeoPolygonQuery,
     QueryType_TermsQuery,
     QueryType_ExistsQuery,
+    QueryType_KnnVectorQuery,
+    QueryType_SuffixQuery,
 }

@@ -1,9 +1,5 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.protocol.Search.ColumnReturnType;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
@@ -26,7 +22,14 @@ import com.alicloud.openservices.tablestore.model.search.SearchQuery;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest.ColumnsToGet;
 import com.alicloud.openservices.tablestore.model.search.UpdateSearchIndexRequest;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorDataType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorMetricType;
+import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 import com.google.protobuf.ByteString;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchProtocolBuilder {
 
@@ -50,6 +53,10 @@ public class SearchProtocolBuilder {
                 return Search.FieldType.GEO_POINT;
             case DATE:
                 return Search.FieldType.DATE;
+            case VECTOR:
+                return Search.FieldType.VECTOR;
+            case FUZZY_KEYWORD:
+                return Search.FieldType.FUZZY_KEYWORD;
             default:
                 throw new IllegalArgumentException("Unknown fieldType: " + fieldType.name());
         }
@@ -93,6 +100,9 @@ public class SearchProtocolBuilder {
             if (fieldSchema.isArray() != null) {
                 builder.setIsArray(fieldSchema.isArray());
             }
+            if (fieldSchema.isEnableHighlighting() != null) {
+                builder.setEnableHighlighting(fieldSchema.isEnableHighlighting());
+            }
         }
         if (fieldSchema.getIndexOptions() != null) {
             builder.setIndexOptions(buildIndexOptions(fieldSchema.getIndexOptions()));
@@ -130,7 +140,46 @@ public class SearchProtocolBuilder {
                 builder.addDateFormats(dateFormat);
             }
         }
+        if (fieldSchema.getVectorOptions() != null) {
+            builder.setVectorOptions(buildVectorOptions(fieldSchema.getVectorOptions()));
+        }
         return builder.build();
+    }
+
+    public static Search.VectorOptions buildVectorOptions(VectorOptions vectorOptions) {
+        Search.VectorOptions.Builder builder = Search.VectorOptions.newBuilder();
+        if (vectorOptions.getDataType() != null) {
+            builder.setDataType(buildVectorMetricType(vectorOptions.getDataType()));
+        }
+        if (vectorOptions.getDimension() != null) {
+            builder.setDimension(vectorOptions.getDimension());
+        }
+        if (vectorOptions.getMetricType() != null) {
+            builder.setMetricType(buildVectorMetricType(vectorOptions.getMetricType()));
+        }
+        return builder.build();
+    }
+
+    private static Search.VectorDataType buildVectorMetricType(VectorDataType type) {
+        switch (type) {
+            case FLOAT_32:
+                return Search.VectorDataType.VD_FLOAT_32;
+            default:
+                throw new IllegalArgumentException("unknown vector data type type:" + type.name());
+        }
+    }
+
+    private static Search.VectorMetricType buildVectorMetricType(VectorMetricType type) {
+        switch (type) {
+            case EUCLIDEAN:
+                return Search.VectorMetricType.VM_EUCLIDEAN;
+            case COSINE:
+                return Search.VectorMetricType.VM_COSINE;
+            case DOT_PRODUCT:
+                return Search.VectorMetricType.VM_DOT_PRODUCT;
+            default:
+                throw new IllegalArgumentException("unknown vector metric type type:" + type.name());
+        }
     }
 
     private static Search.IndexSetting buildIndexSetting(IndexSetting indexSetting) {
@@ -265,6 +314,9 @@ public class SearchProtocolBuilder {
         if (searchQuery.getQuery() != null) {
             builder.setQuery(SearchQueryBuilder.buildQuery(searchQuery.getQuery()));
         }
+        if (searchQuery.getHighlight() != null) {
+            builder.setHighlight(SearchHighlightBuilder.buildHighlight(searchQuery.getHighlight()));
+        }
         if (searchQuery.getSort() != null) {
             builder.setSort(SearchSortBuilder.buildSort(searchQuery.getSort()));
         }
@@ -391,6 +443,8 @@ public class SearchProtocolBuilder {
                 return Search.DateTimeUnit.MINUTE;
             case SECOND:
                 return Search.DateTimeUnit.SECOND;
+            case MILLISECOND:
+                return Search.DateTimeUnit.MILLISECOND;
             default:
                 throw new IllegalArgumentException("Unknown DateTimeUnit: " + unit.name());
         }
