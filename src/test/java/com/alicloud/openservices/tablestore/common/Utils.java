@@ -1,14 +1,14 @@
 package com.alicloud.openservices.tablestore.common;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
 import com.alicloud.openservices.tablestore.*;
-import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.core.ErrorCode;
-
+import com.alicloud.openservices.tablestore.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,14 +17,18 @@ public class Utils {
     private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     public static void sleepSeconds(int seconds) {
+       sleepMillis(seconds * 1000L);
+    }
+
+    public static void sleepMillis(long millis) {
         try {
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.exit(-1);
         }
     }
-    
+
     public static boolean checkNameExiste(List<String> names, String name) {
         for (String n : names) {
             if (n.equals(name)) {
@@ -129,6 +133,19 @@ public class Utils {
 
     public static void waitForPartitionLoad(String tableName) {
         sleepSeconds(OTSTestConst.CREATE_TABLE_SLEEP_IN_SECOND);
+    }
+
+    public static void waitForConditionWithRetry(long waitIntervalInMillis, long timeoutInMillis, BooleanSupplier condition) {
+        long start = System.currentTimeMillis();
+        while (true) {
+            if (System.currentTimeMillis() - start > timeoutInMillis) {
+                throw new RuntimeException("waitForConditionWithRetry timeout");
+            }
+            if (condition.getAsBoolean()) {
+                break;
+            }
+            sleepMillis(waitIntervalInMillis);
+        }
     }
 }
 

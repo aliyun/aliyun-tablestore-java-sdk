@@ -1,6 +1,5 @@
 package com.alicloud.openservices.tablestore.timeserieswriter.dispatch;
 
-import com.alicloud.openservices.tablestore.DefaultTableStoreTimeseriesWriter;
 import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesKey;
 import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesRow;
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TimeseriesHashPKDispatcher extends TimeseriesBaseDispatcher {
@@ -33,7 +33,9 @@ public class TimeseriesHashPKDispatcher extends TimeseriesBaseDispatcher {
             MessageDigest md5 = MessageDigest.getInstance("md5");
             md5.update(key.getMeasurementName().getBytes());
             md5.update(key.getDataSource().getBytes());
-            md5.update(key.buildTagsString().getBytes());
+            for (Map.Entry<String, String> entry : key.getTags().entrySet()) {
+                md5.update(entry.getValue().getBytes());
+            }
             byte[] digest = md5.digest();
             int bucketIndex = digest[0];
             int capacity = 256 / bucketCount;

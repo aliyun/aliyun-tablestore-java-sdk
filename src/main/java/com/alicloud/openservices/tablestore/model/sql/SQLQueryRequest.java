@@ -1,5 +1,6 @@
 package com.alicloud.openservices.tablestore.model.sql;
 
+import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 import com.alicloud.openservices.tablestore.model.Request;
 
@@ -17,6 +18,11 @@ public class SQLQueryRequest implements Request {
      * 序列化格式
      */
     private final SQLPayloadVersion sqlPayloadVersion;
+
+    /**
+     * 用于search翻页查询
+     */
+    private OptionalValue<String> searchToken = new OptionalValue<String>("searchToken");
 
     public SQLQueryRequest(String query) {
         this(query, SQLPayloadVersion.SQL_FLAT_BUFFERS);
@@ -40,4 +46,18 @@ public class SQLQueryRequest implements Request {
         return sqlPayloadVersion;
     }
 
+    public boolean hasSearchToken() {
+        return searchToken.isValueSet();
+    }
+
+    public String getSearchToken() {
+        if (!searchToken.isValueSet()) {
+            throw new IllegalStateException("The value of searchToken is not set.");
+        }
+        return searchToken.getValue();
+    }
+
+    public void setSearchToken(String searchToken) {
+        this.searchToken.setValue(searchToken);
+    }
 }

@@ -233,6 +233,20 @@ public class TimeseriesClient implements TimeseriesClientInterface {
         return waitForFuture(resp);
     }
 
+    @Override
+    public CreateTimeseriesLastpointIndexResponse createTimeseriesLastpointIndex(CreateTimeseriesLastpointIndexRequest request)
+            throws TableStoreException, ClientException {
+        Future<CreateTimeseriesLastpointIndexResponse> resp = internalClient.createTimeseriesLastpointIndex(request, null);
+        return waitForFuture(resp);
+    }
+
+    @Override
+    public DeleteTimeseriesLastpointIndexResponse deleteTimeseriesLastpointIndex(DeleteTimeseriesLastpointIndexRequest request)
+            throws TableStoreException, ClientException {
+        Future<DeleteTimeseriesLastpointIndexResponse> resp = internalClient.deleteTimeseriesLastpointIndex(request, null);
+        return waitForFuture(resp);
+    }
+
     private <Res> Res waitForFuture(Future<Res> f) {
         try {
             return f.get(this.internalClient.getClientConfig().getSyncClientWaitFutureTimeoutInMillis(), TimeUnit.MILLISECONDS);

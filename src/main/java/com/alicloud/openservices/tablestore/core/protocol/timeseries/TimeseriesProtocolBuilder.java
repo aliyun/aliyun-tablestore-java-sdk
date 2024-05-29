@@ -1,10 +1,10 @@
 package com.alicloud.openservices.tablestore.core.protocol.timeseries;
 
+import com.alicloud.openservices.tablestore.core.protocol.OTSProtocolBuilder;
 import com.alicloud.openservices.tablestore.core.protocol.timeseries.flatbuffer.*;
 import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.PureJavaCrc32C;
-import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
 import com.google.common.cache.Cache;
@@ -18,6 +18,8 @@ import java.util.SortedMap;
 import java.util.zip.Checksum;
 
 public class TimeseriesProtocolBuilder {
+
+    public static final int SUPPORTED_TABLE_VERSION = 1;
 
     public static void checkTagKey(String s) {
         if (s.isEmpty()) {
@@ -68,6 +70,28 @@ public class TimeseriesProtocolBuilder {
         }
         sb.append(']');
         return sb.toString();
+    }
+
+    public static List<Timeseries.TimeseriesTag> buildTags(SortedMap<String, String> tags) {
+        List<Timeseries.TimeseriesTag> tagList = new java.util.ArrayList<Timeseries.TimeseriesTag>();
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            checkTagKey(entry.getKey());
+            checkTagValue(entry.getValue());
+            Timeseries.TimeseriesTag.Builder builder = Timeseries.TimeseriesTag.newBuilder();
+            builder.setName(entry.getKey());
+            builder.setValue(entry.getValue());
+            tagList.add(builder.build());
+        }
+        return tagList;
+    }
+
+    public static int buildTags(SortedMap<String, String> tags, FlatBufferBuilder fbb) {
+        int[] tagOffs = new int[tags.size()];
+        int idx = 0;
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            tagOffs[idx++] = Tag.createTag(fbb, fbb.createString(entry.getKey()), fbb.createString(entry.getValue()));
+        }
+        return FlatBufferRowInGroup.createTagListVector(fbb, tagOffs);
     }
 
     public static int buildRowToRowGroupOffset(TimeseriesRow row, FlatBufferBuilder fbb, String timeseriesTableName, Cache<String, Long> timeseriesMetaCache) {
@@ -161,8 +185,8 @@ public class TimeseriesProtocolBuilder {
         long updateTime = updateTimeInSec == null ? 0 : updateTimeInSec;
         rowInGroupOffs[0] = FlatBufferRowInGroup.createFlatBufferRowInGroup(fbb,
                 row.getTimeseriesKey().getDataSource() == null ? fbb.createString("") : fbb.createString(row.getTimeseriesKey().getDataSource()),
-                fbb.createString(row.getTimeseriesKey().buildTagsString()),
-                row.getTimeInUs(), fieldValueOff, updateTime);
+                fbb.createString(""),
+                row.getTimeInUs(), fieldValueOff, updateTime, buildTags(row.getTimeseriesKey().getTags(), fbb));
         return FlatBufferRowGroup.createFlatBufferRowGroup(fbb, fbb.createString(row.getTimeseriesKey().getMeasurementName()),
                 FlatBufferRowGroup.createFieldNamesVector(fbb, fieldNameOffs),
                 FlatBufferRowGroup.createFieldTypesVector(fbb, fieldValueTypes),
@@ -203,6 +227,20 @@ public class TimeseriesProtocolBuilder {
         if (timeseriesTableMeta.getTimeseriesMetaOptions() != null) {
             builder.setMetaOptions(buildTimeseriesMetaOptions(timeseriesTableMeta.getTimeseriesMetaOptions()));
         }
+
+        // repeated string primary_keys = 5;
+        if (timeseriesTableMeta.getTimeseriesKeys() != null) {
+            for (String timeseriesKey : timeseriesTableMeta.getTimeseriesKeys()) {
+                builder.addTimeseriesKeySchema(timeseriesKey);
+            }
+        }
+
+        // repeated PrimaryKeySchema primary_key_fields = 6;
+        if (timeseriesTableMeta.getFieldPrimaryKeys() != null) {
+            for (PrimaryKeySchema fieldPrimaryKeySchema : timeseriesTableMeta.getFieldPrimaryKeys()) {
+                builder.addFieldPrimaryKeySchema(OTSProtocolBuilder.buildPrimaryKeySchema(fieldPrimaryKeySchema));
+            }
+        }
         return builder.build();
     }
 
@@ -232,12 +270,20 @@ public class TimeseriesProtocolBuilder {
         }
         // optional bool enable_analytical_store = 4;
         builder.setEnableAnalyticalStore(createTimeseriesTableRequest.isEnableAnalyticalStore());
-
+        // repeated LastpointIndexMetaForCreate lastpoint_index_metas = 5;
+        if (createTimeseriesTableRequest.getLastpointIndexes() != null) {
+            for (CreateTimeseriesTableRequest.LastpointIndex lastpointIndex : createTimeseriesTableRequest.getLastpointIndexes()) {
+                builder.addLastpointIndexMetas(Timeseries.LastpointIndexMetaForCreate.newBuilder()
+                        .setIndexTableName(lastpointIndex.getIndexName())
+                        .build());
+            }
+        }
         return builder.build();
     }
 
     public static Timeseries.PutTimeseriesDataRequest buildPutTimeseriesDataRequest(PutTimeseriesDataRequest request, Cache<String, Long> timeseriesMetaCache) {
         Timeseries.PutTimeseriesDataRequest.Builder builder = Timeseries.PutTimeseriesDataRequest.newBuilder();
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(request.getTimeseriesTableName());
 
         Timeseries.TimeseriesRows.Builder rowsBuilder = Timeseries.TimeseriesRows.newBuilder();
@@ -261,7 +307,7 @@ public class TimeseriesProtocolBuilder {
         Timeseries.TimeseriesKey.Builder tsKeyBuilder = Timeseries.TimeseriesKey.newBuilder();
         tsKeyBuilder.setMeasurement(timeseriesKey.getMeasurementName());
         tsKeyBuilder.setSource(timeseriesKey.getDataSource());
-        tsKeyBuilder.setTags(buildTagsString(timeseriesKey.getTags()));
+        tsKeyBuilder.addAllTagList(buildTags(timeseriesKey.getTags()));
         return tsKeyBuilder.build();
     }
 
@@ -307,6 +353,7 @@ public class TimeseriesProtocolBuilder {
         Preconditions.checkArgument(request.getBeginTimeInUs() < request.getEndTimeInUs(),
             "end time should be large than begin time");
         Timeseries.GetTimeseriesDataRequest.Builder builder = Timeseries.GetTimeseriesDataRequest.newBuilder();
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(request.getTimeseriesTableName());
         builder.setTimeSeriesKey(buildTimeseriesKey(request.getTimeseriesKey()));
         builder.setBeginTime(request.getBeginTimeInUs());
@@ -338,6 +385,7 @@ public class TimeseriesProtocolBuilder {
     public static Timeseries.QueryTimeseriesMetaRequest buildQueryTimeseriesMetaRequest(QueryTimeseriesMetaRequest request) {
         Preconditions.checkNotNull(request.getTimeseriesTableName());
         Timeseries.QueryTimeseriesMetaRequest.Builder builder = Timeseries.QueryTimeseriesMetaRequest.newBuilder();
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(request.getTimeseriesTableName());
         if (request.getCondition() != null) {
             builder.setCondition(buildMetaQueryCondition(request.getCondition()));
@@ -395,7 +443,7 @@ public class TimeseriesProtocolBuilder {
 
     public static Timeseries.UpdateTimeseriesMetaRequest buildUpdateTimeseriesMetaRequest(UpdateTimeseriesMetaRequest updateTimeseriesMetaRequest) {
         Timeseries.UpdateTimeseriesMetaRequest.Builder builder = Timeseries.UpdateTimeseriesMetaRequest.newBuilder();
-
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(updateTimeseriesMetaRequest.getTimeseriesTableName());
         if (updateTimeseriesMetaRequest.getMetas().isEmpty()) {
             throw new IllegalArgumentException("empty timeseries meta");
@@ -416,7 +464,7 @@ public class TimeseriesProtocolBuilder {
 
     public static Timeseries.DeleteTimeseriesMetaRequest buildDeleteTimeseriesMetaRequest(DeleteTimeseriesMetaRequest deleteTimeseriesMetaRequest) {
         Timeseries.DeleteTimeseriesMetaRequest.Builder builder = Timeseries.DeleteTimeseriesMetaRequest.newBuilder();
-
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(deleteTimeseriesMetaRequest.getTimeseriesTableName());
         if (deleteTimeseriesMetaRequest.getTimeseriesKeys().isEmpty()) {
             throw new IllegalArgumentException("empty timeseries key");
@@ -444,6 +492,7 @@ public class TimeseriesProtocolBuilder {
         Timeseries.ScanTimeseriesDataRequest.Builder builder = Timeseries.ScanTimeseriesDataRequest.newBuilder();
 
         Preconditions.checkNotNull(scanTimeseriesDataRequest.getTimeseriesTableName());
+        builder.setSupportedTableVersion(SUPPORTED_TABLE_VERSION);
         builder.setTableName(scanTimeseriesDataRequest.getTimeseriesTableName());
         if (scanTimeseriesDataRequest.getSplitInfo() != null) {
             builder.setSplitInfo(ByteString.copyFrom(scanTimeseriesDataRequest.getSplitInfo().getSerializedData()));
@@ -526,6 +575,34 @@ public class TimeseriesProtocolBuilder {
         builder.setTableName(updateTimeseriesAnalyticalStoreRequest.getTimeseriesTableName());
         // required TimeseriesAnalyticalStore analytical_store = 2;
         builder.setAnalyticalStore(buildTimeseriesAnalyticalStore(updateTimeseriesAnalyticalStoreRequest.getAnalyticStore()));
+        return builder.build();
+    }
+
+    public static Timeseries.CreateTimeseriesLastpointIndexRequest buildCreateTimeseriesLastpointIndexRequest(CreateTimeseriesLastpointIndexRequest createTimeseriesLastpointIndexRequest) {
+        Timeseries.CreateTimeseriesLastpointIndexRequest.Builder builder = Timeseries.CreateTimeseriesLastpointIndexRequest.newBuilder();
+        // required String main_table_name = 1;
+        builder.setMainTableName(createTimeseriesLastpointIndexRequest.getTimeseriesTableName());
+        // required string index_table_name = 2;
+        builder.setIndexTableName(createTimeseriesLastpointIndexRequest.getLastpointIndexName());
+        // optional bool include_base_data = 3;
+        builder.setIncludeBaseData(createTimeseriesLastpointIndexRequest.isIncludeBaseData());
+        // optional bool create_on_wide_column_table = 4;
+        if (createTimeseriesLastpointIndexRequest.getCreateOnWideColumnTable() != null) {
+            builder.setCreateOnWideColumnTable(createTimeseriesLastpointIndexRequest.getCreateOnWideColumnTable());
+        }
+        // optional string index_primary_key_names = 5;
+        if (!createTimeseriesLastpointIndexRequest.getLastpointIndexPrimaryKeyNames().isEmpty()) {
+            builder.addAllIndexPrimaryKeyNames(createTimeseriesLastpointIndexRequest.getLastpointIndexPrimaryKeyNames());
+        }
+        return builder.build();
+    }
+
+    public static Timeseries.DeleteTimeseriesLastpointIndexRequest buildDeleteTimeseriesLastpointIndexRequest(DeleteTimeseriesLastpointIndexRequest deleteTimeseriesLastpointIndexRequest) {
+        Timeseries.DeleteTimeseriesLastpointIndexRequest.Builder builder = Timeseries.DeleteTimeseriesLastpointIndexRequest.newBuilder();
+        // required String main_table_name = 1;
+        builder.setMainTableName(deleteTimeseriesLastpointIndexRequest.getTimeseriesTableName());
+        // required string index_table_name = 2;
+        builder.setIndexTableName(deleteTimeseriesLastpointIndexRequest.getLastpointIndexName());
         return builder.build();
     }
 

@@ -125,14 +125,11 @@ public class PlainBufferConversion {
     public static PrimaryKey toTimeseriesPrimaryKey(List<PlainBufferCell> pkCells) throws IOException {
         List<PrimaryKeyColumn> primaryKeyColumns = new ArrayList<>();
         for (int i = 0; i < pkCells.size(); i++) {
-            PlainBufferCell pkCell = pkCells.get(i);
-            if (i == 0 && !pkCell.getCellName().equals(TIMESERIES_HIDDEN_PK)) {
-                throw new IOException(
-                        "The expected primary key name is '_#h'. Actually : " + pkCell.getCellName() + ".");
-            } else if (i > 0) {
-                primaryKeyColumns.add(
-                        new PrimaryKeyColumn(pkCell.getCellName(), pkCell.getPkCellValue()));
+            if (i == 0 && pkCells.get(i).getCellName().equals(TIMESERIES_HIDDEN_PK)) {
+                // ignore _#h column
+                continue;
             }
+            primaryKeyColumns.add(new PrimaryKeyColumn(pkCells.get(i).getCellName(), pkCells.get(i).getPkCellValue()));
         }
         return new PrimaryKey(primaryKeyColumns);
     }

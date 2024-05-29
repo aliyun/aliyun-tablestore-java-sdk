@@ -134,6 +134,10 @@ public class OperationNames {
 
     public static final String OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE = "DescribeTimeseriesAnalyticalStore";
 
+    public static final String OP_CREATE_TIMESERIES_LASTPOINT_INDEX = "CreateTimeseriesLastpointIndex";
+
+    public static final String OP_DELETE_TIMESERIES_LASTPOINT_INDEX = "DeleteTimeseriesLastpointIndex";
+
     public static final String OP_SQL_Query = "SQLQuery";
 
     public static class IdempotentActionTool {

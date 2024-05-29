@@ -64,6 +64,14 @@ public interface AsyncTimeseriesClientInterface {
                                                                                     TableStoreCallback<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> callback)
             throws TableStoreException, ClientException;
 
+    Future<CreateTimeseriesLastpointIndexResponse> createTimeseriesLastpointIndex(CreateTimeseriesLastpointIndexRequest request,
+                                                                                  TableStoreCallback<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse> callback)
+            throws TableStoreException, ClientException;
+
+    Future<DeleteTimeseriesLastpointIndexResponse> deleteTimeseriesLastpointIndex(DeleteTimeseriesLastpointIndexRequest request,
+                                                                                  TableStoreCallback<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse> callback)
+            throws TableStoreException, ClientException;
+
     public TimeseriesClientInterface asTimeseriesClientInterface();
 
     /**

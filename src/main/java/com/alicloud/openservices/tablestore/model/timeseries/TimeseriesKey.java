@@ -1,22 +1,17 @@
 package com.alicloud.openservices.tablestore.model.timeseries;
 
-import com.alicloud.openservices.tablestore.core.protocol.timeseries.TimeseriesProtocolBuilder;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
-import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class TimeseriesKey implements Comparable<TimeseriesKey> {
 
     private final String measurementName;
     private final String dataSource;
     private final SortedMap<String, String> tags = new TreeMap<String, String>();
-    private String tagsString;
 
     public TimeseriesKey(String measurementName, String dataSource) {
         this(measurementName, dataSource, null);
@@ -51,24 +46,27 @@ public class TimeseriesKey implements Comparable<TimeseriesKey> {
         return Collections.unmodifiableSortedMap(tags);
     }
 
-    public String buildTagsString() {
-        if (tagsString == null) {
-            tagsString = TimeseriesProtocolBuilder.buildTagsString(this.tags);
-            return tagsString;
-        }
-        return tagsString;
-    }
-
     public String buildMetaCacheKey(String tableName) {
-        StringBuilder sb = new StringBuilder(tableName.length() + measurementName.length() +
-                dataSource.length() + buildTagsString().length() + 3);
+        int capacity = 0;
+        capacity += tableName.length();
+        capacity += measurementName.length();
+        capacity += dataSource.length();
+        capacity += 4;
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            capacity += entry.getKey().length() + entry.getValue().length() + 3;
+        }
+        StringBuilder sb = new StringBuilder(capacity);
         sb.append(tableName);
-        sb.append('\t');
+        sb.append((char)(measurementName.length()));
         sb.append(measurementName);
-        sb.append('\t');
+        sb.append((char)(dataSource.length()));
         sb.append(dataSource);
-        sb.append('\t');
-        sb.append(buildTagsString());
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("\t");
+            sb.append((char)(entry.getValue().length()));
+            sb.append(entry.getValue());
+        }
         return sb.toString();
     }
 
@@ -90,7 +88,6 @@ public class TimeseriesKey implements Comparable<TimeseriesKey> {
         return new Gson().toJson(this);
     }
 
-
     @Override
     public int compareTo(TimeseriesKey target) {
 
@@ -102,7 +99,25 @@ public class TimeseriesKey implements Comparable<TimeseriesKey> {
         if (ret != 0) {
             return ret;
         }
-        ret = this.tagsString.compareTo(target.tagsString);
+        // union of keys
+        SortedSet<String> keys = new TreeSet<String>();
+        keys.addAll(this.tags.keySet());
+        keys.addAll(target.tags.keySet());
+        for (String key : keys) {
+            String value = this.tags.get(key);
+            String targetValue = target.tags.get(key);
+            if (value == null && targetValue == null) {
+                continue;
+            } else if (value == null) {
+                return -1;
+            } else if (targetValue == null) {
+                return 1;
+            }
+            ret = value.compareTo(targetValue);
+            if (ret != 0) {
+                return ret;
+            }
+        }
         return ret;
     }
 }

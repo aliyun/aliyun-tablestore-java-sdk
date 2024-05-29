@@ -46,4 +46,10 @@ public interface TimeseriesClientInterface {
 
     UpdateTimeseriesAnalyticalStoreResponse updateTimeseriesAnalyticalStore(UpdateTimeseriesAnalyticalStoreRequest request)
             throws TableStoreException, ClientException;
+
+    CreateTimeseriesLastpointIndexResponse createTimeseriesLastpointIndex(CreateTimeseriesLastpointIndexRequest request)
+            throws TableStoreException, ClientException;
+
+    DeleteTimeseriesLastpointIndexResponse deleteTimeseriesLastpointIndex(DeleteTimeseriesLastpointIndexRequest request)
+            throws TableStoreException, ClientException;
 }

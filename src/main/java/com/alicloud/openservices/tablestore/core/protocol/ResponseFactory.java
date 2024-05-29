@@ -1059,8 +1059,12 @@ public class ResponseFactory {
 
             switch (sqlPayloadVersion) {
                 case SQL_FLAT_BUFFERS:
-                    return new SQLQueryResponse(response.getMeta(), consumedCapacityByTable,
+                    SQLQueryResponse result = new SQLQueryResponse(response.getMeta(), consumedCapacityByTable,
                             sqlPayloadVersion, sqlStatementType, sqlQueryResponse.getRows());
+                    if (sqlQueryResponse.hasNextSearchToken() && !sqlQueryResponse.getNextSearchToken().isEmpty()) {
+                        result.setNextSearchToken(sqlQueryResponse.getNextSearchToken());
+                    }
+                    return result;
                 default:
                     throw new UnsupportedOperationException("not supported sql payload version: " + sqlPayloadVersion);
             }

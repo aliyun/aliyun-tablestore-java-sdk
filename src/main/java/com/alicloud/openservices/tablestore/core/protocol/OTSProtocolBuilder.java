@@ -214,7 +214,7 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
-    private static OtsInternalApi.PrimaryKeySchema buildPrimaryKeySchema(PrimaryKeySchema pk) {
+    public static OtsInternalApi.PrimaryKeySchema buildPrimaryKeySchema(PrimaryKeySchema pk) {
         OtsInternalApi.PrimaryKeySchema.Builder builder = OtsInternalApi.PrimaryKeySchema.newBuilder();
         builder.setName(pk.getName());
         builder.setType(toPBPrimaryKeyType(pk.getType()));
@@ -1272,6 +1272,9 @@ public class OTSProtocolBuilder {
         builder.setQuery(request.getQuery());
         builder.setVersion(buildSQLPayloadVersion(request.getSqlPayloadVersion()));
         builder.setSqlVersion(1);
+        if (request.hasSearchToken()) {
+            builder.setSearchToken(request.getSearchToken());
+        }
 
         return builder.build();
     }

@@ -5,9 +5,7 @@ import com.alicloud.openservices.tablestore.model.search.FieldType;
 import com.alicloud.openservices.tablestore.model.search.IndexSchema;
 import org.junit.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TimelineSchemaTest {
     @Test
@@ -50,8 +48,13 @@ public class TimelineSchemaTest {
         assertTrue(cpuCount + 1 == timelineSchema.getMaxCallbackExecuteThreads());
         assertTrue(timelineSchema.getMaxCallbackExecuteThreads() >= timelineSchema.getCallbackExecuteThreads());
 
-        timelineSchema.setCallbackExecuteThreads(20);
-        assertTrue(timelineSchema.getMaxCallbackExecuteThreads() == 20);
+        int executeThreads = 20;
+        if (executeThreads < timelineSchema.getMaxCallbackExecuteThreads()) {
+            executeThreads = timelineSchema.getMaxCallbackExecuteThreads() * 2;
+        }
+
+        timelineSchema.setCallbackExecuteThreads(executeThreads);
+        assertTrue(timelineSchema.getMaxCallbackExecuteThreads() == executeThreads);
         assertTrue(timelineSchema.getMaxCallbackExecuteThreads() >= timelineSchema.getCallbackExecuteThreads());
     }
 }

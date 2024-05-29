@@ -187,6 +187,10 @@ public class LauncherFactory {
                 new Context(new OTSUri(endpoint, OP_DESCRIBE_TIMESERIES_ANALYTICAL_STORE)));
         contexts.put(OP_UPDATE_TIMESERIES_ANALYTICAL_STORE,
                 new Context(new OTSUri(endpoint, OP_UPDATE_TIMESERIES_ANALYTICAL_STORE)));
+        contexts.put(OP_CREATE_TIMESERIES_LASTPOINT_INDEX,
+                new Context(new OTSUri(endpoint, OP_CREATE_TIMESERIES_LASTPOINT_INDEX)));
+        contexts.put(OP_DELETE_TIMESERIES_LASTPOINT_INDEX,
+                new Context(new OTSUri(endpoint, OP_DELETE_TIMESERIES_LASTPOINT_INDEX)));
         contexts.put(OP_SQL_Query,
                 new Context(new OTSUri(endpoint, OP_SQL_Query)));
     }
@@ -646,6 +650,20 @@ public class LauncherFactory {
                                                                                    UpdateTimeseriesAnalyticalStoreRequest originRequest) {
         Context ctx = contexts.get(OP_UPDATE_TIMESERIES_ANALYTICAL_STORE);
         return new UpdateTimeseriesAnalyticalStoreLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public CreateTimeseriesLastpointIndexLauncher createTimeseriesLastpointIndex(TraceLogger tracer, RetryStrategy retry,
+                                                                                 CreateTimeseriesLastpointIndexRequest originRequest) {
+        Context ctx = contexts.get(OP_CREATE_TIMESERIES_LASTPOINT_INDEX);
+        return new CreateTimeseriesLastpointIndexLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DeleteTimeseriesLastpointIndexLauncher deleteTimeseriesLastpointIndex(TraceLogger tracer, RetryStrategy retry,
+                                                                                 DeleteTimeseriesLastpointIndexRequest originRequest) {
+        Context ctx = contexts.get(OP_DELETE_TIMESERIES_LASTPOINT_INDEX);
+        return new DeleteTimeseriesLastpointIndexLauncher(
                 ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
     }
 

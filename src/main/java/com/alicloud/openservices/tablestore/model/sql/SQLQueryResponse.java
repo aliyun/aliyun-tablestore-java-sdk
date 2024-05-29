@@ -20,6 +20,8 @@ public class SQLQueryResponse extends Response {
 
     private ByteString rows;
 
+    private String nextSearchToken;
+
     /**
      * internal use
      */
@@ -64,4 +66,11 @@ public class SQLQueryResponse extends Response {
         return SQLFactory.getSQLResultSet(version, type, rows);
     }
 
+    public String getNextSearchToken() {
+        return nextSearchToken;
+    }
+
+    public void setNextSearchToken(String nextSearchToken) {
+        this.nextSearchToken = nextSearchToken;
+    }
 }

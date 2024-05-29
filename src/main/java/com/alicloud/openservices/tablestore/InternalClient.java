@@ -1,44 +1,28 @@
 package com.alicloud.openservices.tablestore;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.*;
-
+import com.alicloud.openservices.tablestore.core.*;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProviderFactory;
-import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
-import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
-import com.alicloud.openservices.tablestore.core.*;
+import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.CheckpointResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ConnectTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ConnectTunnelResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsResponse;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelRequest;
-import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelResponse;
+import com.alicloud.openservices.tablestore.model.tunnel.*;
+import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
 import com.google.common.cache.Cache;
+
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class InternalClient {
     private static int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
@@ -1899,6 +1883,54 @@ public class InternalClient {
             f.watchBy(callback);
         }
 
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<CreateTimeseriesLastpointIndexResponse> createTimeseriesLastpointIndex(
+            CreateTimeseriesLastpointIndexRequest request,
+            TableStoreCallback<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateTimeseriesLastpointIndexLauncher launcher = launcherFactory.createTimeseriesLastpointIndex(tracer, retry, request);
+
+        AsyncCompletion<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse> completion =
+                new AsyncCompletion<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse> f =
+                new CallbackImpledFuture<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteTimeseriesLastpointIndexResponse> deleteTimeseriesLastpointIndex(
+            DeleteTimeseriesLastpointIndexRequest request,
+            TableStoreCallback<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse> callback) {
+        Preconditions.checkNotNull(request);
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteTimeseriesLastpointIndexLauncher launcher = launcherFactory.deleteTimeseriesLastpointIndex(tracer, retry, request);
+        AsyncCompletion<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse> completion =
+                new AsyncCompletion<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse>(
+                        launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse> f =
+                new CallbackImpledFuture<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
         launcher.fire(request, completion);
 
         return f;

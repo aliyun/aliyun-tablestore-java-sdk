@@ -18,6 +18,8 @@ public class DescribeTimeseriesTableResponse extends Response {
      */
     private List<TimeseriesAnalyticalStore> analyticalStores = new ArrayList<TimeseriesAnalyticalStore>();
 
+    private List<TimeseriesLastpointIndex> lastpointIndexes = new ArrayList<TimeseriesLastpointIndex>();
+
     public DescribeTimeseriesTableResponse(Response meta) {
         super(meta);
     }
@@ -38,18 +40,31 @@ public class DescribeTimeseriesTableResponse extends Response {
         return analyticalStores;
     }
 
+    public List<TimeseriesLastpointIndex> getLastpointIndexes() {
+        return lastpointIndexes;
+    }
+
     /*
      * 内部接口。请勿使用。
+     * @param timeseriesTableMeta 表的结构信息。
      */
     public void setTimeseriesTableMeta(TimeseriesTableMeta timeseriesTableMeta) {
         this.timeseriesTableMeta = timeseriesTableMeta;
     }
 
     /**
-     * 设置分析存储信息。
+     * 内部接口。请勿使用。
      * @param analyticalStores 分析存储信息。
      */
     public void setAnalyticalStores(List<TimeseriesAnalyticalStore> analyticalStores) {
         this.analyticalStores = analyticalStores;
+    }
+
+    /*
+     * 内部接口。请勿使用。
+     * @param lastpointIndexes 最近点索引信息。
+     */
+    public void setLastpointIndexes(List<TimeseriesLastpointIndex> lastpointIndexes) {
+        this.lastpointIndexes = lastpointIndexes;
     }
 }

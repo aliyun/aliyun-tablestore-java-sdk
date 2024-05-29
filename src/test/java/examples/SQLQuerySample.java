@@ -12,6 +12,7 @@ import com.alicloud.openservices.tablestore.model.sql.SQLUtils;
 import java.nio.ByteBuffer;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLQuerySample {
 
@@ -22,7 +23,6 @@ public class SQLQuerySample {
         final String instanceName = "";
 
         SyncClientInterface client = new SyncClient(endPoint, accessId, accessKey, instanceName);
-
         try {
             // drop mapping table fb_test;
             System.out.println("drop mapping table begin");
@@ -110,6 +110,26 @@ public class SQLQuerySample {
             }
             System.out.println("select query end");
 
+            //select col_str_0, col_int_1, col_int_2, col_int_3, col_int_4 from test_search_agg_token group by col_str_0, col_int_1, col_int_2, col_int_3, col_int_4 order by col_str_0 limit 10000;
+            long totalRowCount = 0;
+            int cnt = 0;
+            SQLQueryRequest searchTokenRequest = new SQLQueryRequest("select col_str_0, col_int_1, col_int_2, col_int_3, col_int_4 from test_search_agg_token group by col_str_0, col_int_1, col_int_2, col_int_3, col_int_4 order by col_str_0 limit 10000;");
+            while (true) {
+                SQLQueryResponse searchTokenResponse = client.sqlQuery(searchTokenRequest);
+                SQLResultSet selectSearchResultSet = searchTokenResponse.getSQLResultSet();
+                if (selectSearchResultSet.hasNext()) {
+                    totalRowCount += selectSearchResultSet.rowCount();
+                }
+                cnt ++;
+                System.out.println("iterator: " + cnt + ", totalRowCount: " + totalRowCount);
+                if (searchTokenResponse.getNextSearchToken() != null) {
+                    searchTokenRequest.setSearchToken(searchTokenResponse.getNextSearchToken());
+                } else {
+                    break;
+                }
+            }
+            System.out.println("totalRowCount: " + totalRowCount);
+
             // timeseries query
             System.out.println("timeseries query begin");
             SQLQueryRequest timeseriesRequest = new SQLQueryRequest("select * from devops_25w limit 10");
@@ -140,8 +160,6 @@ public class SQLQuerySample {
                         row.getDate(2) + ", " + row.getDate("date(from_unixtime(1689705552.010))"));
             }
             System.out.println("select query end");
-
-
         } catch (TableStoreException e) {
             System.err.println("操作失败，详情：" + e.getMessage());
             // 可以根据错误代码做出处理， OTS的ErrorCode定义在OTSErrorCode中。

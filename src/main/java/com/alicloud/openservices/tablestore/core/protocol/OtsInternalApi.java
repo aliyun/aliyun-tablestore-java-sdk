@@ -54348,6 +54348,10 @@ public final class OtsInternalApi {
     // optional int64 sql_version = 3;
     boolean hasSqlVersion();
     long getSqlVersion();
+    
+    // optional string search_token = 5;
+    boolean hasSearchToken();
+    String getSearchToken();
   }
   public static final class SQLQueryRequest extends
       com.google.protobuf.GeneratedMessage
@@ -54430,10 +54434,43 @@ public final class OtsInternalApi {
       return sqlVersion_;
     }
     
+    // optional string search_token = 5;
+    public static final int SEARCH_TOKEN_FIELD_NUMBER = 5;
+    private java.lang.Object searchToken_;
+    public boolean hasSearchToken() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getSearchToken() {
+      java.lang.Object ref = searchToken_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          searchToken_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getSearchTokenBytes() {
+      java.lang.Object ref = searchToken_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        searchToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       query_ = "";
       version_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLPayloadVersion.SQL_PLAIN_BUFFER;
       sqlVersion_ = 0L;
+      searchToken_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -54460,6 +54497,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, sqlVersion_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(5, getSearchTokenBytes());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -54480,6 +54520,10 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, sqlVersion_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getSearchTokenBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -54611,6 +54655,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000002);
         sqlVersion_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
+        searchToken_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -54661,6 +54707,10 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000004;
         }
         result.sqlVersion_ = sqlVersion_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.searchToken_ = searchToken_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -54685,6 +54735,9 @@ public final class OtsInternalApi {
         }
         if (other.hasSqlVersion()) {
           setSqlVersion(other.getSqlVersion());
+        }
+        if (other.hasSearchToken()) {
+          setSearchToken(other.getSearchToken());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -54740,6 +54793,11 @@ public final class OtsInternalApi {
             case 24: {
               bitField0_ |= 0x00000004;
               sqlVersion_ = input.readInt64();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000008;
+              searchToken_ = input.readBytes();
               break;
             }
           }
@@ -54827,6 +54885,42 @@ public final class OtsInternalApi {
         sqlVersion_ = 0L;
         onChanged();
         return this;
+      }
+      
+      // optional string search_token = 5;
+      private java.lang.Object searchToken_ = "";
+      public boolean hasSearchToken() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getSearchToken() {
+        java.lang.Object ref = searchToken_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          searchToken_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setSearchToken(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        searchToken_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSearchToken() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        searchToken_ = getDefaultInstance().getSearchToken();
+        onChanged();
+        return this;
+      }
+      void setSearchToken(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        searchToken_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SQLQueryRequest)
@@ -55549,6 +55643,10 @@ public final class OtsInternalApi {
     // optional .com.alicloud.openservices.tablestore.core.protocol.SQLStatementType type = 4;
     boolean hasType();
     com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLStatementType getType();
+    
+    // optional string next_search_token = 8;
+    boolean hasNextSearchToken();
+    String getNextSearchToken();
   }
   public static final class SQLQueryResponse extends
       com.google.protobuf.GeneratedMessage
@@ -55630,11 +55728,44 @@ public final class OtsInternalApi {
       return type_;
     }
     
+    // optional string next_search_token = 8;
+    public static final int NEXT_SEARCH_TOKEN_FIELD_NUMBER = 8;
+    private java.lang.Object nextSearchToken_;
+    public boolean hasNextSearchToken() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getNextSearchToken() {
+      java.lang.Object ref = nextSearchToken_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          nextSearchToken_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getNextSearchTokenBytes() {
+      java.lang.Object ref = nextSearchToken_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        nextSearchToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       consumes_ = java.util.Collections.emptyList();
       rows_ = com.google.protobuf.ByteString.EMPTY;
       version_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLPayloadVersion.SQL_PLAIN_BUFFER;
       type_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLStatementType.SQL_SELECT;
+      nextSearchToken_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -55666,6 +55797,9 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeEnum(4, type_.getNumber());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(8, getNextSearchTokenBytes());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -55690,6 +55824,10 @@ public final class OtsInternalApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(4, type_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getNextSearchTokenBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -55828,6 +55966,8 @@ public final class OtsInternalApi {
         bitField0_ = (bitField0_ & ~0x00000004);
         type_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLStatementType.SQL_SELECT;
         bitField0_ = (bitField0_ & ~0x00000008);
+        nextSearchToken_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -55887,6 +56027,10 @@ public final class OtsInternalApi {
           to_bitField0_ |= 0x00000004;
         }
         result.type_ = type_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.nextSearchToken_ = nextSearchToken_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -55937,6 +56081,9 @@ public final class OtsInternalApi {
         }
         if (other.hasType()) {
           setType(other.getType());
+        }
+        if (other.hasNextSearchToken()) {
+          setNextSearchToken(other.getNextSearchToken());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -56006,6 +56153,11 @@ public final class OtsInternalApi {
                 bitField0_ |= 0x00000008;
                 type_ = value;
               }
+              break;
+            }
+            case 66: {
+              bitField0_ |= 0x00000010;
+              nextSearchToken_ = input.readBytes();
               break;
             }
           }
@@ -56270,6 +56422,42 @@ public final class OtsInternalApi {
         type_ = com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLStatementType.SQL_SELECT;
         onChanged();
         return this;
+      }
+      
+      // optional string next_search_token = 8;
+      private java.lang.Object nextSearchToken_ = "";
+      public boolean hasNextSearchToken() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public String getNextSearchToken() {
+        java.lang.Object ref = nextSearchToken_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          nextSearchToken_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setNextSearchToken(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        nextSearchToken_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearNextSearchToken() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        nextSearchToken_ = getDefaultInstance().getNextSearchToken();
+        onChanged();
+        return this;
+      }
+      void setNextSearchToken(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        nextSearchToken_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.SQLQueryResponse)
@@ -57093,50 +57281,51 @@ public final class OtsInternalApi {
       ".protocol.SearchIndexSplitsOptions\".\n\030Se" +
       "archIndexSplitsOptions\022\022\n\nindex_name\030\001 \001",
       "(\t\"@\n\025ComputeSplitsResponse\022\022\n\nsession_i" +
-      "d\030\001 \001(\014\022\023\n\013splits_size\030\002 \001(\005\"\215\001\n\017SQLQuer" +
+      "d\030\001 \001(\014\022\023\n\013splits_size\030\002 \001(\005\"\243\001\n\017SQLQuer" +
       "yRequest\022\r\n\005query\030\001 \002(\t\022V\n\007version\030\002 \001(\016" +
       "2E.com.alicloud.openservices.tablestore." +
       "core.protocol.SQLPayloadVersion\022\023\n\013sql_v" +
-      "ersion\030\003 \001(\003\"\350\001\n\025TableConsumedCapacity\022\022" +
-      "\n\ntable_name\030\001 \001(\t\022V\n\010consumed\030\002 \001(\0132D.c" +
-      "om.alicloud.openservices.tablestore.core" +
-      ".protocol.ConsumedCapacity\022c\n\023reserved_t" +
-      "hroughput\030\003 \001(\0132F.com.alicloud.openservi",
-      "ces.tablestore.core.protocol.ReservedThr" +
-      "oughput\"\251\002\n\020SQLQueryResponse\022[\n\010consumes" +
-      "\030\001 \003(\0132I.com.alicloud.openservices.table" +
-      "store.core.protocol.TableConsumedCapacit" +
-      "y\022\014\n\004rows\030\002 \001(\014\022V\n\007version\030\003 \001(\0162E.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.SQLPayloadVersion\022R\n\004type\030\004 \001(\0162D." +
+      "ersion\030\003 \001(\003\022\024\n\014search_token\030\005 \001(\t\"\350\001\n\025T" +
+      "ableConsumedCapacity\022\022\n\ntable_name\030\001 \001(\t" +
+      "\022V\n\010consumed\030\002 \001(\0132D.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Consumed" +
+      "Capacity\022c\n\023reserved_throughput\030\003 \001(\0132F.",
       "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.SQLStatementType*5\n\016PrimaryKe" +
-      "yType\022\013\n\007INTEGER\020\001\022\n\n\006STRING\020\002\022\n\n\006BINARY",
-      "\020\003*c\n\021DefinedColumnType\022\017\n\013DCT_INTEGER\020\001" +
-      "\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_BOOLEAN\020\003\022\016\n\nDCT" +
-      "_STRING\020\004\022\014\n\010DCT_BLOB\020\007*&\n\020PrimaryKeyOpt" +
-      "ion\022\022\n\016AUTO_INCREMENT\020\001*:\n\017IndexUpdateMo" +
-      "de\022\023\n\017IUM_ASYNC_INDEX\020\000\022\022\n\016IUM_SYNC_INDE" +
-      "X\020\001*4\n\tIndexType\022\023\n\017IT_GLOBAL_INDEX\020\000\022\022\n" +
-      "\016IT_LOCAL_INDEX\020\001*=\n\016IndexSyncPhase\022\017\n\013I" +
-      "SP_INVALID\020\000\022\014\n\010ISP_FULL\020\001\022\014\n\010ISP_INCR\020\002" +
-      "*M\n\027RowExistenceExpectation\022\n\n\006IGNORE\020\000\022" +
-      "\020\n\014EXPECT_EXIST\020\001\022\024\n\020EXPECT_NOT_EXIST\020\002*",
-      "/\n\nSSEKeyType\022\023\n\017SSE_KMS_SERVICE\020\001\022\014\n\010SS" +
-      "E_BYOK\020\002*9\n\nReturnType\022\013\n\007RT_NONE\020\000\022\t\n\005R" +
-      "T_PK\020\001\022\023\n\017RT_AFTER_MODIFY\020\002*0\n\rOperation" +
-      "Type\022\007\n\003PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DELETE\020\003*&\n" +
-      "\tDirection\022\013\n\007FORWARD\020\000\022\014\n\010BACKWARD\020\001*6\n" +
-      "\014StreamStatus\022\023\n\017STREAM_ENABLING\020\001\022\021\n\rST" +
-      "REAM_ACTIVE\020\002*9\n\nActionType\022\013\n\007PUT_ROW\020\001" +
-      "\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*@\n\rData" +
-      "BlockType\022\024\n\020DBT_PLAIN_BUFFER\020\000\022\031\n\025DBT_S" +
-      "IMPLE_ROW_MATRIX\020\001*?\n\021SQLPayloadVersion\022",
-      "\024\n\020SQL_PLAIN_BUFFER\020\001\022\024\n\020SQL_FLAT_BUFFER" +
-      "S\020\002*\215\001\n\020SQLStatementType\022\016\n\nSQL_SELECT\020\001" +
-      "\022\024\n\020SQL_CREATE_TABLE\020\002\022\022\n\016SQL_SHOW_TABLE" +
-      "\020\003\022\026\n\022SQL_DESCRIBE_TABLE\020\004\022\022\n\016SQL_DROP_T" +
-      "ABLE\020\005\022\023\n\017SQL_ALTER_TABLE\020\006"
+      "e.protocol.ReservedThroughput\"\304\002\n\020SQLQue" +
+      "ryResponse\022[\n\010consumes\030\001 \003(\0132I.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.TableConsumedCapacity\022\014\n\004rows\030\002 \001(\014\022V\n" +
+      "\007version\030\003 \001(\0162E.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.SQLPayloadVe" +
+      "rsion\022R\n\004type\030\004 \001(\0162D.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.SQLStat" +
+      "ementType\022\031\n\021next_search_token\030\010 \001(\t*5\n\016",
+      "PrimaryKeyType\022\013\n\007INTEGER\020\001\022\n\n\006STRING\020\002\022" +
+      "\n\n\006BINARY\020\003*c\n\021DefinedColumnType\022\017\n\013DCT_" +
+      "INTEGER\020\001\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_BOOLEAN" +
+      "\020\003\022\016\n\nDCT_STRING\020\004\022\014\n\010DCT_BLOB\020\007*&\n\020Prim" +
+      "aryKeyOption\022\022\n\016AUTO_INCREMENT\020\001*:\n\017Inde" +
+      "xUpdateMode\022\023\n\017IUM_ASYNC_INDEX\020\000\022\022\n\016IUM_" +
+      "SYNC_INDEX\020\001*4\n\tIndexType\022\023\n\017IT_GLOBAL_I" +
+      "NDEX\020\000\022\022\n\016IT_LOCAL_INDEX\020\001*=\n\016IndexSyncP" +
+      "hase\022\017\n\013ISP_INVALID\020\000\022\014\n\010ISP_FULL\020\001\022\014\n\010I" +
+      "SP_INCR\020\002*M\n\027RowExistenceExpectation\022\n\n\006",
+      "IGNORE\020\000\022\020\n\014EXPECT_EXIST\020\001\022\024\n\020EXPECT_NOT" +
+      "_EXIST\020\002*/\n\nSSEKeyType\022\023\n\017SSE_KMS_SERVIC" +
+      "E\020\001\022\014\n\010SSE_BYOK\020\002*9\n\nReturnType\022\013\n\007RT_NO" +
+      "NE\020\000\022\t\n\005RT_PK\020\001\022\023\n\017RT_AFTER_MODIFY\020\002*0\n\r" +
+      "OperationType\022\007\n\003PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DE" +
+      "LETE\020\003*&\n\tDirection\022\013\n\007FORWARD\020\000\022\014\n\010BACK" +
+      "WARD\020\001*6\n\014StreamStatus\022\023\n\017STREAM_ENABLIN" +
+      "G\020\001\022\021\n\rSTREAM_ACTIVE\020\002*9\n\nActionType\022\013\n\007" +
+      "PUT_ROW\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020" +
+      "\003*@\n\rDataBlockType\022\024\n\020DBT_PLAIN_BUFFER\020\000",
+      "\022\031\n\025DBT_SIMPLE_ROW_MATRIX\020\001*?\n\021SQLPayloa" +
+      "dVersion\022\024\n\020SQL_PLAIN_BUFFER\020\001\022\024\n\020SQL_FL" +
+      "AT_BUFFERS\020\002*\215\001\n\020SQLStatementType\022\016\n\nSQL" +
+      "_SELECT\020\001\022\024\n\020SQL_CREATE_TABLE\020\002\022\022\n\016SQL_S" +
+      "HOW_TABLE\020\003\022\026\n\022SQL_DESCRIBE_TABLE\020\004\022\022\n\016S" +
+      "QL_DROP_TABLE\020\005\022\023\n\017SQL_ALTER_TABLE\020\006"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -57876,7 +58065,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SQLQueryRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SQLQueryRequest_descriptor,
-              new java.lang.String[] { "Query", "Version", "SqlVersion", },
+              new java.lang.String[] { "Query", "Version", "SqlVersion", "SearchToken", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLQueryRequest.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLQueryRequest.Builder.class);
           internal_static_com_alicloud_openservices_tablestore_core_protocol_TableConsumedCapacity_descriptor =
@@ -57892,7 +58081,7 @@ public final class OtsInternalApi {
           internal_static_com_alicloud_openservices_tablestore_core_protocol_SQLQueryResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_alicloud_openservices_tablestore_core_protocol_SQLQueryResponse_descriptor,
-              new java.lang.String[] { "Consumes", "Rows", "Version", "Type", },
+              new java.lang.String[] { "Consumes", "Rows", "Version", "Type", "NextSearchToken", },
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLQueryResponse.class,
               com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.SQLQueryResponse.Builder.class);
           return null;

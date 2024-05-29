@@ -1,15 +1,28 @@
 package com.alicloud.openservices.tablestore.model.timeseries;
 
-import com.alicloud.openservices.tablestore.core.utils.OptionalValue;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
-import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.OperationNames;
+import com.alicloud.openservices.tablestore.model.Request;
+import com.alicloud.openservices.tablestore.model.TimeseriesTableMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class CreateTimeseriesTableRequest implements Request {
+
+    public static class LastpointIndex {
+        private String indexName;
+
+        public LastpointIndex(String indexName) {
+            this.indexName = indexName;
+        }
+        public String getIndexName() {
+            return indexName;
+        }
+        public void setIndexName(String indexName) {
+            this.indexName = indexName;
+        }
+    }
 
     /**
      * 表的结构信息。
@@ -25,6 +38,8 @@ public class CreateTimeseriesTableRequest implements Request {
      * 是否开启分析存储
      */
     private boolean enableAnalyticalStore = true;
+
+    private List<LastpointIndex> lastpointIndexes = new ArrayList<LastpointIndex>();
 
     /**
      * 初始化CreateTimeseriesTableRequest实例。
@@ -87,5 +102,13 @@ public class CreateTimeseriesTableRequest implements Request {
      */
     public void setEnableAnalyticalStore(boolean enableAnalyticalStore) {
         this.enableAnalyticalStore = enableAnalyticalStore;
+    }
+
+    public List<LastpointIndex> getLastpointIndexes() {
+        return lastpointIndexes;
+    }
+
+    public void addLastpointIndex(LastpointIndex lastpointIndex) {
+        this.lastpointIndexes.add(lastpointIndex);
     }
 }

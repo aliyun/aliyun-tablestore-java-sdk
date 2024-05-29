@@ -2,10 +2,7 @@ package com.alicloud.openservices.tablestore.core.protocol.timeseries;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
-import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCell;
-import com.alicloud.openservices.tablestore.core.protocol.PlainBufferCodedInputStream;
-import com.alicloud.openservices.tablestore.core.protocol.PlainBufferInputStream;
-import com.alicloud.openservices.tablestore.core.protocol.PlainBufferRow;
+import com.alicloud.openservices.tablestore.core.protocol.*;
 import com.alicloud.openservices.tablestore.model.Error;
 import com.alicloud.openservices.tablestore.model.TimeseriesMetaOptions;
 import com.alicloud.openservices.tablestore.model.TimeseriesTableMeta;
@@ -18,6 +15,12 @@ import java.util.*;
 
 public class TimeseriesResponseFactory {
 
+    private static final String HASH_COLUMN_NAME = "_#h";
+    private static final String MEASUREMENT_COLUMN_NAME = "_m_name";
+    private static final String DATASOURCE_COLUMN_NAME = "_data_source";
+    private static final String TAGS_COLUMN_NAME = "_tags";
+    private static final String TIME_COLUMN_NAME = "_time";
+
     public static CreateTimeseriesTableResponse createCreateTimeseriesTableResponse(
             ResponseContentWithMeta response, Timeseries.CreateTimeseriesTableResponse pbResponse) {
         return new CreateTimeseriesTableResponse(response.getMeta());
@@ -28,12 +31,12 @@ public class TimeseriesResponseFactory {
         PutTimeseriesDataResponse response = new PutTimeseriesDataResponse(meta.getMeta());
         if (pbResponse.getFailedRowsCount() > 0) {
             List<PutTimeseriesDataResponse.FailedRowResult> failedRowResultList =
-                new ArrayList<PutTimeseriesDataResponse.FailedRowResult>();
+                    new ArrayList<PutTimeseriesDataResponse.FailedRowResult>();
             for (int i = 0; i < pbResponse.getFailedRowsCount(); i++) {
                 Timeseries.FailedRowInfo failedRowInfo = pbResponse.getFailedRows(i);
                 failedRowResultList.add(new PutTimeseriesDataResponse.FailedRowResult(
-                    failedRowInfo.getRowIndex(),
-                    new Error(failedRowInfo.getErrorCode(), failedRowInfo.getErrorMessage())));
+                        failedRowInfo.getRowIndex(),
+                        new Error(failedRowInfo.getErrorCode(), failedRowInfo.getErrorMessage())));
             }
             response.setFailedRows(failedRowResultList);
         }
@@ -69,7 +72,7 @@ public class TimeseriesResponseFactory {
         }
         int keyStart = -1;
         int valueStart = -1;
-        for (int i = 1; i < tagsStr.length()-1; i++) {
+        for (int i = 1; i < tagsStr.length() - 1; i++) {
             if (tagsStr.charAt(i) != '"') {
                 throw new ClientException("invalid tags or attributes string: " + tagsStr);
             }
@@ -81,7 +84,7 @@ public class TimeseriesResponseFactory {
                 throw new ClientException("invalid tags or attributes string: " + tagsStr);
             }
             valueStart = ++i;
-            while ((i < tagsStr.length() - 1) &&(tagsStr.charAt(i) != '"')) {
+            while ((i < tagsStr.length() - 1) && (tagsStr.charAt(i) != '"')) {
                 i++;
             }
             if (tagsStr.charAt(i) != '"') {
@@ -96,6 +99,14 @@ public class TimeseriesResponseFactory {
         return tags;
     }
 
+    public static SortedMap<String, String> parseTags(List<Timeseries.TimeseriesTag> tags) {
+        SortedMap<String, String> result = new TreeMap<String, String>();
+        for (Timeseries.TimeseriesTag tag : tags) {
+            result.put(tag.getName(), tag.getValue());
+        }
+        return result;
+    }
+
     public static String convertColumnName(String colName) {
         for (int i = 0; i < colName.length(); i++) {
             if (colName.charAt(i) == ':') {
@@ -105,34 +116,75 @@ public class TimeseriesResponseFactory {
         throw new ClientException("unexpect column name: " + colName);
     }
 
-    public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow) {
-        String measurement = plainBufferRow.getPrimaryKey().get(1).getPkCellValue().asString();
-        String source = plainBufferRow.getPrimaryKey().get(2).getPkCellValue().asString();
-        String tagsStr = plainBufferRow.getPrimaryKey().get(3).getPkCellValue().asString();
-        long time = plainBufferRow.getPrimaryKey().get(4).getPkCellValue().asLong();
-        TimeseriesRow row = new TimeseriesRow(new TimeseriesKey(measurement, source, parseTagsOrAttrs(tagsStr)), time);
+    public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow) throws IOException {
+        List<PlainBufferCell> primaryKeys = plainBufferRow.getPrimaryKey();
+        int timeseriesKeyCount = 0;
+        String measurement = "", source = "", tagsStr = "";
+        long time = -1;
+        SortedMap<String, String> tags = new TreeMap<String, String>();
+        for (int i = 0; i < primaryKeys.size(); i++) {
+            PlainBufferCell pkCell = primaryKeys.get(i);
+            if (pkCell.getCellName().equals(MEASUREMENT_COLUMN_NAME)) {
+                measurement = pkCell.getPkCellValue().asString();
+            } else if (pkCell.getCellName().equals(DATASOURCE_COLUMN_NAME)) {
+                source = pkCell.getPkCellValue().asString();
+            } else if (pkCell.getCellName().equals(TAGS_COLUMN_NAME)) {
+                tagsStr = pkCell.getPkCellValue().asString();
+            } else if (pkCell.getCellName().equals(TIME_COLUMN_NAME)) {
+                timeseriesKeyCount = i;
+                time = pkCell.getPkCellValue().asLong();
+                break;
+            } else if (!pkCell.getCellName().equals(HASH_COLUMN_NAME)) {
+                tags.put(pkCell.getCellName(), pkCell.getPkCellValue().asString());
+            }
+        }
+        if (!tagsStr.isEmpty()) {
+            tags.putAll(parseTagsOrAttrs(tagsStr));
+        }
+        if (time == -1) {
+            throw new ClientException("time column not found in timeseries row");
+        }
+        TimeseriesRow row = new TimeseriesRow(new TimeseriesKey(measurement, source, tags), time);
         for (PlainBufferCell cell : plainBufferRow.getCells()) {
             row.addField(convertColumnName(cell.getCellName()), cell.getCellValue());
+        }
+        for (PlainBufferCell cell : plainBufferRow.getPrimaryKey().subList(timeseriesKeyCount + 1, plainBufferRow.getPrimaryKey().size())) {
+            row.addField(cell.getCellName(), cell.getPkCellValue().toColumnValue());
         }
         return row;
     }
 
-    public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow, TimeseriesKey key) {
-        long time = plainBufferRow.getPrimaryKey().get(4).getPkCellValue().asLong();
+    public static TimeseriesRow parseRowFromPlainbuffer(PlainBufferRow plainBufferRow, TimeseriesKey key) throws IOException {
+        long time = -1;
+        List<PlainBufferCell> primaryKeys = plainBufferRow.getPrimaryKey();
+        int pkIndex = 0;
+        for (; pkIndex < primaryKeys.size(); pkIndex++) {
+            if (primaryKeys.get(pkIndex).getCellName().equals(TIME_COLUMN_NAME)) {
+                time = primaryKeys.get(pkIndex).getPkCellValue().asLong();
+                break;
+            }
+        }
+        pkIndex++;
+        if (time == -1) {
+            throw new ClientException("time column not found in timeseries row");
+        }
         TimeseriesRow row = new TimeseriesRow(key, time);
         for (PlainBufferCell cell : plainBufferRow.getCells()) {
             row.addField(convertColumnName(cell.getCellName()), cell.getCellValue());
+        }
+        for (; pkIndex < primaryKeys.size(); pkIndex++) {
+            row.addField(primaryKeys.get(pkIndex).getCellName(), primaryKeys.get(pkIndex).getPkCellValue().toColumnValue());
         }
         return row;
     }
 
     public static GetTimeseriesDataResponse createGetTimeseriesDataResponse(
-        ResponseContentWithMeta meta, Timeseries.GetTimeseriesDataResponse pbResponse) {
+            ResponseContentWithMeta meta, Timeseries.GetTimeseriesDataResponse pbResponse) {
         GetTimeseriesDataResponse response = new GetTimeseriesDataResponse(meta.getMeta());
         if (pbResponse.hasRowsData() && !pbResponse.getRowsData().isEmpty()) {
             try {
                 PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(
-                    new PlainBufferInputStream(pbResponse.getRowsData().asReadOnlyByteBuffer()));
+                        new PlainBufferInputStream(pbResponse.getRowsData().asReadOnlyByteBuffer()));
                 List<PlainBufferRow> pbRows = inputStream.readRowsWithHeader();
                 List<TimeseriesRow> rows = new ArrayList<TimeseriesRow>(pbRows.size());
                 for (int i = 0; i < pbRows.size(); i++) {
@@ -158,7 +210,7 @@ public class TimeseriesResponseFactory {
 
     public static TimeseriesMeta parseTimeseriesMeta(Timeseries.TimeseriesMeta pbMeta) {
         TimeseriesKey timeseriesKey = new TimeseriesKey(pbMeta.getTimeSeriesKey().getMeasurement(),
-            pbMeta.getTimeSeriesKey().getSource(), parseTagsOrAttrs(pbMeta.getTimeSeriesKey().getTags()));
+                pbMeta.getTimeSeriesKey().getSource(), parseTags(pbMeta.getTimeSeriesKey().getTagListList()));
         TimeseriesMeta meta = new TimeseriesMeta(timeseriesKey);
         if (pbMeta.hasAttributes()) {
             meta.setAttributes(parseTagsOrAttrs(pbMeta.getAttributes()));
@@ -170,7 +222,7 @@ public class TimeseriesResponseFactory {
     }
 
     public static QueryTimeseriesMetaResponse createQueryTimeseriesMetaResponse(
-        ResponseContentWithMeta meta, Timeseries.QueryTimeseriesMetaResponse pbResponse) {
+            ResponseContentWithMeta meta, Timeseries.QueryTimeseriesMetaResponse pbResponse) {
         QueryTimeseriesMetaResponse response = new QueryTimeseriesMetaResponse(meta.getMeta());
         List<TimeseriesMeta> timeseriesMetas = new ArrayList<TimeseriesMeta>(pbResponse.getTimeseriesMetasCount());
         for (int i = 0; i < pbResponse.getTimeseriesMetasCount(); i++) {
@@ -201,9 +253,16 @@ public class TimeseriesResponseFactory {
         ListTimeseriesTableResponse result = new ListTimeseriesTableResponse(response.getMeta());
         List<TimeseriesTableMeta> timeseriesTableMetas = new LinkedList<TimeseriesTableMeta>();
 
-        for(Timeseries.TimeseriesTableMeta meta: pbResponse.getTableMetasList()) {
+        for (Timeseries.TimeseriesTableMeta meta : pbResponse.getTableMetasList()) {
             TimeseriesTableOptions option = new TimeseriesTableOptions(meta.getTableOptions().getTimeToLive());
-            timeseriesTableMetas.add(new TimeseriesTableMeta(meta.getTableName(), option, meta.getStatus()));
+            TimeseriesTableMeta _meta = new TimeseriesTableMeta(meta.getTableName(), option, meta.getStatus());
+            for (String timeseriesKey : meta.getTimeseriesKeySchemaList()) {
+                _meta.addTimeseriesKey(timeseriesKey);
+            }
+            for (OtsInternalApi.PrimaryKeySchema fieldPrimaryKeySchema : meta.getFieldPrimaryKeySchemaList()) {
+                _meta.addFieldPrimaryKey(fieldPrimaryKeySchema.getName(), OTSProtocolParser.toPrimaryKeyType(fieldPrimaryKeySchema.getType()));
+            }
+            timeseriesTableMetas.add(_meta);
         }
         result.setTimeseriesTableMetas(timeseriesTableMetas);
 
@@ -235,6 +294,15 @@ public class TimeseriesResponseFactory {
             _meta.setTimeseriesMetaOptions(metaOptions);
         }
 
+        for (int i = 0; i < meta.getTimeseriesKeySchemaCount(); i++) {
+            String timeseriesKey = meta.getTimeseriesKeySchema(i);
+            _meta.addTimeseriesKey(timeseriesKey);
+        }
+        for (int i = 0; i < meta.getFieldPrimaryKeySchemaCount(); i++) {
+            OtsInternalApi.PrimaryKeySchema fieldPrimaryKeySchema = meta.getFieldPrimaryKeySchema(i);
+            _meta.addFieldPrimaryKey(fieldPrimaryKeySchema.getName(), OTSProtocolParser.toPrimaryKeyType(fieldPrimaryKeySchema.getType()));
+        }
+
         result.setTimeseriesTableMeta(_meta);
 
         if (!pbResponse.getAnalyticalStoresList().isEmpty()) {
@@ -257,6 +325,15 @@ public class TimeseriesResponseFactory {
                 analyticalStores.add(analyticalStore);
             }
             result.setAnalyticalStores(analyticalStores);
+        }
+
+        if (!pbResponse.getLastpointIndexesList().isEmpty()) {
+            List<TimeseriesLastpointIndex> lastpointIndexes = new ArrayList<TimeseriesLastpointIndex>();
+            for (Timeseries.TimeseriesLastpointIndex pbLastpointIndex : pbResponse.getLastpointIndexesList()) {
+                TimeseriesLastpointIndex lastpointIndex = new TimeseriesLastpointIndex(pbLastpointIndex.getIndexTableName());
+                lastpointIndexes.add(lastpointIndex);
+            }
+            result.setLastpointIndexes(lastpointIndexes);
         }
         return result;
     }
@@ -406,5 +483,15 @@ public class TimeseriesResponseFactory {
             response.setSyncStat(syncStat);
         }
         return response;
+    }
+
+    public static CreateTimeseriesLastpointIndexResponse createCreateTimeseriesLastpointIndexResponse(
+            ResponseContentWithMeta response, Timeseries.CreateTimeseriesLastpointIndexResponse pbResponse) {
+        return new CreateTimeseriesLastpointIndexResponse(response.getMeta());
+    }
+
+    public static DeleteTimeseriesLastpointIndexResponse createDeleteTimeseriesLastpointIndexResponse(
+            ResponseContentWithMeta response, Timeseries.DeleteTimeseriesLastpointIndexResponse pbResponse) {
+        return new DeleteTimeseriesLastpointIndexResponse(response.getMeta());
     }
 }

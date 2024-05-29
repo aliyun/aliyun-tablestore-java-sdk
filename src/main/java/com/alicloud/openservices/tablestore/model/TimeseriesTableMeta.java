@@ -3,6 +3,9 @@ package com.alicloud.openservices.tablestore.model;
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 表的结构信息，包含表的名称以及表的配置信息。
  */
@@ -27,6 +30,16 @@ public class TimeseriesTableMeta implements Jsonizable {
      * 表的状态。
      */
     private String status;
+
+    /**
+     * 自定义主键列。
+     */
+    private final List<String> timeseriesKeys = new ArrayList<String>();
+
+    /**
+     * 扩展主键列。
+     */
+    private final List<PrimaryKeySchema> fieldPrimaryKeys = new ArrayList<PrimaryKeySchema>();
 
     /**
      * 创建一个新的给定表名的<code>TableMeta</code>实例。
@@ -115,6 +128,29 @@ public class TimeseriesTableMeta implements Jsonizable {
      */
     public String getStatus() {
         return status;
+    }
+
+    public void addTimeseriesKey(String primaryKey) {
+        timeseriesKeys.add(primaryKey);
+    }
+
+    public List<String> getTimeseriesKeys() {
+        return timeseriesKeys;
+    }
+
+    public void addFieldPrimaryKey(String name, PrimaryKeyType type) {
+        Preconditions.checkArgument(name != null && !name.isEmpty(), "The name of primary key field should not be null or empty.");
+        Preconditions.checkNotNull(type, "The type of primary key field should not be null.");
+        fieldPrimaryKeys.add(new PrimaryKeySchema(name, type));
+    }
+
+    /**
+     * 返回扩展主键列。
+     *
+     * @return 扩展主键列。
+     */
+    public List<PrimaryKeySchema> getFieldPrimaryKeys() {
+        return fieldPrimaryKeys;
     }
 
     @Override

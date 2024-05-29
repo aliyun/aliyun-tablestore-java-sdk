@@ -10,7 +10,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.Weigher;
 
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class AsyncTimeseriesClient implements AsyncTimeseriesClientInterface {
 
@@ -230,6 +232,20 @@ public class AsyncTimeseriesClient implements AsyncTimeseriesClientInterface {
                                                                                            TableStoreCallback<UpdateTimeseriesAnalyticalStoreRequest, UpdateTimeseriesAnalyticalStoreResponse> callback)
             throws TableStoreException, ClientException {
         return internalClient.updateTimeseriesAnalyticalStore(request, callback);
+    }
+
+    @Override
+    public Future<CreateTimeseriesLastpointIndexResponse> createTimeseriesLastpointIndex(CreateTimeseriesLastpointIndexRequest request,
+                                                                                         TableStoreCallback<CreateTimeseriesLastpointIndexRequest, CreateTimeseriesLastpointIndexResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.createTimeseriesLastpointIndex(request, callback);
+    }
+
+    @Override
+    public Future<DeleteTimeseriesLastpointIndexResponse> deleteTimeseriesLastpointIndex(DeleteTimeseriesLastpointIndexRequest request,
+                                                                                         TableStoreCallback<DeleteTimeseriesLastpointIndexRequest, DeleteTimeseriesLastpointIndexResponse> callback)
+            throws TableStoreException, ClientException {
+        return internalClient.deleteTimeseriesLastpointIndex(request, callback);
     }
 
     public void shutdown() {

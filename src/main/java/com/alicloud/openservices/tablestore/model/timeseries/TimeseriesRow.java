@@ -30,7 +30,10 @@ public class TimeseriesRow {
         totalSize += 8;     // time size
         totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.getMeasurementName());
         totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.getDataSource());
-        totalSize += CalculateHelper.calcStringSizeInBytes(timeseriesKey.buildTagsString());
+        for (Map.Entry<String, String> entry : timeseriesKey.getTags().entrySet()) {
+            totalSize += CalculateHelper.calcStringSizeInBytes(entry.getKey());
+            totalSize += CalculateHelper.calcStringSizeInBytes(entry.getValue());
+        }
         for (Map.Entry<String, ColumnValue> entry : fields.entrySet()) {
             totalSize += entry.getValue().getDataSize() + CalculateHelper.calcStringSizeInBytes(entry.getKey());
         }

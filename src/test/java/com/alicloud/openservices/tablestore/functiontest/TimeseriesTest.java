@@ -23,7 +23,7 @@ public class TimeseriesTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeseriesTest.class);
     private static long waitTableInit = 60 * 1000;
-    private static long waitSearchIndexSync = 30 * 1000;
+    private static long waitSearchIndexSync = 60 * 1000;
     private static boolean createTableBeforeTest = true; // for local test
     private static boolean deleteTableAfterTest = true; // for local test
 
@@ -172,7 +172,8 @@ public class TimeseriesTest {
             try {
                 PutTimeseriesDataResponse putTimeseriesDataResponse = client.putTimeseriesData(putTimeseriesDataRequest);
                 fail();
-            } catch (IllegalArgumentException ex) {
+            } catch (TableStoreException ex) {
+                assertEquals("OTSParameterInvalid", ex.getErrorCode());
             }
         }
     }
