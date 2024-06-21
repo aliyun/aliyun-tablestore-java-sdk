@@ -19,6 +19,9 @@ public class AnalyzerParameterBuilder {
         if (param.getDelimiter() != null) {
             builder.setDelimiter(param.getDelimiter());
         }
+        if (param.isCaseSensitive() != null) {
+            builder.setCaseSensitive(param.isCaseSensitive());
+        }
         return builder.build();
     }
 
@@ -29,6 +32,9 @@ public class AnalyzerParameterBuilder {
         }
         if (param.getMaxChars() != null) {
             builder.setMaxChars(param.getMaxChars());
+        }
+        if (param.isCaseSensitive() != null) {
+            builder.setCaseSensitive(param.isCaseSensitive());
         }
         return builder.build();
     }

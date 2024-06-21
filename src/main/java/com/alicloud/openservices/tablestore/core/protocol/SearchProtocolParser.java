@@ -99,6 +99,9 @@ public class SearchProtocolParser {
         if (analyzerParameter.hasDelimiter()) {
             result.setDelimiter(analyzerParameter.getDelimiter());
         }
+        if (analyzerParameter.hasCaseSensitive()) {
+            result.setCaseSensitive(analyzerParameter.getCaseSensitive());
+        }
         return result;
     }
 
@@ -109,6 +112,9 @@ public class SearchProtocolParser {
         }
         if (analyzerParameter.hasMaxChars()) {
             result.setMaxChars(analyzerParameter.getMaxChars());
+        }
+        if (analyzerParameter.hasCaseSensitive()) {
+            result.setCaseSensitive(analyzerParameter.getCaseSensitive());
         }
         return result;
     }

@@ -38,6 +38,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         deleteTable("test_custom_primary_keys");
         deleteTable("test_custom_primary_keys_meta");
         deleteTable("test_custom_primary_keys_batch_write");
+        deleteTable("test_no_measurements");
         client.shutdown();
         tableStoreClient.shutdown();
     }
@@ -297,5 +298,51 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertEquals(PrimaryKeyValue.fromString("2.0GHz"), primaryKey.getPrimaryKeyColumns()[6].getValue());
         Column load1 = rows.get(0).getLatestColumn("load1:d");
         Assert.assertEquals(0.5, load1.getValue().asDouble(), 0.0001);
+    }
+
+    @Test
+    public void testNoMeasurements() {
+        // create table
+        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_no_measurements");
+        meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
+        meta.addTimeseriesKey("_data_source");
+        meta.addTimeseriesKey("_tags");
+        CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
+        client.createTimeseriesTable(createTimeseriesTableRequest);
+
+        // put data
+        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest("test_no_measurements");
+        Map<String, String> tags = new HashMap<String, String>();
+        tags.put("region", "hangzhou");
+        tags.put("vendor", "intel");
+        TimeseriesKey primaryKey = new TimeseriesKey("", "_data_source", tags);
+        for (int i = 0; i < 10; i++) {
+            TimeseriesRow row = new TimeseriesRow(primaryKey);
+            row.setTimeInUs(System.currentTimeMillis() * 1000 + i);
+            row.addField("load1", ColumnValue.fromDouble(0.5));
+            putTimeseriesDataRequest.addRow(row);
+        }
+        PutTimeseriesDataResponse putTimeseriesDataResponse = client.putTimeseriesData(putTimeseriesDataRequest);
+        Assert.assertEquals(0, putTimeseriesDataResponse.getFailedRows().size());
+
+        // get data
+        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest("test_no_measurements");
+        getTimeseriesDataRequest.setTimeseriesKey(primaryKey);
+        getTimeseriesDataRequest.setTimeRange(0, System.currentTimeMillis() * 1000);
+        GetTimeseriesDataResponse getTimeseriesDataResponse = client.getTimeseriesData(getTimeseriesDataRequest);
+        List<TimeseriesRow> rows = getTimeseriesDataResponse.getRows();
+        Assert.assertEquals(10, rows.size());
+        for (int i = 0; i < 10; i++) {
+            TimeseriesKey key = rows.get(i).getTimeseriesKey();
+            Assert.assertEquals("", key.getMeasurementName());
+            Assert.assertEquals("_data_source", key.getDataSource());
+            tags = key.getTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertEquals("hangzhou", tags.get("region"));
+            Assert.assertEquals("intel", tags.get("vendor"));
+            Map<String, ColumnValue> fields = rows.get(i).getFields();
+            Assert.assertEquals(1, fields.size());
+            Assert.assertEquals(0.5, fields.get("load1").getValue());
+        }
     }
 }

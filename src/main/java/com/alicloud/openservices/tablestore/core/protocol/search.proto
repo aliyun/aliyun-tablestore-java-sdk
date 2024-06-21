@@ -1059,11 +1059,13 @@ message SingleWordAnalyzerParameter {
 
 message SplitAnalyzerParameter {
     optional string delimiter = 1;
+    optional bool case_sensitive = 2;
 }
 
 message FuzzyAnalyzerParameter {
     optional int32 min_chars = 1;
     optional int32 max_chars = 2;
+    optional bool case_sensitive = 3;
 }
 
 message FieldSchema {

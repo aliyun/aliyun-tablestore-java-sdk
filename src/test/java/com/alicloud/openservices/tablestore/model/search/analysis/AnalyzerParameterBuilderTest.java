@@ -28,13 +28,16 @@ public class AnalyzerParameterBuilderTest extends BaseSearchTest {
         SplitAnalyzerParameter param = new SplitAnalyzerParameter();
         Search.SplitAnalyzerParameter pbParam = AnalyzerParameterBuilder.buildSplitAnalyzerParameter(param);
         assertFalse(pbParam.hasDelimiter());
+        assertFalse(pbParam.hasCaseSensitive());
     }
 
     @Test
     public void buildSplitAnalyzerParameterWithParameter() {
-        SplitAnalyzerParameter param = new SplitAnalyzerParameter("-");
+        Boolean caseSensitive = random().nextBoolean();
+        SplitAnalyzerParameter param = new SplitAnalyzerParameter("-", caseSensitive);
         Search.SplitAnalyzerParameter pbParam = AnalyzerParameterBuilder.buildSplitAnalyzerParameter(param);
         assertEquals("-", pbParam.getDelimiter());
+        assertEquals(caseSensitive, pbParam.getCaseSensitive());
     }
 
     @Test
@@ -43,13 +46,16 @@ public class AnalyzerParameterBuilderTest extends BaseSearchTest {
         Search.FuzzyAnalyzerParameter pbParam = AnalyzerParameterBuilder.buildFuzzyAnalyzerParameter(param);
         assertFalse(pbParam.hasMinChars());
         assertFalse(pbParam.hasMaxChars());
+        assertFalse(pbParam.hasCaseSensitive());
     }
 
     @Test
     public void buildFuzzyAnalyzerParameterWithParameter() {
-        FuzzyAnalyzerParameter param = new FuzzyAnalyzerParameter(2, 4);
+        Boolean caseSensitive = random().nextBoolean();
+        FuzzyAnalyzerParameter param = new FuzzyAnalyzerParameter(2, 4, caseSensitive);
         Search.FuzzyAnalyzerParameter pbParam = AnalyzerParameterBuilder.buildFuzzyAnalyzerParameter(param);
         assertEquals(2, pbParam.getMinChars());
         assertEquals(4, pbParam.getMaxChars());
+        assertEquals(caseSensitive, pbParam.getCaseSensitive());
     }
 }
