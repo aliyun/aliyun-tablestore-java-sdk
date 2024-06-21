@@ -22,7 +22,6 @@ public class TimeseriesKey implements Comparable<TimeseriesKey> {
     }
 
     public TimeseriesKey(String measurementName, String dataSource, Map<String, String> tags) {
-        Preconditions.checkStringNotNullAndEmpty(measurementName, "measurement should not be null or empty");
         this.measurementName = measurementName;
         if (dataSource != null) {
             this.dataSource = dataSource;

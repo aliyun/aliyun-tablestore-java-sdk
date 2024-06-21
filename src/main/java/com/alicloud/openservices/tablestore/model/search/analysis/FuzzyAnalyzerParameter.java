@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 public class FuzzyAnalyzerParameter implements AnalyzerParameter {
     private Integer minChars = null;
     private Integer maxChars = null;
+    private Boolean caseSensitive = null;
 
     public FuzzyAnalyzerParameter() {
     }
@@ -12,6 +13,21 @@ public class FuzzyAnalyzerParameter implements AnalyzerParameter {
     public FuzzyAnalyzerParameter(int minChars, int maxChars) {
         this.minChars = minChars;
         this.maxChars = maxChars;
+    }
+
+    public FuzzyAnalyzerParameter(Integer minChars, Integer maxChars, Boolean caseSensitive) {
+        this.minChars = minChars;
+        this.maxChars = maxChars;
+        this.caseSensitive = caseSensitive;
+    }
+
+    public Boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    public FuzzyAnalyzerParameter setCaseSensitive(Boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+        return this;
     }
 
     public Integer getMinChars() {

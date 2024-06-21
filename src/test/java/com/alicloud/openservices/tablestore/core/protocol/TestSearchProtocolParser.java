@@ -174,12 +174,15 @@ public class TestSearchProtocolParser extends BaseSearchTest {
         builder.setAnalyzer("split");
 
         Search.SplitAnalyzerParameter.Builder b = Search.SplitAnalyzerParameter.newBuilder();
+        boolean caseSensitive = random().nextBoolean();
+        b.setCaseSensitive(caseSensitive);
         builder.setAnalyzerParameter(b.build().toByteString());
 
         FieldSchema result = SearchProtocolParser.toFieldSchema(builder.build());
         assertEquals(FieldSchema.Analyzer.Split, result.getAnalyzer());
         assertTrue(result.getAnalyzerParameter() instanceof SplitAnalyzerParameter);
         assertNull(((SplitAnalyzerParameter) result.getAnalyzerParameter()).getDelimiter());
+        assertEquals(caseSensitive, ((SplitAnalyzerParameter) result.getAnalyzerParameter()).isCaseSensitive());
     }
 
     @Test
@@ -190,6 +193,8 @@ public class TestSearchProtocolParser extends BaseSearchTest {
         Search.FuzzyAnalyzerParameter.Builder b = Search.FuzzyAnalyzerParameter.newBuilder();
         b.setMinChars(2);
         b.setMaxChars(3);
+        boolean caseSensitive = random().nextBoolean();
+        b.setCaseSensitive(caseSensitive);
         builder.setAnalyzerParameter(b.build().toByteString());
 
         FieldSchema result = SearchProtocolParser.toFieldSchema(builder.build());
@@ -197,6 +202,7 @@ public class TestSearchProtocolParser extends BaseSearchTest {
         assertTrue(result.getAnalyzerParameter() instanceof FuzzyAnalyzerParameter);
         assertEquals(2, ((FuzzyAnalyzerParameter) result.getAnalyzerParameter()).getMinChars().intValue());
         assertEquals(3, ((FuzzyAnalyzerParameter) result.getAnalyzerParameter()).getMaxChars().intValue());
+        assertEquals(caseSensitive, ((FuzzyAnalyzerParameter) result.getAnalyzerParameter()).isCaseSensitive());
     }
 
     @Test

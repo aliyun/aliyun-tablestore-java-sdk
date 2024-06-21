@@ -3,8 +3,12 @@ package com.alicloud.openservices.tablestore.model.search;
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
 import com.alicloud.openservices.tablestore.core.utils.Repeat;
 import com.alicloud.openservices.tablestore.model.Response;
+import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
+import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,6 +39,21 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 .setSourceFieldNames(Arrays.asList("n1", "f2", "f3")));
         indexSchema.addFieldSchema(new FieldSchema("col_text", FieldType.TEXT)
                 .setSubFieldSchemas(new ArrayList<FieldSchema>())
+                .setVirtualField(true)
+                .setSourceFieldName("n1"));
+        indexSchema.addFieldSchema(new FieldSchema("col_text_single", FieldType.TEXT)
+                .setAnalyzer(FieldSchema.Analyzer.SingleWord)
+                .setAnalyzerParameter(new SingleWordAnalyzerParameter(true,true))
+                .setVirtualField(true)
+                .setSourceFieldName("n1"));
+        indexSchema.addFieldSchema(new FieldSchema("col_text_split", FieldType.TEXT)
+                .setAnalyzer(FieldSchema.Analyzer.Split)
+                .setAnalyzerParameter(new SplitAnalyzerParameter("|"))
+                .setVirtualField(true)
+                .setSourceFieldName("n1"));
+        indexSchema.addFieldSchema(new FieldSchema("col_text_fuzzy", FieldType.TEXT)
+                .setAnalyzer(FieldSchema.Analyzer.Fuzzy)
+                .setAnalyzerParameter(new FuzzyAnalyzerParameter(1, 7, false))
                 .setVirtualField(true)
                 .setSourceFieldName("n1"));
         indexSchema.addFieldSchema(new FieldSchema("col_geo_point", FieldType.GEO_POINT).setSubFieldSchemas(new ArrayList<FieldSchema>()));
@@ -68,7 +87,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
         ));
 
         String json = describeResp.jsonize();
-        JsonElement jsonElement = new Gson().toJsonTree(json);
+        JsonElement jsonElement = new JsonParser().parse(json);
         assertNotNull(jsonElement);
         assertEquals("{\n" +
                 "  \"IndexStatus\": null,\n" +
@@ -112,6 +131,36 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 "     \"FieldName\": \"col_text\",\n" +
                 "     \"FieldType\": \"TEXT\",\n" +
                 "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\"]\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_text_single\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"Analyzer\": \"single_word\",\n" +
+                "     \"AnalyzerParameter\": {\"CaseSensitive\": true, \"DelimitWord\": true},\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\"]\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_text_split\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"Analyzer\": \"split\",\n" +
+                "     \"AnalyzerParameter\": {\"Delimiter\": \"|\", \"CaseSensitive\": null},\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\"]\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_text_fuzzy\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"Analyzer\": \"fuzzy\",\n" +
+                "     \"AnalyzerParameter\": {\"MinChars\": 1, \"MaxChars\": 7, \"CaseSensitive\": false},\n" +
                 "     \"SubFieldSchemas\": [],\n" +
                 "     \"IsVirtualField\": true,\n" +
                 "     \"SourceFieldNames\": [\"n1\"]\n" +

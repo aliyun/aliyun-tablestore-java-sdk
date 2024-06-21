@@ -326,6 +326,8 @@ public class FieldSchema implements Jsonizable {
                     sb.append("\"AnalyzerParameter\": {");
                     sb.append("\"Delimiter\": ");
                     sb.append(delimiter == null ? "null" : "\"" + delimiter + "\"");
+                    sb.append(", \"CaseSensitive\": ");
+                    sb.append(((SplitAnalyzerParameter)analyzerParameter).isCaseSensitive());
                     sb.append("},");
                     sb.append(newline);
                 } else if (analyzer == Analyzer.Fuzzy && analyzerParameter instanceof FuzzyAnalyzerParameter) {
@@ -334,6 +336,8 @@ public class FieldSchema implements Jsonizable {
                     sb.append(((FuzzyAnalyzerParameter)analyzerParameter).getMinChars());
                     sb.append(", \"MaxChars\": ");
                     sb.append(((FuzzyAnalyzerParameter)analyzerParameter).getMaxChars());
+                    sb.append(", \"CaseSensitive\": ");
+                    sb.append(((FuzzyAnalyzerParameter)analyzerParameter).isCaseSensitive());
                     sb.append("},");
                     sb.append(newline);
                 }
