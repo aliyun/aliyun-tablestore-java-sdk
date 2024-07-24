@@ -381,6 +381,10 @@ public abstract class BaseSearchTest {
         for (int i = 0; i < size; i++) {
             sorters.add(randomSorter());
         }
+        if (RANDOM.nextBoolean()) {
+            return new Sort(sorters, RANDOM.nextBoolean());
+        }
+
         return new Sort(sorters);
     }
 

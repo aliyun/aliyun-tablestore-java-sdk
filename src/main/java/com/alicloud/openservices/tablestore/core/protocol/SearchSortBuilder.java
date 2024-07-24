@@ -148,6 +148,9 @@ class SearchSortBuilder {
         for (Sort.Sorter sorter : sort.getSorters()) {
             builder.addSorter(buildSorter(sorter));
         }
+        if (sort.getDisableDefaultPkSorter() != null) {
+            builder.setDisableDefaultPkSorter(sort.getDisableDefaultPkSorter());
+        }
         return builder.build();
     }
 

@@ -19,6 +19,7 @@ import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -101,6 +102,21 @@ public class AggregationBuildersTest extends BaseSearchTest {
             TopRowsAggregation topRowsAggregation = (TopRowsAggregation)aggregation;
             assertEquals("a", topRowsAggregation.getAggName());
             assertEquals(10, topRowsAggregation.getLimit().intValue());
+            assertNull(topRowsAggregation.getSort().getDisableDefaultPkSorter());
+            assertEquals("f1", ((FieldSort)topRowsAggregation.getSort().getSorters().get(0)).getFieldName());
+            assertEquals(SortOrder.DESC, ((FieldSort)topRowsAggregation.getSort().getSorters().get(0)).getOrder());
+        }
+        {
+            Aggregation aggregation = AggregationBuilders.topRows("a")
+                    .limit(10)
+                    .sort(new Sort(Collections.<Sorter>singletonList(new FieldSort("f1", SortOrder.DESC)), false))
+                    .build();
+            assertEquals(AggregationType.AGG_TOP_ROWS, aggregation.getAggType());
+            assertEquals("a", aggregation.getAggName());
+            TopRowsAggregation topRowsAggregation = (TopRowsAggregation)aggregation;
+            assertEquals("a", topRowsAggregation.getAggName());
+            assertEquals(10, topRowsAggregation.getLimit().intValue());
+            assertFalse(topRowsAggregation.getSort().getDisableDefaultPkSorter());
             assertEquals("f1", ((FieldSort)topRowsAggregation.getSort().getSorters().get(0)).getFieldName());
             assertEquals(SortOrder.DESC, ((FieldSort)topRowsAggregation.getSort().getSorters().get(0)).getOrder());
         }

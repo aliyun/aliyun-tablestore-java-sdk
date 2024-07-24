@@ -147,11 +147,16 @@ class SearchSortParser {
     }
 
     static Sort toSort(Search.Sort pb) throws IOException {
+        Sort sort = new Sort();
         List<Sorter> sorters = new ArrayList<Sorter>();
         for (Search.Sorter sorter : pb.getSorterList()) {
             sorters.add(toSorter(sorter));
         }
-        return new Sort(sorters);
+        sort.setSorters(sorters);
+        if (pb.hasDisableDefaultPkSorter()) {
+            sort.setDisableDefaultPkSorter(pb.getDisableDefaultPkSorter());
+        }
+        return sort;
     }
 
     static List<GroupBySorter> toGroupBySort(Search.GroupBySort groupBySort) {

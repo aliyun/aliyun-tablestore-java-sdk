@@ -15,12 +15,15 @@ import com.alicloud.openservices.tablestore.model.search.highlight.HighlightFrag
 import com.alicloud.openservices.tablestore.model.search.highlight.HighlightParameter;
 import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.sort.DocSort;
+import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.ScoreSort;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
+import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -494,6 +497,30 @@ public class TestSearchProtocolBuilder extends BaseSearchTest {
             assertEquals(errMsg, e.getMessage());
         } catch (Exception e) {
             fail();
+        }
+    }
+
+    @Test
+    public void testBuildSort() {
+        {
+            Sort sort = new Sort(Collections.singletonList(new FieldSort("field1", SortOrder.ASC)));
+            Search.Sort pb = SearchSortBuilder.buildSort(sort);
+            assertEquals(1, pb.getSorterCount());
+            assertFalse(pb.hasDisableDefaultPkSorter());
+        }
+        {
+            Sort sort = new Sort(Collections.singletonList(new FieldSort("field1", SortOrder.ASC)), false);
+            Search.Sort pb = SearchSortBuilder.buildSort(sort);
+            assertEquals(1, pb.getSorterCount());
+            assertTrue(pb.hasDisableDefaultPkSorter());
+            assertFalse(pb.getDisableDefaultPkSorter());
+        }
+        {
+            Sort sort = new Sort(Collections.singletonList(new FieldSort("field1", SortOrder.ASC)), true);
+            Search.Sort pb = SearchSortBuilder.buildSort(sort);
+            assertEquals(1, pb.getSorterCount());
+            assertTrue(pb.hasDisableDefaultPkSorter());
+            assertTrue(pb.getDisableDefaultPkSorter());
         }
     }
 
