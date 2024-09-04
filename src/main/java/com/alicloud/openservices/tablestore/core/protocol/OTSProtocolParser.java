@@ -190,6 +190,10 @@ public class OTSProtocolParser {
             result.setAllowUpdate(tableOptions.getAllowUpdate());
         }
 
+        if (tableOptions.hasUpdateFullRow()) {
+            result.setUpdateFullRow(tableOptions.getUpdateFullRow());
+        }
+
         return result;
     }
 

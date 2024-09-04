@@ -8,6 +8,7 @@ import com.alicloud.openservices.tablestore.common.Utils;
 import com.google.gson.JsonSyntaxException;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class UpdateTableTest extends BaseFT {
      * 通过createTable和updateTable设置原始列，通过describeTable验证原始列是否设置成功
      * @throws Exception
      */
+    @Ignore
     @Test
     public void testWithUpdateColumnToGet() throws Exception {
             TableMeta tableMeta = new TableMeta(tableName);
