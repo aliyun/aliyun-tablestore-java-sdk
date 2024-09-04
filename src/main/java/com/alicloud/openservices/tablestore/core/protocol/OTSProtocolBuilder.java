@@ -379,7 +379,7 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
-    private static OtsInternalApi.TableOptions buildTableOptions(TableOptions x) {
+    public static OtsInternalApi.TableOptions buildTableOptions(TableOptions x) {
         OtsInternalApi.TableOptions.Builder builder = OtsInternalApi.TableOptions.newBuilder();
 
         if (x.hasSetMaxVersions()) {
@@ -396,6 +396,10 @@ public class OTSProtocolBuilder {
 
         if (x.hasSetAllowUpdate()) {
             builder.setAllowUpdate(x.getAllowUpdate());
+        }
+
+        if (x.hasSetUpdateFullRow()) {
+            builder.setUpdateFullRow(x.getUpdateFullRow());
         }
 
         return builder.build();

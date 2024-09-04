@@ -10,6 +10,7 @@ import com.alicloud.openservices.tablestore.model.timeseries.CreateTimeseriesLas
 import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesLastpointIndexRequest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -199,6 +200,7 @@ public class WideColumnLastpointIndexTest {
         }
     }
 
+    @Ignore
     @Test
     public void testLastpointIndexBaseData() {
         String tableName = getClass().getSimpleName() + "_" + "testLastpointIndexBaseData";

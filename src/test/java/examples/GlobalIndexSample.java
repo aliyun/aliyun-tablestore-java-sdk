@@ -3,6 +3,7 @@ package examples;
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.condition.ColumnCondition;
@@ -29,10 +30,11 @@ public class GlobalIndexSample {
     private static final String ADD_COL_NAME_1 = "c1";
 
     public static void main(String[] args) {
-        final String endPoint = "";
-        final String accessId = "";
-        final String accessKey = "";
-        final String instanceName = "";
+        ServiceSettings serviceSettings = ServiceSettings.load();
+        final String endPoint = serviceSettings.getOTSEndpoint();
+        final String accessId = serviceSettings.getOTSAccessKeyId();
+        final String accessKey = serviceSettings.getOTSAccessKeySecret();
+        final String instanceName = serviceSettings.getOTSInstanceName();
 
         SyncClient client = new SyncClient(endPoint, accessId, accessKey, instanceName);
         try {

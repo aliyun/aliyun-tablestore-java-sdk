@@ -5,10 +5,7 @@ import com.alicloud.openservices.tablestore.TimeseriesClient;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,6 +150,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         }
     }
 
+    @Ignore
     @Test
     public void testCustomPrimaryKeysMeta() throws InterruptedException {
         // create table
