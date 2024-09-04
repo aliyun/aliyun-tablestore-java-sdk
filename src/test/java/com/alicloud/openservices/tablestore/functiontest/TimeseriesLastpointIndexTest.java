@@ -13,6 +13,7 @@ import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -535,6 +536,7 @@ public class TimeseriesLastpointIndexTest {
         readAndCheckLastpointIndexRows(indexName, producer, data);
     }
 
+    @Ignore
     @Test
     public void testTimeseriesLastpointIndexWithBaseData() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();

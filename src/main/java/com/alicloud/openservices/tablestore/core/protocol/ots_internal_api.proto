@@ -46,6 +46,7 @@ message TableOptions {
     optional int32 max_versions = 2;
     optional int64 deviation_cell_version_in_sec = 5;
     optional bool allow_update = 6;
+    optional bool update_full_row = 7;
 }
 
 enum IndexUpdateMode {
