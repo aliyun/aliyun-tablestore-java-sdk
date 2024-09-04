@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 public class Constants {
     // ALL HTTP HEADERS SHOULD BE DEFINED IN LOWERCASE
     // request headers
-    public static final String USER_AGENT = "ots-java-sdk 5.17.3";
+    public static final String USER_AGENT = "ots-java-sdk 5.17.4";
     public static final String OTS_HEADER_API_VERSION = "x-ots-apiversion";
     public static final String OTS_HEADER_ACCESS_KEY_ID = "x-ots-accesskeyid";
     public static final String OTS_HEADER_OTS_CONTENT_MD5 = "x-ots-contentmd5";

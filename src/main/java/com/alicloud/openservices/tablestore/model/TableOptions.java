@@ -42,6 +42,20 @@ public class TableOptions implements Jsonizable {
     private OptionalValue<Boolean> allowUpdate = new OptionalValue<Boolean>("AllowUpdate");
 
     /**
+     * 表中的数据在Update时是否必须整行一起更新。
+     * 整行更新：Update部分列，会自动将原始列的版本号填充到行上。
+     * 比如某一行有列pk、a、b、c，Update的列参数只包含pk、a，则b、c列的版本号会被自动填充（和pk、a列的版本号一致）。
+     * 该配置项默认设置为false。
+     * 如果设置为true，
+     * 优势（为什么要整行一起更新）：对应的表在allow_update为true时，也能支持二级索引和多元索引的TTL功能；
+     *      如果配置项为false且allow_update为true，则不支持索引TTL。
+     * 劣势：1. Update操作会自动填充原始列的版本号，会增加Update请求的写负载。
+     *      2. 同时，由于要自动填充原始列，Update操作的读负载（写前读取原始列），并增加读CU。
+     * 在表创建后，该配置不可动态修改。
+     */
+    private OptionalValue<Boolean> updateFullRow = new OptionalValue<Boolean>("UpdateFullRow");
+
+    /**
      * 构造TableOptions对象。
      */
     public TableOptions() {
@@ -86,6 +100,17 @@ public class TableOptions implements Jsonizable {
      public TableOptions(boolean allowUpdate) {
          setAllowUpdate(allowUpdate);
      }
+
+    /**
+     * 构造TableOptions对象。
+     *
+     * @param allowUpdate 是否允许有Update操作
+     * @param updateFullRow Update时是否必须整行一起更新
+     */
+    public TableOptions(boolean allowUpdate, boolean updateFullRow) {
+        setAllowUpdate(allowUpdate);
+        setUpdateFullRow(updateFullRow);
+    }
 
     /**
      * 获取TTL时间，单位为秒。
@@ -226,9 +251,35 @@ public class TableOptions implements Jsonizable {
         return allowUpdate.getValue();
     }
 
+    /**
+     * 查询是否调用{@link #setUpdateFullRow(boolean)}来设置在数据Update时，是否必须整行一起更新
+     * @return 是否有设置UpdateFullRow
+     */
+    public boolean hasSetUpdateFullRow() { return this.updateFullRow.isValueSet(); }
+
+    /**
+     * 获取数据Update时是否必须整行一起更新
+     * @return Update时是否必须整行一起更新
+     * @throws java.lang.IllegalStateException 若没有配置该参数
+     */
+    public boolean getUpdateFullRow() {
+        if (!this.updateFullRow.isValueSet()) {
+            throw new IllegalStateException("The value of UpdateFullRow is not set.");
+        }
+        return this.updateFullRow.getValue();
+    }
+
+    /**
+     * 设置表在数据Update时，是否必须整行一起更新
+     * @param updateFullRow
+     */
+    public void setUpdateFullRow(boolean updateFullRow) {
+        this.updateFullRow.setValue(updateFullRow);
+    }
+
     @Override
     public String toString() {
-        return timeToLive + ", " + maxVersions + ", " + maxTimeDeviation + ", " + allowUpdate;
+        return timeToLive + ", " + maxVersions + ", " + maxTimeDeviation + ", " + allowUpdate + ", " + updateFullRow;
     }
 
     @Override
@@ -281,6 +332,15 @@ public class TableOptions implements Jsonizable {
             }
             sb.append("\"AllowUpdate\": ");
             sb.append(this.allowUpdate.getValue());
+        }
+        if (this.updateFullRow.isValueSet()) {
+            if (firstItem) {
+                firstItem = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append("\"UpdateFullRow\": ");
+            sb.append(this.updateFullRow.getValue());
         }
         return firstItem;
     }

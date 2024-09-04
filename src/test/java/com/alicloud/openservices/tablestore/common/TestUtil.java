@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.common;
 
 import com.alicloud.openservices.tablestore.model.*;
+import junit.framework.AssertionFailedError;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestUtil {
 
@@ -151,5 +153,23 @@ public class TestUtil {
         Field mapField = getAccessibleField(processEnvironment, "theEnvironment");
         Map<String, String> map = (Map<String, String>) mapField.get(null);
         map.put(key, value);
+    }
+
+    public static <T extends Throwable> T expectThrowsAndMessages(Class<T> expectedType, Runnable runnable, String... messageKeys) {
+        try {
+            runnable.run();
+        } catch (Throwable e) {
+            if (expectedType.isInstance(e)) {
+                String message = e.getMessage();
+                for (String key : messageKeys) {
+                    assertTrue("message key[" + key + "] not in message:" + message, message.contains(key));
+                }
+                return expectedType.cast(e);
+            }
+            AssertionFailedError assertion = new AssertionFailedError("Unexpected exception type, expected " + expectedType.getSimpleName() + " but got " + e);
+            assertion.initCause(e);
+            throw assertion;
+        }
+        throw new AssertionFailedError("Expected exception " + expectedType.getSimpleName() + " but no exception was thrown");
     }
 }
