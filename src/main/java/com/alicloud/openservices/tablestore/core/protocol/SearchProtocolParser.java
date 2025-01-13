@@ -384,8 +384,8 @@ public class SearchProtocolParser {
             String fieldName = collapse.getFieldName();
             searchQuery.setCollapse(new Collapse(fieldName));
         }
-        if (pb.hasGetTotalCount()) {
-            searchQuery.setGetTotalCount(pb.getGetTotalCount());
+        if (pb.hasTrackTotalCount()) {
+            searchQuery.setTrackTotalCount(pb.getTrackTotalCount());
         }
         if (pb.hasToken()) {
             searchQuery.setToken(pb.getToken().toByteArray());
@@ -395,6 +395,9 @@ public class SearchProtocolParser {
         }
         if (pb.hasGroupBys()) {
             searchQuery.setGroupByList(SearchGroupByParser.toGroupBys(pb.getGroupBys()));
+        }
+        if (pb.hasFilter()){
+            searchQuery.setFilter(SearchFilterParser.toSearchFilter(pb.getFilter()));
         }
         return searchQuery;
     }

@@ -3,6 +3,8 @@ package com.alicloud.openservices.tablestore;
 import java.util.Map;
 import java.util.concurrent.*;
 
+import com.alicloud.openservices.tablestore.core.ResourceManager;
+import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.CreateTunnelResponse;
@@ -103,14 +105,26 @@ public class TunnelClient implements TunnelClientInterface {
     public TunnelClient(String endpoint, String accessKeyId,
                         String accessKeySecret, String instanceName, ClientConfiguration config, String stsToken,
                         ExecutorService callbackExecutor) {
-        if (config != null) {
-            config.setEnableResponseValidation(false);
-        } else {
+        if (config == null) {
             config = new ClientConfiguration();
-            config.setEnableResponseValidation(false);
         }
+        config.setEnableResponseValidation(false);
+
         this.internalClient = new InternalClient(endpoint, accessKeyId, accessKeySecret, instanceName, config,
             callbackExecutor, stsToken);
+    }
+
+    /**
+     * 使用指定的TableStore Endpoint和默认配置构造一个新的{@link TunnelClient}实例。
+     */
+    public TunnelClient(String endpoint, CredentialsProvider credsProvider, String instanceName,
+                            ClientConfiguration config, ResourceManager resourceManager) {
+        if (config == null) {
+            config = new ClientConfiguration();
+        }
+        config.setEnableResponseValidation(false);
+
+        this.internalClient = new InternalClient(endpoint, credsProvider, instanceName, config, resourceManager);
     }
 
     TunnelClient(InternalClient internalClient) {
@@ -137,6 +151,15 @@ public class TunnelClient implements TunnelClientInterface {
      */
     public String getInstanceName() {
         return this.internalClient.getInstanceName();
+    }
+
+    /**
+     * 返回Client配置
+     *
+     * @return client configuration
+     */
+    public ClientConfiguration getClientConfig() {
+        return this.internalClient.getClientConfig();
     }
 
     @Override

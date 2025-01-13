@@ -123,7 +123,7 @@ public class TestTimelineService {
         boolQuery.setMustQueries(Arrays.asList(termQuery, rangeQuery));
 
         SearchQuery searchQuery = new SearchQuery().setQuery(boolQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(1);
         searchQuery.setOffset(1);
 
@@ -155,7 +155,7 @@ public class TestTimelineService {
         wrongQuery.setTerm(ColumnValue.fromLong(8));
 
         SearchQuery wrongSearchQuery = new SearchQuery().setQuery(wrongQuery);
-        wrongSearchQuery.setGetTotalCount(true);
+        wrongSearchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         wrongSearchQuery.setLimit(1);
 
         try {

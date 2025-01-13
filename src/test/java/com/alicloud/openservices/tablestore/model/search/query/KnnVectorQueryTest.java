@@ -30,6 +30,20 @@ public class KnnVectorQueryTest extends BaseSearchTest {
     }
 
     @Test
+    public void testMinScore() {
+        KnnVectorQuery query = new KnnVectorQuery();
+        query.setMinScore(0.5f);
+        assertEquals(query.getMinScore(), 0.5f, 0.00001);
+    }
+
+    @Test
+    public void testNumCandidates() {
+        KnnVectorQuery query = new KnnVectorQuery();
+        query.setNumCandidates(100);
+        assertEquals(query.getNumCandidates().intValue(), 100);
+    }
+
+    @Test
     public void testFloatVector() {
         float[] floats = new float[random().nextInt(100) + 1];
         for (int i = 0; i < floats.length; i++) {
@@ -60,6 +74,9 @@ public class KnnVectorQueryTest extends BaseSearchTest {
         query.setFieldName(fieldName);
         int topK = random().nextInt();
         query.setTopK(topK);
+        float minScore = 0.5f;
+        query.setMinScore(minScore);
+        query.setNumCandidates(topK + 5);
         float[] floats = new float[random().nextInt(100) + 1];
         for (int i = 0; i < floats.length; i++) {
             floats[i] = random().nextFloat();
@@ -78,6 +95,8 @@ public class KnnVectorQueryTest extends BaseSearchTest {
                 .topK(topK)
                 .queryVector(floats)
                 .filter(filter)
+                .minScore(minScore)
+                .numCandidates(topK + 5)
                 .weight(weight);
         assertEquals(query.serialize(), builder.build().serialize());
     }

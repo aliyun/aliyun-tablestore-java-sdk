@@ -81,7 +81,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -97,7 +97,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
 
@@ -114,7 +114,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -129,7 +129,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -144,7 +144,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -159,7 +159,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -174,7 +174,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -189,7 +189,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(2);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -228,7 +228,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -262,7 +262,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -293,7 +293,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineMeta> result = metaService.search(searchQuery);
@@ -328,7 +328,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineEntry> result = timelineStore.search(searchQuery);
@@ -362,7 +362,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineEntry> result = timelineStore.search(searchQuery);
@@ -392,7 +392,7 @@ public class TestSearchQuery {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(5);
 
         SearchResult<TimelineEntry> result = timelineStore.search(searchQuery);

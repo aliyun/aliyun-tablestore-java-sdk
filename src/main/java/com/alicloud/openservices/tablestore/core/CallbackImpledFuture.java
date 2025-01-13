@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import com.alicloud.openservices.tablestore.TableStoreCallback;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.TableStoreNoPermissionException;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
 public class CallbackImpledFuture<Req, Res>
@@ -101,7 +102,14 @@ public class CallbackImpledFuture<Req, Res>
 
 
     private Res getResultWithoutLock() throws TableStoreException, ClientException {
-        if (this.ex instanceof TableStoreException) {
+        if (this.ex instanceof TableStoreNoPermissionException) {
+            // create a new exception as this.ex doesn't has current stack trace
+            TableStoreNoPermissionException tmp = (TableStoreNoPermissionException) this.ex;
+            TableStoreNoPermissionException newExp = new TableStoreNoPermissionException(tmp.getMessage(), tmp, tmp.getErrorCode(), tmp.getRequestId(), tmp.getHttpStatus(),tmp.getAccessDeniedDetail());
+            newExp.setTraceId(tmp.getTraceId());
+            throw newExp;
+        }
+        else if (this.ex instanceof TableStoreException) {
             // create a new exception as this.ex doesn't has current stack trace
             TableStoreException tmp = (TableStoreException)this.ex;
             TableStoreException newExp = new TableStoreException(tmp.getMessage(), tmp, tmp.getErrorCode(), tmp.getRequestId(), tmp.getHttpStatus());

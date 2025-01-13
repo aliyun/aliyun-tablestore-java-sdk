@@ -205,6 +205,7 @@ public class TestTunnelConsumer {
         System.out.println("finish consume all data");
 
         // 4. Assert with totalRecords
+        assertEquals(rowCount, totalStreamRecordsWithOrigin.size());
         assertEquals(rowCount, totalRecords.size());
         for (int i = 0; i < rowCount; i++) {
             PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
@@ -246,6 +247,7 @@ public class TestTunnelConsumer {
         System.out.println("finish consume all data");
 
         // 4. Assert with totalRecords
+        assertEquals(rowCount, totalStreamRecordsWithOrigin.size());
         assertEquals(rowCount, totalRecords.size());
         for (int i = 0; i < rowCount; i++) {
             PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
@@ -283,6 +285,7 @@ public class TestTunnelConsumer {
         System.out.println("finish consume all data");
 
         // 4. Assert with totalRecords
+        assertEquals(rowCount, totalStreamRecordsWithOrigin.size());
         assertEquals(rowCount, totalRecords.size());
         for (int i = 0; i < rowCount; i++) {
             PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();

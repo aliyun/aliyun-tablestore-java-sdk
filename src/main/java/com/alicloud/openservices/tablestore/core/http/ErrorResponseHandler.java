@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.TableStoreNoPermissionException;
 import com.alicloud.openservices.tablestore.core.Constants;
 import com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
@@ -53,6 +54,9 @@ public class ErrorResponseHandler implements ResponseHandler {
 
         try {
             OtsInternalApi.Error errMsg = OtsInternalApi.Error.parseFrom(errorStream);
+            if (errMsg.hasAccessDeniedDetail()) {
+                throw new TableStoreNoPermissionException(errMsg.getMessage(), null, errMsg.getCode(), requestId, httpStatus,errMsg.getAccessDeniedDetail());
+            }
             throw new TableStoreException(errMsg.getMessage(), null, errMsg.getCode(), requestId, httpStatus);
         } catch (IOException e) {
             throw new ClientException("Network error.", e);

@@ -47,7 +47,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     }
 
     @Test
-    public void testCustomPrimaryKeys() {
+    public void testCustomPrimaryKeys() throws InterruptedException {
         // create table
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_custom_primary_keys");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
@@ -58,7 +58,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-
+        TimeUnit.SECONDS.sleep(60);
         // describe table
         DescribeTimeseriesTableRequest describeTimeseriesTableRequest = new DescribeTimeseriesTableRequest("test_custom_primary_keys");
         DescribeTimeseriesTableResponse describeTimeseriesTableResponse = client.describeTimeseriesTable(describeTimeseriesTableRequest);
@@ -163,7 +163,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-
+        TimeUnit.SECONDS.sleep(60);
         // update meta
         UpdateTimeseriesMetaRequest updateTimeseriesMetaRequest = new UpdateTimeseriesMetaRequest("test_custom_primary_keys_meta");
         List<TimeseriesMeta> metas = new ArrayList<TimeseriesMeta>();
@@ -212,7 +212,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     }
 
     @Test
-    public void testBatchWrite() {
+    public void testBatchWrite() throws InterruptedException {
         // create table
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_custom_primary_keys_batch_write");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
@@ -223,7 +223,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-
+        TimeUnit.SECONDS.sleep(60);
         // describe table
         DescribeTableRequest describeTableRequest = new DescribeTableRequest("test_custom_primary_keys_batch_write#timeseries");
         DescribeTableResponse describeTableResponse = tableStoreClient.describeTable(describeTableRequest);
@@ -299,7 +299,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     }
 
     @Test
-    public void testNoMeasurements() {
+    public void testNoMeasurements() throws InterruptedException {
         // create table
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_no_measurements");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
@@ -307,6 +307,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addTimeseriesKey("_tags");
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
+        TimeUnit.SECONDS.sleep(60);
 
         // put data
         PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest("test_no_measurements");

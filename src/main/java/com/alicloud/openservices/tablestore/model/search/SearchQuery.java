@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilder;
+import com.alicloud.openservices.tablestore.model.search.filter.SearchFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilder;
 import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
@@ -16,6 +17,16 @@ import com.alicloud.openservices.tablestore.model.search.sort.Sort;
  * 构建SearchQuery，该实体类会通过SearchRequest传递给服务器，告诉服务器我们的搜索参数
  */
 public class SearchQuery {
+
+    /**
+     * 返回匹配的总行数
+     */
+    public static final int TRACK_TOTAL_COUNT = Integer.MAX_VALUE;
+
+    /**
+     * 不返回匹配的行数信息
+     */
+    public static final int TRACK_TOTAL_COUNT_DISABLED = -1;
 
     /**
      * 分页起始数量
@@ -48,9 +59,17 @@ public class SearchQuery {
     private Sort sort;
 
     /**
-     * 是否返回匹配到的总行数
+     * 自定义期望命中的最大文档数量，这个值越小性能会越好
+     * <li>{@link SearchQuery#TRACK_TOTAL_COUNT} 返回匹配的总行数 setGetTotalCount(true)</li>
+     * <li>{@link SearchQuery#TRACK_TOTAL_COUNT_DISABLED} 不返回匹配的行数信息 setGetTotalCount(false)</li>
      */
-    private boolean getTotalCount = false;
+    private int trackTotalCount = TRACK_TOTAL_COUNT_DISABLED;
+
+    /**
+     * 过滤器
+     * 对Query查询语句的查询结果进行过滤
+     */
+    private SearchFilter filter;
 
     private List<Aggregation> aggregationList;
 
@@ -82,6 +101,7 @@ public class SearchQuery {
 
     /**
      * 设置统计聚合中的groupby参数。
+     *
      * @param groupByList 使用{@link com.alicloud.openservices.tablestore.model.search.groupby.GroupByBuilders}进行构建
      */
     public void setGroupByList(List<GroupBy> groupByList) {
@@ -142,12 +162,32 @@ public class SearchQuery {
         return this;
     }
 
+    /**
+     * 推荐使用{@link SearchQuery#getTrackTotalCount}
+     */
+    @Deprecated
     public boolean isGetTotalCount() {
-        return getTotalCount;
+        return this.trackTotalCount == TRACK_TOTAL_COUNT;
     }
 
+    /**
+     * 推荐使用{@link SearchQuery#setTrackTotalCount}
+     */
+    @Deprecated
     public void setGetTotalCount(boolean getTotalCount) {
-        this.getTotalCount = getTotalCount;
+        if (getTotalCount) {
+            this.trackTotalCount = TRACK_TOTAL_COUNT;
+        } else {
+            this.trackTotalCount = TRACK_TOTAL_COUNT_DISABLED;
+        }
+    }
+
+    public int getTrackTotalCount() {
+        return trackTotalCount;
+    }
+
+    public void setTrackTotalCount(int trackTotalCount) {
+        this.trackTotalCount = trackTotalCount;
     }
 
     public byte[] getToken() {
@@ -162,6 +202,15 @@ public class SearchQuery {
         }
     }
 
+    public SearchFilter getFilter() {
+        return filter;
+    }
+
+    public SearchQuery setFilter(SearchFilter filter) {
+        this.filter = filter;
+        return this;
+    }
+
     public SearchQuery() {
     }
 
@@ -169,7 +218,7 @@ public class SearchQuery {
         SearchQuery copy = new SearchQuery();
         copy.setAggregationList(this.getAggregationList());
         copy.setCollapse(this.getCollapse());
-        copy.setGetTotalCount(this.isGetTotalCount());
+        copy.setTrackTotalCount(this.getTrackTotalCount());
         copy.setGroupByList(this.getGroupByList());
         copy.setLimit(this.getLimit());
         copy.setOffset(this.getOffset());
@@ -177,6 +226,7 @@ public class SearchQuery {
         copy.setHighlight(this.getHighlight());
         copy.setSort(this.getSort());
         copy.setToken(this.getToken());
+        copy.setFilter(this.getFilter());
         return copy;
     }
 
@@ -187,10 +237,11 @@ public class SearchQuery {
         setHighlight(builder.highlight);
         setCollapse(builder.collapse);
         setSort(builder.sort);
-        setGetTotalCount(builder.getTotalCount);
+        setTrackTotalCount(builder.trackTotalCount);
         setAggregationList(builder.aggregationList);
         setGroupByList(builder.groupByList);
         setToken(builder.token);
+        setFilter(builder.filter);
     }
 
     public static final class Builder {
@@ -200,10 +251,11 @@ public class SearchQuery {
         private Highlight highlight;
         private Collapse collapse;
         private Sort sort;
-        private boolean getTotalCount = false;
+        private int trackTotalCount = TRACK_TOTAL_COUNT_DISABLED;
         private List<Aggregation> aggregationList;
         private List<GroupBy> groupByList;
         private byte[] token;
+        private SearchFilter filter;
 
         private Builder() {}
 
@@ -255,7 +307,16 @@ public class SearchQuery {
          * 是否返回匹配到的总行数
          */
         public Builder getTotalCount(boolean val) {
-            getTotalCount = val;
+            if(val) {
+                trackTotalCount = TRACK_TOTAL_COUNT;
+            } else {
+                trackTotalCount = TRACK_TOTAL_COUNT_DISABLED;
+            }
+            return this;
+        }
+
+        public Builder trackTotalCount(int val) {
+            trackTotalCount = val;
             return this;
         }
 
@@ -312,6 +373,15 @@ public class SearchQuery {
          */
         public Builder token(byte[] val) {
             token = val;
+            return this;
+        }
+
+        /**
+         * 过滤器
+         * 对Query查询语句的查询结果进行过滤
+         */
+        public Builder filter(SearchFilter filter) {
+            this.filter = filter;
             return this;
         }
 

@@ -268,7 +268,7 @@ public class SearchIndexSample {
     private static void readMoreRowsWithToken(SyncClient client) {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(new MatchAllQuery());
-        searchQuery.setGetTotalCount(true); // 需要设置GetTotalCount为true才会返回满足条件的数据总行数
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT); // 需要设置GetTotalCount为true才会返回满足条件的数据总行数
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
         SearchResponse resp = client.search(searchRequest);
         if (!resp.isAllSuccess()) {
@@ -297,6 +297,9 @@ public class SearchIndexSample {
         DescribeSearchIndexRequest request = new DescribeSearchIndexRequest();
         request.setTableName(TABLE_NAME);
         request.setIndexName(INDEX_NAME);
+
+        // 如果设置includeSyncStat为false，返回结果不会包含SyncStat信息，不设置或置为true都会正常返回SyncStat
+        // request.setIncludeSyncStat(false);
         DescribeSearchIndexResponse response = client.describeSearchIndex(request);
         System.out.println(response.jsonize());
         return response;
@@ -390,7 +393,7 @@ public class SearchIndexSample {
         while (true) {
             SearchQuery searchQuery = new SearchQuery();
             searchQuery.setQuery(new MatchAllQuery());
-            searchQuery.setGetTotalCount(true);
+            searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
             SearchRequest searchRequest = new SearchRequest(TABLE_NAME, indexName, searchQuery);
             SearchResponse resp = client.search(searchRequest);
             if (resp.getTotalCount() == expectTotalHit) {
@@ -418,7 +421,7 @@ public class SearchIndexSample {
          * 如果只为了取TotalCount，可以设置limit=0，即不返回任意一行数据。
          */
         searchQuery.setLimit(0);
-        searchQuery.setGetTotalCount(true); // 需要设置GetTotalCount为true才会返回满足条件的数据总行数
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT); // 需要设置GetTotalCount为true才会返回满足条件的数据总行数
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
         SearchResponse resp = client.search(searchRequest);
         /**
@@ -443,7 +446,7 @@ public class SearchIndexSample {
         searchQuery.setQuery(matchQuery);
         searchQuery.setOffset(0); // 设置offset为0
         searchQuery.setLimit(20); // 设置limit为20，表示最多返回20行数据
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
         SearchResponse resp = client.search(searchRequest);
         System.out.println("TotalCount: " + resp.getTotalCount());
@@ -469,7 +472,7 @@ public class SearchIndexSample {
         searchQuery.setQuery(matchPhraseQuery);
         searchQuery.setOffset(0); // 设置offset为0
         searchQuery.setLimit(20); // 设置limit为20，表示最多返回20行数据
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
         SearchResponse resp = client.search(searchRequest);
         System.out.println("TotalCount: " + resp.getTotalCount());
@@ -493,7 +496,7 @@ public class SearchIndexSample {
         termQuery.setFieldName("Col_Keyword"); // 设置要匹配的字段
         termQuery.setTerm(ColumnValue.fromString("hangzhou")); // 设置要匹配的值
         searchQuery.setQuery(termQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -516,7 +519,7 @@ public class SearchIndexSample {
         termsQuery.setTerms(Arrays.asList(ColumnValue.fromString("hangzhou"),
             ColumnValue.fromString("shanghai"))); // 设置要匹配的值
         searchQuery.setQuery(termsQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -537,7 +540,7 @@ public class SearchIndexSample {
         prefixQuery.setFieldName("Col_Keyword");
         prefixQuery.setPrefix("hangzhou");
         searchQuery.setQuery(prefixQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -560,7 +563,7 @@ public class SearchIndexSample {
         suffixQuery.setFieldName("Col_Fuzzy_Keyword");
         suffixQuery.setSuffix("hai");
         searchQuery.setQuery(suffixQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -581,7 +584,7 @@ public class SearchIndexSample {
         wildcardQuery.setFieldName("Col_Keyword");
         wildcardQuery.setValue("hang*u"); //wildcardQuery支持通配符
         searchQuery.setQuery(wildcardQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -603,7 +606,7 @@ public class SearchIndexSample {
         rangeQuery.setFieldName("Col_Long");  // 设置针对哪个字段
         rangeQuery.greaterThan(ColumnValue.fromLong(3));  // 设置该字段的范围条件，大于3
         searchQuery.setQuery(rangeQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         // 设置按照Col_Long这一列逆序排序
         FieldSort fieldSort = new FieldSort("Col_Long");
         fieldSort.setOrder(SortOrder.DESC);
@@ -622,7 +625,7 @@ public class SearchIndexSample {
     private static void fieldSortQuery(SyncClient client) {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(new MatchAllQuery());
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         // 设置按照Col_Long这一列逆序排序
         FieldSort fieldSort = new FieldSort("Col_Long");
         fieldSort.setMissingField("Col_Long_sec");
@@ -646,7 +649,7 @@ public class SearchIndexSample {
         geoBoundingBoxQuery.setTopLeft("10,0"); // 设置矩形左上角
         geoBoundingBoxQuery.setBottomRight("0,10"); // 设置矩形右下角
         searchQuery.setQuery(geoBoundingBoxQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -668,7 +671,7 @@ public class SearchIndexSample {
         geoDistanceQuery.setCenterPoint("5,5"); // 设置中心点
         geoDistanceQuery.setDistanceInMeter(10000); // 设置到中心点的距离条件，不超过10000米
         searchQuery.setQuery(geoDistanceQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -689,7 +692,7 @@ public class SearchIndexSample {
         geoPolygonQuery.setFieldName("Col_GeoPoint");
         geoPolygonQuery.setPoints(Arrays.asList("0,0", "5,5", "5,0")); // 设置多边形的顶点
         searchQuery.setQuery(geoPolygonQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();
@@ -727,7 +730,7 @@ public class SearchIndexSample {
             BoolQuery boolQuery = new BoolQuery();
             boolQuery.setMustQueries(Arrays.asList(rangeQuery, matchQuery));
             searchQuery.setQuery(boolQuery);
-            searchQuery.setGetTotalCount(true);
+            searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
             SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
             SearchResponse resp = client.search(searchRequest);
             System.out.println("TotalCount: " + resp.getTotalCount()); // 匹配到的总行数，非返回行数
@@ -742,7 +745,7 @@ public class SearchIndexSample {
             boolQuery.setShouldQueries(Arrays.asList(rangeQuery, matchQuery));
             boolQuery.setMinimumShouldMatch(1); // 设置最少满足一个条件
             searchQuery.setQuery(boolQuery);
-            searchQuery.setGetTotalCount(true);
+            searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
             SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
             SearchResponse resp = client.search(searchRequest);
             System.out.println("TotalCount: " + resp.getTotalCount()); // 匹配到的总行数，非返回行数
@@ -755,7 +758,7 @@ public class SearchIndexSample {
         ExistsQuery existsQuery = new ExistsQuery();
         existsQuery.setFieldName("Col_Keyword");
         searchQuery.setQuery(existsQuery);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
 
         ColumnsToGet columnsToGet = new ColumnsToGet();

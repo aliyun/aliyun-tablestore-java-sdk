@@ -15,6 +15,8 @@ import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
 import com.alicloud.openservices.tablestore.core.auth.HmacSHA1Signature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.alicloud.openservices.tablestore.core.Constants.*;
 
@@ -23,7 +25,7 @@ import static com.alicloud.openservices.tablestore.core.Constants.*;
  *
  */
 public class OTSValidationResponseHandler implements ResponseHandler{
-
+    private static final Logger LOG = LoggerFactory.getLogger(OTSValidationResponseHandler.class);
     private ServiceCredentials credentials;
     private OTSUri uri;
 
@@ -64,7 +66,6 @@ public class OTSValidationResponseHandler implements ResponseHandler{
         }
         strToSign.append('/');
         strToSign.append(uri.getAction());
-
         HmacSHA1Signature signer = new HmacSHA1Signature(Bytes.toBytes(credentials.getAccessKeySecret()));
         signer.updateUTF8String(strToSign.toString());
         String actualSign = signer.computeSignature();
@@ -74,14 +75,17 @@ public class OTSValidationResponseHandler implements ResponseHandler{
         int posSign = authHeader.indexOf(actualSign);
         if (posSign < 0) {
             // cannot find signature
+            LOG.error("Validate response authorization failed, cannot find signature. headers:{}, accessKeyId:{}, computedSign:{}", headers, credentials.getAccessKeyId(), actualSign);
             throw new ClientException("返回结果授权信息验证失败。");
         }
         if (posSign == 0 || authHeader.charAt(posSign - 1) != ':') {
             // cannot find separator ':'
+            LOG.error("Validate response authorization failed, cannot find separator ':'. headers:{}, accessKeyId:{}, computedSign:{}", headers, credentials.getAccessKeyId(), actualSign);
             throw new ClientException("返回结果授权信息验证失败。");
         }
         if (posSign + actualSign.length() != authHeader.length()) {
             // signature is not the last part of authHeader
+            LOG.error("Validate response authorization failed, signature is not the last part of authHeader. headers:{}, accessKeyId:{}, computedSign:{}", headers, credentials.getAccessKeyId(), actualSign);
             throw new ClientException("返回结果授权信息验证失败。");
         }
     }

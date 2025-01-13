@@ -7,6 +7,7 @@ public class DescribeSearchIndexRequest implements Request {
 
     private String tableName;
     private String indexName;
+    private Boolean includeSyncStat = true;
 
     public String getTableName() {
         return tableName;
@@ -22,6 +23,14 @@ public class DescribeSearchIndexRequest implements Request {
 
     public void setIndexName(String indexName) {
         this.indexName = indexName;
+    }
+
+    public Boolean isIncludeSyncStat() {
+        return includeSyncStat;
+    }
+
+    public void setIncludeSyncStat(boolean includeSyncStat) {
+        this.includeSyncStat = includeSyncStat;
     }
 
     @Override

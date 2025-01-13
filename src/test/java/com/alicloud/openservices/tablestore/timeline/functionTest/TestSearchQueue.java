@@ -99,7 +99,7 @@ public class TestSearchQueue {
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQuery(query2);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(100);
 
         TimelineQueue timelineQueue = timelineStore.createTimelineQueue(new TimelineIdentifier.Builder()
