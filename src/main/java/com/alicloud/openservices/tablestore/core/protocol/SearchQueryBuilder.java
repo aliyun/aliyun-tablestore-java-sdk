@@ -512,6 +512,12 @@ public class SearchQueryBuilder {
         if (query.getTopK() != null) {
             builder.setTopK(query.getTopK());
         }
+        if (query.getMinScore() != null) {
+            builder.setMinScore(query.getMinScore());
+        }
+        if (query.getNumCandidates() != null) {
+            builder.setNumCandidates(query.getNumCandidates());
+        }
         if (query.getFloat32QueryVector() != null) {
             for (float v : query.getFloat32QueryVector()) {
                 builder.addFloat32QueryVector(v);

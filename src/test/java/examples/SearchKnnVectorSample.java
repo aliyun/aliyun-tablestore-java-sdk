@@ -125,7 +125,7 @@ public class SearchKnnVectorSample {
         while (true) {
             SearchQuery searchQuery = new SearchQuery();
             searchQuery.setQuery(new MatchAllQuery());
-            searchQuery.setGetTotalCount(true);
+            searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
             SearchRequest searchRequest = new SearchRequest(TABLE_NAME, indexName, searchQuery);
             SearchResponse resp = client.search(searchRequest);
             if (resp.getTotalCount() == expectTotalHit) {
@@ -147,6 +147,8 @@ public class SearchKnnVectorSample {
         KnnVectorQuery query = new KnnVectorQuery();
         query.setFieldName("Col_Vector");
         query.setTopK(100);
+        query.setMinScore(0.1f);
+        query.setNumCandidates(200);
         query.setFloat32QueryVector(new float[]{0.1f, 0.2f, 0.3f, 0.4f});
 
         // 最相近的向量需要满足: Col_Keyword=hangzhou，用户可自由组合其它查询

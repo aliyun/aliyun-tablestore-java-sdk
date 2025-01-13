@@ -57,7 +57,7 @@ public class TimeseriesStreamTest {
 
             client.asTimeseriesClient().createTimeseriesTable(createTableRequest);
             System.out.println("Waiting for creating Timeseries Table...");
-            Thread.sleep(10000);
+            Thread.sleep(60000);
             System.out.println("Table created successfully.");
 
             PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest(testTable);

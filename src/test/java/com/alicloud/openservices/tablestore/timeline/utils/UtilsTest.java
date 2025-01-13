@@ -37,7 +37,7 @@ public class UtilsTest {
         );
 
         assertEquals(5, searchQuery.getLimit().intValue());
-        assertEquals(true, searchQuery.isGetTotalCount());
+        assertEquals(SearchQuery.TRACK_TOTAL_COUNT, searchQuery.getTrackTotalCount());
         assertEquals(QueryType.QueryType_BoolQuery, searchQuery.getQuery().getQueryType());
         assertEquals(2, ((BoolQuery)searchQuery.getQuery()).getMustQueries().size());
         assertEquals(QueryType.QueryType_TermQuery, ((BoolQuery)searchQuery.getQuery()).getMustQueries().get(0).getQueryType());

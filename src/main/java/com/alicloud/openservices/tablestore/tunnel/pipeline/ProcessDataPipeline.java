@@ -138,6 +138,7 @@ public class ProcessDataPipeline implements Runnable {
                                         break;
                                     }
                                 }
+                                readRecordsRequest.setToken(resp.getNextToken());
                             }
                             if (resp == null) {
                                 LOG.info("ReadRecordsResponse is null, channelId: {}", connect.getChannelId());

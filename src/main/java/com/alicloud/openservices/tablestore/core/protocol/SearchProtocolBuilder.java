@@ -275,6 +275,7 @@ public class SearchProtocolBuilder {
         Search.DescribeSearchIndexRequest.Builder builder = Search.DescribeSearchIndexRequest.newBuilder();
         builder.setTableName(request.getTableName());
         builder.setIndexName(request.getIndexName());
+        builder.setIncludeSyncStat(request.isIncludeSyncStat());
         return builder.build();
     }
 
@@ -323,7 +324,7 @@ public class SearchProtocolBuilder {
         if (searchQuery.getCollapse() != null) {
             builder.setCollapse(buildCollapse(searchQuery.getCollapse()));
         }
-        builder.setGetTotalCount(searchQuery.isGetTotalCount());
+        builder.setTrackTotalCount(searchQuery.getTrackTotalCount());
         if (searchQuery.getToken() != null) {
             builder.setToken(ByteString.copyFrom(searchQuery.getToken()));
         }
@@ -332,6 +333,9 @@ public class SearchProtocolBuilder {
         }
         if (searchQuery.getGroupByList() != null) {
             builder.setGroupBys(SearchGroupByBuilder.buildGroupBys(searchQuery.getGroupByList()));
+        }
+        if (searchQuery.getFilter() != null) {
+            builder.setFilter(SearchFilterBuilder.buildSearchFilter(searchQuery.getFilter()));
         }
         return builder.build();
     }

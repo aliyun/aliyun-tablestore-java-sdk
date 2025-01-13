@@ -5,6 +5,17 @@ package com.alicloud.openservices.tablestore.core.protocol;
 message Error {
     required string code = 1;
     optional string message = 2;
+    optional AccessDeniedDetail access_denied_detail = 3;
+}
+
+message AccessDeniedDetail {
+    required string auth_action = 1;
+    required string auth_principal_type = 2;
+    required string auth_principal_owner_id = 3;
+    required string auth_principal_display_name = 4;
+    required string policy_type = 5;
+    required string no_permission_type = 6;
+    optional string encoded_diagnostic_message = 7;
 }
 
 enum PrimaryKeyType {

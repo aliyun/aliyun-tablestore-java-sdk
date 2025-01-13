@@ -27,6 +27,7 @@ import com.alicloud.openservices.tablestore.model.search.agg.MinAggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.PercentilesAggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.SumAggregation;
 import com.alicloud.openservices.tablestore.model.search.agg.TopRowsAggregation;
+import com.alicloud.openservices.tablestore.model.search.filter.SearchFilter;
 import com.alicloud.openservices.tablestore.model.search.groupby.FieldRange;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupBy;
 import com.alicloud.openservices.tablestore.model.search.groupby.GroupByDateHistogram;
@@ -850,7 +851,10 @@ public abstract class BaseSearchTest {
     public static KnnVectorQuery randomKnnVectorQuery() {
         KnnVectorQuery query = new KnnVectorQuery();
         query.setFieldName(randomString(3));
-        query.setTopK(RANDOM.nextInt());
+        int topK = RANDOM.nextInt();
+        query.setTopK(topK);
+        query.setMinScore(RANDOM.nextFloat());
+        query.setNumCandidates(topK + RANDOM.nextInt(5));
         float[] floats = new float[RANDOM.nextInt(100) + 1];
         for (int i = 0; i < floats.length; i++) {
             floats[i] = RANDOM.nextFloat();
@@ -860,7 +864,7 @@ public abstract class BaseSearchTest {
         RANDOM.nextBytes(bytes);
         query.setFilter(randomQuery());
         query.setWeight(RANDOM.nextFloat());
-        assertAllFieldTested(query, 6);
+        assertAllFieldTested(query, 8);
         return query;
     }
 
@@ -1397,6 +1401,15 @@ public abstract class BaseSearchTest {
         return groupBIES;
     }
 
+    public static SearchFilter randomSearchFilter() {
+        SearchFilter filter = new SearchFilter();
+        if (RANDOM.nextBoolean()) {
+            filter.setQuery(randomQuery());
+        }
+        assertAllFieldTested(filter, 1);
+        return filter;
+    }
+
     public static SearchQuery randomSearchQuery() {
         SearchQuery searchQuery = new SearchQuery();
         if (RANDOM.nextBoolean()) {
@@ -1421,6 +1434,9 @@ public abstract class BaseSearchTest {
             searchQuery.setGetTotalCount(RANDOM.nextBoolean());
         }
         if (RANDOM.nextBoolean()) {
+            searchQuery.setTrackTotalCount(RANDOM.nextInt());
+        }
+        if (RANDOM.nextBoolean()) {
             searchQuery.setToken(randomString(10).getBytes());
         }
         if (RANDOM.nextBoolean()) {
@@ -1429,7 +1445,10 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             searchQuery.setGroupByList(randomGroupBys());
         }
-        assertAllFieldTested(searchQuery, 10);
+        if (RANDOM.nextBoolean()) {
+            searchQuery.setFilter(randomSearchFilter());
+        }
+        assertAllFieldTested(searchQuery, 11);
         return searchQuery;
     }
 

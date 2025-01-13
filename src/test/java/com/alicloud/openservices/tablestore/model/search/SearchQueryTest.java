@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model.search;
 
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
+import com.alicloud.openservices.tablestore.model.search.filter.SearchFilter;
 import com.alicloud.openservices.tablestore.model.search.query.QueryType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.agg.AggregationBuilders;
@@ -39,6 +41,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * SearchQuery Tester.
@@ -308,7 +311,7 @@ public class SearchQueryTest extends BaseSearchTest {
     @Test
     public void testTotalCount() {
         SearchQuery s1 = new SearchQuery();
-        s1.setGetTotalCount(true);
+        s1.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         SearchRequest build1 = SearchRequest.newBuilder().searchQuery(s1).build();
 
         SearchQuery s2 = SearchQuery.newBuilder().getTotalCount(true).build();
@@ -374,4 +377,53 @@ public class SearchQueryTest extends BaseSearchTest {
         Assert.assertTrue(gson.toJson(QueryBuilders.geoDistance("").build()).contains("queryType"));
         Assert.assertTrue(gson.toJson(QueryBuilders.geoDistance("").build()).contains("QueryType_GeoDistanceQuery"));
     }
-} 
+
+    @Test
+    public void testTrackTotalCount() {
+        assertEquals(Integer.MAX_VALUE, SearchQuery.TRACK_TOTAL_COUNT);
+        assertEquals(-1, SearchQuery.TRACK_TOTAL_COUNT_DISABLED);
+        try {
+            Method method1 = SearchQuery.class.getMethod("setGetTotalCount", boolean.class);
+            boolean deprecated1 = method1.isAnnotationPresent(Deprecated.class);
+            assertTrue("The method should be marked as deprecated.", deprecated1);
+            Method method2 = SearchQuery.class.getMethod("isGetTotalCount");
+            boolean deprecated2 = method2.isAnnotationPresent(Deprecated.class);
+            assertTrue("The method should be marked as deprecated.", deprecated2);
+        } catch (NoSuchMethodException e) {
+            throw new AssertionError("The method does not exist.", e);
+        }
+        // set getTotalCount true
+        SearchQuery s1 = new SearchQuery();
+        s1.setGetTotalCount(true);
+        assertEquals(s1.getTrackTotalCount(), Integer.MAX_VALUE);
+        assertTrue(s1.isGetTotalCount());
+
+        // set getTotalCount false
+        SearchQuery s2 = new SearchQuery();
+        s2.setGetTotalCount(false);
+        assertEquals(s2.getTrackTotalCount(), -1);
+
+        //set trackTotalCount
+        SearchQuery s3 = new SearchQuery();
+        int trackTotalCount = new Random().nextInt();
+        s3.setTrackTotalCount(trackTotalCount);
+        assertEquals(s3.getTrackTotalCount(), trackTotalCount);
+
+        SearchQuery s4 = SearchQuery.newBuilder().getTotalCount(false).trackTotalCount(SearchQuery.TRACK_TOTAL_COUNT).build();
+        SearchQuery s5 = s4.toCopy();
+        assertEquals(s5.getTrackTotalCount(), s4.getTrackTotalCount());
+    }
+
+    @Test
+    public void testSetAndGetFilter() {
+        SearchQuery s1 = new SearchQuery();
+        s1.setFilter(SearchFilter.newBuilder().query(QueryBuilders.match("", "").build()).build());
+        SearchRequest build1 = SearchRequest.newBuilder().searchQuery(s1).build();
+
+        SearchQuery s2 = SearchQuery.newBuilder().filter(SearchFilter.newBuilder().query(QueryBuilders.match("", "").build()).build()).build();
+        SearchRequest build2 = SearchRequest.newBuilder().searchQuery(s2).build();
+
+        Assert.assertEquals(build1.getRequestInfo(true), build2.getRequestInfo(true));
+        Assert.assertNotSame(build1.getRequestInfo(true), build2.getRequestInfo(false));
+    }
+}

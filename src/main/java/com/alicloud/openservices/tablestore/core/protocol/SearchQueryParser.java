@@ -612,6 +612,12 @@ public class SearchQueryParser {
         if (pb.hasTopK()) {
             query.setTopK(pb.getTopK());
         }
+        if (pb.hasMinScore()) {
+            query.setMinScore(pb.getMinScore());
+        }
+        if (pb.hasNumCandidates()) {
+            query.setNumCandidates(pb.getNumCandidates());
+        }
         List<Float> floatList = pb.getFloat32QueryVectorList();
         float[] floats = new float[floatList.size()];
         for (int i = 0; i < floats.length; i++) {

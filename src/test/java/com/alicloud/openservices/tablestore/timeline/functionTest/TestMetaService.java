@@ -182,7 +182,7 @@ public class TestMetaService {
         query.setTerm(ColumnValue.fromLong(8));
 
         SearchQuery searchQuery = new SearchQuery().setQuery(query);
-        searchQuery.setGetTotalCount(true);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         searchQuery.setLimit(1);
 
         Sort.Sorter fieldSort = new FieldSort("createTime", SortOrder.DESC);
@@ -215,7 +215,7 @@ public class TestMetaService {
         wrongQuery.setTerm(ColumnValue.fromLong(8));
 
         SearchQuery wrongSearchQuery = new SearchQuery().setQuery(wrongQuery);
-        wrongSearchQuery.setGetTotalCount(true);
+        wrongSearchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
         wrongSearchQuery.setLimit(1);
 
         try {
