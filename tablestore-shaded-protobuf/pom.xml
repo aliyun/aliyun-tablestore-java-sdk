@@ -2,13 +2,36 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
   <modelVersion>4.0.0</modelVersion>  
-  <parent> 
-    <groupId>com.aliyun.openservices</groupId>  
-    <artifactId>tablestore-parent</artifactId>  
-    <version>1.0</version>
-  </parent>  
+<!--  <parent> -->
+<!--    <groupId>com.aliyun.openservices</groupId>  -->
+<!--    <artifactId>tablestore-parent</artifactId>  -->
+<!--    <version>1.0</version>-->
+<!--  </parent>  -->
+  <groupId>com.aliyun.openservices</groupId>
   <artifactId>tablestore-shaded-protobuf</artifactId>  
   <version>4.28.2</version>
+
+  <name>AliCloud TableStore Shaded Protobuf</name>
+  <url>http://www.aliyun.com</url>
+  <description>AliCloud TableStore Shaded Protobuf</description>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <url></url>
+    <connection></connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>aliyunproducts</id>
+      <name>Aliyun SDK</name>
+      <email>aliyunsdk@aliyun.com</email>
+    </developer>
+  </developers>
+
   <packaging>jar</packaging>  
   <dependencies> 
     <dependency> 
@@ -16,9 +39,48 @@
       <artifactId>protobuf-java</artifactId>  
       <version>4.28.2</version> 
     </dependency> 
-  </dependencies>  
+  </dependencies>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
   <build> 
-    <plugins> 
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin> 
         <groupId>org.apache.maven.plugins</groupId>  
         <artifactId>maven-shade-plugin</artifactId>  
@@ -44,7 +106,32 @@
             </configuration> 
           </execution> 
         </executions> 
-      </plugin> 
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.3</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>sonatype-nexus-staging</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins> 
   </build>  
 </project>
