@@ -1,0 +1,214 @@
+syntax = "proto2";
+
+package com.alicloud.openservices.tablestore.core.protocol;
+
+enum TunnelType {
+    BaseData = 1;
+    Stream = 2;
+    BaseAndStream = 3;
+}
+
+message Error {
+    required string code = 1;
+    optional string message = 2;
+    optional string tunnel_id = 3;
+}
+
+message Tunnel {
+    required string table_name = 1;
+    required string tunnel_name = 3;
+    required TunnelType tunnel_type = 4;
+    optional StreamTunnelConfig StreamTunnelConfig = 5;
+}
+
+message CreateTunnelRequest {
+    required Tunnel tunnel = 1;
+}
+
+message CreateTunnelResponse {
+    required string tunnel_id = 1;
+}
+
+message DeleteTunnelRequest {
+    required string table_name = 1;
+    required string tunnel_name = 2;
+    optional string tunnel_id = 3;
+}
+
+message DeleteTunnelResponse {
+}
+
+message ListTunnelRequest {
+    optional string table_name = 1;
+}
+
+message TunnelInfo {
+    required string tunnel_id = 1;
+    required string tunnel_type = 2;
+    required string table_name = 3;
+    required string instance_name = 4;
+    required string stream_id = 5;
+    required string stage = 6;
+    optional bool expired = 7;
+    optional string tunnel_name = 8;
+    optional bool   public = 9;
+    optional StreamTunnelConfig stream_tunnel_config = 10;
+    optional int64  create_time = 11;
+}
+
+message ListTunnelResponse {
+    repeated TunnelInfo tunnels = 1;
+}
+
+message DescribeTunnelRequest {
+    required string table_name = 1;
+    required string tunnel_name = 2;
+    optional string tunnel_id = 3;
+}
+
+message ChannelInfo {
+    required string channel_id = 1;
+    optional string channel_type = 2;
+    optional string channel_status = 3;
+    optional string client_id = 4;
+    optional int64 channel_rpo = 5;
+    optional int64 channel_count = 6;
+}
+
+message DescribeTunnelResponse {
+    required TunnelInfo tunnel = 1;
+    repeated ChannelInfo channels = 2;
+    optional int64 tunnel_rpo = 3;
+}
+
+message GetRpoRequest {
+    optional string tunnel_id = 1;
+}
+
+message GetRpoResponse {
+    optional bytes rpo_infos = 1;
+    optional bytes tunnel_rpo_infos = 2;
+}
+
+message ClientConfig {
+    optional int64 timeout = 1; // seconds
+    optional string client_tag = 2;
+}
+
+message ConnectRequest {
+    required string tunnel_id = 1;
+    optional ClientConfig client_config = 2;
+}
+
+message ConnectResponse {
+    required string client_id = 1;
+}
+
+enum ChannelStatus {
+    OPEN = 1;
+    CLOSING = 2;
+    CLOSE = 3;
+    TERMINATED = 4;
+}
+
+message Channel {
+    required string channel_id = 1;
+    required int64 version = 2;
+    required ChannelStatus status = 3;
+    optional bytes detail = 4; // range, or info that client sends to master, such as process speed.
+}
+
+message HeartbeatRequest {
+    required string tunnel_id = 1;
+    required string client_id = 2;
+    repeated Channel channels = 3;
+}
+
+message HeartbeatResponse {
+    repeated Channel channels = 1;
+}
+
+message ShutdownRequest {
+    required string tunnel_id = 1;
+    required string client_id = 2;
+}
+
+message ShutdownResponse {
+}
+
+message GetCheckpointRequest {
+    required string tunnel_id = 1;
+    required string client_id = 2;
+    required string channel_id = 3;
+}
+
+message GetCheckpointResponse {
+    required string checkpoint = 1;
+    required int64 sequence_number = 2;
+}
+
+message CheckpointRequest {
+    required string tunnel_id = 1;
+    required string client_id = 2;
+    required string channel_id = 3;
+    required string checkpoint = 4;
+    required int64 sequence_number = 5;
+}
+
+message CheckpointResponse {
+}
+
+message ReadRecordsRequest {
+    required string tunnel_id = 1;
+    required string client_id = 2;
+    required string channel_id = 3;
+    required string token = 4;
+}
+
+enum ActionType {
+    PUT_ROW = 1;
+    UPDATE_ROW = 2;
+    DELETE_ROW = 3;
+}
+
+message Record {
+    required ActionType action_type = 1;
+    required bytes record = 2;
+    optional bytes origin_record = 3;
+}
+
+message ReadRecordsResponse {
+    repeated Record records = 1;
+    required string next_token = 2;
+    optional bool may_more_record = 3;
+}
+
+message Token {
+    required int64 version = 1;
+    required bytes content = 2;
+}
+
+message TokenContent {
+    optional bytes primary_key = 1;
+    optional string iterator = 2;
+    optional int64 timestamp = 3;
+}
+
+message TokenContentV2 {
+    optional bytes primary_key = 1;
+    optional string iterator = 2;
+    optional int64 timestamp = 3;
+    optional int64 total_count = 4;
+}
+
+enum StartOffsetFlag {
+    LATEST = 0;
+    EARLIEST = 1;
+}
+
+message StreamTunnelConfig {
+    optional StartOffsetFlag flag = 1;
+    optional uint64 startOffset = 2;
+    optional uint64 endOffset = 3;
+}
+
