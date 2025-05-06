@@ -1,0 +1,2 @@
+This artifact is a shaded version of the original protobuf library.
+It contains only dependencies and no source code from the project itself.
