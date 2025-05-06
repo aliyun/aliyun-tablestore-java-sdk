@@ -9,6 +9,8 @@
   </parent>  
   <artifactId>tablestore-shaded-httpasyncclient</artifactId>  
   <version>4.0.2</version>
+  <name>AliCloud TableStore Shaded HttpAsyncClient</name>
+  <description>AliCloud TableStore Shaded HttpAsyncClient</description>
   <packaging>jar</packaging>  
   <dependencies> 
     <dependency> 
@@ -18,7 +20,37 @@
     </dependency> 
   </dependencies>  
   <build> 
-    <plugins> 
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>empty-javadoc-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>javadoc</classifier>
+              <classesDirectory>${basedir}/javadoc</classesDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin> 
         <groupId>org.apache.maven.plugins</groupId>  
         <artifactId>maven-shade-plugin</artifactId>  
@@ -46,7 +78,7 @@
             </configuration> 
           </execution> 
         </executions> 
-      </plugin> 
+      </plugin>
     </plugins> 
   </build>
 </project>

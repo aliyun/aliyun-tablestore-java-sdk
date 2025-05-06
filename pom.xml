@@ -6,6 +6,26 @@
     <groupId>com.aliyun.openservices</groupId>
     <artifactId>tablestore-parent</artifactId>
     <version>1.0</version>
+    <name>AliCloud TableStore</name>
+    <url>http://www.aliyun.com</url>
+    <description>AliCloud TableStore</description>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <scm>
+        <url></url>
+        <connection></connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>aliyunproducts</id>
+            <name>Aliyun SDK</name>
+            <email>aliyunsdk@aliyun.com</email>
+        </developer>
+    </developers>
     <packaging>pom</packaging>
     <modules>
         <module>tablestore-shaded-protobuf</module>
@@ -23,7 +43,6 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -53,5 +72,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

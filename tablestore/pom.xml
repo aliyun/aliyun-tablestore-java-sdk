@@ -6,31 +6,12 @@
   <version>5.17.6</version>
   <packaging>jar</packaging>
   <name>AliCloud TableStore SDK for Java</name>
-  <url>http://www.aliyun.com</url>
   <parent>
     <groupId>com.aliyun.openservices</groupId>
     <artifactId>tablestore-parent</artifactId>
     <version>1.0</version>
   </parent>
   <description>Aliyun Open Services SDK for Java Copyright (C) Alibaba Cloud Computing All rights reserved. 版权所有 （C）阿里云计算有限公司 http://www.aliyun.com</description>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <scm>
-    <url></url>
-    <connection></connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>aliyunproducts</id>
-      <name>Aliyun SDK</name>
-      <email>aliyunsdk@aliyun.com</email>
-    </developer>
-  </developers>
-
   <profiles>
     <profile>
       <id>java8-doclint-disabled</id>
