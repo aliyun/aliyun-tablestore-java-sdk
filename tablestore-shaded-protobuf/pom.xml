@@ -36,15 +36,18 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8</version>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <id>attach-javadocs</id>
+            <id>empty-javadoc-jar</id>
             <phase>package</phase>
             <goals>
               <goal>jar</goal>
             </goals>
+            <configuration>
+              <classifier>javadoc</classifier>
+              <classesDirectory>${basedir}/javadoc</classesDirectory>
+            </configuration>
           </execution>
         </executions>
       </plugin>
