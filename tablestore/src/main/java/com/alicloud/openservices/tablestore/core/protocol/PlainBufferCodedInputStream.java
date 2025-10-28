@@ -56,7 +56,8 @@ public class PlainBufferCodedInputStream {
                 break;
             }
             case VT_STRING: {
-                columnValue = ColumnValue.fromString(input.readUTFString(input.readUInt32()));
+                byte[] originBytes = input.readBytes(input.readUInt32());
+                columnValue = ColumnValue.fromString(PlainBufferInputStream.bytes2UTFString(originBytes), originBytes);
                 break;
             }
             case VT_BOOLEAN: {
@@ -92,7 +93,8 @@ public class PlainBufferCodedInputStream {
                 break;
             }
             case VT_STRING: {
-                primaryKeyValue = PrimaryKeyValue.fromString(input.readUTFString(input.readUInt32()));
+                byte[] originBytes = input.readBytes(input.readUInt32());
+                primaryKeyValue = PrimaryKeyValue.fromString(PlainBufferInputStream.bytes2UTFString(originBytes), originBytes);
                 break;
             }
             case VT_INF_MAX: {

@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
 public class BulkImportRequestManager extends BaseRequestManager {
-    private Logger logger = LoggerFactory.getLogger(BulkImportRequestManager.class);
+    private static Logger logger = LoggerFactory.getLogger(BulkImportRequestManager.class);
 
     public BulkImportRequestManager(AsyncClientInterface ots, WriterConfig writerConfig, BucketConfig bucketConfig, Executor executor,
                                     WriterHandleStatistics writerStatistics, TableStoreCallback<RowChange, RowWriteResult> callback,

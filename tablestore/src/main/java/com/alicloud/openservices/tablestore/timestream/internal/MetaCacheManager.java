@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MetaCacheManager {
-    private Logger logger = LoggerFactory.getLogger(MetaCacheManager.class);
+    private static Logger logger = LoggerFactory.getLogger(MetaCacheManager.class);
 
     /**
      * Key is TimestreamMeta

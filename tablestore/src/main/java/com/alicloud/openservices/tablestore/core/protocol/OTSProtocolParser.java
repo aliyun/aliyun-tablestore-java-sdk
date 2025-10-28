@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.search.SyncStat;
 import com.alicloud.openservices.tablestore.model.sql.SQLPayloadVersion;
@@ -61,6 +62,12 @@ public class OTSProtocolParser {
         for (OtsInternalApi.DefinedColumnSchema defCol : tableMeta.getDefinedColumnList()) {
             DefinedColumnSchema defSchema = new DefinedColumnSchema(defCol.getName(), toDefinedColumnType(defCol.getType()));
             result.addDefinedColumn(defSchema);
+        }
+        if (!StringUtils.isNullOrEmpty(tableMeta.getTableId())) {
+            result.setTableId(tableMeta.getTableId());
+        }
+        if (!StringUtils.isNullOrEmpty(tableMeta.getGlobalTableId())) {
+            result.setGlobalTableId(tableMeta.getGlobalTableId());
         }
         return result;
     }

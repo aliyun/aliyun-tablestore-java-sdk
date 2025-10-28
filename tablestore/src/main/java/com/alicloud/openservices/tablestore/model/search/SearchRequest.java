@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model.search;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.ExtensionRequest;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.GsonBuilder;
@@ -11,12 +12,11 @@ import java.util.List;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyBuilder;
-import com.alicloud.openservices.tablestore.model.Request;
 
 /**
  * SearchIndex's Request
  */
-public class SearchRequest implements Request {
+public class SearchRequest extends ExtensionRequest {
 
     public SearchRequest() {
     }

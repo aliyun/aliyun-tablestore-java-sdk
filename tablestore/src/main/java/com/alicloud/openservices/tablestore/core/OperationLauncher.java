@@ -184,6 +184,9 @@ public abstract class OperationLauncher<Req, Res> {
             if (requestExtension.getTag() != null) {
                 request.addHeader(OTS_HEADER_REQUEST_TAG, requestExtension.getTag());
             }
+            if (requestExtension.getSearchTag() != null) {
+                request.addHeader(OTS_HEADER_REQUEST_SEARCH_TAG, requestExtension.getSearchTag());
+            }
         }
         if (config.isEnableResponseCompression()) {
             request.addHeader(

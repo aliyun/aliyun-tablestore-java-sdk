@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.common.TestUtil;
+import com.alicloud.openservices.tablestore.core.protocol.PlainBufferInputStream;
 import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import org.junit.Assert;
 import org.junit.Test;
@@ -230,5 +231,19 @@ public class TestPrimaryKeyValue {
         assertEquals(PrimaryKeyValue.fromString("abc").getDataSize(), 3);
         assertEquals(PrimaryKeyValue.fromBinary(new byte[]{0x0, 0x1, 0x2}).getDataSize(), 3);
         assertEquals(8, PrimaryKeyValue.fromLong(100).getDataSize());
+    }
+
+    @Test
+    public void testPrimaryKeyValue_FromStringWithBytes() throws Exception {
+        byte[] bytes = new byte[]{-19, -69, -100};
+        String str = PlainBufferInputStream.bytes2UTFString(bytes);
+        PrimaryKeyValue primaryKeyValue1 = PrimaryKeyValue.fromString(str);
+        PrimaryKeyValue primaryKeyValue2 = PrimaryKeyValue.fromString(str, bytes);
+
+        assertEquals(str, primaryKeyValue1.asString());
+        assertEquals(str, primaryKeyValue2.asString());
+
+        assertFalse(java.util.Arrays.equals(bytes, primaryKeyValue1.asStringInBytes()));
+        assertArrayEquals(bytes, primaryKeyValue2.asStringInBytes());
     }
 }

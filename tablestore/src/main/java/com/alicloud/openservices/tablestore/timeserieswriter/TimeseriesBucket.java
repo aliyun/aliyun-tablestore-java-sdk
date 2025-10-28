@@ -19,7 +19,7 @@ import java.util.concurrent.*;
 
 public class TimeseriesBucket {
 
-    private Logger logger = LoggerFactory.getLogger(TimeseriesBucket.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesBucket.class);
 
     private final TimeseriesBucketConfig timeseriesBucketConfig;
 

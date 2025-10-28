@@ -17,7 +17,7 @@ import java.util.concurrent.Semaphore;
 
 
 public class RowEventHandler implements EventHandler<RowChangeEvent> {
-    private Logger logger = LoggerFactory.getLogger(RowEventHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(RowEventHandler.class);
 
     private AsyncClientInterface ots;
     private int concurrency;

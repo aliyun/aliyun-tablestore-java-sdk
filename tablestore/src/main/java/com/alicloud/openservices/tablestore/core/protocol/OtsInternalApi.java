@@ -8722,6 +8722,52 @@ public final class OtsInternalApi {
      */
     com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.DefinedColumnSchemaOrBuilder getDefinedColumnOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return Whether the tableId field is set.
+     */
+    boolean hasTableId();
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return The tableId.
+     */
+    java.lang.String getTableId();
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return The bytes for tableId.
+     */
+    com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getTableIdBytes();
+
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return Whether the globalTableId field is set.
+     */
+    boolean hasGlobalTableId();
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return The globalTableId.
+     */
+    java.lang.String getGlobalTableId();
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return The bytes for globalTableId.
+     */
+    com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getGlobalTableIdBytes();
   }
   /**
    * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.TableMeta}
@@ -8748,6 +8794,8 @@ public final class OtsInternalApi {
       tableName_ = "";
       primaryKey_ = java.util.Collections.emptyList();
       definedColumn_ = java.util.Collections.emptyList();
+      tableId_ = "";
+      globalTableId_ = "";
     }
 
     public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
@@ -8895,6 +8943,116 @@ public final class OtsInternalApi {
       return definedColumn_.get(index);
     }
 
+    public static final int TABLE_ID_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object tableId_ = "";
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return Whether the tableId field is set.
+     */
+    @java.lang.Override
+    public boolean hasTableId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return The tableId.
+     */
+    @java.lang.Override
+    public java.lang.String getTableId() {
+      java.lang.Object ref = tableId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString bs = 
+            (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          tableId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * repeated IndexMeta index_meta = 4;
+     * </pre>
+     *
+     * <code>optional string table_id = 5;</code>
+     * @return The bytes for tableId.
+     */
+    @java.lang.Override
+    public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getTableIdBytes() {
+      java.lang.Object ref = tableId_;
+      if (ref instanceof java.lang.String) {
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString b = 
+            com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tableId_ = b;
+        return b;
+      } else {
+        return (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int GLOBAL_TABLE_ID_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object globalTableId_ = "";
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return Whether the globalTableId field is set.
+     */
+    @java.lang.Override
+    public boolean hasGlobalTableId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return The globalTableId.
+     */
+    @java.lang.Override
+    public java.lang.String getGlobalTableId() {
+      java.lang.Object ref = globalTableId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString bs = 
+            (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          globalTableId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string global_table_id = 6;</code>
+     * @return The bytes for globalTableId.
+     */
+    @java.lang.Override
+    public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getGlobalTableIdBytes() {
+      java.lang.Object ref = globalTableId_;
+      if (ref instanceof java.lang.String) {
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString b = 
+            com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        globalTableId_ = b;
+        return b;
+      } else {
+        return (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8934,6 +9092,12 @@ public final class OtsInternalApi {
       for (int i = 0; i < definedColumn_.size(); i++) {
         output.writeMessage(3, definedColumn_.get(i));
       }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.writeString(output, 5, tableId_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.writeString(output, 6, globalTableId_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -8953,6 +9117,12 @@ public final class OtsInternalApi {
       for (int i = 0; i < definedColumn_.size(); i++) {
         size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, definedColumn_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.computeStringSize(5, tableId_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.computeStringSize(6, globalTableId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -8978,6 +9148,16 @@ public final class OtsInternalApi {
           .equals(other.getPrimaryKeyList())) return false;
       if (!getDefinedColumnList()
           .equals(other.getDefinedColumnList())) return false;
+      if (hasTableId() != other.hasTableId()) return false;
+      if (hasTableId()) {
+        if (!getTableId()
+            .equals(other.getTableId())) return false;
+      }
+      if (hasGlobalTableId() != other.hasGlobalTableId()) return false;
+      if (hasGlobalTableId()) {
+        if (!getGlobalTableId()
+            .equals(other.getGlobalTableId())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -9000,6 +9180,14 @@ public final class OtsInternalApi {
       if (getDefinedColumnCount() > 0) {
         hash = (37 * hash) + DEFINED_COLUMN_FIELD_NUMBER;
         hash = (53 * hash) + getDefinedColumnList().hashCode();
+      }
+      if (hasTableId()) {
+        hash = (37 * hash) + TABLE_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getTableId().hashCode();
+      }
+      if (hasGlobalTableId()) {
+        hash = (37 * hash) + GLOBAL_TABLE_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getGlobalTableId().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -9147,6 +9335,8 @@ public final class OtsInternalApi {
           definedColumnBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
+        tableId_ = "";
+        globalTableId_ = "";
         return this;
       }
 
@@ -9206,6 +9396,14 @@ public final class OtsInternalApi {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.tableName_ = tableName_;
           to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.tableId_ = tableId_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.globalTableId_ = globalTableId_;
+          to_bitField0_ |= 0x00000004;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -9279,6 +9477,16 @@ public final class OtsInternalApi {
             }
           }
         }
+        if (other.hasTableId()) {
+          tableId_ = other.tableId_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (other.hasGlobalTableId()) {
+          globalTableId_ = other.globalTableId_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -9349,6 +9557,16 @@ public final class OtsInternalApi {
                 }
                 break;
               } // case 26
+              case 42: {
+                tableId_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 42
+              case 50: {
+                globalTableId_ = input.readBytes();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9924,6 +10142,190 @@ public final class OtsInternalApi {
           definedColumn_ = null;
         }
         return definedColumnBuilder_;
+      }
+
+      private java.lang.Object tableId_ = "";
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @return Whether the tableId field is set.
+       */
+      public boolean hasTableId() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @return The tableId.
+       */
+      public java.lang.String getTableId() {
+        java.lang.Object ref = tableId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString bs =
+              (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            tableId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @return The bytes for tableId.
+       */
+      public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+          getTableIdBytes() {
+        java.lang.Object ref = tableId_;
+        if (ref instanceof String) {
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString b = 
+              com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          tableId_ = b;
+          return b;
+        } else {
+          return (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @param value The tableId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTableId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        tableId_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTableId() {
+        tableId_ = getDefaultInstance().getTableId();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * repeated IndexMeta index_meta = 4;
+       * </pre>
+       *
+       * <code>optional string table_id = 5;</code>
+       * @param value The bytes for tableId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTableIdBytes(
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        tableId_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object globalTableId_ = "";
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @return Whether the globalTableId field is set.
+       */
+      public boolean hasGlobalTableId() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @return The globalTableId.
+       */
+      public java.lang.String getGlobalTableId() {
+        java.lang.Object ref = globalTableId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString bs =
+              (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            globalTableId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @return The bytes for globalTableId.
+       */
+      public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+          getGlobalTableIdBytes() {
+        java.lang.Object ref = globalTableId_;
+        if (ref instanceof String) {
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString b = 
+              com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          globalTableId_ = b;
+          return b;
+        } else {
+          return (com.aliyun.ots.thirdparty.com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @param value The globalTableId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGlobalTableId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        globalTableId_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGlobalTableId() {
+        globalTableId_ = getDefaultInstance().getGlobalTableId();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string global_table_id = 6;</code>
+       * @param value The bytes for globalTableId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGlobalTableIdBytes(
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        globalTableId_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.TableMeta)
@@ -84601,359 +85003,360 @@ public final class OtsInternalApi {
       ".alicloud.openservices.tablestore.core.p" +
       "rotocol.IndexType\022\\\n\020index_sync_phase\030\006 " +
       "\001(\0162B.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.IndexSyncPhase\"\333\001\n\tTabl" +
+      "re.core.protocol.IndexSyncPhase\"\206\002\n\tTabl" +
       "eMeta\022\022\n\ntable_name\030\001 \002(\t\022Y\n\013primary_key" +
       "\030\002 \003(\0132D.com.alicloud.openservices.table" +
       "store.core.protocol.PrimaryKeySchema\022_\n\016" +
       "defined_column\030\003 \003(\0132G.com.alicloud.open" +
       "services.tablestore.core.protocol.Define" +
-      "dColumnSchema\"\211\001\n\tCondition\022b\n\rrow_exist" +
-      "ence\030\001 \002(\0162K.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.RowExistenceExpe" +
-      "ctation\022\030\n\020column_condition\030\002 \001(\014\"+\n\014Cap" +
-      "acityUnit\022\014\n\004read\030\001 \001(\005\022\r\n\005write\030\002 \001(\005\"9" +
-      "\n\020CapacityDataSize\022\021\n\tread_size\030\001 \001(\003\022\022\n" +
-      "\nwrite_size\030\002 \001(\003\"\254\001\n\031ReservedThroughput" +
-      "Details\022W\n\rcapacity_unit\030\001 \002(\0132@.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.CapacityUnit\022\032\n\022last_increase_time\030\002" +
-      " \002(\003\022\032\n\022last_decrease_time\030\003 \001(\003\"m\n\022Rese" +
-      "rvedThroughput\022W\n\rcapacity_unit\030\001 \002(\0132@." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.CapacityUnit\"\315\001\n\020ConsumedCapa" +
-      "city\022W\n\rcapacity_unit\030\001 \002(\0132@.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".CapacityUnit\022`\n\022capacity_data_size\030\002 \001(" +
-      "\0132D.com.alicloud.openservices.tablestore" +
-      ".core.protocol.CapacityDataSize\"]\n\023Strea" +
-      "mSpecification\022\025\n\renable_stream\030\001 \002(\010\022\027\n" +
-      "\017expiration_time\030\002 \001(\005\022\026\n\016columns_to_get" +
-      "\030\003 \003(\t\"\203\001\n\rStreamDetails\022\025\n\renable_strea" +
-      "m\030\001 \002(\010\022\021\n\tstream_id\030\002 \001(\t\022\027\n\017expiration" +
-      "_time\030\003 \001(\005\022\030\n\020last_enable_time\030\004 \001(\003\022\025\n" +
-      "\rcolumn_to_get\030\005 \003(\t\"\226\001\n\020SSESpecificatio" +
-      "n\022\016\n\006enable\030\001 \002(\010\022P\n\010key_type\030\002 \001(\0162>.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.SSEKeyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010r" +
-      "ole_arn\030\004 \001(\014\"\220\001\n\nSSEDetails\022\016\n\006enable\030\001" +
-      " \002(\010\022P\n\010key_type\030\002 \001(\0162>.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.SSEK" +
-      "eyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010role_arn\030\004 \001(\014" +
-      "\"\241\005\n\022CreateTableRequest\022Q\n\ntable_meta\030\001 " +
-      "\002(\0132=.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.TableMeta\022c\n\023reserved_t" +
-      "hroughput\030\002 \002(\0132F.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.ReservedThr" +
-      "oughput\022W\n\rtable_options\030\003 \001(\0132@.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.TableOptions\022V\n\npartitions\030\004 \003(\0132B.c" +
-      "om.alicloud.openservices.tablestore.core" +
-      ".protocol.PartitionRange\022\\\n\013stream_spec\030" +
-      "\005 \001(\0132G.com.alicloud.openservices.tables" +
-      "tore.core.protocol.StreamSpecification\022V" +
-      "\n\010sse_spec\030\006 \001(\0132D.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.SSESpecifi" +
-      "cation\022R\n\013index_metas\030\007 \003(\0132=.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".IndexMeta\022\030\n\020enable_local_txn\030\010 \001(\010\"\025\n\023" +
-      "CreateTableResponse\"\233\001\n\022CreateIndexReque" +
-      "st\022\027\n\017main_table_name\030\001 \002(\t\022Q\n\nindex_met" +
-      "a\030\002 \002(\0132=.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.IndexMeta\022\031\n\021includ" +
-      "e_base_data\030\003 \001(\010\"\025\n\023CreateIndexResponse" +
-      "\"?\n\020DropIndexRequest\022\027\n\017main_table_name\030" +
-      "\001 \002(\t\022\022\n\nindex_name\030\002 \002(\t\"\023\n\021DropIndexRe" +
-      "sponse\"\207\001\n\027AddDefinedColumnRequest\022\022\n\nta" +
-      "ble_name\030\001 \002(\t\022X\n\007columns\030\002 \003(\0132G.com.al" +
-      "icloud.openservices.tablestore.core.prot" +
-      "ocol.DefinedColumnSchema\"\032\n\030AddDefinedCo" +
-      "lumnResponse\"A\n\032DeleteDefinedColumnReque" +
-      "st\022\022\n\ntable_name\030\001 \002(\t\022\017\n\007columns\030\002 \003(\t\"" +
-      "\035\n\033DeleteDefinedColumnResponse\"\304\002\n\022Updat" +
-      "eTableRequest\022\022\n\ntable_name\030\001 \002(\t\022c\n\023res" +
-      "erved_throughput\030\002 \001(\0132F.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Rese" +
-      "rvedThroughput\022W\n\rtable_options\030\003 \001(\0132@." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.TableOptions\022\\\n\013stream_spec\030\004" +
-      " \001(\0132G.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.StreamSpecification\"\275\002" +
-      "\n\023UpdateTableResponse\022r\n\033reserved_throug" +
-      "hput_details\030\001 \002(\0132M.com.alicloud.opense" +
-      "rvices.tablestore.core.protocol.Reserved" +
-      "ThroughputDetails\022W\n\rtable_options\030\002 \002(\013" +
+      "dColumnSchema\022\020\n\010table_id\030\005 \001(\t\022\027\n\017globa" +
+      "l_table_id\030\006 \001(\t\"\211\001\n\tCondition\022b\n\rrow_ex" +
+      "istence\030\001 \002(\0162K.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.RowExistenceE" +
+      "xpectation\022\030\n\020column_condition\030\002 \001(\014\"+\n\014" +
+      "CapacityUnit\022\014\n\004read\030\001 \001(\005\022\r\n\005write\030\002 \001(" +
+      "\005\"9\n\020CapacityDataSize\022\021\n\tread_size\030\001 \001(\003" +
+      "\022\022\n\nwrite_size\030\002 \001(\003\"\254\001\n\031ReservedThrough" +
+      "putDetails\022W\n\rcapacity_unit\030\001 \002(\0132@.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.CapacityUnit\022\032\n\022last_increase_tim" +
+      "e\030\002 \002(\003\022\032\n\022last_decrease_time\030\003 \001(\003\"m\n\022R" +
+      "eservedThroughput\022W\n\rcapacity_unit\030\001 \002(\013" +
       "2@.com.alicloud.openservices.tablestore." +
-      "core.protocol.TableOptions\022Y\n\016stream_det" +
-      "ails\030\003 \001(\0132A.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.StreamDetails\"*\n" +
-      "\024DescribeTableRequest\022\022\n\ntable_name\030\001 \002(" +
-      "\t\"\350\004\n\025DescribeTableResponse\022Q\n\ntable_met" +
-      "a\030\001 \002(\0132=.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.TableMeta\022r\n\033reserv" +
-      "ed_throughput_details\030\002 \002(\0132M.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".ReservedThroughputDetails\022W\n\rtable_opti" +
-      "ons\030\003 \002(\0132@.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.TableOptions\022Y\n\016s" +
-      "tream_details\030\005 \001(\0132A.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.StreamD" +
-      "etails\022\024\n\014shard_splits\030\006 \003(\014\022S\n\013sse_deta" +
-      "ils\030\007 \001(\0132>.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.SSEDetails\022R\n\013ind" +
-      "ex_metas\030\010 \003(\0132=.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.IndexMeta\022\025\n" +
-      "\rcreation_time\030\t \001(\003\"\022\n\020ListTableRequest" +
-      "\"(\n\021ListTableResponse\022\023\n\013table_names\030\001 \003" +
-      "(\t\"(\n\022DeleteTableRequest\022\022\n\ntable_name\030\001" +
-      " \002(\t\"\025\n\023DeleteTableResponse\"&\n\020LoadTable" +
-      "Request\022\022\n\ntable_name\030\001 \002(\t\"\023\n\021LoadTable" +
-      "Response\"(\n\022UnloadTableRequest\022\022\n\ntable_" +
-      "name\030\001 \002(\t\"\025\n\023UnloadTableResponse\"H\n\tTim" +
-      "eRange\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002" +
-      " \001(\003\022\025\n\rspecific_time\030\003 \001(\003\"\201\001\n\rReturnCo" +
-      "ntent\022S\n\013return_type\030\001 \001(\0162>.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "ReturnType\022\033\n\023return_column_names\030\002 \003(\t\"" +
-      "\232\002\n\rGetRowRequest\022\022\n\ntable_name\030\001 \002(\t\022\023\n" +
-      "\013primary_key\030\002 \002(\014\022\026\n\016columns_to_get\030\003 \003" +
-      "(\t\022Q\n\ntime_range\030\004 \001(\0132=.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Time" +
-      "Range\022\024\n\014max_versions\030\005 \001(\005\022\016\n\006filter\030\007 " +
-      "\001(\014\022\024\n\014start_column\030\010 \001(\t\022\022\n\nend_column\030" +
-      "\t \001(\t\022\r\n\005token\030\n \001(\014\022\026\n\016transaction_id\030\013" +
-      " \001(\t\"\211\001\n\016GetRowResponse\022V\n\010consumed\030\001 \002(" +
-      "\0132D.com.alicloud.openservices.tablestore" +
-      ".core.protocol.ConsumedCapacity\022\013\n\003row\030\002" +
-      " \002(\014\022\022\n\nnext_token\030\003 \001(\014\"\377\001\n\020UpdateRowRe" +
-      "quest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nrow_change\030" +
-      "\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.alicloud." +
-      "openservices.tablestore.core.protocol.Co" +
-      "ndition\022Y\n\016return_content\030\004 \001(\0132A.com.al" +
-      "icloud.openservices.tablestore.core.prot" +
-      "ocol.ReturnContent\022\026\n\016transaction_id\030\005 \001" +
-      "(\t\"x\n\021UpdateRowResponse\022V\n\010consumed\030\001 \002(" +
-      "\0132D.com.alicloud.openservices.tablestore" +
-      ".core.protocol.ConsumedCapacity\022\013\n\003row\030\002" +
-      " \001(\014\"\365\001\n\rPutRowRequest\022\022\n\ntable_name\030\001 \002" +
-      "(\t\022\013\n\003row\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com" +
+      "core.protocol.CapacityUnit\"\315\001\n\020ConsumedC" +
+      "apacity\022W\n\rcapacity_unit\030\001 \002(\0132@.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.CapacityUnit\022`\n\022capacity_data_size\030\002" +
+      " \001(\0132D.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.CapacityDataSize\"]\n\023St" +
+      "reamSpecification\022\025\n\renable_stream\030\001 \002(\010" +
+      "\022\027\n\017expiration_time\030\002 \001(\005\022\026\n\016columns_to_" +
+      "get\030\003 \003(\t\"\203\001\n\rStreamDetails\022\025\n\renable_st" +
+      "ream\030\001 \002(\010\022\021\n\tstream_id\030\002 \001(\t\022\027\n\017expirat" +
+      "ion_time\030\003 \001(\005\022\030\n\020last_enable_time\030\004 \001(\003" +
+      "\022\025\n\rcolumn_to_get\030\005 \003(\t\"\226\001\n\020SSESpecifica" +
+      "tion\022\016\n\006enable\030\001 \002(\010\022P\n\010key_type\030\002 \001(\0162>" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.SSEKeyType\022\016\n\006key_id\030\003 \001(\014\022\020" +
+      "\n\010role_arn\030\004 \001(\014\"\220\001\n\nSSEDetails\022\016\n\006enabl" +
+      "e\030\001 \002(\010\022P\n\010key_type\030\002 \001(\0162>.com.alicloud" +
+      ".openservices.tablestore.core.protocol.S" +
+      "SEKeyType\022\016\n\006key_id\030\003 \001(\014\022\020\n\010role_arn\030\004 " +
+      "\001(\014\"\241\005\n\022CreateTableRequest\022Q\n\ntable_meta" +
+      "\030\001 \002(\0132=.com.alicloud.openservices.table" +
+      "store.core.protocol.TableMeta\022c\n\023reserve" +
+      "d_throughput\030\002 \002(\0132F.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Reserved" +
+      "Throughput\022W\n\rtable_options\030\003 \001(\0132@.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.TableOptions\022V\n\npartitions\030\004 \003(\0132" +
+      "B.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.PartitionRange\022\\\n\013stream_sp" +
+      "ec\030\005 \001(\0132G.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.StreamSpecificatio" +
+      "n\022V\n\010sse_spec\030\006 \001(\0132D.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.SSESpec" +
+      "ification\022R\n\013index_metas\030\007 \003(\0132=.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.IndexMeta\022\030\n\020enable_local_txn\030\010 \001(\010\"" +
+      "\025\n\023CreateTableResponse\"\233\001\n\022CreateIndexRe" +
+      "quest\022\027\n\017main_table_name\030\001 \002(\t\022Q\n\nindex_" +
+      "meta\030\002 \002(\0132=.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.IndexMeta\022\031\n\021inc" +
+      "lude_base_data\030\003 \001(\010\"\025\n\023CreateIndexRespo" +
+      "nse\"?\n\020DropIndexRequest\022\027\n\017main_table_na" +
+      "me\030\001 \002(\t\022\022\n\nindex_name\030\002 \002(\t\"\023\n\021DropInde" +
+      "xResponse\"\207\001\n\027AddDefinedColumnRequest\022\022\n" +
+      "\ntable_name\030\001 \002(\t\022X\n\007columns\030\002 \003(\0132G.com" +
       ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.Condition\022Y\n\016return_content\030\004 \001(" +
-      "\0132A.com.alicloud.openservices.tablestore" +
-      ".core.protocol.ReturnContent\022\026\n\016transact" +
-      "ion_id\030\005 \001(\t\"u\n\016PutRowResponse\022V\n\010consum" +
-      "ed\030\001 \002(\0132D.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.ConsumedCapacity\022\013" +
-      "\n\003row\030\002 \001(\014\"\200\002\n\020DeleteRowRequest\022\022\n\ntabl" +
-      "e_name\030\001 \002(\t\022\023\n\013primary_key\030\002 \002(\014\022P\n\tcon" +
-      "dition\030\003 \002(\0132=.com.alicloud.openservices" +
-      ".tablestore.core.protocol.Condition\022Y\n\016r" +
-      "eturn_content\030\004 \001(\0132A.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.ReturnC" +
-      "ontent\022\026\n\016transaction_id\030\005 \001(\t\"x\n\021Delete" +
-      "RowResponse\022V\n\010consumed\030\001 \002(\0132D.com.alic" +
+      "rotocol.DefinedColumnSchema\"\032\n\030AddDefine" +
+      "dColumnResponse\"A\n\032DeleteDefinedColumnRe" +
+      "quest\022\022\n\ntable_name\030\001 \002(\t\022\017\n\007columns\030\002 \003" +
+      "(\t\"\035\n\033DeleteDefinedColumnResponse\"\304\002\n\022Up" +
+      "dateTableRequest\022\022\n\ntable_name\030\001 \002(\t\022c\n\023" +
+      "reserved_throughput\030\002 \001(\0132F.com.alicloud" +
+      ".openservices.tablestore.core.protocol.R" +
+      "eservedThroughput\022W\n\rtable_options\030\003 \001(\013" +
+      "2@.com.alicloud.openservices.tablestore." +
+      "core.protocol.TableOptions\022\\\n\013stream_spe" +
+      "c\030\004 \001(\0132G.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.StreamSpecification" +
+      "\"\275\002\n\023UpdateTableResponse\022r\n\033reserved_thr" +
+      "oughput_details\030\001 \002(\0132M.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Reser" +
+      "vedThroughputDetails\022W\n\rtable_options\030\002 " +
+      "\002(\0132@.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.TableOptions\022Y\n\016stream_" +
+      "details\030\003 \001(\0132A.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.StreamDetails" +
+      "\"*\n\024DescribeTableRequest\022\022\n\ntable_name\030\001" +
+      " \002(\t\"\350\004\n\025DescribeTableResponse\022Q\n\ntable_" +
+      "meta\030\001 \002(\0132=.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.TableMeta\022r\n\033res" +
+      "erved_throughput_details\030\002 \002(\0132M.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.ReservedThroughputDetails\022W\n\rtable_o" +
+      "ptions\030\003 \002(\0132@.com.alicloud.openservices" +
+      ".tablestore.core.protocol.TableOptions\022Y" +
+      "\n\016stream_details\030\005 \001(\0132A.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Stre" +
+      "amDetails\022\024\n\014shard_splits\030\006 \003(\014\022S\n\013sse_d" +
+      "etails\030\007 \001(\0132>.com.alicloud.openservices" +
+      ".tablestore.core.protocol.SSEDetails\022R\n\013" +
+      "index_metas\030\010 \003(\0132=.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.IndexMeta" +
+      "\022\025\n\rcreation_time\030\t \001(\003\"\022\n\020ListTableRequ" +
+      "est\"(\n\021ListTableResponse\022\023\n\013table_names\030" +
+      "\001 \003(\t\"(\n\022DeleteTableRequest\022\022\n\ntable_nam" +
+      "e\030\001 \002(\t\"\025\n\023DeleteTableResponse\"&\n\020LoadTa" +
+      "bleRequest\022\022\n\ntable_name\030\001 \002(\t\"\023\n\021LoadTa" +
+      "bleResponse\"(\n\022UnloadTableRequest\022\022\n\ntab" +
+      "le_name\030\001 \002(\t\"\025\n\023UnloadTableResponse\"H\n\t" +
+      "TimeRange\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_tim" +
+      "e\030\002 \001(\003\022\025\n\rspecific_time\030\003 \001(\003\"\201\001\n\rRetur" +
+      "nContent\022S\n\013return_type\030\001 \001(\0162>.com.alic" +
       "loud.openservices.tablestore.core.protoc" +
-      "ol.ConsumedCapacity\022\013\n\003row\030\002 \001(\014\"\216\002\n\031Tab" +
-      "leInBatchGetRowRequest\022\022\n\ntable_name\030\001 \002" +
-      "(\t\022\023\n\013primary_key\030\002 \003(\014\022\r\n\005token\030\003 \003(\014\022\026" +
-      "\n\016columns_to_get\030\004 \003(\t\022Q\n\ntime_range\030\005 \001" +
-      "(\0132=.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.TimeRange\022\024\n\014max_version" +
-      "s\030\006 \001(\005\022\016\n\006filter\030\010 \001(\014\022\024\n\014start_column\030" +
-      "\t \001(\t\022\022\n\nend_column\030\n \001(\t\"s\n\022BatchGetRow" +
-      "Request\022]\n\006tables\030\001 \003(\0132M.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Tab" +
-      "leInBatchGetRowRequest\"\354\001\n\030RowInBatchGet" +
+      "ol.ReturnType\022\033\n\023return_column_names\030\002 \003" +
+      "(\t\"\232\002\n\rGetRowRequest\022\022\n\ntable_name\030\001 \002(\t" +
+      "\022\023\n\013primary_key\030\002 \002(\014\022\026\n\016columns_to_get\030" +
+      "\003 \003(\t\022Q\n\ntime_range\030\004 \001(\0132=.com.alicloud" +
+      ".openservices.tablestore.core.protocol.T" +
+      "imeRange\022\024\n\014max_versions\030\005 \001(\005\022\016\n\006filter" +
+      "\030\007 \001(\014\022\024\n\014start_column\030\010 \001(\t\022\022\n\nend_colu" +
+      "mn\030\t \001(\t\022\r\n\005token\030\n \001(\014\022\026\n\016transaction_i" +
+      "d\030\013 \001(\t\"\211\001\n\016GetRowResponse\022V\n\010consumed\030\001" +
+      " \002(\0132D.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.ConsumedCapacity\022\013\n\003ro" +
+      "w\030\002 \002(\014\022\022\n\nnext_token\030\003 \001(\014\"\377\001\n\020UpdateRo" +
+      "wRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nrow_chan" +
+      "ge\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".Condition\022Y\n\016return_content\030\004 \001(\0132A.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.ReturnContent\022\026\n\016transaction_id\030" +
+      "\005 \001(\t\"x\n\021UpdateRowResponse\022V\n\010consumed\030\001" +
+      " \002(\0132D.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.ConsumedCapacity\022\013\n\003ro" +
+      "w\030\002 \001(\014\"\365\001\n\rPutRowRequest\022\022\n\ntable_name\030" +
+      "\001 \002(\t\022\013\n\003row\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.Condition\022Y\n\016return_content\030\004" +
+      " \001(\0132A.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.ReturnContent\022\026\n\016trans" +
+      "action_id\030\005 \001(\t\"u\n\016PutRowResponse\022V\n\010con" +
+      "sumed\030\001 \002(\0132D.com.alicloud.openservices." +
+      "tablestore.core.protocol.ConsumedCapacit" +
+      "y\022\013\n\003row\030\002 \001(\014\"\200\002\n\020DeleteRowRequest\022\022\n\nt" +
+      "able_name\030\001 \002(\t\022\023\n\013primary_key\030\002 \002(\014\022P\n\t" +
+      "condition\030\003 \002(\0132=.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Condition\022Y" +
+      "\n\016return_content\030\004 \001(\0132A.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Retu" +
+      "rnContent\022\026\n\016transaction_id\030\005 \001(\t\"x\n\021Del" +
+      "eteRowResponse\022V\n\010consumed\030\001 \002(\0132D.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.ConsumedCapacity\022\013\n\003row\030\002 \001(\014\"\216\002\n\031" +
+      "TableInBatchGetRowRequest\022\022\n\ntable_name\030" +
+      "\001 \002(\t\022\023\n\013primary_key\030\002 \003(\014\022\r\n\005token\030\003 \003(" +
+      "\014\022\026\n\016columns_to_get\030\004 \003(\t\022Q\n\ntime_range\030" +
+      "\005 \001(\0132=.com.alicloud.openservices.tables" +
+      "tore.core.protocol.TimeRange\022\024\n\014max_vers" +
+      "ions\030\006 \001(\005\022\016\n\006filter\030\010 \001(\014\022\024\n\014start_colu" +
+      "mn\030\t \001(\t\022\022\n\nend_column\030\n \001(\t\"s\n\022BatchGet" +
+      "RowRequest\022]\n\006tables\030\001 \003(\0132M.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "TableInBatchGetRowRequest\"\354\001\n\030RowInBatch" +
+      "GetRowResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002" +
+      " \001(\01329.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.Error\022V\n\010consumed\030\003 \001(" +
+      "\0132D.com.alicloud.openservices.tablestore" +
+      ".core.protocol.ConsumedCapacity\022\013\n\003row\030\004" +
+      " \001(\014\022\022\n\nnext_token\030\005 \001(\014\"\214\001\n\032TableInBatc" +
+      "hGetRowResponse\022\022\n\ntable_name\030\001 \002(\t\022Z\n\004r" +
+      "ows\030\002 \003(\0132L.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.RowInBatchGetRowR" +
+      "esponse\"u\n\023BatchGetRowResponse\022^\n\006tables" +
+      "\030\001 \003(\0132N.com.alicloud.openservices.table" +
+      "store.core.protocol.TableInBatchGetRowRe" +
+      "sponse\"\255\002\n\031RowInBatchWriteRowRequest\022O\n\004" +
+      "type\030\001 \002(\0162A.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.OperationType\022\022\n" +
+      "\nrow_change\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.Condition\022Y\n\016return_content\030\004 " +
+      "\001(\0132A.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.ReturnContent\"\216\001\n\033Table" +
+      "InBatchWriteRowRequest\022\022\n\ntable_name\030\001 \002" +
+      "(\t\022[\n\004rows\030\002 \003(\0132M.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.RowInBatch" +
+      "WriteRowRequest\"\242\001\n\024BatchWriteRowRequest" +
+      "\022_\n\006tables\030\001 \003(\0132O.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.TableInBat" +
+      "chWriteRowRequest\022\026\n\016transaction_id\030\002 \001(" +
+      "\t\022\021\n\tis_atomic\030\003 \001(\010\"\332\001\n\032RowInBatchWrite" +
       "RowResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(" +
       "\01329.com.alicloud.openservices.tablestore" +
       ".core.protocol.Error\022V\n\010consumed\030\003 \001(\0132D" +
       ".com.alicloud.openservices.tablestore.co" +
       "re.protocol.ConsumedCapacity\022\013\n\003row\030\004 \001(" +
-      "\014\022\022\n\nnext_token\030\005 \001(\014\"\214\001\n\032TableInBatchGe" +
-      "tRowResponse\022\022\n\ntable_name\030\001 \002(\t\022Z\n\004rows" +
-      "\030\002 \003(\0132L.com.alicloud.openservices.table" +
-      "store.core.protocol.RowInBatchGetRowResp" +
-      "onse\"u\n\023BatchGetRowResponse\022^\n\006tables\030\001 " +
-      "\003(\0132N.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.TableInBatchGetRowRespo" +
-      "nse\"\255\002\n\031RowInBatchWriteRowRequest\022O\n\004typ" +
-      "e\030\001 \002(\0162A.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.OperationType\022\022\n\nro" +
-      "w_change\030\002 \002(\014\022P\n\tcondition\030\003 \002(\0132=.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.Condition\022Y\n\016return_content\030\004 \001(\013" +
-      "2A.com.alicloud.openservices.tablestore." +
-      "core.protocol.ReturnContent\"\216\001\n\033TableInB" +
-      "atchWriteRowRequest\022\022\n\ntable_name\030\001 \002(\t\022" +
-      "[\n\004rows\030\002 \003(\0132M.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.RowInBatchWri" +
-      "teRowRequest\"\242\001\n\024BatchWriteRowRequest\022_\n" +
-      "\006tables\030\001 \003(\0132O.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.TableInBatchW" +
-      "riteRowRequest\022\026\n\016transaction_id\030\002 \001(\t\022\021" +
-      "\n\tis_atomic\030\003 \001(\010\"\332\001\n\032RowInBatchWriteRow" +
-      "Response\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002 \001(\01329" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.Error\022V\n\010consumed\030\003 \001(\0132D.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.ConsumedCapacity\022\013\n\003row\030\004 \001(\014\"\220" +
-      "\001\n\034TableInBatchWriteRowResponse\022\022\n\ntable" +
-      "_name\030\001 \002(\t\022\\\n\004rows\030\002 \003(\0132N.com.alicloud" +
-      ".openservices.tablestore.core.protocol.R" +
-      "owInBatchWriteRowResponse\"y\n\025BatchWriteR" +
-      "owResponse\022`\n\006tables\030\001 \003(\0132P.com.aliclou" +
-      "d.openservices.tablestore.core.protocol." +
-      "TableInBatchWriteRowResponse\"\260\003\n\017GetRang" +
-      "eRequest\022\022\n\ntable_name\030\001 \002(\t\022P\n\tdirectio" +
-      "n\030\002 \002(\0162=.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.Direction\022\026\n\016column" +
-      "s_to_get\030\003 \003(\t\022Q\n\ntime_range\030\004 \001(\0132=.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.TimeRange\022\024\n\014max_versions\030\005 \001(\005\022" +
-      "\r\n\005limit\030\006 \001(\005\022#\n\033inclusive_start_primar" +
-      "y_key\030\007 \002(\014\022!\n\031exclusive_end_primary_key" +
-      "\030\010 \002(\014\022\016\n\006filter\030\n \001(\014\022\024\n\014start_column\030\013" +
-      " \001(\t\022\022\n\nend_column\030\014 \001(\t\022\r\n\005token\030\r \001(\014\022" +
-      "\026\n\016transaction_id\030\016 \001(\t\"\254\001\n\020GetRangeResp" +
-      "onse\022V\n\010consumed\030\001 \002(\0132D.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Cons" +
-      "umedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_start" +
-      "_primary_key\030\003 \001(\014\022\022\n\nnext_token\030\004 \001(\014\"?" +
-      "\n\034StartLocalTransactionRequest\022\022\n\ntable_" +
-      "name\030\001 \002(\t\022\013\n\003key\030\002 \002(\014\"7\n\035StartLocalTra" +
-      "nsactionResponse\022\026\n\016transaction_id\030\001 \002(\t" +
-      "\"2\n\030CommitTransactionRequest\022\026\n\016transact" +
-      "ion_id\030\001 \002(\t\"\033\n\031CommitTransactionRespons" +
-      "e\"1\n\027AbortTransactionRequest\022\026\n\016transact" +
-      "ion_id\030\001 \002(\t\"\032\n\030AbortTransactionResponse" +
-      "\"\'\n\021ListStreamRequest\022\022\n\ntable_name\030\001 \001(" +
-      "\t\"F\n\006Stream\022\021\n\tstream_id\030\001 \002(\t\022\022\n\ntable_" +
-      "name\030\002 \002(\t\022\025\n\rcreation_time\030\003 \002(\003\"a\n\022Lis" +
-      "tStreamResponse\022K\n\007streams\030\001 \003(\0132:.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.Stream\"M\n\013StreamShard\022\020\n\010shard_id\030" +
-      "\001 \002(\t\022\021\n\tparent_id\030\002 \001(\t\022\031\n\021parent_sibli" +
-      "ng_id\030\003 \001(\t\"\210\001\n\025DescribeStreamRequest\022\021\n" +
-      "\tstream_id\030\001 \002(\t\022 \n\030inclusive_start_shar" +
-      "d_id\030\002 \001(\t\022\023\n\013shard_limit\030\003 \001(\005\022%\n\035suppo" +
-      "rt_timeseries_data_table\030\004 \001(\010\"\322\002\n\026Descr" +
-      "ibeStreamResponse\022\021\n\tstream_id\030\001 \002(\t\022\027\n\017" +
-      "expiration_time\030\002 \002(\005\022\022\n\ntable_name\030\003 \002(" +
-      "\t\022\025\n\rcreation_time\030\004 \002(\003\022W\n\rstream_statu" +
-      "s\030\005 \002(\0162@.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.StreamStatus\022O\n\006sha" +
-      "rds\030\006 \003(\0132?.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.StreamShard\022\025\n\rne" +
-      "xt_shard_id\030\007 \001(\t\022 \n\030is_timeseries_data_" +
-      "table\030\010 \001(\010\"`\n\027GetShardIteratorRequest\022\021" +
-      "\n\tstream_id\030\001 \002(\t\022\020\n\010shard_id\030\002 \002(\t\022\021\n\tt" +
-      "imestamp\030\003 \001(\003\022\r\n\005token\030\004 \001(\t\"F\n\030GetShar" +
-      "dIteratorResponse\022\026\n\016shard_iterator\030\001 \002(" +
-      "\t\022\022\n\nnext_token\030\002 \001(\t\"S\n\026GetStreamRecord" +
-      "Request\022\026\n\016shard_iterator\030\001 \002(\t\022\r\n\005limit" +
-      "\030\002 \001(\005\022\022\n\ntable_name\030\003 \001(\t\"\246\003\n\027GetStream" +
-      "RecordResponse\022p\n\016stream_records\030\001 \003(\0132X" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.GetStreamRecordResponse.Stre" +
-      "amRecord\022\033\n\023next_shard_iterator\030\002 \001(\t\022V\n" +
-      "\010consumed\030\003 \001(\0132D.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.ConsumedCap" +
-      "acity\022\027\n\017may_more_record\030\004 \001(\010\032\212\001\n\014Strea" +
-      "mRecord\022S\n\013action_type\030\001 \002(\0162>.com.alicl" +
+      "\014\"\220\001\n\034TableInBatchWriteRowResponse\022\022\n\nta" +
+      "ble_name\030\001 \002(\t\022\\\n\004rows\030\002 \003(\0132N.com.alicl" +
       "oud.openservices.tablestore.core.protoco" +
-      "l.ActionType\022\016\n\006record\030\002 \002(\014\022\025\n\rorigin_r" +
-      "ecord\030\003 \001(\014\"\205\001\n\037ComputeSplitPointsBySize" +
-      "Request\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_siz" +
-      "e\030\002 \002(\003\022\037\n\027split_size_unit_in_byte\030\003 \001(\003" +
-      "\022\031\n\021split_point_limit\030\004 \001(\005\"\220\003\n ComputeS" +
-      "plitPointsBySizeResponse\022V\n\010consumed\030\001 \002" +
-      "(\0132D.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.ConsumedCapacity\022T\n\006sche" +
-      "ma\030\002 \003(\0132D.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.PrimaryKeySchema\022\024" +
-      "\n\014split_points\030\003 \003(\014\022u\n\tlocations\030\004 \003(\0132" +
-      "b.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.ComputeSplitPointsBySizeRes" +
-      "ponse.SplitLocation\0321\n\rSplitLocation\022\020\n\010" +
-      "location\030\001 \002(\t\022\016\n\006repeat\030\002 \002(\022\"\217\002\n\021BulkE" +
-      "xportRequest\022\022\n\ntable_name\030\001 \002(\t\022\026\n\016colu" +
-      "mns_to_get\030\002 \003(\t\022#\n\033inclusive_start_prim" +
-      "ary_key\030\003 \002(\014\022!\n\031exclusive_end_primary_k" +
-      "ey\030\004 \002(\014\022\016\n\006filter\030\005 \001(\014\022v\n\024data_block_t" +
-      "ype_hint\030\006 \001(\0162A.com.alicloud.openservic" +
-      "es.tablestore.core.protocol.DataBlockTyp" +
-      "e:\025DBT_SIMPLE_ROW_MATRIX\"\366\001\n\022BulkExportR" +
+      "l.RowInBatchWriteRowResponse\"y\n\025BatchWri" +
+      "teRowResponse\022`\n\006tables\030\001 \003(\0132P.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.TableInBatchWriteRowResponse\"\260\003\n\017GetR" +
+      "angeRequest\022\022\n\ntable_name\030\001 \002(\t\022P\n\tdirec" +
+      "tion\030\002 \002(\0162=.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.Direction\022\026\n\016col" +
+      "umns_to_get\030\003 \003(\t\022Q\n\ntime_range\030\004 \001(\0132=." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.TimeRange\022\024\n\014max_versions\030\005 \001" +
+      "(\005\022\r\n\005limit\030\006 \001(\005\022#\n\033inclusive_start_pri" +
+      "mary_key\030\007 \002(\014\022!\n\031exclusive_end_primary_" +
+      "key\030\010 \002(\014\022\016\n\006filter\030\n \001(\014\022\024\n\014start_colum" +
+      "n\030\013 \001(\t\022\022\n\nend_column\030\014 \001(\t\022\r\n\005token\030\r \001" +
+      "(\014\022\026\n\016transaction_id\030\016 \001(\t\"\254\001\n\020GetRangeR" +
       "esponse\022V\n\010consumed\030\001 \002(\0132D.com.alicloud" +
       ".openservices.tablestore.core.protocol.C" +
       "onsumedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next_st" +
-      "art_primary_key\030\003 \001(\014\022Z\n\017data_block_type" +
-      "\030\004 \001(\0162A.com.alicloud.openservices.table" +
-      "store.core.protocol.DataBlockType\"\201\001\n\021Bu" +
-      "lkImportRequest\022\022\n\ntable_name\030\001 \002(\t\022X\n\004r" +
-      "ows\030\002 \003(\0132J.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.RowInBulkImportRe" +
-      "quest\"}\n\026RowInBulkImportRequest\022O\n\004type\030" +
-      "\001 \002(\0162A.com.alicloud.openservices.tables" +
-      "tore.core.protocol.OperationType\022\022\n\nrow_" +
-      "change\030\002 \002(\014\"\203\001\n\022BulkImportResponse\022\022\n\nt" +
-      "able_name\030\001 \002(\t\022Y\n\004rows\030\002 \003(\0132K.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.RowInBulkImportResponse\"\312\001\n\027RowInBulk" +
-      "ImportResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005error\030\002" +
-      " \001(\01329.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.Error\022V\n\010consumed\030\003 \001(" +
-      "\0132D.com.alicloud.openservices.tablestore" +
-      ".core.protocol.ConsumedCapacity\"\235\001\n\024Comp" +
-      "uteSplitsRequest\022\022\n\ntable_name\030\001 \001(\t\022q\n\033" +
-      "search_index_splits_options\030\002 \001(\0132L.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.SearchIndexSplitsOptions\".\n\030Searc" +
-      "hIndexSplitsOptions\022\022\n\nindex_name\030\001 \001(\t\"" +
-      "@\n\025ComputeSplitsResponse\022\022\n\nsession_id\030\001" +
-      " \001(\014\022\023\n\013splits_size\030\002 \001(\005\"\243\001\n\017SQLQueryRe" +
-      "quest\022\r\n\005query\030\001 \002(\t\022V\n\007version\030\002 \001(\0162E." +
+      "art_primary_key\030\003 \001(\014\022\022\n\nnext_token\030\004 \001(" +
+      "\014\"?\n\034StartLocalTransactionRequest\022\022\n\ntab" +
+      "le_name\030\001 \002(\t\022\013\n\003key\030\002 \002(\014\"7\n\035StartLocal" +
+      "TransactionResponse\022\026\n\016transaction_id\030\001 " +
+      "\002(\t\"2\n\030CommitTransactionRequest\022\026\n\016trans" +
+      "action_id\030\001 \002(\t\"\033\n\031CommitTransactionResp" +
+      "onse\"1\n\027AbortTransactionRequest\022\026\n\016trans" +
+      "action_id\030\001 \002(\t\"\032\n\030AbortTransactionRespo" +
+      "nse\"\'\n\021ListStreamRequest\022\022\n\ntable_name\030\001" +
+      " \001(\t\"F\n\006Stream\022\021\n\tstream_id\030\001 \002(\t\022\022\n\ntab" +
+      "le_name\030\002 \002(\t\022\025\n\rcreation_time\030\003 \002(\003\"a\n\022" +
+      "ListStreamResponse\022K\n\007streams\030\001 \003(\0132:.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.Stream\"M\n\013StreamShard\022\020\n\010shard_" +
+      "id\030\001 \002(\t\022\021\n\tparent_id\030\002 \001(\t\022\031\n\021parent_si" +
+      "bling_id\030\003 \001(\t\"\210\001\n\025DescribeStreamRequest" +
+      "\022\021\n\tstream_id\030\001 \002(\t\022 \n\030inclusive_start_s" +
+      "hard_id\030\002 \001(\t\022\023\n\013shard_limit\030\003 \001(\005\022%\n\035su" +
+      "pport_timeseries_data_table\030\004 \001(\010\"\322\002\n\026De" +
+      "scribeStreamResponse\022\021\n\tstream_id\030\001 \002(\t\022" +
+      "\027\n\017expiration_time\030\002 \002(\005\022\022\n\ntable_name\030\003" +
+      " \002(\t\022\025\n\rcreation_time\030\004 \002(\003\022W\n\rstream_st" +
+      "atus\030\005 \002(\0162@.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.StreamStatus\022O\n\006" +
+      "shards\030\006 \003(\0132?.com.alicloud.openservices" +
+      ".tablestore.core.protocol.StreamShard\022\025\n" +
+      "\rnext_shard_id\030\007 \001(\t\022 \n\030is_timeseries_da" +
+      "ta_table\030\010 \001(\010\"`\n\027GetShardIteratorReques" +
+      "t\022\021\n\tstream_id\030\001 \002(\t\022\020\n\010shard_id\030\002 \002(\t\022\021" +
+      "\n\ttimestamp\030\003 \001(\003\022\r\n\005token\030\004 \001(\t\"F\n\030GetS" +
+      "hardIteratorResponse\022\026\n\016shard_iterator\030\001" +
+      " \002(\t\022\022\n\nnext_token\030\002 \001(\t\"S\n\026GetStreamRec" +
+      "ordRequest\022\026\n\016shard_iterator\030\001 \002(\t\022\r\n\005li" +
+      "mit\030\002 \001(\005\022\022\n\ntable_name\030\003 \001(\t\"\246\003\n\027GetStr" +
+      "eamRecordResponse\022p\n\016stream_records\030\001 \003(" +
+      "\0132X.com.alicloud.openservices.tablestore" +
+      ".core.protocol.GetStreamRecordResponse.S" +
+      "treamRecord\022\033\n\023next_shard_iterator\030\002 \001(\t" +
+      "\022V\n\010consumed\030\003 \001(\0132D.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Consumed" +
+      "Capacity\022\027\n\017may_more_record\030\004 \001(\010\032\212\001\n\014St" +
+      "reamRecord\022S\n\013action_type\030\001 \002(\0162>.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.ActionType\022\016\n\006record\030\002 \002(\014\022\025\n\rorigi" +
+      "n_record\030\003 \001(\014\"\205\001\n\037ComputeSplitPointsByS" +
+      "izeRequest\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nsplit_" +
+      "size\030\002 \002(\003\022\037\n\027split_size_unit_in_byte\030\003 " +
+      "\001(\003\022\031\n\021split_point_limit\030\004 \001(\005\"\220\003\n Compu" +
+      "teSplitPointsBySizeResponse\022V\n\010consumed\030" +
+      "\001 \002(\0132D.com.alicloud.openservices.tables" +
+      "tore.core.protocol.ConsumedCapacity\022T\n\006s" +
+      "chema\030\002 \003(\0132D.com.alicloud.openservices." +
+      "tablestore.core.protocol.PrimaryKeySchem" +
+      "a\022\024\n\014split_points\030\003 \003(\014\022u\n\tlocations\030\004 \003" +
+      "(\0132b.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.ComputeSplitPointsBySize" +
+      "Response.SplitLocation\0321\n\rSplitLocation\022" +
+      "\020\n\010location\030\001 \002(\t\022\016\n\006repeat\030\002 \002(\022\"\217\002\n\021Bu" +
+      "lkExportRequest\022\022\n\ntable_name\030\001 \002(\t\022\026\n\016c" +
+      "olumns_to_get\030\002 \003(\t\022#\n\033inclusive_start_p" +
+      "rimary_key\030\003 \002(\014\022!\n\031exclusive_end_primar" +
+      "y_key\030\004 \002(\014\022\016\n\006filter\030\005 \001(\014\022v\n\024data_bloc" +
+      "k_type_hint\030\006 \001(\0162A.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.DataBlock" +
+      "Type:\025DBT_SIMPLE_ROW_MATRIX\"\366\001\n\022BulkExpo" +
+      "rtResponse\022V\n\010consumed\030\001 \002(\0132D.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.ConsumedCapacity\022\014\n\004rows\030\002 \002(\014\022\036\n\026next" +
+      "_start_primary_key\030\003 \001(\014\022Z\n\017data_block_t" +
+      "ype\030\004 \001(\0162A.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.DataBlockType\"\201\001\n" +
+      "\021BulkImportRequest\022\022\n\ntable_name\030\001 \002(\t\022X" +
+      "\n\004rows\030\002 \003(\0132J.com.alicloud.openservices" +
+      ".tablestore.core.protocol.RowInBulkImpor" +
+      "tRequest\"}\n\026RowInBulkImportRequest\022O\n\004ty" +
+      "pe\030\001 \002(\0162A.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.OperationType\022\022\n\nr" +
+      "ow_change\030\002 \002(\014\"\203\001\n\022BulkImportResponse\022\022" +
+      "\n\ntable_name\030\001 \002(\t\022Y\n\004rows\030\002 \003(\0132K.com.a" +
+      "licloud.openservices.tablestore.core.pro" +
+      "tocol.RowInBulkImportResponse\"\312\001\n\027RowInB" +
+      "ulkImportResponse\022\r\n\005is_ok\030\001 \002(\010\022H\n\005erro" +
+      "r\030\002 \001(\01329.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.Error\022V\n\010consumed\030\003" +
+      " \001(\0132D.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.ConsumedCapacity\"\235\001\n\024C" +
+      "omputeSplitsRequest\022\022\n\ntable_name\030\001 \001(\t\022" +
+      "q\n\033search_index_splits_options\030\002 \001(\0132L.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.SearchIndexSplitsOptions\".\n\030Se" +
+      "archIndexSplitsOptions\022\022\n\nindex_name\030\001 \001" +
+      "(\t\"@\n\025ComputeSplitsResponse\022\022\n\nsession_i" +
+      "d\030\001 \001(\014\022\023\n\013splits_size\030\002 \001(\005\"\243\001\n\017SQLQuer" +
+      "yRequest\022\r\n\005query\030\001 \002(\t\022V\n\007version\030\002 \001(\016" +
+      "2E.com.alicloud.openservices.tablestore." +
+      "core.protocol.SQLPayloadVersion\022\023\n\013sql_v" +
+      "ersion\030\003 \001(\003\022\024\n\014search_token\030\005 \001(\t\"\350\001\n\025T" +
+      "ableConsumedCapacity\022\022\n\ntable_name\030\001 \001(\t" +
+      "\022V\n\010consumed\030\002 \001(\0132D.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Consumed" +
+      "Capacity\022c\n\023reserved_throughput\030\003 \001(\0132F." +
       "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.SQLPayloadVersion\022\023\n\013sql_vers" +
-      "ion\030\003 \001(\003\022\024\n\014search_token\030\005 \001(\t\"\350\001\n\025Tabl" +
-      "eConsumedCapacity\022\022\n\ntable_name\030\001 \001(\t\022V\n" +
-      "\010consumed\030\002 \001(\0132D.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.ConsumedCap" +
-      "acity\022c\n\023reserved_throughput\030\003 \001(\0132F.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.ReservedThroughput\"\304\002\n\020SQLQueryR" +
-      "esponse\022[\n\010consumes\030\001 \003(\0132I.com.alicloud" +
-      ".openservices.tablestore.core.protocol.T" +
-      "ableConsumedCapacity\022\014\n\004rows\030\002 \001(\014\022V\n\007ve" +
-      "rsion\030\003 \001(\0162E.com.alicloud.openservices." +
-      "tablestore.core.protocol.SQLPayloadVersi" +
-      "on\022R\n\004type\030\004 \001(\0162D.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.SQLStateme" +
-      "ntType\022\031\n\021next_search_token\030\010 \001(\t*5\n\016Pri" +
-      "maryKeyType\022\013\n\007INTEGER\020\001\022\n\n\006STRING\020\002\022\n\n\006" +
-      "BINARY\020\003*c\n\021DefinedColumnType\022\017\n\013DCT_INT" +
-      "EGER\020\001\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_BOOLEAN\020\003\022" +
-      "\016\n\nDCT_STRING\020\004\022\014\n\010DCT_BLOB\020\007*&\n\020Primary" +
-      "KeyOption\022\022\n\016AUTO_INCREMENT\020\001*:\n\017IndexUp" +
-      "dateMode\022\023\n\017IUM_ASYNC_INDEX\020\000\022\022\n\016IUM_SYN" +
-      "C_INDEX\020\001*4\n\tIndexType\022\023\n\017IT_GLOBAL_INDE" +
-      "X\020\000\022\022\n\016IT_LOCAL_INDEX\020\001*=\n\016IndexSyncPhas" +
-      "e\022\017\n\013ISP_INVALID\020\000\022\014\n\010ISP_FULL\020\001\022\014\n\010ISP_" +
-      "INCR\020\002*M\n\027RowExistenceExpectation\022\n\n\006IGN" +
-      "ORE\020\000\022\020\n\014EXPECT_EXIST\020\001\022\024\n\020EXPECT_NOT_EX" +
-      "IST\020\002*/\n\nSSEKeyType\022\023\n\017SSE_KMS_SERVICE\020\001" +
-      "\022\014\n\010SSE_BYOK\020\002*9\n\nReturnType\022\013\n\007RT_NONE\020" +
-      "\000\022\t\n\005RT_PK\020\001\022\023\n\017RT_AFTER_MODIFY\020\002*0\n\rOpe" +
-      "rationType\022\007\n\003PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DELET" +
-      "E\020\003*&\n\tDirection\022\013\n\007FORWARD\020\000\022\014\n\010BACKWAR" +
-      "D\020\001*6\n\014StreamStatus\022\023\n\017STREAM_ENABLING\020\001" +
-      "\022\021\n\rSTREAM_ACTIVE\020\002*9\n\nActionType\022\013\n\007PUT" +
-      "_ROW\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*@" +
-      "\n\rDataBlockType\022\024\n\020DBT_PLAIN_BUFFER\020\000\022\031\n" +
-      "\025DBT_SIMPLE_ROW_MATRIX\020\001*?\n\021SQLPayloadVe" +
-      "rsion\022\024\n\020SQL_PLAIN_BUFFER\020\001\022\024\n\020SQL_FLAT_" +
-      "BUFFERS\020\002*\215\001\n\020SQLStatementType\022\016\n\nSQL_SE" +
-      "LECT\020\001\022\024\n\020SQL_CREATE_TABLE\020\002\022\022\n\016SQL_SHOW" +
-      "_TABLE\020\003\022\026\n\022SQL_DESCRIBE_TABLE\020\004\022\022\n\016SQL_" +
-      "DROP_TABLE\020\005\022\023\n\017SQL_ALTER_TABLE\020\006"
+      "e.protocol.ReservedThroughput\"\304\002\n\020SQLQue" +
+      "ryResponse\022[\n\010consumes\030\001 \003(\0132I.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.TableConsumedCapacity\022\014\n\004rows\030\002 \001(\014\022V\n" +
+      "\007version\030\003 \001(\0162E.com.alicloud.openservic" +
+      "es.tablestore.core.protocol.SQLPayloadVe" +
+      "rsion\022R\n\004type\030\004 \001(\0162D.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.SQLStat" +
+      "ementType\022\031\n\021next_search_token\030\010 \001(\t*5\n\016" +
+      "PrimaryKeyType\022\013\n\007INTEGER\020\001\022\n\n\006STRING\020\002\022" +
+      "\n\n\006BINARY\020\003*c\n\021DefinedColumnType\022\017\n\013DCT_" +
+      "INTEGER\020\001\022\016\n\nDCT_DOUBLE\020\002\022\017\n\013DCT_BOOLEAN" +
+      "\020\003\022\016\n\nDCT_STRING\020\004\022\014\n\010DCT_BLOB\020\007*&\n\020Prim" +
+      "aryKeyOption\022\022\n\016AUTO_INCREMENT\020\001*:\n\017Inde" +
+      "xUpdateMode\022\023\n\017IUM_ASYNC_INDEX\020\000\022\022\n\016IUM_" +
+      "SYNC_INDEX\020\001*4\n\tIndexType\022\023\n\017IT_GLOBAL_I" +
+      "NDEX\020\000\022\022\n\016IT_LOCAL_INDEX\020\001*=\n\016IndexSyncP" +
+      "hase\022\017\n\013ISP_INVALID\020\000\022\014\n\010ISP_FULL\020\001\022\014\n\010I" +
+      "SP_INCR\020\002*M\n\027RowExistenceExpectation\022\n\n\006" +
+      "IGNORE\020\000\022\020\n\014EXPECT_EXIST\020\001\022\024\n\020EXPECT_NOT" +
+      "_EXIST\020\002*/\n\nSSEKeyType\022\023\n\017SSE_KMS_SERVIC" +
+      "E\020\001\022\014\n\010SSE_BYOK\020\002*9\n\nReturnType\022\013\n\007RT_NO" +
+      "NE\020\000\022\t\n\005RT_PK\020\001\022\023\n\017RT_AFTER_MODIFY\020\002*0\n\r" +
+      "OperationType\022\007\n\003PUT\020\001\022\n\n\006UPDATE\020\002\022\n\n\006DE" +
+      "LETE\020\003*&\n\tDirection\022\013\n\007FORWARD\020\000\022\014\n\010BACK" +
+      "WARD\020\001*6\n\014StreamStatus\022\023\n\017STREAM_ENABLIN" +
+      "G\020\001\022\021\n\rSTREAM_ACTIVE\020\002*9\n\nActionType\022\013\n\007" +
+      "PUT_ROW\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020" +
+      "\003*@\n\rDataBlockType\022\024\n\020DBT_PLAIN_BUFFER\020\000" +
+      "\022\031\n\025DBT_SIMPLE_ROW_MATRIX\020\001*?\n\021SQLPayloa" +
+      "dVersion\022\024\n\020SQL_PLAIN_BUFFER\020\001\022\024\n\020SQL_FL" +
+      "AT_BUFFERS\020\002*\215\001\n\020SQLStatementType\022\016\n\nSQL" +
+      "_SELECT\020\001\022\024\n\020SQL_CREATE_TABLE\020\002\022\022\n\016SQL_S" +
+      "HOW_TABLE\020\003\022\026\n\022SQL_DESCRIBE_TABLE\020\004\022\022\n\016S" +
+      "QL_DROP_TABLE\020\005\022\023\n\017SQL_ALTER_TABLE\020\006"
     };
     descriptor = com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -85006,7 +85409,7 @@ public final class OtsInternalApi {
     internal_static_com_alicloud_openservices_tablestore_core_protocol_TableMeta_fieldAccessorTable = new
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_TableMeta_descriptor,
-        new java.lang.String[] { "TableName", "PrimaryKey", "DefinedColumn", });
+        new java.lang.String[] { "TableName", "PrimaryKey", "DefinedColumn", "TableId", "GlobalTableId", });
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Condition_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Condition_fieldAccessorTable = new

@@ -58,6 +58,7 @@ public class SearchProtocolBuilderTest extends BaseSearchTest {
         modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
         modelToPbFieldType.put(FieldType.IP, Search.FieldType.IP);
         modelToPbFieldType.put(FieldType.JSON, Search.FieldType.JSON);
+        modelToPbFieldType.put(FieldType.FLATTENED, Search.FieldType.FLATTENED);
 
         for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
             FieldType modelFieldType = entry.getKey();
@@ -681,10 +682,10 @@ public class SearchProtocolBuilderTest extends BaseSearchTest {
 
     @Test
     public void testBuildFieldSchema() {
-        // JSON_FLATTEN
+        // JSON_OBJECT
         {
             FieldSchema fieldSchema =
-                new FieldSchema("field1", FieldType.JSON).setJsonType(JsonType.FLATTEN).setSubFieldSchemas(Collections.singletonList(new FieldSchema("subField1", FieldType.TEXT)));
+                new FieldSchema("field1", FieldType.JSON).setJsonType(JsonType.OBJECT).setSubFieldSchemas(Collections.singletonList(new FieldSchema("subField1", FieldType.TEXT)));
             Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
             assertEquals(Search.FieldType.JSON, pbFieldSchema.getFieldType());
             assertEquals(Search.JsonType.OBJECT_JSON, pbFieldSchema.getJsonType());
@@ -700,6 +701,13 @@ public class SearchProtocolBuilderTest extends BaseSearchTest {
             assertEquals(Search.JsonType.NESTED_JSON, pbFieldSchema.getJsonType());
             assertEquals(1, pbFieldSchema.getFieldSchemasCount());
             assertEquals(Search.FieldType.TEXT, pbFieldSchema.getFieldSchemas(0).getFieldType());
+        }
+        // FLATTENED
+        {
+            FieldSchema fieldSchema =
+                    new FieldSchema("field1", FieldType.FLATTENED);
+            Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
+            assertEquals(Search.FieldType.FLATTENED, pbFieldSchema.getFieldType());
         }
     }
 }

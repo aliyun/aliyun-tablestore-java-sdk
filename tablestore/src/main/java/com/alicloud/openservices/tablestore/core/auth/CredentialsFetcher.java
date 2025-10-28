@@ -25,6 +25,7 @@ import com.alicloud.openservices.tablestore.core.utils.HttpResponse;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 public interface CredentialsFetcher {
 
@@ -35,6 +36,12 @@ public interface CredentialsFetcher {
      * @throws ClientException
      */
     public URL buildUrl() throws ClientException;
+
+    /**
+     * Get extra headers for the HTTP request.
+     * @return
+     */
+    public Map<String, String> getExtraHeaders();
 
     /**
      * Sends an HTTP request to the authorization server

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map.Entry;
 
 public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
     private static Logger logger = LoggerFactory.getLogger(HttpCredentialsFetcher.class);
@@ -42,6 +43,9 @@ public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
         URL url = buildUrl();
         HttpRequest request = new HttpRequest(url.toString());
         request.setMethod(MethodType.GET);
+        for (Entry<String, String> entry : getExtraHeaders().entrySet()) {
+            request.putHeaderParameter(entry.getKey(), entry.getValue());
+        }
         request.setConnectTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
         request.setReadTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
         

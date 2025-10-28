@@ -23,6 +23,7 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     public static ColumnValue INTERNAL_NULL_VALUE = new ColumnValue(null, ColumnType.STRING);
 
     private Object value;
+    private byte[] rawData; // raw bytes for utf-8 string
     private ColumnType type;
     private int dataSize = -1;
 
@@ -34,7 +35,7 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
         this.value = value;
         this.type = type;
     }
-    
+
     private int calculateDataSize() {
         int dataSize = 0;
         switch (this.type) {
@@ -103,6 +104,22 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     }
 
     /**
+     * Construct an attribute column of type {@link ColumnType#STRING}.
+     * <p>Note: The value must not be a null pointer.</p>
+     *
+     * @param value A value of string type.
+     * @param rawData The raw bytes for utf-8 string.
+     * @return The generated instance.
+     */
+    public static ColumnValue fromString(String value, byte[] rawData) {
+        Preconditions.checkNotNull(value, "The value of column should not be null.");
+        Preconditions.checkNotNull(rawData, "The value of rawData should not be null.");
+        ColumnValue columnValue = new ColumnValue(value, ColumnType.STRING);
+        columnValue.rawData = rawData;
+        return columnValue;
+    }
+
+    /**
      * Constructs a property column of type {@link ColumnType#INTEGER}.
      *
      * @param value The long integer value.
@@ -159,7 +176,10 @@ public class ColumnValue implements Comparable<ColumnValue>, Jsonizable, Measura
     }
 
     public byte[] asStringInBytes() {
-        return Bytes.toBytes(asString());
+        if (rawData == null) {
+            rawData = Bytes.toBytes(asString());
+        }
+        return rawData;
     }
 
     /**

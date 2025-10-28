@@ -21,7 +21,7 @@ import java.util.concurrent.Semaphore;
  *
  */
 public abstract class BaseRequestManager implements RequestManager {
-    private Logger logger = LoggerFactory.getLogger(BaseRequestManager.class);
+    private static Logger logger = LoggerFactory.getLogger(BaseRequestManager.class);
 
     protected AsyncClientInterface ots;
     protected BucketConfig bucketConfig;

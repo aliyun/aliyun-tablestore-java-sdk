@@ -7,6 +7,7 @@ import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyBuilder;
 import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
+import com.alicloud.openservices.tablestore.model.RequestExtension;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
 import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
 import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
@@ -140,6 +141,7 @@ public abstract class BaseSearchTest {
                             && "[B".equals(f.getDeclaredClass().getName())
                             && f.getDeclaringClass().equals(PrimaryKeyValue.class);
                 }
+
                 @Override
                 public boolean shouldSkipClass(Class<?> aClass) {
                     return false;
@@ -1493,7 +1495,8 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             searchRequest.setTimeoutInMillisecond(RANDOM.nextInt(100000000));
         }
-        assertAllFieldTested(searchRequest, 6);
+        // RequestExtension is carried in http header, here we don't mock it for proto buffer test, so the max field count is 1 greater than mock count
+        assertAllFieldTested(searchRequest, 7);
         return searchRequest;
     }
 
@@ -1559,7 +1562,8 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             request.setTimeoutInMillisecond(RANDOM.nextInt(100000000));
         }
-        assertAllFieldTested(request, 6);
+        // RequestExtension is carried in http header, here we don't mock it for proto buffer test, so the max field count is 1 greater than mock count
+        assertAllFieldTested(request, 7);
         return request;
     }
 

@@ -6,7 +6,6 @@ import com.alicloud.openservices.tablestore.model.Response;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.junit.Test;
@@ -66,7 +65,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                                 .setVirtualField(true)
                                 .setSourceFieldName("n1"))
                 ));
-        indexSchema.addFieldSchema(new FieldSchema("col_json_flatten", FieldType.JSON).setJsonType(JsonType.FLATTEN).setSubFieldSchemas(Arrays.asList(
+        indexSchema.addFieldSchema(new FieldSchema("col_json_object", FieldType.JSON).setJsonType(JsonType.OBJECT).setSubFieldSchemas(Arrays.asList(
             new FieldSchema("col_inner", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()),
             new FieldSchema("col_inner2", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()).setVirtualField(true).setSourceFieldName("n1")
         )));
@@ -74,9 +73,11 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
             new FieldSchema("col_inner", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()),
             new FieldSchema("col_inner2", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()).setVirtualField(true).setSourceFieldName("n1")
         )));
+        indexSchema.addFieldSchema(new FieldSchema("col_flattened", FieldType.FLATTENED).setEnableSortAndAgg(true).setStore(false).setIndex(true));
 
         IndexSetting indexSetting = new IndexSetting();
         indexSetting.setRoutingFields(Arrays.asList("routing_field1", "routing_field2"));
+        indexSetting.setEnableCustomColumnVersion(true);
         indexSchema.setIndexSetting(indexSetting);
 
         describeResp.setSchema(indexSchema);
@@ -101,7 +102,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
         assertEquals("{\n" +
                 "  \"IndexStatus\": null,\n" +
                 "  \"IndexSchema\": {\n" +
-                "    \"IndexSetting\": {\"RoutingFields\": [\"routing_field1\", \"routing_field2\"]},\n" +
+                "    \"IndexSetting\": {\"RoutingFields\": [\"routing_field1\", \"routing_field2\"],\"EnableCustomColumnVersion\":true},\n" +
                 "    \"FieldSchemas\": [{\n" +
                 "     \"FieldName\": \"col_long\",\n" +
                 "     \"FieldType\": \"LONG\",\n" +
@@ -205,20 +206,68 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 "     \"SourceFieldNames\": [\"n1\"]\n" +
                 "     }]\n" +
                 "     },\n" +
-            "     {\n" + "     \"FieldName\": \"col_json_flatten\",\n" + "     \"FieldType\": \"JSON\",\n" + "     \"Index\": true,\n" +
-            "     \"SubFieldSchemas\": [{\n" +
-            "     \"FieldName\": \"col_inner\",\n" +
-            "     \"FieldType\": \"TEXT\",\n" +
-            "     \"Index\": true,\n" + "     \"SubFieldSchemas\": []\n" + "     }, \n" + "     {\n" + "     \"FieldName\": \"col_inner2\",\n" + "     \"FieldType\": \"TEXT\",\n" +
-            "     \"Index\": true,\n" +
-            "     \"SubFieldSchemas\": [],\n" +
-            "     \"IsVirtualField\": true,\n" +
-            "     \"SourceFieldNames\": [\"n1\"]\n" + "     }],\n" + "     \"JsonType\": \"FLATTEN\"\n" + "     },\n" + "     {\n" + "     " + "\"FieldName\": \"col_json_nested\",\n"
-            + "     \"FieldType\": \"JSON\",\n" + "     \"Index\": true,\n" + "     \"SubFieldSchemas\": [{\n" + "     \"FieldName\": \"col_inner\",\n" + "     \"FieldType\": \"TEXT\",\n"
-            + "     \"Index\": true,\n" + "     \"SubFieldSchemas\": []\n" + "     }, \n" + "     {\n" + "     \"FieldName\": \"col_inner2\",\n" + "     \"FieldType\": \"TEXT\",\n"
-            + "     \"Index\": true,\n" + "     \"SubFieldSchemas\": [],\n" + "     \"IsVirtualField\": true,\n" + "     \"SourceFieldNames\": [\"n1\"]\n" + "     }],\n"
-            + "     \"JsonType\": \"NESTED\"\n" + "     }" + "]\n" + "  },\n" + "  \"SyncStat\": {\n" + "    \"SyncPhase\": \"INCR\",\n" + "    \"CurrentSyncTimestamp\": 123456},\n"
-            + "  \"BrotherIndexName\": \"index1\",\n" + "  \"QueryFlowWeight\": [{\n" + "   \"IndexName\": \"index1_reindex\",\n" + "   \"Weight\": 20\n" + "   },\n" + "   {\n"
-            + "   \"IndexName\": \"index1_reindex_inner\",\n" + "   \"Weight\": 80\n" + "   }],\n" + "  \"TimeToLive\": 1000\n" + "}", json);
+                "     {\n" +
+                "     \"FieldName\": \"col_json_object\",\n" +
+                "     \"FieldType\": \"JSON\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [{\n" +
+                "     \"FieldName\": \"col_inner\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": []\n" +
+                "     }, \n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_inner2\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\"]\n" +
+                "     }],\n" +
+                "     \"JsonType\": \"OBJECT\"\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_json_nested\",\n" +
+                "     \"FieldType\": \"JSON\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [{\n" +
+                "     \"FieldName\": \"col_inner\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": []\n" +
+                "     }, \n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_inner2\",\n" +
+                "     \"FieldType\": \"TEXT\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"SubFieldSchemas\": [],\n" +
+                "     \"IsVirtualField\": true,\n" +
+                "     \"SourceFieldNames\": [\"n1\"]\n" +
+                "     }],\n" +
+                "     \"JsonType\": \"NESTED\"\n" +
+                "     },\n" +
+                "     {\n" +
+                "     \"FieldName\": \"col_flattened\",\n" +
+                "     \"FieldType\": \"FLATTENED\",\n" +
+                "     \"Index\": true,\n" +
+                "     \"EnableSortAndAgg\": true,\n" +
+                "     \"Store\": false,\n" +
+                "     \"SubFieldSchemas\": []\n" +
+                "     }]\n" +
+                "  },\n" +
+                "  \"SyncStat\": {\n" +
+                "    \"SyncPhase\": \"INCR\",\n" +
+                "    \"CurrentSyncTimestamp\": 123456},\n" +
+                "  \"BrotherIndexName\": \"index1\",\n" +
+                "  \"QueryFlowWeight\": [{\n" +
+                "   \"IndexName\": \"index1_reindex\",\n" +
+                "   \"Weight\": 20\n" +
+                "   },\n" +
+                "   {\n" +
+                "   \"IndexName\": \"index1_reindex_inner\",\n" +
+                "   \"Weight\": 80\n" +
+                "   }],\n" +
+                "  \"TimeToLive\": 1000\n" +
+                "}", json);
     }
 }

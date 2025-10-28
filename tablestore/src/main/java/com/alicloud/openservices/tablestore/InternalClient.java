@@ -345,6 +345,112 @@ public class InternalClient {
         return f;
     }
 
+    public Future<CreateGlobalTableResponse> createGlobalTable(CreateGlobalTableRequest request,
+                                                   TableStoreCallback<CreateGlobalTableRequest, CreateGlobalTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateGlobalTableLauncher launcher = launcherFactory.createGlobalTable(tracer, retry, request);
+
+        AsyncCompletion<CreateGlobalTableRequest, CreateGlobalTableResponse> completion = new AsyncCompletion<>(launcher, request, tracer,
+                callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateGlobalTableRequest, CreateGlobalTableResponse> f = new CallbackImpledFuture<>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return f;
+    }
+
+    public Future<BindGlobalTableResponse> bindGlobalTable(BindGlobalTableRequest request,
+                                                               TableStoreCallback<BindGlobalTableRequest, BindGlobalTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        BindGlobalTableLauncher launcher = launcherFactory.bindGlobalTable(tracer, retry, request);
+
+        AsyncCompletion<BindGlobalTableRequest, BindGlobalTableResponse> completion = new AsyncCompletion<>(launcher, request, tracer,
+                callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<BindGlobalTableRequest, BindGlobalTableResponse> f = new CallbackImpledFuture<>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return f;
+    }
+
+    public Future<UnbindGlobalTableResponse> unbindGlobalTable(UnbindGlobalTableRequest request,
+                                                           TableStoreCallback<UnbindGlobalTableRequest, UnbindGlobalTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UnbindGlobalTableLauncher launcher = launcherFactory.unbindGlobalTable(tracer, retry, request);
+
+        AsyncCompletion<UnbindGlobalTableRequest, UnbindGlobalTableResponse> completion = new AsyncCompletion<>(launcher, request, tracer,
+                callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UnbindGlobalTableRequest, UnbindGlobalTableResponse> f = new CallbackImpledFuture<>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return f;
+    }
+
+    public Future<DescribeGlobalTableResponse> describeGlobalTable(DescribeGlobalTableRequest request,
+                                                               TableStoreCallback<DescribeGlobalTableRequest, DescribeGlobalTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DescribeGlobalTableLauncher launcher = launcherFactory.describeGlobalTable(tracer, retry, request);
+
+        AsyncCompletion<DescribeGlobalTableRequest, DescribeGlobalTableResponse> completion = new AsyncCompletion<>(launcher, request, tracer,
+                callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DescribeGlobalTableRequest, DescribeGlobalTableResponse> f = new CallbackImpledFuture<>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return f;
+    }
+
+    public Future<UpdateGlobalTableResponse> updateGlobalTable(UpdateGlobalTableRequest request,
+                                                               TableStoreCallback<UpdateGlobalTableRequest, UpdateGlobalTableResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateGlobalTableLauncher launcher = launcherFactory.updateGlobalTable(tracer, retry, request);
+
+        AsyncCompletion<UpdateGlobalTableRequest, UpdateGlobalTableResponse> completion = new AsyncCompletion<>(launcher, request, tracer,
+                callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateGlobalTableRequest, UpdateGlobalTableResponse> f = new CallbackImpledFuture<>();
+        completion.watchBy(f);
+        if (callback != null) {
+            // user callback must be triggered after completion of the return
+            // future.
+            f.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return f;
+    }
+
+
     public Future<CreateIndexResponse> createIndex(CreateIndexRequest request,
                                                    TableStoreCallback<CreateIndexRequest, CreateIndexResponse> callback) {
         Preconditions.checkNotNull(request);

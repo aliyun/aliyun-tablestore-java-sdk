@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 class FlushCallback<Req, Res> implements TableStoreCallback<Req, Res> {
-    private Logger logger = LoggerFactory.getLogger(FlushCallback.class);
+    private static Logger logger = LoggerFactory.getLogger(FlushCallback.class);
 
     private final AsyncClientInterface ots;
     private final AtomicInteger count;

@@ -224,12 +224,13 @@ public class SearchIndexSample {
                 new FieldSchema("Level1_Col2_Nested", FieldType.NESTED).setIndex(true)
                     .setSubFieldSchemas(Collections.singletonList(new FieldSchema("Level2_Col1_Text", FieldType.TEXT).setIndex(true).setStore(true).setEnableHighlighting(true)))
             )),
-            new FieldSchema("Col_Json", FieldType.JSON).setJsonType(JsonType.FLATTEN).setSubFieldSchemas(Arrays.asList(
+            new FieldSchema("Col_Json", FieldType.JSON).setJsonType(JsonType.OBJECT).setSubFieldSchemas(Arrays.asList(
                 new FieldSchema("Level1_Col1_Keyword", FieldType.TEXT).setIndex(true).setEnableSortAndAgg(true),
                 new FieldSchema("Level1_Col2_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
                 new FieldSchema("Level1_Col3_NestedJson", FieldType.JSON).setJsonType(JsonType.NESTED)
                     .setSubFieldSchemas(Collections.singletonList(new FieldSchema("Level2_Col1_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true)))
-            ))
+            )),
+            new FieldSchema("Col_Flattened", FieldType.FLATTENED).setIndex(true).setStore(false).setEnableSortAndAgg(true)
         ));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);

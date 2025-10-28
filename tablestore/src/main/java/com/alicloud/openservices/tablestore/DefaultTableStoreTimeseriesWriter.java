@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @description: A time-series table writer implemented based on {@link AsyncTimeseriesClient}
  */
 public class DefaultTableStoreTimeseriesWriter implements TableStoreTimeseriesWriter {
-    private Logger logger = LoggerFactory.getLogger(DefaultTableStoreTimeseriesWriter.class);
+    private static Logger logger = LoggerFactory.getLogger(DefaultTableStoreTimeseriesWriter.class);
     private static final int SCHEDULED_CORE_POOL_SIZE = 2;
     private TimeseriesWriterHandleStatistics timeseriesWriterHandleStatistics;
     private final AsyncTimeseriesClientInterface ots;

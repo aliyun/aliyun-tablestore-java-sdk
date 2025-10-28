@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 
 public class Group {
-    private Logger logger = LoggerFactory.getLogger(Group.class);
+    private static Logger logger = LoggerFactory.getLogger(Group.class);
 
     private static AtomicLong idGenerator = new AtomicLong(0);
     private final long groupId;

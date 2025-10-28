@@ -16,7 +16,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -80,6 +82,11 @@ public class InstanceProfileCredentialsProviderTest {
             InstanceProfileCredentials ipc = (InstanceProfileCredentials) super.fetch();
             ipc.withRefreshIntervalInMilliseconds(1000).withExpiredDuration(5).withExpiredFactor(0.6);
             return ipc;
+        }
+
+        @Override
+        public Map<String, String> getExtraHeaders() {
+            return new HashMap<>();
         }
     }
 

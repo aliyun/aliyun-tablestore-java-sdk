@@ -1043,6 +1043,7 @@ enum FieldType {
     FUZZY_KEYWORD = 10;
     IP = 11;
     JSON = 12;
+    FLATTENED = 13;
 }
 
 enum DateTimeUnit {
@@ -1128,6 +1129,7 @@ message IndexSetting {
     optional int32 number_of_shards = 1;
     repeated string routing_fields = 2;
     optional int32 routing_partition_size = 3;
+    optional bool enable_custom_column_version = 7;
 }
 
 message CreateSearchIndexRequest {

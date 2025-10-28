@@ -68,6 +68,7 @@ public class TimeseriesAnalyticalStoreTest {
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_analytical_store1");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
+        createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
         // describe table
         DescribeTimeseriesTableRequest describeTableRequest = new DescribeTimeseriesTableRequest("test_analytical_store1");
@@ -205,6 +206,7 @@ public class TimeseriesAnalyticalStoreTest {
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_update_analytical_store");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
+        createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
         DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest("test_update_analytical_store", "default_analytical_store");
         DescribeTimeseriesAnalyticalStoreResponse describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
@@ -228,6 +230,7 @@ public class TimeseriesAnalyticalStoreTest {
         TimeseriesTableMeta meta = new TimeseriesTableMeta("test_describe_index_sync_phase");
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
+        createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
 
         // describe table

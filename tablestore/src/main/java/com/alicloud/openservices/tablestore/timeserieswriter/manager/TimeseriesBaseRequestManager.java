@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
 public abstract class TimeseriesBaseRequestManager implements TimeseriesRequestManager {
-    private Logger logger = LoggerFactory.getLogger(TimeseriesBaseRequestManager.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesBaseRequestManager.class);
 
     protected AsyncTimeseriesClientInterface ots;
     protected TimeseriesBucketConfig timeseriesBucketConfig;

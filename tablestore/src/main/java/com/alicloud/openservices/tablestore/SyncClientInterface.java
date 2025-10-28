@@ -95,6 +95,50 @@ public interface SyncClientInterface {
         throws TableStoreException, ClientException;
 
     /**
+     * Create a global table using an existing table as the base table.
+     * @param createGlobalTableRequest Parameters required to execute CreateGlobalTable
+     * @return Results returned by the Table Store service
+     * @throws TableStoreException Exceptions returned by the Table Store service
+     * @throws ClientException The requested result is invalid, or a network exception occurs.
+     */
+    public CreateGlobalTableResponse createGlobalTable(CreateGlobalTableRequest createGlobalTableRequest) throws TableStoreException, ClientException;
+    /**
+     * Adds a new physical table copy to the global table at the specified location.
+     * @param bindGlobalTableRequest Parameters required to execute BindGlobalTable
+     * @return Results returned by the Table Store service
+     * @throws TableStoreException Exceptions returned by the Table Store service
+     * @throws ClientException The requested result is invalid, or a network exception occurs.
+     */
+    public BindGlobalTableResponse bindGlobalTable(BindGlobalTableRequest bindGlobalTableRequest) throws TableStoreException, ClientException;
+    /**
+     * Unbind the specified physical table from the global table. The unbinding operation will not delete the physical table.
+     * <p>Note: After the table is successfully unbound, it will no longer synchronize data with the global table, nor can it be bound to the global table again. Please operate with caution!</p>
+     * @param unbindGlobalTableRequest Parameters required to execute UnbindGlobalTable
+     * @return Results returned by the Table Store service
+     * @throws TableStoreException Exceptions returned by the Table Store service
+     * @throws ClientException The requested result is invalid, or a network exception occurs.
+     */
+    public UnbindGlobalTableResponse unbindGlobalTable(UnbindGlobalTableRequest unbindGlobalTableRequest) throws TableStoreException, ClientException;
+    /**
+     * Get the physical table information and status of the global table.
+     * @param descGlobalTableRequest Parameters required to execute DescribeGlobalTable
+     * @return Results returned by the Table Store service
+     * @throws TableStoreException Exceptions returned by the Table Store service
+     * @throws ClientException The requested result is invalid, or a network exception occurs.
+     */
+    public DescribeGlobalTableResponse describeGlobalTable(DescribeGlobalTableRequest descGlobalTableRequest) throws TableStoreException, ClientException;
+    /**
+     * Modify the read and write permissions of the physical table in the global table.
+     * <p>Note: This will cause write operations on disabled physical tables to fail!</p>
+     *
+     * @param updateGlobalTableRequest Parameters required to execute UpdateGlobalTable
+     * @return Results returned by the Table Store service
+     * @throws TableStoreException Exceptions returned by the Table Store service
+     * @throws ClientException The requested result is invalid, or a network exception occurs.
+     */
+    public UpdateGlobalTableResponse updateGlobalTable(UpdateGlobalTableRequest updateGlobalTableRequest) throws TableStoreException, ClientException;
+
+    /**
      * Create an index table under a specified table as indicated by the user.
      *
      * @param createIndexRequest

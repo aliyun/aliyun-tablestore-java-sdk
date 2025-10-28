@@ -74,6 +74,17 @@ public class LauncherFactory {
         contexts.put(OP_DELETE_DEFINED_COLUMN,
             new Context(new OTSUri(endpoint, OP_DELETE_DEFINED_COLUMN)));
 
+        contexts.put(OP_CREATE_GLOBAL_TABLE,
+                new Context(new OTSUri(endpoint, OP_CREATE_GLOBAL_TABLE)));
+        contexts.put(OP_BIND_GLOBAL_TABLE,
+                new Context(new OTSUri(endpoint, OP_BIND_GLOBAL_TABLE)));
+        contexts.put(OP_DESCRIBE_GLOBAL_TABLE,
+                new Context(new OTSUri(endpoint, OP_DESCRIBE_GLOBAL_TABLE)));
+        contexts.put(OP_UNBIND_GLOBAL_TABLE,
+                new Context(new OTSUri(endpoint, OP_UNBIND_GLOBAL_TABLE)));
+        contexts.put(OP_UPDATE_GLOBAL_TABLE,
+                new Context(new OTSUri(endpoint, OP_UPDATE_GLOBAL_TABLE)));
+
         contexts.put(OP_PUT_ROW,
             new Context(new OTSUri(endpoint, OP_PUT_ROW)));
         contexts.put(OP_UPDATE_ROW,
@@ -235,6 +246,40 @@ public class LauncherFactory {
         Context ctx = contexts.get(OP_UPDATE_TABLE);
         return new UpdateTableLauncher(
             ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public CreateGlobalTableLauncher createGlobalTable(TraceLogger tracer, RetryStrategy retry, CreateGlobalTableRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_CREATE_GLOBAL_TABLE);
+        return new CreateGlobalTableLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public BindGlobalTableLauncher bindGlobalTable(TraceLogger tracer, RetryStrategy retry, BindGlobalTableRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_BIND_GLOBAL_TABLE);
+        return new BindGlobalTableLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public UnbindGlobalTableLauncher unbindGlobalTable(TraceLogger tracer, RetryStrategy retry, UnbindGlobalTableRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_UNBIND_GLOBAL_TABLE);
+        return new UnbindGlobalTableLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DescribeGlobalTableLauncher describeGlobalTable(TraceLogger tracer, RetryStrategy retry, DescribeGlobalTableRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_DESCRIBE_GLOBAL_TABLE);
+        return new DescribeGlobalTableLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public UpdateGlobalTableLauncher updateGlobalTable(TraceLogger tracer, RetryStrategy retry, UpdateGlobalTableRequest originRequest) {
+        Context ctx = contexts.get(OP_UPDATE_GLOBAL_TABLE);
+        return new UpdateGlobalTableLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
     }
 
     public CreateIndexLauncher createIndex(TraceLogger tracer, RetryStrategy retry, CreateIndexRequest originRequest)

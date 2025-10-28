@@ -1,18 +1,18 @@
 package com.alicloud.openservices.tablestore.model.search;
 
+import com.alicloud.openservices.tablestore.model.ExtensionRequest;
 import com.google.gson.GsonBuilder;
 import java.util.Arrays;
 import java.util.List;
 
 import com.alicloud.openservices.tablestore.model.ComputeSplitsResponse;
 import com.alicloud.openservices.tablestore.model.OperationNames;
-import com.alicloud.openservices.tablestore.model.Request;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest.ColumnsToGet;
 
 /**
  * Scan data from search index.
  */
-public class ParallelScanRequest implements Request {
+public class ParallelScanRequest extends ExtensionRequest {
 
     /**
      * the name of your table.

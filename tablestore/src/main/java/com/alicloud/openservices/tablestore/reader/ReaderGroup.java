@@ -17,7 +17,7 @@ public class ReaderGroup {
     private final AtomicInteger remainCounter;
     private final AtomicReferenceArray<RowReadResult> resultList;
     private final CallbackImpledFuture<PrimaryKeyWithTable, ReaderResult> future;
-    private Logger logger = LoggerFactory.getLogger(ReaderGroup.class);
+    private static Logger logger = LoggerFactory.getLogger(ReaderGroup.class);
 
     public ReaderGroup(int totalCount) {
         this.future = new CallbackImpledFuture<PrimaryKeyWithTable, ReaderResult>();

@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
 public class TimeseriesBatchRequestManager extends TimeseriesBaseRequestManager{
-    private Logger logger = LoggerFactory.getLogger(TimeseriesBatchRequestManager.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesBatchRequestManager.class);
     public TimeseriesBatchRequestManager(AsyncTimeseriesClientInterface ots, TimeseriesWriterConfig timeseriesWriterConfig, TimeseriesBucketConfig timeseriesBucketConfig, Executor executor, TimeseriesWriterHandleStatistics timeseriesWriterHandleStatistics,
                                          TableStoreCallback<TimeseriesTableRow, TimeseriesRowResult> callback,
                                          Semaphore callbackSemaphore, Semaphore bucketSemaphore) {

@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultTableStoreWriter implements TableStoreWriter {
-    private Logger logger = LoggerFactory.getLogger(TableStoreWriter.class);
+    private static Logger logger = LoggerFactory.getLogger(TableStoreWriter.class);
 
     private static final int SCHEDULED_CORE_POOL_SIZE = 2;
 

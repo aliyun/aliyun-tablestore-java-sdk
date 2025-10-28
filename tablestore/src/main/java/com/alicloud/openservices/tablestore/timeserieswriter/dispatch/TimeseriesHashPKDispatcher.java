@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TimeseriesHashPKDispatcher extends TimeseriesBaseDispatcher {
-    private Logger logger = LoggerFactory.getLogger(TimeseriesHashPKDispatcher.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesHashPKDispatcher.class);
 
     private AtomicLong counter = new AtomicLong(0);
     private int bucketCount;

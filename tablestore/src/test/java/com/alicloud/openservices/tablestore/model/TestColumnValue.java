@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.common.TestUtil;
+import com.alicloud.openservices.tablestore.core.protocol.PlainBufferInputStream;
 import com.alicloud.openservices.tablestore.core.utils.Bytes;
 import org.junit.Test;
 
@@ -308,5 +309,52 @@ public class TestColumnValue {
 
         String value = "测试";
         assertEquals(ColumnValue.fromString(value).getDataSize(), value.getBytes("utf-8").length);
+    }
+
+    @Test
+    public void testColumnValue_FromStringWithBytes() throws Exception {
+        byte[] bytes = new byte[]{-19, -69, -100};
+        String str = PlainBufferInputStream.bytes2UTFString(bytes);
+        ColumnValue columnValue1 = ColumnValue.fromString(str);
+        ColumnValue columnValue2 = ColumnValue.fromString(str, bytes);
+
+        assertEquals(str, columnValue1.asString());
+        assertEquals(str, columnValue2.asString());
+
+        assertFalse(java.util.Arrays.equals(bytes, columnValue1.asStringInBytes()));
+        assertArrayEquals(bytes, columnValue2.asStringInBytes());
+    }
+
+    @Test
+    public void testColumnValue_FromStringWithBytes_2() throws Exception {
+        // two different bytes arrays
+        // Byte Order Mark
+        byte[] bytes1 = new byte[]{-19, -69, -100};
+        // Replacement Character
+        byte[] bytes2 = new byte[]{ (byte)0xEF, (byte)0xBF, (byte)0xBD };
+
+        String str1 = PlainBufferInputStream.bytes2UTFString(bytes1);
+        String str2 = PlainBufferInputStream.bytes2UTFString(bytes2);
+        {
+            // construct two different ColumnValue with string
+            ColumnValue columnValue1 = ColumnValue.fromString(str1);
+            ColumnValue columnValue2 = ColumnValue.fromString(str2);
+
+            byte byte1 = columnValue1.getChecksum((byte)0x0);
+            byte byte2 = columnValue2.getChecksum((byte)0x0);
+            // checksum should be the same
+            assertEquals(byte1, byte2);
+        }
+
+        {
+            // construct two different ColumnValue with string and bytes
+            ColumnValue columnValue1 = ColumnValue.fromString(str1, bytes1);
+            ColumnValue columnValue2 = ColumnValue.fromString(str2, bytes2);
+
+            byte byte1 = columnValue1.getChecksum((byte)0x0);
+            byte byte2 = columnValue2.getChecksum((byte)0x0);
+            // checksum should be different
+            assertNotSame(byte1, byte2);
+        }
     }
 }

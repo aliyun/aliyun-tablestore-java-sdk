@@ -4,8 +4,6 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBySort;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys;
-import com.alicloud.openservices.tablestore.core.utils.Repeat;
-import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
@@ -19,15 +17,8 @@ import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
 import com.alicloud.openservices.tablestore.model.search.sort.GroupBySorter;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.aliyun.ots.thirdparty.com.google.protobuf.ByteString;
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,6 +59,7 @@ public class SearchProtocolParserTest extends BaseSearchTest {
         modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
         modelToPbFieldType.put(FieldType.IP, Search.FieldType.IP);
         modelToPbFieldType.put(FieldType.JSON, Search.FieldType.JSON);
+        modelToPbFieldType.put(FieldType.FLATTENED, Search.FieldType.FLATTENED);
 
         for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
             FieldType modelFieldType = entry.getKey();
@@ -617,7 +609,7 @@ public class SearchProtocolParserTest extends BaseSearchTest {
 
     @Test
     public void testFieldSchemaSerialization() throws IOException {
-        // JSON_FLATTEN
+        // JSON_OBJECT
         {
             Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
                 .setFieldName("field1")
@@ -627,7 +619,7 @@ public class SearchProtocolParserTest extends BaseSearchTest {
                 .build();
             FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
             assertEquals(FieldType.JSON, fieldSchema.getFieldType());
-            assertEquals(JsonType.FLATTEN, fieldSchema.getJsonType());
+            assertEquals(JsonType.OBJECT, fieldSchema.getJsonType());
             assertEquals(1, fieldSchema.getSubFieldSchemas().size());
             assertEquals(FieldType.TEXT, fieldSchema.getSubFieldSchemas().get(0).getFieldType());
             assertEquals("subField1", fieldSchema.getSubFieldSchemas().get(0).getFieldName());
@@ -646,6 +638,20 @@ public class SearchProtocolParserTest extends BaseSearchTest {
             assertEquals(1, fieldSchema.getSubFieldSchemas().size());
             assertEquals(FieldType.TEXT, fieldSchema.getSubFieldSchemas().get(0).getFieldType());
             assertEquals("subField1", fieldSchema.getSubFieldSchemas().get(0).getFieldName());
+        }
+        {
+            Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
+                    .setFieldName("field1")
+                    .setFieldType(Search.FieldType.FLATTENED)
+                    .setSortAndAgg(false)
+                    .setStore(false)
+                    .setIndex(false)
+                    .build();
+            FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
+            assertEquals(FieldType.FLATTENED, fieldSchema.getFieldType());
+            assertFalse(fieldSchema.isEnableSortAndAgg());
+            assertFalse(fieldSchema.isStore());
+            assertFalse(fieldSchema.isIndex());
         }
     }
 }

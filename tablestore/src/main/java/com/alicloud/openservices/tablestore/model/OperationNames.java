@@ -66,6 +66,16 @@ public class OperationNames {
 
     public static final String OP_DELETE_DEFINED_COLUMN = "DeleteDefinedColumn";
 
+    public static final String OP_CREATE_GLOBAL_TABLE = "CreateGlobalTable";
+
+    public static final String OP_BIND_GLOBAL_TABLE = "BindGlobalTable";
+
+    public static final String OP_DESCRIBE_GLOBAL_TABLE = "DescribeGlobalTable";
+
+    public static final String OP_UNBIND_GLOBAL_TABLE = "UnbindGlobalTable";
+
+    public static final String OP_UPDATE_GLOBAL_TABLE = "UpdateGlobalTable";
+
     public static final String OP_CREATE_SEARCH_INDEX = "CreateSearchIndex";
 
     public static final String OP_UPDATE_SEARCH_INDEX = "UpdateSearchIndex";

@@ -62,6 +62,8 @@ public class SearchProtocolBuilder {
                 return Search.FieldType.IP;
             case JSON:
                 return Search.FieldType.JSON;
+            case FLATTENED:
+                return Search.FieldType.FLATTENED;
             default:
                 throw new IllegalArgumentException("Unknown fieldType: " + fieldType.name());
         }
@@ -180,6 +182,7 @@ public class SearchProtocolBuilder {
     private static Search.JsonType buildJsonType(JsonType type) {
         switch (type) {
             case FLATTEN:
+            case OBJECT:
                 return Search.JsonType.OBJECT_JSON;
             case NESTED:
                 return Search.JsonType.NESTED_JSON;
@@ -206,6 +209,9 @@ public class SearchProtocolBuilder {
         builder.setNumberOfShards(DEFAULT_NUMBER_OF_SHARDS);
         if (indexSetting.getRoutingFields() != null) {
             builder.addAllRoutingFields(indexSetting.getRoutingFields());
+        }
+        if (indexSetting.getEnableCustomColumnVersion() != null) {
+            builder.setEnableCustomColumnVersion(indexSetting.getEnableCustomColumnVersion());
         }
         return builder.build();
     }

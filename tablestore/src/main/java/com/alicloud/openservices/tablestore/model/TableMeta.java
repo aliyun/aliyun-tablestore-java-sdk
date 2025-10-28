@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
+import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 
 import java.util.*;
 
@@ -28,6 +29,9 @@ public class TableMeta implements Jsonizable {
     private List<DefinedColumnSchema> definedColumns = new ArrayList<DefinedColumnSchema>();
 
     private Map<String, DefinedColumnSchema> definedColumnsSchemaMap;
+
+    private String tableId;
+    private String globalTableId;
 
     /**
      * Creates a new <code>TableMeta</code> instance with the given table name.
@@ -265,6 +269,33 @@ public class TableMeta implements Jsonizable {
         Preconditions.checkArgument(columns != null && columns.length != 0, "The defined column schema should not be null or empty.");
         Collections.addAll(this.definedColumns, columns);
         definedColumnsSchemaMap = null;
+    }
+
+    /**
+     * 返回表的Id。
+     *
+     * @return 表Id
+     */
+    public Optional<String> getTableId() {
+        return Optional.ofNullable(tableId);
+    }
+
+    public void setTableId(String tableId) {
+        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(tableId), "The table id should not be null or empty.");
+        this.tableId = tableId;
+    }
+
+    /**
+     * 如果表属于全局表，返回全局表的Id。
+     * @return 全局表Id
+     */
+    public Optional<String> getGlobalTableId() {
+        return Optional.ofNullable(globalTableId);
+    }
+
+    public void setGlobalTableId(String globalTableId) {
+        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(globalTableId), "The global table id should not be null or empty.");
+        this.globalTableId = globalTableId;
     }
 
     @Override

@@ -109,6 +109,10 @@ public class PlainBufferInputStream {
         return new String(readBytes(size), Constants.UTF8_ENCODING);
     }
 
+    public static String bytes2UTFString(byte[] bytes) throws IOException {
+        return new String(bytes, Constants.UTF8_ENCODING);
+    }
+
     @Override
     public String toString() {
         return BinaryUtil.toString(this.buffer);

@@ -68,6 +68,8 @@ public class SearchProtocolParser {
                 return FieldType.IP;
             case JSON:
                 return FieldType.JSON;
+            case FLATTENED:
+                return FieldType.FLATTENED;
             default:
                 return FieldType.UNKNOWN;
         }
@@ -233,7 +235,7 @@ public class SearchProtocolParser {
     private static JsonType toJsonType(Search.JsonType jsonType) {
         switch (jsonType) {
             case OBJECT_JSON:
-                return JsonType.FLATTEN;
+                return JsonType.OBJECT;
             case NESTED_JSON:
                 return JsonType.NESTED;
             default:
@@ -245,6 +247,9 @@ public class SearchProtocolParser {
         IndexSetting result = new IndexSetting();
         if (indexSetting.getRoutingFieldsCount() > 0) {
             result.setRoutingFields(indexSetting.getRoutingFieldsList());
+        }
+        if (indexSetting.hasEnableCustomColumnVersion()) {
+            result.setEnableCustomColumnVersion(indexSetting.getEnableCustomColumnVersion());
         }
         return result;
     }

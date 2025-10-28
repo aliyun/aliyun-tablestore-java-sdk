@@ -115,6 +115,22 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
     }
 
     /**
+     * Constructs a primary key column of type {@link PrimaryKeyType#STRING}.
+     * <p>Note: The value cannot be a null pointer.</p>
+     *
+     * @param value The value of string type.
+     * @param rawData The raw bytes for utf-8 string.
+     * @return The generated object
+     */
+    public static PrimaryKeyValue fromString(String value, byte[] rawData) {
+        Preconditions.checkNotNull(value, "The value of primary key should not be null.");
+        Preconditions.checkNotNull(rawData, "The value of rawData should not be null.");
+        PrimaryKeyValue primaryKeyValue = new PrimaryKeyValue(value, PrimaryKeyType.STRING);
+        primaryKeyValue.rawData = rawData;
+        return primaryKeyValue;
+    }
+
+    /**
      * Constructs a primary key column of type {@link PrimaryKeyType#INTEGER}.
      *
      * @param value The long integer value.

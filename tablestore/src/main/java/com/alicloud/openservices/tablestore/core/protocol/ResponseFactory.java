@@ -1,12 +1,17 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
 import com.alicloud.openservices.tablestore.core.protocol.OtsInternalApi.ComputeSplitPointsBySizeResponse.SplitLocation;
+import com.alicloud.openservices.tablestore.core.protocol.globaltable.GlobalTable;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.GlobalTableTypes.PhyTable;
+import com.alicloud.openservices.tablestore.model.GlobalTableTypes.PhyTableStatus;
+import com.alicloud.openservices.tablestore.model.GlobalTableTypes.SyncStage;
 import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexResponse;
 import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexResponse;
@@ -28,6 +33,7 @@ import com.alicloud.openservices.tablestore.model.tunnel.internal.GetCheckpointR
 import com.alicloud.openservices.tablestore.model.tunnel.internal.HeartbeatResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ReadRecordsResponse;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.ShutdownTunnelResponse;
+import com.google.common.collect.Lists;
 import com.aliyun.ots.thirdparty.com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +103,75 @@ public class ResponseFactory {
     public static DeleteTableResponse createDeleteTableResponse(ResponseContentWithMeta response,
         OtsInternalApi.DeleteTableResponse deleteTableResponse) {
         return new DeleteTableResponse(response.getMeta());
+    }
+
+    public static CreateGlobalTableResponse createCreateGlobalTableResponse(ResponseContentWithMeta response,
+                                                                GlobalTable.CreateGlobalTableResponse protoResp) {
+        CreateGlobalTableResponse resp = new CreateGlobalTableResponse(response.getMeta());
+        resp.setGlobalTableId(protoResp.getGlobalTableId());
+        resp.setStatus(GlobalTableTypes.GlobalTableStatus.parseFrom(protoResp.getStatus()));
+        if (protoResp.hasServeMode()) {
+            resp.setServeMode(GlobalTableTypes.ServeMode.parseFrom(protoResp.getServeMode()));
+        }
+        return resp;
+    }
+
+    public static BindGlobalTableResponse createBindGlobalTableResponse(ResponseContentWithMeta response,
+                                                                GlobalTable.BindGlobalTableResponse protoResp) {
+        BindGlobalTableResponse resp = new BindGlobalTableResponse(response.getMeta());
+        resp.setGlobalTableId(protoResp.getGlobalTableId());
+        resp.setStatus(GlobalTableTypes.GlobalTableStatus.parseFrom(protoResp.getStatus()));
+        return resp;
+    }
+
+    public static UnbindGlobalTableResponse createUnbindGlobalTableResponse(ResponseContentWithMeta response,
+                                                                        GlobalTable.UnbindGlobalTableResponse protoResp) {
+        UnbindGlobalTableResponse resp = new UnbindGlobalTableResponse(response.getMeta());
+        resp.setGlobalTableId(protoResp.getGlobalTableId());
+        resp.setStatus(GlobalTableTypes.GlobalTableStatus.parseFrom(protoResp.getStatus()));
+        return resp;
+    }
+
+    public static DescribeGlobalTableResponse createDescribeGlobalTableResponse(ResponseContentWithMeta response,
+                                                                        GlobalTable.DescribeGlobalTableResponse protoResp) {
+        DescribeGlobalTableResponse resp = new DescribeGlobalTableResponse(response.getMeta());
+        resp.setGlobalTableId(protoResp.getGlobalTableId());
+        resp.setStatus(GlobalTableTypes.GlobalTableStatus.parseFrom(protoResp.getStatus()));
+
+        List<PhyTable> phyTables = Lists.newArrayListWithCapacity(protoResp.getPhyTablesCount());
+        List<GlobalTable.PhyTable> protoPhyTables = protoResp.getPhyTablesList();
+        for (GlobalTable.PhyTable protoPhyTable : protoPhyTables) {
+            PhyTable phyTable = convertToSdkPhyTable(protoPhyTable);
+            phyTables.add(phyTable);
+        }
+        resp.setPhyTables(phyTables);
+        return resp;
+    }
+
+    private static PhyTable convertToSdkPhyTable(GlobalTable.PhyTable protoPhyTable) {
+        PhyTable phyTable = new PhyTable(protoPhyTable.getRegionId(), protoPhyTable.getInstanceName(), protoPhyTable.getTableName(), protoPhyTable.getWritable());
+        phyTable.setRole(protoPhyTable.getRole());
+        phyTable.setStatus(PhyTableStatus.parseFrom(protoPhyTable.getStatus()));
+        phyTable.setStatusTimestamp(protoPhyTable.getStatusTimestamp());
+        phyTable.setTableId(protoPhyTable.getTableId());
+        phyTable.setStage(SyncStage.parseFrom(protoPhyTable.getStage()));
+        if (protoPhyTable.hasRpoNanos()) {
+            long rpoNanos = protoPhyTable.getRpoNanos();
+            if (rpoNanos != 0) {
+                Instant rpo = Instant.ofEpochSecond(rpoNanos / 1_000_000_000L,
+                        rpoNanos % 1_000_000_000L);
+                phyTable.setRpo(rpo);
+            }
+        }
+
+        phyTable.setFailed(protoPhyTable.getIsFailed());
+        phyTable.setMessage(protoPhyTable.getMessage());
+        return phyTable;
+    }
+
+    public static UpdateGlobalTableResponse createUpdateGlobalTableResponse(ResponseContentWithMeta response,
+                                                                            GlobalTable.UpdateGlobalTableResponse protoResp) {
+        return new UpdateGlobalTableResponse(response.getMeta());
     }
 
     public static CreateIndexResponse createCreteIndexResponse(

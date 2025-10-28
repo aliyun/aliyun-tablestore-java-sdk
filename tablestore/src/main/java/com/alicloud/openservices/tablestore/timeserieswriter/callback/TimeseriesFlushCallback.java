@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TimeseriesFlushCallback<Req, Res> implements TableStoreCallback<Req, Res> {
 
-    private Logger logger = LoggerFactory.getLogger(TimeseriesFlushCallback.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesFlushCallback.class);
 
     private final AsyncTimeseriesClientInterface ots;
 

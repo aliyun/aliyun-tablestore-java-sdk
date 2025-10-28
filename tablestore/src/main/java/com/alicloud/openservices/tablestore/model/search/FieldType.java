@@ -22,6 +22,7 @@ public enum FieldType {
     FUZZY_KEYWORD,
     IP,
     JSON,
+    FLATTENED,
     /**
      * Unknown type, please upgrade to the latest SDK version if you encounter this type.
      */

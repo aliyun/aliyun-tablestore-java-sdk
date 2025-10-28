@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 
 
 public class Bucket {
-    private Logger logger = LoggerFactory.getLogger(Bucket.class);
+    private static Logger logger = LoggerFactory.getLogger(Bucket.class);
 
     private final BucketConfig bucketConfig;
 

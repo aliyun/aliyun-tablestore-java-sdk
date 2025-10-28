@@ -37,7 +37,7 @@ public class CreateTimeseriesTableRequest implements Request {
     /**
      * Whether to enable analytical storage
      */
-    private boolean enableAnalyticalStore = true;
+    private boolean enableAnalyticalStore;
 
     private List<LastpointIndex> lastpointIndexes = new ArrayList<LastpointIndex>();
 

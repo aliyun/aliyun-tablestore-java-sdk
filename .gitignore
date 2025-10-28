@@ -1,18 +1,17 @@
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-*.iml
+/bin/
+.classpath
+.project
+.settings
+out/
+src/test/resources/test_conf.json
+*.ipr
+*.iws
+src/test/resources/local_conf.properties
 .idea
+src/test/java/examples/logs
 target
-out
-logs
-setting.xml
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+logs/
+src/test/resources/conf.properties
+*.iml
+.DS_Store
+/protoc

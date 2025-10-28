@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class TimeseriesGroup {
-    private Logger logger = LoggerFactory.getLogger(TimeseriesGroup.class);
+    private static Logger logger = LoggerFactory.getLogger(TimeseriesGroup.class);
 
     private static AtomicLong idGenerator = new AtomicLong(0);
     private final long groupId;

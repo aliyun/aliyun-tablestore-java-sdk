@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>The asynchronous API for data writes is implemented through {@link TableStoreWriter}. To retrieve the results of asynchronous writes, you can pass a {@link TableStoreCallback}, which is shared across all data table writes.</p>
  */
 public class TimestreamDBClient implements TimestreamDB {
-    private Logger logger = LoggerFactory.getLogger(TimestreamDBClient.class);
+    private static Logger logger = LoggerFactory.getLogger(TimestreamDBClient.class);
 
     private TimestreamDBConfiguration config;
     private WriterConfig writerConfig;

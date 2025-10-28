@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
 public class BatchWriteRowRequestManager extends BaseRequestManager {
-    private Logger logger = LoggerFactory.getLogger(BatchWriteRowRequestManager.class);
+    private static Logger logger = LoggerFactory.getLogger(BatchWriteRowRequestManager.class);
 
     public BatchWriteRowRequestManager(AsyncClientInterface ots, WriterConfig writerConfig, BucketConfig bucketConfig, Executor executor,
                                        WriterHandleStatistics writerStatistics, TableStoreCallback<RowChange, RowWriteResult> callback,

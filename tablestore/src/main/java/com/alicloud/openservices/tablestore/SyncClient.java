@@ -189,6 +189,56 @@ public class SyncClient implements SyncClientInterface {
     }
 
     @Override
+    public CreateGlobalTableResponse createGlobalTable(CreateGlobalTableRequest createGlobalTableRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(createGlobalTableRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<CreateGlobalTableResponse> res = this.internalClient.createGlobalTable(createGlobalTableRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public BindGlobalTableResponse bindGlobalTable(BindGlobalTableRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<BindGlobalTableResponse> res = this.internalClient.bindGlobalTable(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UnbindGlobalTableResponse unbindGlobalTable(UnbindGlobalTableRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UnbindGlobalTableResponse> res = this.internalClient.unbindGlobalTable(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeGlobalTableResponse describeGlobalTable(DescribeGlobalTableRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DescribeGlobalTableResponse> res = this.internalClient.describeGlobalTable(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateGlobalTableResponse updateGlobalTable(UpdateGlobalTableRequest updateGlobalTableRequest) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(updateGlobalTableRequest);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateGlobalTableResponse> res = this.internalClient.updateGlobalTable(updateGlobalTableRequest, null);
+        return waitForFuture(res);
+    }
+
+    @Override
     public CreateIndexResponse createIndex(CreateIndexRequest createIndexRequest)
         throws TableStoreException, ClientException
     {

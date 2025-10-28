@@ -16,6 +16,8 @@ public class IndexSetting implements Jsonizable {
      */
     private List<String> routingFields;
 
+    private Boolean enableCustomColumnVersion;
+
     public IndexSetting() {
     }
 
@@ -27,6 +29,14 @@ public class IndexSetting implements Jsonizable {
         this.routingFields = routingFields;
     }
 
+    public Boolean getEnableCustomColumnVersion() {
+        return enableCustomColumnVersion;
+    }
+
+    public void setEnableCustomColumnVersion(Boolean enableCustomColumnVersion) {
+        this.enableCustomColumnVersion = enableCustomColumnVersion;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -36,7 +46,7 @@ public class IndexSetting implements Jsonizable {
             return false;
         }
         IndexSetting setting = (IndexSetting) o;
-        return Objects.equals(routingFields, setting.routingFields);
+        return Objects.equals(routingFields, setting.routingFields) && Objects.equals(enableCustomColumnVersion, setting.enableCustomColumnVersion);
     }
 
     @Override
@@ -59,6 +69,11 @@ public class IndexSetting implements Jsonizable {
                 }
             }
             sb.append("]");
+        }
+        if (enableCustomColumnVersion != null) {
+            sb.append(",");
+            sb.append("\"EnableCustomColumnVersion\":");
+            sb.append(enableCustomColumnVersion);
         }
         sb.append("}");
     }

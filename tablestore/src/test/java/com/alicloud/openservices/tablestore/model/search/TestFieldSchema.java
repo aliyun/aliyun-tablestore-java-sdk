@@ -9,7 +9,6 @@ import com.alicloud.openservices.tablestore.model.search.vector.VectorDataType;
 import com.alicloud.openservices.tablestore.model.search.vector.VectorMetricType;
 import com.alicloud.openservices.tablestore.model.search.vector.VectorOptions;
 import com.google.common.base.Supplier;
-import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -407,15 +406,29 @@ public class TestFieldSchema extends BaseSearchTest {
     }
 
     @Test
+    public void testFlattenedType() {
+        FieldSchema fieldSchema = new FieldSchema("f1", FieldType.FLATTENED);
+        fieldSchema.setEnableSortAndAgg(true);
+        assertTrue(fieldSchema.isEnableSortAndAgg());
+        fieldSchema.setIndex(true);
+        assertTrue(fieldSchema.isIndex());
+
+        String jsonString = fieldSchema.jsonize();
+        Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertEquals("f1", fieldSchemaMap.get("FieldName"));
+        assertEquals(FieldType.FLATTENED.toString(), fieldSchemaMap.get("FieldType"));
+    }
+
+    @Test
     public void testJsonType() {
         FieldSchema fieldSchema = new FieldSchema("f1", FieldType.JSON);
-        fieldSchema.setJsonType(JsonType.FLATTEN);
-        assertEquals(JsonType.FLATTEN, fieldSchema.getJsonType());
+        fieldSchema.setJsonType(JsonType.OBJECT);
+        assertEquals(JsonType.OBJECT, fieldSchema.getJsonType());
         String jsonString = fieldSchema.jsonize();
         System.out.println(jsonString);
         Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
         assertEquals("f1", fieldSchemaMap.get("FieldName"));
-        assertEquals(JsonType.FLATTEN.toString(), fieldSchemaMap.get("JsonType"));
+        assertEquals(JsonType.OBJECT.toString(), fieldSchemaMap.get("JsonType"));
 
         fieldSchema.setJsonType(JsonType.NESTED);
         assertEquals(JsonType.NESTED, fieldSchema.getJsonType());
