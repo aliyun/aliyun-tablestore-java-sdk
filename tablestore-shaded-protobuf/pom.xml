@@ -5,10 +5,10 @@
   <parent> 
     <groupId>com.aliyun.openservices</groupId>  
     <artifactId>tablestore-parent</artifactId>  
-    <version>1.0</version>
+    <version>1.0.3</version>
   </parent>  
   <artifactId>tablestore-shaded-protobuf</artifactId>  
-  <version>4.28.2</version>
+  <version>4.28.3</version>
   <name>AliCloud TableStore Shaded Protobuf</name>
   <description>AliCloud TableStore Shaded Protobuf</description>
   <packaging>jar</packaging>  
