@@ -34,10 +34,28 @@ public class BoolQuery implements Query {
      * The document should match at least one "should" condition, and those matching more will have higher scores.
      */
     private List<Query> shouldQueries;
+
+    private Float weight;
+
+    /**
+     * Defines the minimum number of should clauses to be satisfied(deprecated).
+     * <p>
+     * This field is deprecated because the minimumShouldMatch parameter
+     * can only accept integer and does not support percentages.
+     * Use {@link #minShouldMatch} instead which stores the value as a String.
+     *
+     * @deprecated use {@link #minShouldMatch} instead
+     */
+    @Deprecated
+    private Integer minimumShouldMatch;
+
     /**
      * Defines the minimum number of should clauses to be satisfied.
+     * <p>
+     * This field stores the minimumShouldMatch parameter as a String which can be
+     * either an integer (e.g., "3") or a percentage (e.g., "50%").
      */
-    private Integer minimumShouldMatch;
+    private String minShouldMatch;
 
     public List<Query> getMustQueries() {
         return mustQueries;
@@ -71,12 +89,97 @@ public class BoolQuery implements Query {
         this.shouldQueries = shouldQueries;
     }
 
+    /**
+     * Get the weight of the query.
+     * <p>
+     * Weight is used to boost the relevance score of a query. In a BoolQuery,
+     * the weight affects how much this query contributes to the final score of matching documents.
+     * A higher weight value increases the contribution of this query to the overall document score.
+     * The weight only takes effect on the must and should clauses, but not on filter and mustNot clauses.
+     * The default weight value is 1.0f.
+     * </p>
+     *
+     * @return the weight of the query
+     */
+    public Float getWeight() {
+        return weight;
+    }
+
+    /**
+     * Set the weight of the query.
+     * <p>
+     * Weight is used to boost the relevance score of a query. In a BoolQuery,
+     * the weight affects how much this query contributes to the final score of matching documents.
+     * A higher weight value increases the contribution of this query to the overall document score.
+     * The weight only takes effect on the must and should clauses, but not on filter and mustNot clauses.
+     * The default weight value is 1.0f.
+     * </p>
+     *
+     * @param weight the weight of the query
+     */
+    public void setWeight(Float weight) {
+        this.weight = weight;
+    }
+
+    /**
+     * Get the minimum number of matches required as an Integer.
+     * <p>
+     * This method is deprecated because the minimumShouldMatch parameter
+     * can only accept integer values and does not support percentage (e.g., "50%").
+     * </p>
+     *
+     * @return the minimum number of matches as an Integer, or null if not set
+     * @throws IllegalStateException if the stored value is not a valid integer
+     * @deprecated use {@link #getMinShouldMatch()} instead which returns the value as a String
+     */
+    @Deprecated
     public Integer getMinimumShouldMatch() {
         return minimumShouldMatch;
     }
 
-    public void setMinimumShouldMatch(int minimumShouldMatch) {
+    /**
+     * Set the minimum number of matches required as an Integer.
+     *
+     * @param minimumShouldMatch the minimum number of matches as an Integer
+     * @deprecated use {@link #setMinShouldMatch(String)} or {@link #setMinShouldMatch(int)} instead
+     */
+    @Deprecated
+    public void setMinimumShouldMatch(Integer minimumShouldMatch) {
         this.minimumShouldMatch = minimumShouldMatch;
+    }
+
+    /**
+     * Get the minimum number of matches required as a String.
+     * <p>
+     * This method returns the raw string value of minimumShouldMatch which can be
+     * either an integer (e.g., "3") or a percentage (e.g., "50%"). This provides
+     * more flexibility than {@link #getMinimumShouldMatch()} which only supports integers.
+     * </p>
+     * <p>
+     * In a later version, this method will be renamed to getMinimumShouldMatch().
+     * </p>
+     *
+     * @return the minimum number of matches as a String, or null if not set
+     */
+    public String getMinShouldMatch() {
+        return minShouldMatch;
+    }
+
+    /**
+     * Set the minimum number of matches required as a String.
+     * <p>
+     * This method accepts the minimumShouldMatch parameter as a String which can be
+     * either an integer (e.g., "3") or a percentage (e.g., "50%").
+     * </p>
+     *
+     * @param minShouldMatch the minimum number of matches as a String
+     */
+    public void setMinShouldMatch(String minShouldMatch) {
+        this.minShouldMatch = minShouldMatch;
+    }
+
+    public void setMinShouldMatch(int minShouldMatch) {
+        this.minShouldMatch = String.valueOf(minShouldMatch);
     }
 
     @Override
@@ -98,7 +201,10 @@ public class BoolQuery implements Query {
         private List<Query> mustNotQueries;
         private List<Query> filterQueries;
         private List<Query> shouldQueries;
+        @Deprecated
         private Integer minimumShouldMatch;
+        private String minShouldMatch;
+        private Float weight;
 
         public Builder() {}
 
@@ -166,8 +272,24 @@ public class BoolQuery implements Query {
             return this;
         }
 
+        public Builder weight(Float weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        @Deprecated
         public Builder minimumShouldMatch(int value) {
             this.minimumShouldMatch = value;
+            return this;
+        }
+
+        public Builder minShouldMatch(String value) {
+            this.minShouldMatch = value;
+            return this;
+        }
+
+        public Builder minShouldMatch(int value) {
+            this.minShouldMatch = String.valueOf(value);
             return this;
         }
 
@@ -178,7 +300,9 @@ public class BoolQuery implements Query {
             boolQuery.setMustNotQueries(this.mustNotQueries);
             boolQuery.setFilterQueries(this.filterQueries);
             boolQuery.setShouldQueries(this.shouldQueries);
-            boolQuery.minimumShouldMatch = this.minimumShouldMatch;
+            boolQuery.setMinimumShouldMatch(this.minimumShouldMatch);
+            boolQuery.setMinShouldMatch(this.minShouldMatch);
+            boolQuery.setWeight(this.weight);
             return boolQuery;
         }
     }

@@ -52,6 +52,7 @@ import com.alicloud.openservices.tablestore.model.search.query.DecayFuncGeoParam
 import com.alicloud.openservices.tablestore.model.search.query.DecayFuncNumericParam;
 import com.alicloud.openservices.tablestore.model.search.query.DecayFunction;
 import com.alicloud.openservices.tablestore.model.search.query.DecayParam;
+import com.alicloud.openservices.tablestore.model.search.query.DisMaxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.ExistsQuery;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactor;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactorFunction;
@@ -129,25 +130,18 @@ public abstract class BaseSearchTest {
     @Rule
     public RepeatRule repeatRule = new RepeatRule(500);
 
-    private static final Gson GSON = new GsonBuilder()
-            .disableHtmlEscaping()
-            .serializeNulls()
-            .serializeSpecialFloatingPointValues()
-            .enableComplexMapKeySerialization()
-            .setExclusionStrategies(new ExclusionStrategy() {
-                @Override
-                public boolean shouldSkipField(FieldAttributes f) {
-                    return "rawData".equals(f.getName())
-                            && "[B".equals(f.getDeclaredClass().getName())
-                            && f.getDeclaringClass().equals(PrimaryKeyValue.class);
-                }
+    private static final Gson GSON =
+        new GsonBuilder().disableHtmlEscaping().serializeNulls().serializeSpecialFloatingPointValues().enableComplexMapKeySerialization().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return "rawData".equals(f.getName()) && "[B".equals(f.getDeclaredClass().getName()) && f.getDeclaringClass().equals(PrimaryKeyValue.class);
+            }
 
-                @Override
-                public boolean shouldSkipClass(Class<?> aClass) {
-                    return false;
-                }
-            })
-            .create();
+            @Override
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).create();
 
     private static final Random RANDOM = new Random();
     private static final char[] ALPHABET = "0123456789_abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -203,8 +197,10 @@ public abstract class BaseSearchTest {
      */
     public static void assertAllFieldTested(Object o, int maxField) {
         JsonObject jsonObject = GSON.toJsonTree(o).getAsJsonObject();
-        assertTrue("class[" + o.getClass().getSimpleName() + "] except " + maxField + " fields but get " + jsonObject.entrySet().size() + " fields. Maybe add a new field.",
-                jsonObject.entrySet().size() <= maxField);
+        assertTrue(
+            "class[" + o.getClass().getSimpleName() + "] except " + maxField + " fields but get " + jsonObject.entrySet().size() + " fields. Maybe add a new field.",
+            jsonObject.entrySet().size() <= maxField
+        );
     }
 
     public static void assertJsonEquals(Object origin, Object newParsed) {
@@ -229,7 +225,6 @@ public abstract class BaseSearchTest {
         assertAllFieldTested(groupKeySort, 1);
         return groupKeySort;
     }
-
 
     public static RowCountSort randomRowCountSort() {
         RowCountSort sort = new RowCountSort();
@@ -285,6 +280,11 @@ public abstract class BaseSearchTest {
         }
         if (RANDOM.nextBoolean()) {
             sort.setMissingField(randomString(10));
+        } else {
+            int missingFieldNums = RANDOM.nextInt(5);
+            for (int i = 0; i < missingFieldNums; i++) {
+                sort.addMissingField(randomString(10));
+            }
         }
         return sort;
     }
@@ -467,121 +467,27 @@ public abstract class BaseSearchTest {
     }
 
     public static List<Supplier<Query>> getAllQuerySupplier() {
-        List<Supplier<Query>> all = new ArrayList<Supplier<Query>>();
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomWildcardQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomTermsQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomTermQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomRangeQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomPrefixQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomNestedQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomMatchQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomMatchPhraseQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomMatchAllQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomGeoPolygonQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomGeoBoundingBoxQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomGeoDistanceQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomFunctionScoreQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomFunctionsScoreQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomExistsQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomConstScoreQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomKnnVectorQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomBoolQuery();
-            }
-        });
-        all.add(new Supplier<Query>() {
-            @Override
-            public Query get() {
-                return randomSuffixQuery();
-            }
-        });
+        List<Supplier<Query>> all = new ArrayList<>();
+        all.add(BaseSearchTest::randomWildcardQuery);
+        all.add(BaseSearchTest::randomTermsQuery);
+        all.add(BaseSearchTest::randomTermQuery);
+        all.add(BaseSearchTest::randomRangeQuery);
+        all.add(BaseSearchTest::randomPrefixQuery);
+        all.add(BaseSearchTest::randomNestedQuery);
+        all.add(BaseSearchTest::randomMatchQuery);
+        all.add(BaseSearchTest::randomMatchPhraseQuery);
+        all.add(BaseSearchTest::randomMatchAllQuery);
+        all.add(BaseSearchTest::randomGeoPolygonQuery);
+        all.add(BaseSearchTest::randomGeoBoundingBoxQuery);
+        all.add(BaseSearchTest::randomGeoDistanceQuery);
+        all.add(BaseSearchTest::randomFunctionScoreQuery);
+        all.add(BaseSearchTest::randomFunctionsScoreQuery);
+        all.add(BaseSearchTest::randomExistsQuery);
+        all.add(BaseSearchTest::randomConstScoreQuery);
+        all.add(BaseSearchTest::randomKnnVectorQuery);
+        all.add(BaseSearchTest::randomBoolQuery);
+        all.add(BaseSearchTest::randomSuffixQuery);
+        all.add(BaseSearchTest::randomDisMaxQuery);
         return all;
     }
 
@@ -720,7 +626,15 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             query.setOperator(randomQueryOperator());
         }
-        assertAllFieldTested(query, 6);
+        if (RANDOM.nextBoolean()) {
+            int r = RANDOM.nextInt(10);
+            if (RANDOM.nextBoolean()) {
+                query.setMinShouldMatch(String.valueOf(r));
+            } else {
+                query.setMinShouldMatch(r);
+            }
+        }
+        assertAllFieldTested(query, 7);
         return query;
     }
 
@@ -788,16 +702,19 @@ public abstract class BaseSearchTest {
                     scoreFunctions.add(ScoreFunction.newBuilder().weight(RANDOM.nextFloat()).filter(randomQuery()).build());
                     break;
                 case 1:
-                    scoreFunctions.add(ScoreFunction.newBuilder().weight(RANDOM.nextFloat()).filter(randomQuery())
-                            .randomFunction(RandomFunction.newBuilder().build()).build());
+                    scoreFunctions.add(ScoreFunction.newBuilder().weight(RANDOM.nextFloat()).filter(randomQuery()).randomFunction(RandomFunction.newBuilder().build()).build());
                     break;
                 case 2:
-                    scoreFunctions.add(ScoreFunction.newBuilder().weight(RANDOM.nextFloat()).filter(randomQuery())
-                            .fieldValueFactorFunction(FieldValueFactorFunction.newBuilder()
-                                    .factor(RANDOM.nextFloat() + 0.001f)
-                                    .missing(RANDOM.nextDouble())
-                                    .fieldName(randomString(10))
-                                    .modifier(randomFromExcludingUnknown(FieldValueFactorFunction.FunctionModifier.values())).build()).build());
+                    scoreFunctions.add(ScoreFunction.newBuilder()
+                        .weight(RANDOM.nextFloat())
+                        .filter(randomQuery())
+                        .fieldValueFactorFunction(FieldValueFactorFunction.newBuilder()
+                            .factor(RANDOM.nextFloat() + 0.001f)
+                            .missing(RANDOM.nextDouble())
+                            .fieldName(randomString(10))
+                            .modifier(randomFromExcludingUnknown(FieldValueFactorFunction.FunctionModifier.values()))
+                            .build())
+                        .build());
                     break;
                 default:
                     int randomParamType = RANDOM.nextInt(3);
@@ -812,13 +729,17 @@ public abstract class BaseSearchTest {
                         default:
                             decayParam = DecayFuncNumericParam.newBuilder().scale(RANDOM.nextDouble() + 0.001).origin(RANDOM.nextDouble() + 0.001).offset(RANDOM.nextDouble() + 0.001).build();
                     }
-                    scoreFunctions.add(ScoreFunction.newBuilder().weight(RANDOM.nextFloat()).filter(randomQuery())
-                            .decayFunction(DecayFunction.newBuilder()
-                                    .fieldName(randomString(10))
-                                    .decay(RANDOM.nextDouble() + 0.001)
-                                    .mathFunction(randomFromExcludingUnknown(DecayFunction.MathFunction.values()))
-                                    .multiValueMode(randomFromExcludingUnknown(MultiValueMode.values()))
-                                    .decayParam(decayParam).build()).build());
+                    scoreFunctions.add(ScoreFunction.newBuilder()
+                        .weight(RANDOM.nextFloat())
+                        .filter(randomQuery())
+                        .decayFunction(DecayFunction.newBuilder()
+                            .fieldName(randomString(10))
+                            .decay(RANDOM.nextDouble() + 0.001)
+                            .mathFunction(randomFromExcludingUnknown(DecayFunction.MathFunction.values()))
+                            .multiValueMode(randomFromExcludingUnknown(MultiValueMode.values()))
+                            .decayParam(decayParam)
+                            .build())
+                        .build());
             }
         }
         return scoreFunctions;
@@ -875,11 +796,33 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             query.setMinimumShouldMatch(RANDOM.nextInt());
         }
+        if (RANDOM.nextBoolean()) {
+            int r = RANDOM.nextInt(5);
+            if (RANDOM.nextBoolean()) {
+                query.setMinShouldMatch(r);
+            } else {
+                query.setMinShouldMatch(String.valueOf(r));
+            }
+        }
         query.setFilterQueries(randomQueries());
         query.setShouldQueries(randomQueries());
         query.setMustQueries(randomQueries());
         query.setMustNotQueries(randomQueries());
-        assertAllFieldTested(query, 6);
+        query.setWeight(RANDOM.nextFloat());
+        assertAllFieldTested(query, 8);
+        return query;
+    }
+
+    public static DisMaxQuery randomDisMaxQuery() {
+        DisMaxQuery query = new DisMaxQuery();
+        query.setQueries(randomQueries());
+        if (RANDOM.nextBoolean()) {
+            query.setTieBreaker(RANDOM.nextFloat());
+        }
+        if (RANDOM.nextBoolean()) {
+            query.setWeight(RANDOM.nextFloat());
+        }
+        assertAllFieldTested(query, 4);
         return query;
     }
 
@@ -1123,11 +1066,7 @@ public abstract class BaseSearchTest {
     }
 
     public static ColumnValue randomStringColumnValue() {
-        return randomFrom(Arrays.asList(
-                ValueUtil.toColumnValue(randomString(10)),
-                FieldSort.FIRST_WHEN_MISSING,
-                FieldSort.LAST_WHEN_MISSING
-        ));
+        return randomFrom(Arrays.asList(ValueUtil.toColumnValue(randomString(10)), FieldSort.FIRST_WHEN_MISSING, FieldSort.LAST_WHEN_MISSING));
     }
 
     public static ColumnValue randomBoolColumnValue() {
@@ -1136,24 +1075,22 @@ public abstract class BaseSearchTest {
 
     public static ColumnValue randomColumnValue() {
         List<Supplier<ColumnValue>> objects = Arrays.asList(
-                new Supplier<ColumnValue>() {
-                    @Override
-                    public ColumnValue get() {
-                        return randomNumberColumnValue();
-                    }
-                },
-                new Supplier<ColumnValue>() {
-                    @Override
-                    public ColumnValue get() {
-                        return randomStringColumnValue();
-                    }
-                },
-                new Supplier<ColumnValue>() {
-                    @Override
-                    public ColumnValue get() {
-                        return randomBoolColumnValue();
-                    }
+            new Supplier<ColumnValue>() {
+                @Override
+                public ColumnValue get() {
+                    return randomNumberColumnValue();
                 }
+            }, new Supplier<ColumnValue>() {
+                @Override
+                public ColumnValue get() {
+                    return randomStringColumnValue();
+                }
+            }, new Supplier<ColumnValue>() {
+                @Override
+                public ColumnValue get() {
+                    return randomBoolColumnValue();
+                }
+            }
         );
         return randomFrom(objects).get();
     }

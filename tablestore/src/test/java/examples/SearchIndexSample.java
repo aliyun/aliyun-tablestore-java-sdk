@@ -148,6 +148,10 @@ public class SearchIndexSample {
             System.out.println("ExistsQuery...");
             existsQuery(client);
 
+            // Use DisMaxQuery to query data
+            System.out.println("DisMaxQuery...");
+            disMaxQuery(client);
+
             // Query data using groupByHistogram
             System.out.println("groupByHistogram...");
             groupByHistogram(client);
@@ -225,7 +229,7 @@ public class SearchIndexSample {
                     .setSubFieldSchemas(Collections.singletonList(new FieldSchema("Level2_Col1_Text", FieldType.TEXT).setIndex(true).setStore(true).setEnableHighlighting(true)))
             )),
             new FieldSchema("Col_Json", FieldType.JSON).setJsonType(JsonType.OBJECT).setSubFieldSchemas(Arrays.asList(
-                new FieldSchema("Level1_Col1_Keyword", FieldType.TEXT).setIndex(true).setEnableSortAndAgg(true),
+                new FieldSchema("Level1_Col1_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
                 new FieldSchema("Level1_Col2_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true),
                 new FieldSchema("Level1_Col3_NestedJson", FieldType.JSON).setJsonType(JsonType.NESTED)
                     .setSubFieldSchemas(Collections.singletonList(new FieldSchema("Level2_Col1_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true)))
@@ -758,6 +762,44 @@ public class SearchIndexSample {
             SearchResponse resp = client.search(searchRequest);
             System.out.println("TotalCount: " + resp.getTotalCount()); // The total number of rows matched, not the number of rows returned
             System.out.println("Row: " + resp.getRows());
+        }
+    }
+
+    public static void disMaxQuery(SyncClient client) {
+        /*
+         * Query condition one: MatchQuery, we want to search title column to contain "hangzhou"
+         */
+        MatchQuery matchQuery = new MatchQuery();
+        matchQuery.setFieldName("Col_Text");
+        matchQuery.setText("hangzhou");
+
+        /*
+         * Query condition two: MatchQuery, we want to search content column to contain "shanghai"
+         */
+        MatchQuery matchQuery2 = new MatchQuery();
+        matchQuery2.setFieldName("Col_Text");
+        matchQuery2.setText("shanghai");
+
+        // We want to search for documents containing either "hangzhou" or "shanghai" in the Col_Text field.
+        // Documents containing both terms will have a higher score, while documents containing only one term
+        // will also be included but with a lower score contribution from the non-matching term.
+        // The tieBreaker value of 0.3f ensures that the scores from secondary matches still contribute
+        // to the final relevance score, but with reduced weight compared to the highest-scoring query clause.
+        DisMaxQuery disMaxQuery = new DisMaxQuery();
+        disMaxQuery.setQueries(Arrays.asList(matchQuery, matchQuery2));
+        disMaxQuery.setTieBreaker(0.3f); // give less weight to the content column
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQuery(disMaxQuery);
+        searchQuery.setTrackTotalCount(SearchQuery.TRACK_TOTAL_COUNT);
+        searchQuery.setSort(new Sort(Collections.singletonList(new ScoreSort()))); // calculate score
+
+        SearchRequest searchRequest = new SearchRequest(TABLE_NAME, INDEX_NAME, searchQuery);
+        SearchResponse resp = client.search(searchRequest);
+        System.out.println("TotalCount: " + resp.getTotalCount());
+        for (SearchHit hit : resp.getSearchHits()) {
+            System.out.println("Row: " + hit.getRow());
+            System.out.println("Score: " + hit.getScore());
         }
     }
 

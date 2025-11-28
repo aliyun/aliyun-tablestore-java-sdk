@@ -30,7 +30,7 @@ public class TunnelQuickStart {
         }
     }
 
-    public static void main() throws Exception {
+    public static void main(String[] args) throws Exception {
         // 1. Initialize the Tunnel Client.
         final String endPoint = "";
         final String accessKeyId = "";

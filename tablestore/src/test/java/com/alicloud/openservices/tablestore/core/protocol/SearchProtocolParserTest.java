@@ -15,12 +15,16 @@ import com.alicloud.openservices.tablestore.model.search.groupby.GroupByGeoGrid;
 import com.alicloud.openservices.tablestore.model.search.highlight.Highlight;
 import com.alicloud.openservices.tablestore.model.search.query.InnerHits;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
+import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 import com.alicloud.openservices.tablestore.model.search.sort.GroupBySorter;
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
+import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
 import com.aliyun.ots.thirdparty.com.google.protobuf.ByteString;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -381,13 +385,38 @@ public class SearchProtocolParserTest extends BaseSearchTest {
 
     }
 
-
     @Test
     public void testSortSerialization() throws IOException {
         Sort origin = randomSort();
         Search.Sort pb = SearchSortBuilder.buildSort(origin);
         Sort newObj = SearchSortParser.toSort(pb);
         assertJsonEquals(origin, newObj);
+    }
+
+    @Test
+    public void testFieldSortMissingFieldsSerialization() throws IOException {
+        {
+            FieldSort fieldSort = new FieldSort("col_field", SortOrder.ASC);
+            fieldSort.setMissingFields(Arrays.asList("field1", "field2"));
+            Sort origin = new Sort(Collections.singletonList(fieldSort));
+            Search.Sort pb = SearchSortBuilder.buildSort(origin);
+            assertEquals(2, pb.getSorter(0).getFieldSort().getMissingFieldsCount());
+            assertEquals("field1", pb.getSorter(0).getFieldSort().getMissingFields(0));
+            assertEquals("field2", pb.getSorter(0).getFieldSort().getMissingFields(1));
+
+            Sort newObj = SearchSortParser.toSort(pb);
+            assertJsonEquals(origin, newObj);
+        }
+        {
+            FieldSort fieldSort = new FieldSort("col_field", SortOrder.ASC);
+            fieldSort.addMissingField("field1");
+            Sort origin = new Sort(Collections.singletonList(fieldSort));
+            Search.Sort pb = SearchSortBuilder.buildSort(origin);
+            assertEquals(1, pb.getSorter(0).getFieldSort().getMissingFieldsCount());
+            assertEquals("field1", pb.getSorter(0).getFieldSort().getMissingFields(0));
+            Sort newObj = SearchSortParser.toSort(pb);
+            assertJsonEquals(origin, newObj);
+        }
     }
 
     @Test
@@ -640,6 +669,7 @@ public class SearchProtocolParserTest extends BaseSearchTest {
             assertEquals("subField1", fieldSchema.getSubFieldSchemas().get(0).getFieldName());
         }
         {
+            // Flattened
             Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
                     .setFieldName("field1")
                     .setFieldType(Search.FieldType.FLATTENED)

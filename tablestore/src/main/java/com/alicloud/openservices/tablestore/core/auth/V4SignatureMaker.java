@@ -53,7 +53,7 @@ public class V4SignatureMaker implements SignatureMakerInterface {
             request.addHeader(Constants.OTS_HEADER_STS_TOKEN, credentials.getSecurityToken());
         }
 
-        request.addHeader(Constants.OTS_HEADER_SIGN_DATE, ((V4Credentials) credentials).getSigningDate());
-        request.addHeader(Constants.OTS_HEADER_SIGN_REGION, ((V4Credentials) credentials).getRegion());
+        request.addHeader(Constants.OTS_HEADER_SIGN_DATE, ((ServiceCredentialsV4) credentials).getSigningDate());
+        request.addHeader(Constants.OTS_HEADER_SIGN_REGION, ((ServiceCredentialsV4) credentials).getRegion());
     }
 }

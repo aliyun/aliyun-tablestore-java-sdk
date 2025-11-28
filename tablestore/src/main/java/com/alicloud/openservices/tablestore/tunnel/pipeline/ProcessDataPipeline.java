@@ -169,11 +169,12 @@ public class ProcessDataPipeline implements Runnable {
                 if (connect.getStatus() == ChannelConnectStatus.RUNNING) {
                     try {
                         IChannelProcessor processor = connect.getProcessor();
+                        long beginTs = System.currentTimeMillis();
                         processor.process(processRecordsInput);
 
                         // everything is ok, set channel connect new token, and loop pipeline.
                         connect.setToken(processRecordsInput.getNextToken());
-                        LOG.info("Continue run pipeline, connect: {}", connect);
+                        LOG.info("Continue run pipeline, connect: {}, ProcessLatency: {} ms", connect, System.currentTimeMillis() - beginTs);
                         connect.getChannelExecutorService().submit(connect.getProcessPipeline());
                         if (semaphore != null) {
                             semaphore.release();

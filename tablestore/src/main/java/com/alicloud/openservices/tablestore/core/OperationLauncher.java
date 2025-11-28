@@ -9,6 +9,8 @@ import java.util.zip.Deflater;
 
 import com.alicloud.openservices.tablestore.RequestTracer;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
+import com.alicloud.openservices.tablestore.core.auth.ServiceCredentialsV4;
+import com.alicloud.openservices.tablestore.core.auth.V4CredentialsSnapshot;
 import com.alicloud.openservices.tablestore.core.http.*;
 import com.alicloud.openservices.tablestore.core.utils.*;
 import com.alicloud.openservices.tablestore.model.ExtensionRequest;
@@ -160,7 +162,15 @@ public abstract class OperationLauncher<Req, Res> {
 
         ServiceCredentials credentials = crdsProvider.getCredentials();
 
-
+        if (credentials instanceof ServiceCredentialsV4) {
+            Pair<String, String> keyDatePair = ((ServiceCredentialsV4) credentials).getKeyDatePair();
+            credentials = new V4CredentialsSnapshot(
+                    credentials.getAccessKeyId(),
+                    keyDatePair.getFirst(),
+                    credentials.getSecurityToken(),
+                    ((ServiceCredentialsV4) credentials).getRegion(),
+                    keyDatePair.getSecond());
+        }
         ExecutionContext ctx = createContext(
                 actionURI, instanceName, credentials, config, rpcContext);
 

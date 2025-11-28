@@ -10,6 +10,7 @@ import com.alicloud.openservices.tablestore.model.search.query.DecayFuncGeoParam
 import com.alicloud.openservices.tablestore.model.search.query.DecayFuncNumericParam;
 import com.alicloud.openservices.tablestore.model.search.query.DecayFunction;
 import com.alicloud.openservices.tablestore.model.search.query.DecayParam;
+import com.alicloud.openservices.tablestore.model.search.query.DisMaxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.ExistsQuery;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactor;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactorFunction;
@@ -42,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.alicloud.openservices.tablestore.core.protocol.SearchInnerHitsParser.toInnerHits;
-
 
 /**
  * {@link Query} deserialization tool class. For serialization, please refer to {@link SearchQueryBuilder}
@@ -97,6 +97,8 @@ public class SearchQueryParser {
                 return toExistsQuery(queryByteString);
             case KNN_VECTOR_QUERY:
                 return toKnnVectorQuery(queryByteString);
+            case DIS_MAX_QUERY:
+                return toDisMaxQuery(queryByteString);
             default:
                 throw new IllegalArgumentException("unknown queryType: " + query.getType().name());
         }
@@ -126,8 +128,13 @@ public class SearchQueryParser {
         if (pb.hasText()) {
             query.setText(pb.getText());
         }
+        // old version
         if (pb.hasMinimumShouldMatch()) {
             query.setMinimumShouldMatch(pb.getMinimumShouldMatch());
+        }
+        // new version
+        if (pb.hasNewMinimumShouldMatch()) {
+            query.setMinShouldMatch(pb.getNewMinimumShouldMatch());
         }
         if (pb.hasOperator()) {
             Search.QueryOperator operator = pb.getOperator();
@@ -267,6 +274,12 @@ public class SearchQueryParser {
         BoolQuery query = new BoolQuery();
         if (pb.hasMinimumShouldMatch()) {
             query.setMinimumShouldMatch(pb.getMinimumShouldMatch());
+        }
+        if (pb.hasNewMinimumShouldMatch()) {
+            query.setMinShouldMatch(pb.getNewMinimumShouldMatch());
+        }
+        if (pb.hasWeight()) {
+            query.setWeight(pb.getWeight());
         }
         query.setMustQueries(toQueryList(pb.getMustQueriesList()));
         query.setMustNotQueries(toQueryList(pb.getMustNotQueriesList()));
@@ -497,7 +510,7 @@ public class SearchQueryParser {
             query.setQuery(toQuery(pb.getQuery()));
         }
         List<ScoreFunction> functions = new ArrayList<ScoreFunction>();
-        for(Search.Function function : pb.getFunctionsList()) {
+        for (Search.Function function : pb.getFunctionsList()) {
             functions.add(toScoreFunction(function));
         }
         query.setFunctions(functions);
@@ -626,6 +639,19 @@ public class SearchQueryParser {
         query.setFloat32QueryVector(floats);
         if (pb.hasFilter()) {
             query.setFilter(toQuery(pb.getFilter()));
+        }
+        if (pb.hasWeight()) {
+            query.setWeight(pb.getWeight());
+        }
+        return query;
+    }
+
+    private static DisMaxQuery toDisMaxQuery(ByteString queryByteString) throws IOException {
+        Search.DisMaxQuery pb = Search.DisMaxQuery.parseFrom(queryByteString);
+        DisMaxQuery query = new DisMaxQuery();
+        query.setQueries(toQueryList(pb.getQueriesList()));
+        if (pb.hasTieBreaker()) {
+            query.setTieBreaker(pb.getTieBreaker());
         }
         if (pb.hasWeight()) {
             query.setWeight(pb.getWeight());

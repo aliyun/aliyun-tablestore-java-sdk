@@ -2,6 +2,9 @@ package com.alicloud.openservices.tablestore.model.search.sort;
 
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FieldSort implements Sort.Sorter {
 
     public static final ColumnValue FIRST_WHEN_MISSING = ColumnValue.fromString("_first");
@@ -19,8 +22,10 @@ public class FieldSort implements Sort.Sorter {
      * <p> 3. Custom value: When the sorting field value is missing, the specified value is used for sorting.</p>
      */
     private ColumnValue missingValue;
-    
+
     private String missingField;
+
+    private List<String> missingFields;
 
     public FieldSort(String fieldName) {
         this.fieldName = fieldName;
@@ -84,11 +89,34 @@ public class FieldSort implements Sort.Sorter {
         this.missingValue = missingValue;
     }
 
+    /**
+     * @deprecated  Use {@link FieldSort#getMissingFields()} instead.
+     */
+    @Deprecated
     public String getMissingField() {
         return missingField;
     }
 
+    /**
+     * @deprecated Use {@link FieldSort#setMissingFields(java.util.List)} instead.
+     */
+    @Deprecated
     public void setMissingField(String missingField) {
         this.missingField = missingField;
+    }
+
+    public void addMissingField(String missingField) {
+        if (this.missingFields == null) {
+            this.missingFields = new ArrayList<>();
+        }
+        this.missingFields.add(missingField);
+    }
+
+    public void setMissingFields(List<String> missingFields) {
+        this.missingFields = missingFields;
+    }
+
+    public List<String> getMissingFields() {
+        return this.missingFields;
     }
 }

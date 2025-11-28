@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.core.*;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProvider;
 import com.alicloud.openservices.tablestore.core.auth.CredentialsProviderFactory;
 import com.alicloud.openservices.tablestore.core.auth.ServiceCredentials;
+import com.alicloud.openservices.tablestore.core.auth.ServiceCredentialsV4;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
 import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
@@ -2043,6 +2044,9 @@ public class InternalClient {
     }
 
     public void setCredentials(ServiceCredentials credentials) {
+        if (credentials instanceof ServiceCredentialsV4) {
+            throw new ClientException("Forbidden to set setCredentials for ServiceCredentialsV4.");
+        }
         CredentialsProvider newCrdsProvider = CredentialsProviderFactory.newDefaultCredentialProvider(credentials.getAccessKeyId(),
                 credentials.getAccessKeySecret(), credentials.getSecurityToken());
         switchCredentialsProvider(newCrdsProvider);

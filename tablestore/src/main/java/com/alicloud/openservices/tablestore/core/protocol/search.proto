@@ -610,6 +610,7 @@ enum QueryType {
     KNN_VECTOR_QUERY = 17;
     FUNCTIONS_SCORE_QUERY = 18;
     SUFFIX_QUERY = 19;
+    DIS_MAX_QUERY = 20;
 }
 
 enum QueryOperator {
@@ -620,9 +621,10 @@ enum QueryOperator {
 message MatchQuery {
     optional string field_name = 1;
     optional string text = 2;
-    optional int32 minimum_should_match = 3;
+    optional int32 minimum_should_match = 3 [deprecated = true];
     optional QueryOperator operator = 4;
     optional float weight = 5;
+    optional string new_minimum_should_match = 6;
 }
 
 message MatchPhraseQuery {
@@ -666,12 +668,20 @@ message WildcardQuery {
     optional float weight = 3;
 }
 
+message DisMaxQuery {
+    repeated Query queries = 1;
+    optional float tie_breaker = 2;
+    optional float weight = 3;
+}
+
 message BoolQuery {
     repeated Query must_queries = 1;
     repeated Query must_not_queries = 2;
     repeated Query filter_queries = 3;
     repeated Query should_queries = 4;
-    optional int32 minimum_should_match = 5;
+    optional int32 minimum_should_match = 5 [deprecated = true];
+    optional string new_minimum_should_match = 6;
+    optional float weight = 7;
 }
 
 message ConstScoreQuery {
@@ -891,7 +901,8 @@ message FieldSort {
     optional SortMode mode = 3;
     optional NestedFilter nested_filter = 4;
     optional bytes missing_value = 5; //encoded as SQLVariant
-    optional string missing_field = 6;
+    optional string missing_field = 6 [deprecated = true];
+    repeated string missing_fields = 7;
 }
 
 message DocSort {

@@ -24,4 +24,5 @@ public enum QueryType {
     QueryType_ExistsQuery,
     QueryType_KnnVectorQuery,
     QueryType_SuffixQuery,
+    QueryType_DisMaxQuery,
 }

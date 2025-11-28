@@ -70,6 +70,8 @@ class SearchSortBuilder {
         }
         if (fieldSort.getMissingField() != null) {
             builder.setMissingField(fieldSort.getMissingField());
+        } else if (fieldSort.getMissingFields() != null) {
+            builder.addAllMissingFields(fieldSort.getMissingFields());
         }
         
         return builder.build();

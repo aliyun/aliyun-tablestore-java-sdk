@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 
@@ -28,6 +29,7 @@ public class V4Credentials implements ServiceCredentialsV4 {
     private String v4SigningAccessKey;
     private String signingDate;
     private boolean autoUpdateV4SigningAccessKey = false;
+    private Pair<String, String> v4KeyDatePair;
 
     public V4Credentials(String accessKeyId, String v4SigningAccessKey, String region, String signingDate) {
         this(accessKeyId, v4SigningAccessKey, null, region, signingDate);
@@ -54,6 +56,7 @@ public class V4Credentials implements ServiceCredentialsV4 {
         this.v4SigningStsToken = v4SigningStsToken;
         this.region = region;
         this.signingDate = signingDate;
+        this.v4KeyDatePair = Pair.newPair(v4SigningAccessKey, signingDate);
     }
 
     public static V4Credentials createByServiceCredentials(ServiceCredentials serviceCredentials, String region) {
@@ -89,6 +92,11 @@ public class V4Credentials implements ServiceCredentialsV4 {
         return signingDate;
     }
 
+    public Pair<String, String> getKeyDatePair() {
+        updateV4Signature();
+        return v4KeyDatePair;
+    }
+
     /**
      * The v4SigningAccessKey field is only automatically updated when created through the createByServiceCredentials() method.
      */
@@ -96,8 +104,13 @@ public class V4Credentials implements ServiceCredentialsV4 {
         if (autoUpdateV4SigningAccessKey) {
             String dataNow = DATA_FORMAT.get().format(new Date());
             if (!dataNow.equals(signingDate)) {
-                signingDate = dataNow;
-                v4SigningAccessKey = CalculateV4SigningKeyUtil.finalSigningKeyString(accessKeySecret, signingDate, region, PRODUCT, SIGNING_KEY_SIGN_METHOD);
+                synchronized (this) {
+                    if (!dataNow.equals(signingDate)) {
+                        signingDate = dataNow;
+                        v4SigningAccessKey = CalculateV4SigningKeyUtil.finalSigningKeyString(accessKeySecret, signingDate, region, PRODUCT, SIGNING_KEY_SIGN_METHOD);
+                        v4KeyDatePair = Pair.newPair(v4SigningAccessKey, signingDate);
+                    }
+                }
             }
         }
     }

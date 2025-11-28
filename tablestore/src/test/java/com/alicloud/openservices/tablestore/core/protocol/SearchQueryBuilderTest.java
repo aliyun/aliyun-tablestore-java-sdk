@@ -9,7 +9,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.alicloud.openservices.tablestore.core.protocol.SearchQueryBuilder.buildFunctionsScoreQuery;
 import static org.junit.Assert.assertEquals;
@@ -50,6 +54,64 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
             fail();
         } catch (NullPointerException ignored) {
         }
+    }
+
+    // match query
+    @Test
+    public void testMatchQueryNumber() {
+        MatchQuery query = new MatchQuery();
+        query.setFieldName("FieldName");
+        query.setText("FieldValue");
+        query.setWeight(2.0f);
+        query.setMinShouldMatch("5");
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_QUERY, queryPB.getType());
+
+        Search.MatchQuery.Builder builder = Search.MatchQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        builder.setNewMinimumShouldMatch("5");
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testMatchQueryInteger() {
+        MatchQuery query = new MatchQuery();
+        query.setFieldName("FieldName");
+        query.setText("FieldValue");
+        query.setWeight(2.0f);
+        query.setMinShouldMatch(5);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_QUERY, queryPB.getType());
+
+        Search.MatchQuery.Builder builder = Search.MatchQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        builder.setNewMinimumShouldMatch("5");
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testMatchQueryPercentage() {
+        MatchQuery query = new MatchQuery();
+        query.setFieldName("FieldName");
+        query.setText("FieldValue");
+        query.setWeight(2.0f);
+        query.setMinShouldMatch("50%");
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_QUERY, queryPB.getType());
+
+        Search.MatchQuery.Builder builder = Search.MatchQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        builder.setNewMinimumShouldMatch("50%");
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
     }
 
     // match phrase query
@@ -328,6 +390,218 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         assertEquals(builder.build().toByteString(), queryPB.getQuery());
     }
 
+    // dis_max query
+    @Test
+    public void testDisMaxQuery() {
+        DisMaxQuery query = new DisMaxQuery();
+        List<Query> queries = randomQueries();
+        query.setQueries(queries);
+        query.setTieBreaker(0.7f);
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.DIS_MAX_QUERY, queryPB.getType());
+
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        builder.setTieBreaker(0.7f);
+        builder.addAllQueries(queries.stream().map(SearchQueryBuilder::buildQuery).collect(Collectors.toList()));
+        builder.setWeight(2.0f);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testDisMaxQueryEmptyQueries() {
+        DisMaxQuery query = new DisMaxQuery();
+        query.setQueries(new ArrayList<>());
+        query.setTieBreaker(0.7f);
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.DIS_MAX_QUERY, queryPB.getType());
+
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        builder.setTieBreaker(0.7f);
+        builder.addAllQueries(new ArrayList<>());
+        builder.setWeight(2.0f);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testDisMaxQueryNoQuery() {
+        DisMaxQuery query = new DisMaxQuery();
+        query.setTieBreaker(0.7f);
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.DIS_MAX_QUERY, queryPB.getType());
+
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        builder.setTieBreaker(0.7f);
+        builder.setWeight(2.0f);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testDisMaxQueryEmptyTieBreaker() {
+        DisMaxQuery query = new DisMaxQuery();
+        List<Query> queries = randomQueries();
+        query.setQueries(queries);
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.DIS_MAX_QUERY, queryPB.getType());
+
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        builder.addAllQueries(queries.stream().map(SearchQueryBuilder::buildQuery).collect(Collectors.toList()));
+        builder.setWeight(2.0f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testDisMaxQueryEmptyWeight() {
+        DisMaxQuery query = new DisMaxQuery();
+        List<Query> queries = randomQueries();
+        query.setQueries(queries);
+        query.setTieBreaker(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.DIS_MAX_QUERY, queryPB.getType());
+
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        builder.addAllQueries(queries.stream().map(SearchQueryBuilder::buildQuery).collect(Collectors.toList()));
+        builder.setTieBreaker(2.0f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    // bool query
+    @Test
+    public void testBoolQuery() {
+        TermQuery termQuery1 = new TermQuery();
+        termQuery1.setFieldName("field1");
+        termQuery1.setTerm(ColumnValue.fromString("value1"));
+
+        TermQuery termQuery2 = new TermQuery();
+        termQuery2.setFieldName("field2");
+        termQuery2.setTerm(ColumnValue.fromString("value2"));
+
+        TermQuery termQuery3 = new TermQuery();
+        termQuery3.setFieldName("field3");
+        termQuery3.setTerm(ColumnValue.fromString("value3"));
+
+        TermQuery termQuery4 = new TermQuery();
+        termQuery4.setFieldName("field4");
+        termQuery4.setTerm(ColumnValue.fromString("value4"));
+
+        BoolQuery query = new BoolQuery();
+        query.setMustQueries(Collections.singletonList(termQuery1));
+        query.setMustNotQueries(Collections.singletonList(termQuery2));
+        query.setFilterQueries(Collections.singletonList(termQuery3));
+        query.setShouldQueries(Collections.singletonList(termQuery4));
+        query.setMinShouldMatch("2");
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.BOOL_QUERY, queryPB.getType());
+
+        Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
+        builder.addMustQueries(SearchQueryBuilder.buildQuery(termQuery1));
+        builder.addMustNotQueries(SearchQueryBuilder.buildQuery(termQuery2));
+        builder.addFilterQueries(SearchQueryBuilder.buildQuery(termQuery3));
+        builder.addShouldQueries(SearchQueryBuilder.buildQuery(termQuery4));
+        builder.setNewMinimumShouldMatch("2");
+        builder.setWeight(2.0f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testBoolQueryEmptyClauses() {
+        BoolQuery query = new BoolQuery();
+        query.setWeight(1.5f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.BOOL_QUERY, queryPB.getType());
+
+        Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
+        builder.setWeight(1.5f);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testBoolQueryWithIntegerMinShouldMatch() {
+        TermQuery termQuery = new TermQuery();
+        termQuery.setFieldName("field1");
+        termQuery.setTerm(ColumnValue.fromString("value1"));
+
+        BoolQuery query = new BoolQuery();
+        query.setShouldQueries(Collections.singletonList(termQuery));
+        query.setMinShouldMatch(1);
+        query.setWeight(1.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.BOOL_QUERY, queryPB.getType());
+
+        Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
+        builder.addShouldQueries(SearchQueryBuilder.buildQuery(termQuery));
+        builder.setNewMinimumShouldMatch("1");
+        builder.setWeight(1.0f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testBoolQueryWithPercentageMinShouldMatch() {
+        TermQuery termQuery = new TermQuery();
+        termQuery.setFieldName("field1");
+        termQuery.setTerm(ColumnValue.fromString("value1"));
+
+        BoolQuery query = new BoolQuery();
+        query.setShouldQueries(Collections.singletonList(termQuery));
+        query.setMinShouldMatch("50%");
+        query.setWeight(1.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.BOOL_QUERY, queryPB.getType());
+
+        Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
+        builder.addShouldQueries(SearchQueryBuilder.buildQuery(termQuery));
+        builder.setNewMinimumShouldMatch("50%");
+        builder.setWeight(1.0f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testBoolQueryUsingBuilder() {
+        TermQuery termQuery1 = new TermQuery();
+        termQuery1.setFieldName("field1");
+        termQuery1.setTerm(ColumnValue.fromString("value1"));
+
+        TermQuery termQuery2 = new TermQuery();
+        termQuery2.setFieldName("field2");
+        termQuery2.setTerm(ColumnValue.fromString("value2"));
+
+        BoolQuery query = QueryBuilders.bool().must(termQuery1).mustNot(termQuery2).minShouldMatch(1).weight(1.5f).build();
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.BOOL_QUERY, queryPB.getType());
+
+        Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
+        builder.addMustQueries(SearchQueryBuilder.buildQuery(termQuery1));
+        builder.addMustNotQueries(SearchQueryBuilder.buildQuery(termQuery2));
+        builder.setNewMinimumShouldMatch("1");
+        builder.setWeight(1.5f);
+
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+
+        // String type
+        BoolQuery queryCopy = QueryBuilders.bool().must(termQuery1).mustNot(termQuery2).minShouldMatch("1").weight(1.5f).build();
+        Search.Query queryPBCopy = SearchQueryBuilder.buildQuery(queryCopy);
+        assertEquals(builder.build().toByteString(), queryPBCopy.getQuery());
+    }
+
     // term query
     @Test
     public void testTermQuery() {
@@ -523,40 +797,36 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
     public void testBuildModifier() {
         assertEquals(11, FieldValueFactorFunction.FunctionModifier.values().length);
         assertEquals(10, Search.FunctionModifier.values().length);
-        FieldValueFactorFunction.FunctionModifier[] modifier = new FieldValueFactorFunction.FunctionModifier[]{
-                FieldValueFactorFunction.FunctionModifier.NONE,
-                FieldValueFactorFunction.FunctionModifier.LOG,
-                FieldValueFactorFunction.FunctionModifier.LOG1P,
-                FieldValueFactorFunction.FunctionModifier.LOG2P,
-                FieldValueFactorFunction.FunctionModifier.LN,
-                FieldValueFactorFunction.FunctionModifier.LN1P,
-                FieldValueFactorFunction.FunctionModifier.LN2P,
-                FieldValueFactorFunction.FunctionModifier.SQUARE,
-                FieldValueFactorFunction.FunctionModifier.SQRT,
-                FieldValueFactorFunction.FunctionModifier.RECIPROCAL
-        };
-        Search.FunctionModifier[] PbModifier = new Search.FunctionModifier[]{
-                Search.FunctionModifier.FM_NONE,
-                Search.FunctionModifier.FM_LOG,
-                Search.FunctionModifier.FM_LOG1P,
-                Search.FunctionModifier.FM_LOG2P,
-                Search.FunctionModifier.FM_LN,
-                Search.FunctionModifier.FM_LN1P,
-                Search.FunctionModifier.FM_LN2P,
-                Search.FunctionModifier.FM_SQUARE,
-                Search.FunctionModifier.FM_SQRT,
-                Search.FunctionModifier.FM_RECIPROCAL
-        };
+        FieldValueFactorFunction.FunctionModifier[] modifier = new FieldValueFactorFunction.FunctionModifier[] {
+            FieldValueFactorFunction.FunctionModifier.NONE,
+            FieldValueFactorFunction.FunctionModifier.LOG,
+            FieldValueFactorFunction.FunctionModifier.LOG1P,
+            FieldValueFactorFunction.FunctionModifier.LOG2P,
+            FieldValueFactorFunction.FunctionModifier.LN,
+            FieldValueFactorFunction.FunctionModifier.LN1P,
+            FieldValueFactorFunction.FunctionModifier.LN2P,
+            FieldValueFactorFunction.FunctionModifier.SQUARE,
+            FieldValueFactorFunction.FunctionModifier.SQRT,
+            FieldValueFactorFunction.FunctionModifier.RECIPROCAL };
+        Search.FunctionModifier[] PbModifier = new Search.FunctionModifier[] {
+            Search.FunctionModifier.FM_NONE,
+            Search.FunctionModifier.FM_LOG,
+            Search.FunctionModifier.FM_LOG1P,
+            Search.FunctionModifier.FM_LOG2P,
+            Search.FunctionModifier.FM_LN,
+            Search.FunctionModifier.FM_LN1P,
+            Search.FunctionModifier.FM_LN2P,
+            Search.FunctionModifier.FM_SQUARE,
+            Search.FunctionModifier.FM_SQRT,
+            Search.FunctionModifier.FM_RECIPROCAL };
         for (int i = 0; i < Search.FunctionModifier.values().length; i++) {
             FieldValueFactorFunction fieldValueFactorFunction = new FieldValueFactorFunction(null, null, modifier[i], null);
-            assertEquals(PbModifier[i], buildFunctionsScoreQuery(QueryBuilders.functionsScore()
-                    .addFunction(ScoreFunction.newBuilder()
-                            .fieldValueFactorFunction(fieldValueFactorFunction)
-                            .build())
-                    .build())
-                    .getFunctions(0)
+            assertEquals(
+                PbModifier[i],
+                buildFunctionsScoreQuery(QueryBuilders.functionsScore().addFunction(ScoreFunction.newBuilder().fieldValueFactorFunction(fieldValueFactorFunction).build()).build()).getFunctions(0)
                     .getFieldValueFactor()
-                    .getModifier());
+                    .getModifier()
+            );
         }
     }
 
@@ -569,10 +839,8 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expectMessage("unknown modifier: UNKNOWN");
 
         FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .addFunction(ScoreFunction.newBuilder()
-                        .fieldValueFactorFunction(new FieldValueFactorFunction(null, null, FieldValueFactorFunction.FunctionModifier.UNKNOWN, null))
-                        .build())
-                .build();
+            .addFunction(ScoreFunction.newBuilder().fieldValueFactorFunction(new FieldValueFactorFunction(null, null, FieldValueFactorFunction.FunctionModifier.UNKNOWN, null)).build())
+            .build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -580,27 +848,18 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
     public void testBuildDecayMathFunction() {
         assertEquals(4, DecayFunction.MathFunction.values().length);
         assertEquals(3, Search.DecayMathFunction.values().length);
-        DecayFunction.MathFunction[] mathFunction = new DecayFunction.MathFunction[]{
-                DecayFunction.MathFunction.GAUSS,
-                DecayFunction.MathFunction.EXP,
-                DecayFunction.MathFunction.LINEAR,
-                DecayFunction.MathFunction.UNKNOWN
-        };
-        Search.DecayMathFunction[] PbMathFunction = new Search.DecayMathFunction[]{
-                Search.DecayMathFunction.GAUSS,
-                Search.DecayMathFunction.EXP,
-                Search.DecayMathFunction.LINEAR
-        };
+        DecayFunction.MathFunction[] mathFunction = new DecayFunction.MathFunction[] {
+            DecayFunction.MathFunction.GAUSS, DecayFunction.MathFunction.EXP, DecayFunction.MathFunction.LINEAR, DecayFunction.MathFunction.UNKNOWN };
+        Search.DecayMathFunction[] PbMathFunction = new Search.DecayMathFunction[] {
+            Search.DecayMathFunction.GAUSS, Search.DecayMathFunction.EXP, Search.DecayMathFunction.LINEAR };
         for (int i = 0; i < Search.DecayMathFunction.values().length; i++) {
             DecayFunction decayFunction = DecayFunction.newBuilder().mathFunction(mathFunction[i]).decayParam(DecayFuncGeoParam.newBuilder().build()).build();
-            assertEquals(PbMathFunction[i], buildFunctionsScoreQuery(QueryBuilders.functionsScore()
-                    .addFunction(ScoreFunction.newBuilder()
-                            .decayFunction(decayFunction)
-                            .build())
-                    .build())
-                    .getFunctions(0)
+            assertEquals(
+                PbMathFunction[i],
+                buildFunctionsScoreQuery(QueryBuilders.functionsScore().addFunction(ScoreFunction.newBuilder().decayFunction(decayFunction).build()).build()).getFunctions(0)
                     .getDecay()
-                    .getMathFunction());
+                    .getMathFunction()
+            );
         }
     }
 
@@ -610,10 +869,8 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expectMessage("unknown MathFunction: UNKNOWN");
 
         FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .addFunction(ScoreFunction.newBuilder()
-                        .decayFunction(new DecayFunction(null, DecayFuncGeoParam.newBuilder().build(), DecayFunction.MathFunction.UNKNOWN, null, null))
-                        .build())
-                .build();
+            .addFunction(ScoreFunction.newBuilder().decayFunction(new DecayFunction(null, DecayFuncGeoParam.newBuilder().build(), DecayFunction.MathFunction.UNKNOWN, null, null)).build())
+            .build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -621,28 +878,18 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
     public void testBuildMultiValueMode() {
         assertEquals(5, MultiValueMode.values().length);
         assertEquals(4, Search.MultiValueMode.values().length);
-        MultiValueMode[] multiValueMode = new MultiValueMode[]{
-                MultiValueMode.MIN,
-                MultiValueMode.MAX,
-                MultiValueMode.AVG,
-                MultiValueMode.SUM,
-        };
-        Search.MultiValueMode[] PbMultiValueMode = new Search.MultiValueMode[]{
-                Search.MultiValueMode.MVM_MIN,
-                Search.MultiValueMode.MVM_MAX,
-                Search.MultiValueMode.MVM_AVG,
-                Search.MultiValueMode.MVM_SUM
-        };
+        MultiValueMode[] multiValueMode = new MultiValueMode[] {
+            MultiValueMode.MIN, MultiValueMode.MAX, MultiValueMode.AVG, MultiValueMode.SUM, };
+        Search.MultiValueMode[] PbMultiValueMode = new Search.MultiValueMode[] {
+            Search.MultiValueMode.MVM_MIN, Search.MultiValueMode.MVM_MAX, Search.MultiValueMode.MVM_AVG, Search.MultiValueMode.MVM_SUM };
         for (int i = 0; i < Search.MultiValueMode.values().length; i++) {
             DecayFunction decayFunction = DecayFunction.newBuilder().multiValueMode(multiValueMode[i]).decayParam(DecayFuncGeoParam.newBuilder().build()).build();
-            assertEquals(PbMultiValueMode[i], buildFunctionsScoreQuery(QueryBuilders.functionsScore()
-                    .addFunction(ScoreFunction.newBuilder()
-                            .decayFunction(decayFunction)
-                            .build())
-                    .build())
-                    .getFunctions(0)
+            assertEquals(
+                PbMultiValueMode[i],
+                buildFunctionsScoreQuery(QueryBuilders.functionsScore().addFunction(ScoreFunction.newBuilder().decayFunction(decayFunction).build()).build()).getFunctions(0)
                     .getDecay()
-                    .getMultiValueMode());
+                    .getMultiValueMode()
+            );
         }
     }
 
@@ -652,10 +899,10 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expectMessage("unknown MultiValueMode: UNKNOWN");
 
         FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .addFunction(ScoreFunction.newBuilder()
-                        .decayFunction(new DecayFunction(null, DecayFuncGeoParam.newBuilder().build(), DecayFunction.MathFunction.EXP, null, MultiValueMode.UNKNOWN))
-                        .build())
-                .build();
+            .addFunction(ScoreFunction.newBuilder()
+                .decayFunction(new DecayFunction(null, DecayFuncGeoParam.newBuilder().build(), DecayFunction.MathFunction.EXP, null, MultiValueMode.UNKNOWN))
+                .build())
+            .build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -663,26 +910,22 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
     public void testBuildFunctionScoreMode() {
         assertEquals(7, FunctionsScoreQuery.ScoreMode.values().length);
         assertEquals(6, Search.FunctionScoreMode.values().length);
-        FunctionsScoreQuery.ScoreMode[] scoreMode = new FunctionsScoreQuery.ScoreMode[]{
-                FunctionsScoreQuery.ScoreMode.AVG,
-                FunctionsScoreQuery.ScoreMode.MAX,
-                FunctionsScoreQuery.ScoreMode.SUM,
-                FunctionsScoreQuery.ScoreMode.MIN,
-                FunctionsScoreQuery.ScoreMode.MULTIPLY,
-                FunctionsScoreQuery.ScoreMode.FIRST,
-        };
-        Search.FunctionScoreMode[] PbScoreMode = new Search.FunctionScoreMode[]{
-                Search.FunctionScoreMode.FSM_AVG,
-                Search.FunctionScoreMode.FSM_MAX,
-                Search.FunctionScoreMode.FSM_SUM,
-                Search.FunctionScoreMode.FSM_MIN,
-                Search.FunctionScoreMode.FSM_MULTIPLY,
-                Search.FunctionScoreMode.FSM_FIRST
-        };
+        FunctionsScoreQuery.ScoreMode[] scoreMode = new FunctionsScoreQuery.ScoreMode[] {
+            FunctionsScoreQuery.ScoreMode.AVG,
+            FunctionsScoreQuery.ScoreMode.MAX,
+            FunctionsScoreQuery.ScoreMode.SUM,
+            FunctionsScoreQuery.ScoreMode.MIN,
+            FunctionsScoreQuery.ScoreMode.MULTIPLY,
+            FunctionsScoreQuery.ScoreMode.FIRST, };
+        Search.FunctionScoreMode[] PbScoreMode = new Search.FunctionScoreMode[] {
+            Search.FunctionScoreMode.FSM_AVG,
+            Search.FunctionScoreMode.FSM_MAX,
+            Search.FunctionScoreMode.FSM_SUM,
+            Search.FunctionScoreMode.FSM_MIN,
+            Search.FunctionScoreMode.FSM_MULTIPLY,
+            Search.FunctionScoreMode.FSM_FIRST };
         for (int i = 0; i < Search.FunctionScoreMode.values().length; i++) {
-            FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                    .scoreMode(scoreMode[i])
-                    .build();
+            FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore().scoreMode(scoreMode[i]).build();
             assertEquals(PbScoreMode[i], buildFunctionsScoreQuery(functionsScoreQuery).getScoreMode());
         }
     }
@@ -692,9 +935,7 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("unknown FunctionsScoreQuery.ScoreMode: UNKNOWN");
 
-        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .scoreMode(FunctionsScoreQuery.ScoreMode.UNKNOWN)
-                .build();
+        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore().scoreMode(FunctionsScoreQuery.ScoreMode.UNKNOWN).build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -702,26 +943,22 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
     public void testBuildCombineMode() {
         assertEquals(7, FunctionsScoreQuery.CombineMode.values().length);
         assertEquals(6, Search.FunctionCombineMode.values().length);
-        FunctionsScoreQuery.CombineMode[] combineMode = new FunctionsScoreQuery.CombineMode[]{
-                FunctionsScoreQuery.CombineMode.MULTIPLY,
-                FunctionsScoreQuery.CombineMode.AVG,
-                FunctionsScoreQuery.CombineMode.MAX,
-                FunctionsScoreQuery.CombineMode.SUM,
-                FunctionsScoreQuery.CombineMode.MIN,
-                FunctionsScoreQuery.CombineMode.REPLACE
-        };
-        Search.FunctionCombineMode[] PbCombineMode = new Search.FunctionCombineMode[]{
-                Search.FunctionCombineMode.FCM_MULTIPLY,
-                Search.FunctionCombineMode.FCM_AVG,
-                Search.FunctionCombineMode.FCM_MAX,
-                Search.FunctionCombineMode.FCM_SUM,
-                Search.FunctionCombineMode.FCM_MIN,
-                Search.FunctionCombineMode.FCM_REPLACE
-        };
+        FunctionsScoreQuery.CombineMode[] combineMode = new FunctionsScoreQuery.CombineMode[] {
+            FunctionsScoreQuery.CombineMode.MULTIPLY,
+            FunctionsScoreQuery.CombineMode.AVG,
+            FunctionsScoreQuery.CombineMode.MAX,
+            FunctionsScoreQuery.CombineMode.SUM,
+            FunctionsScoreQuery.CombineMode.MIN,
+            FunctionsScoreQuery.CombineMode.REPLACE };
+        Search.FunctionCombineMode[] PbCombineMode = new Search.FunctionCombineMode[] {
+            Search.FunctionCombineMode.FCM_MULTIPLY,
+            Search.FunctionCombineMode.FCM_AVG,
+            Search.FunctionCombineMode.FCM_MAX,
+            Search.FunctionCombineMode.FCM_SUM,
+            Search.FunctionCombineMode.FCM_MIN,
+            Search.FunctionCombineMode.FCM_REPLACE };
         for (int i = 0; i < Search.FunctionCombineMode.values().length; i++) {
-            FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                    .combineMode(combineMode[i])
-                    .build();
+            FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore().combineMode(combineMode[i]).build();
             assertEquals(PbCombineMode[i], buildFunctionsScoreQuery(functionsScoreQuery).getCombineMode());
         }
     }
@@ -731,9 +968,7 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("unknown FunctionsScoreQuery.CombineMode: UNKNOWN");
 
-        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .combineMode(FunctionsScoreQuery.CombineMode.UNKNOWN)
-                .build();
+        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore().combineMode(FunctionsScoreQuery.CombineMode.UNKNOWN).build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -742,12 +977,7 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("decayParam is empty");
 
-        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .addFunction(ScoreFunction.newBuilder()
-                        .decayFunction(DecayFunction.newBuilder()
-                                .build())
-                        .build())
-                .build();
+        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore().addFunction(ScoreFunction.newBuilder().decayFunction(DecayFunction.newBuilder().build()).build()).build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 
@@ -756,13 +986,8 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("unknown decayParamType: UNKNOWN");
 
-        FunctionsScoreQuery functionsScoreQuery = QueryBuilders.functionsScore()
-                .addFunction(ScoreFunction.newBuilder()
-                        .decayFunction(DecayFunction.newBuilder()
-                                .decayParam(DecayParam.unknownTypeParam())
-                                .build())
-                        .build())
-                .build();
+        FunctionsScoreQuery functionsScoreQuery =
+            QueryBuilders.functionsScore().addFunction(ScoreFunction.newBuilder().decayFunction(DecayFunction.newBuilder().decayParam(DecayParam.unknownTypeParam()).build()).build()).build();
         buildFunctionsScoreQuery(functionsScoreQuery);
     }
 }

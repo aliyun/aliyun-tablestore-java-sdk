@@ -51,6 +51,8 @@ public class SearchQueryBuilder {
                 return Search.QueryType.EXISTS_QUERY;
             case QueryType_KnnVectorQuery:
                 return Search.QueryType.KNN_VECTOR_QUERY;
+            case QueryType_DisMaxQuery:
+                return Search.QueryType.DIS_MAX_QUERY;
             default:
                 throw new IllegalArgumentException("unknown queryType: " + type.name());
         }
@@ -79,6 +81,9 @@ public class SearchQueryBuilder {
         builder.setWeight(query.getWeight());
         if (query.getMinimumShouldMatch() != null) {
             builder.setMinimumShouldMatch(query.getMinimumShouldMatch());
+        }
+        if (query.getMinShouldMatch() != null) {
+            builder.setNewMinimumShouldMatch(query.getMinShouldMatch());
         }
         if (query.getOperator() != null) {
             switch (query.getOperator()) {
@@ -166,6 +171,12 @@ public class SearchQueryBuilder {
         Search.BoolQuery.Builder builder = Search.BoolQuery.newBuilder();
         if (query.getMinimumShouldMatch() != null) {
             builder.setMinimumShouldMatch(query.getMinimumShouldMatch());
+        }
+        if (query.getMinShouldMatch() != null) {
+            builder.setNewMinimumShouldMatch(query.getMinShouldMatch());
+        }
+        if (query.getWeight() != null) {
+            builder.setWeight(query.getWeight());
         }
         if (query.getMustQueries() != null) {
             for (Query q : query.getMustQueries()) {
@@ -525,6 +536,22 @@ public class SearchQueryBuilder {
         }
         if (query.getFilter() != null) {
             builder.setFilter(buildQuery(query.getFilter()));
+        }
+        if (query.getWeight() != null) {
+            builder.setWeight(query.getWeight());
+        }
+        return builder.build();
+    }
+
+    public static Search.DisMaxQuery buildDisMaxQuery(DisMaxQuery query) {
+        Search.DisMaxQuery.Builder builder = Search.DisMaxQuery.newBuilder();
+        if (query.getQueries() != null) {
+            for (Query q : query.getQueries()) {
+                builder.addQueries(buildQuery(q));
+            }
+        }
+        if (query.getTieBreaker() != null) {
+            builder.setTieBreaker(query.getTieBreaker());
         }
         if (query.getWeight() != null) {
             builder.setWeight(query.getWeight());

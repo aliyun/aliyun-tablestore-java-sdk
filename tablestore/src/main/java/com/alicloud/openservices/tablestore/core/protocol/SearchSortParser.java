@@ -69,6 +69,8 @@ class SearchSortParser {
         }
         if (pb.hasMissingField()) {
             sort.setMissingField(pb.getMissingField());
+        } else if (pb.getMissingFieldsCount() > 0) {
+            sort.setMissingFields(pb.getMissingFieldsList());
         }
         return sort;
     }

@@ -77,4 +77,8 @@ public final class QueryBuilders {
     public static KnnVectorQuery.Builder knnVector(String fieldName, int topK, float[] queryVector) {
         return KnnVectorQuery.newBuilder().field(fieldName).topK(topK).queryVector(queryVector);
     }
+
+    public static DisMaxQuery.Builder disMax() {
+        return DisMaxQuery.newBuilder();
+    }
 }
