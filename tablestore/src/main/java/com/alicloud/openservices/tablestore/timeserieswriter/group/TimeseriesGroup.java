@@ -17,6 +17,7 @@ public class TimeseriesGroup {
     private final long groupId;
     private final int totalCount;
     private final AtomicInteger remainCounter;
+    private final AtomicInteger indexCounter = new AtomicInteger(0);
     private final AtomicReferenceArray<TimeseriesWriterResult.TimeseriesRowChangeStatus> rowChangeStatusList;
     private final CallbackImpledFuture<TimeseriesTableRow, TimeseriesWriterResult> future;
 
@@ -41,9 +42,9 @@ public class TimeseriesGroup {
     }
 
     private void finishOneRow(boolean isSucceed, TimeseriesTableRow timeseriesTableRow, Exception exception) {
-        int counter = this.remainCounter.decrementAndGet();
+        int index = indexCounter.getAndIncrement();
 
-        if (counter < 0) {
+        if (index >= totalCount) {
             RuntimeException exp = new IllegalStateException(
                     String.format("[%d] WriterResult shouldn't finish more rows than total count", groupId));
             logger.error("Group OnFinishOneRow Failed", exp);
@@ -51,8 +52,9 @@ public class TimeseriesGroup {
         }
 
         TimeseriesWriterResult.TimeseriesRowChangeStatus status = new TimeseriesWriterResult.TimeseriesRowChangeStatus(isSucceed, timeseriesTableRow, exception);
-        rowChangeStatusList.set(totalCount - counter - 1, status); // Complete row offset = totalCount - counter - 1
+        rowChangeStatusList.set(index, status);
 
+        int counter = this.remainCounter.decrementAndGet();
         if (counter == 0) {
             completeGroup();
         }

@@ -15,6 +15,7 @@ public class ReaderGroup {
     private final long groupId;
     private final int totalCount;
     private final AtomicInteger remainCounter;
+    private final AtomicInteger indexCounter = new AtomicInteger(0);
     private final AtomicReferenceArray<RowReadResult> resultList;
     private final CallbackImpledFuture<PrimaryKeyWithTable, ReaderResult> future;
     private static Logger logger = LoggerFactory.getLogger(ReaderGroup.class);
@@ -40,9 +41,9 @@ public class ReaderGroup {
     }
 
     private void finishOneRow(boolean isSucceed, PrimaryKey primaryKey, BatchGetRowResponse.RowResult rowResult, Exception exception) {
-        int counter = this.remainCounter.decrementAndGet();
+        int index = indexCounter.getAndIncrement();
 
-        if (counter < 0) {
+        if (index >= totalCount) {
             RuntimeException exp = new IllegalStateException(
                     String.format("[%d] ReaderResult shouldn't finish more rows than total count", groupId));
             logger.error("Group OnFinishOneRow Failed", exp);
@@ -50,7 +51,9 @@ public class ReaderGroup {
         }
 
         RowReadResult rowReadResult = new RowReadResult(primaryKey, rowResult);
-        resultList.set(totalCount - counter - 1, rowReadResult); // Complete row offset = totalCount - counter - 1
+        resultList.set(index, rowReadResult);
+
+        int counter = this.remainCounter.decrementAndGet();
         if (counter == 0) {
             completeGroup();
         }

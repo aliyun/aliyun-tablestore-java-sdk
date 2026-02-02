@@ -17,6 +17,7 @@ public class Group {
     private final long groupId;
     private final int totalCount;
     private final AtomicInteger remainCounter;
+    private final AtomicInteger indexCounter = new AtomicInteger(0);
     private final AtomicReferenceArray<WriterResult.RowChangeStatus> rowChangeStatusList;
     private final CallbackImpledFuture<RowChange, WriterResult> future;
 
@@ -41,9 +42,8 @@ public class Group {
     }
 
     private void finishOneRow(boolean isSucceed, RowChange rowChange, Exception exception) {
-        int counter = this.remainCounter.decrementAndGet();
-
-        if (counter < 0) {
+        int index = indexCounter.getAndIncrement();
+        if (index >= totalCount) {
             RuntimeException exp =  new IllegalStateException(
                     String.format("[%d] WriterResult shouldn't finish more rows than total count", groupId));
             logger.error("Group OnFinishOneRow Failed", exp);
@@ -51,8 +51,9 @@ public class Group {
         }
 
         WriterResult.RowChangeStatus status = new WriterResult.RowChangeStatus(isSucceed, rowChange, exception);
-        rowChangeStatusList.set(totalCount - counter - 1, status); // Complete row offset = totalCount - counter - 1
+        rowChangeStatusList.set(index, status);
 
+        int counter = this.remainCounter.decrementAndGet();
         if (counter == 0) {
             completeGroup();
         }
