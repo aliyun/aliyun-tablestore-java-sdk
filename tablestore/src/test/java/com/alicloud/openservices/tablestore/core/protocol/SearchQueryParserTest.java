@@ -12,6 +12,7 @@ import com.alicloud.openservices.tablestore.model.search.query.DisMaxQuery;
 import com.alicloud.openservices.tablestore.model.search.query.FieldValueFactorFunction;
 import com.alicloud.openservices.tablestore.model.search.query.FunctionsScoreQuery;
 import com.alicloud.openservices.tablestore.model.search.query.KnnVectorQuery;
+import com.alicloud.openservices.tablestore.model.search.query.MatchPhraseQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MatchQuery;
 import com.alicloud.openservices.tablestore.model.search.query.MultiValueMode;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
@@ -432,6 +433,52 @@ public class SearchQueryParserTest extends BaseSearchTest {
         expected.setMustNotQueries(new ArrayList<>());
         expected.setFilterQueries(new ArrayList<>());
 
+        assertEquals(GSON.toJson(expected), GSON.toJson(actual));
+    }
+
+    @Test
+    public void testToMatchPhraseQuery() throws IOException {
+        Search.MatchPhraseQuery matchPhraseQuery = Search.MatchPhraseQuery.newBuilder()
+                .setFieldName("field")
+                .setText("hello world")
+                .setWeight(2.0f)
+                .build();
+        Query actual = toQuery(Search.Query.newBuilder()
+                .setType(Search.QueryType.MATCH_PHRASE_QUERY)
+                .setQuery(matchPhraseQuery.toByteString())
+                .build());
+        MatchPhraseQuery expected = QueryBuilders.matchPhrase("field", "hello world").weight(2.0f).build();
+        assertEquals(GSON.toJson(expected), GSON.toJson(actual));
+    }
+
+    @Test
+    public void testToMatchPhraseQueryWithSlop() throws IOException {
+        Search.MatchPhraseQuery matchPhraseQuery = Search.MatchPhraseQuery.newBuilder()
+                .setFieldName("field")
+                .setText("hello world")
+                .setWeight(2.0f)
+                .setSlop(3)
+                .build();
+        Query actual = toQuery(Search.Query.newBuilder()
+                .setType(Search.QueryType.MATCH_PHRASE_QUERY)
+                .setQuery(matchPhraseQuery.toByteString())
+                .build());
+        MatchPhraseQuery expected = QueryBuilders.matchPhrase("field", "hello world").weight(2.0f).slop(3).build();
+        assertEquals(GSON.toJson(expected), GSON.toJson(actual));
+    }
+
+    @Test
+    public void testToMatchPhraseQueryEmptySlop() throws IOException {
+        Search.MatchPhraseQuery matchPhraseQuery = Search.MatchPhraseQuery.newBuilder()
+                .setFieldName("field")
+                .setText("hello world")
+                .setWeight(1.0f)
+                .build();
+        Query actual = toQuery(Search.Query.newBuilder()
+                .setType(Search.QueryType.MATCH_PHRASE_QUERY)
+                .setQuery(matchPhraseQuery.toByteString())
+                .build());
+        MatchPhraseQuery expected = QueryBuilders.matchPhrase("field", "hello world").build();
         assertEquals(GSON.toJson(expected), GSON.toJson(actual));
     }
 

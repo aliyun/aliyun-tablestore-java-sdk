@@ -150,6 +150,27 @@ public class OperationNames {
 
     public static final String OP_SQL_Query = "SQLQuery";
 
+    // KnowledgeBase operations
+    public static final String OP_CREATE_KNOWLEDGE_BASE = "CreateKnowledgeBase";
+    public static final String OP_UPDATE_KNOWLEDGE_BASE = "UpdateKnowledgeBase";
+    public static final String OP_DESCRIBE_KNOWLEDGE_BASE = "DescribeKnowledgeBase";
+    public static final String OP_LIST_KNOWLEDGE_BASE = "ListKnowledgeBase";
+    public static final String OP_DELETE_KNOWLEDGE_BASE = "DeleteKnowledgeBase";
+
+    // Document operations
+    public static final String OP_ADD_DOCUMENTS = "AddDocuments";
+    public static final String OP_GET_DOCUMENT = "GetDocument";
+    public static final String OP_LIST_DOCUMENTS = "ListDocuments";
+    public static final String OP_DELETE_DOCUMENTS = "DeleteDocuments";
+    public static final String OP_UPDATE_DOCUMENT = "UpdateDocument";
+
+    // Chunk operations
+    public static final String OP_LIST_CHUNKS = "ListChunks";
+    public static final String OP_UPDATE_CHUNKS = "UpdateChunks";
+
+    // Retrieval operations
+    public static final String OP_RETRIEVE = "Retrieve";
+
     public static class IdempotentActionTool {
         private static final Map<String, Boolean> IDEMPOTENT_ACTIONS = new HashMap<String, Boolean>();
 
@@ -190,6 +211,12 @@ public class OperationNames {
             IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_TUNNEL, true);
             IDEMPOTENT_ACTIONS.put(OP_READRECORDS, true);
             IDEMPOTENT_ACTIONS.put(OP_GETCHECKPOINT, true);
+            // knowledgebase operations (read-only)
+            IDEMPOTENT_ACTIONS.put(OP_DESCRIBE_KNOWLEDGE_BASE, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_KNOWLEDGE_BASE, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_DOCUMENT, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_DOCUMENTS, true);
+            IDEMPOTENT_ACTIONS.put(OP_RETRIEVE, true);
         }
 
         public static boolean isIdempotentAction(String action) {

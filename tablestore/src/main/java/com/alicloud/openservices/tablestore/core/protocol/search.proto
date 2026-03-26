@@ -631,6 +631,7 @@ message MatchPhraseQuery {
     optional string field_name = 1;
     optional string text = 2;
     optional float weight = 3;
+    optional int32 slop = 4;
 }
 
 message MatchAllQuery {

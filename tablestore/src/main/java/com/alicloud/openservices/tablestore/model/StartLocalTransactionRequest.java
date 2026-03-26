@@ -3,6 +3,9 @@ package com.alicloud.openservices.tablestore.model;
 
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StartLocalTransactionRequest implements Request{
 
     /**
@@ -14,6 +17,11 @@ public class StartLocalTransactionRequest implements Request{
      * The primary key of the table.
      */
     private PrimaryKey primaryKey;
+
+    /**
+     * The primary keys of the rows.
+     */
+    private List<PrimaryKey> rowKeys;
 
     /**
      * Set the name of the table.
@@ -51,6 +59,39 @@ public class StartLocalTransactionRequest implements Request{
     }
 
     /**
+     * Get the primary keys of the rows to be locked.
+     *
+     * @return the list of primary keys
+     */
+    public List<PrimaryKey> getRowKeys() {
+        return rowKeys;
+    }
+
+    /**
+     * Set the primary keys of the rows to be locked.
+     * This will replace the existing list with the provided list.
+     *
+     * @param rowKeys the list of primary keys to set
+     */
+    public void setRowKeys(final List<PrimaryKey> rowKeys) {
+        Preconditions.checkArgument(rowKeys != null && !rowKeys.isEmpty(), "The rowKeys list should not be null or empty.");
+        this.rowKeys = rowKeys;
+    }
+
+    /**
+     * Add a primary key to the list of rows to be locked.
+     *
+     * @param rowKey the primary key to add
+     */
+    public void addRowKey(final PrimaryKey rowKey) {
+        Preconditions.checkArgument(rowKey != null && !rowKey.isEmpty(), "The rowKey should not be null or empty.");
+        if (rowKeys == null) {
+            rowKeys = new ArrayList<>();
+        }
+        this.rowKeys.add(rowKey);
+    }
+
+    /**
      * Initialize the StartLocalTransactionRequest instance.
      *
      * @param tableName The name of the table.
@@ -59,6 +100,12 @@ public class StartLocalTransactionRequest implements Request{
     public StartLocalTransactionRequest(String tableName, PrimaryKey key) {
         setTableName(tableName);
         setPrimaryKey(key);
+    }
+
+    public StartLocalTransactionRequest(String tableName, PrimaryKey key, List<PrimaryKey> rowKeys) {
+        setTableName(tableName);
+        setPrimaryKey(key);
+        setRowKeys(rowKeys);
     }
 
     @Override

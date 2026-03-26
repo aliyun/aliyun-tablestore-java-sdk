@@ -17,6 +17,8 @@ import com.alicloud.openservices.tablestore.model.tunnel.DeleteTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
+import com.alicloud.openservices.tablestore.core.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 import com.google.common.cache.Cache;
 
 import java.util.HashMap;
@@ -204,6 +206,32 @@ public class LauncherFactory {
                 new Context(new OTSUri(endpoint, OP_DELETE_TIMESERIES_LASTPOINT_INDEX)));
         contexts.put(OP_SQL_Query,
                 new Context(new OTSUri(endpoint, OP_SQL_Query)));
+        contexts.put(OP_CREATE_KNOWLEDGE_BASE,
+                new Context(new OTSUri(endpoint, OP_CREATE_KNOWLEDGE_BASE)));
+        contexts.put(OP_UPDATE_KNOWLEDGE_BASE,
+                new Context(new OTSUri(endpoint, OP_UPDATE_KNOWLEDGE_BASE)));
+        contexts.put(OP_DESCRIBE_KNOWLEDGE_BASE,
+                new Context(new OTSUri(endpoint, OP_DESCRIBE_KNOWLEDGE_BASE)));
+        contexts.put(OP_LIST_KNOWLEDGE_BASE,
+                new Context(new OTSUri(endpoint, OP_LIST_KNOWLEDGE_BASE)));
+        contexts.put(OP_DELETE_KNOWLEDGE_BASE,
+                new Context(new OTSUri(endpoint, OP_DELETE_KNOWLEDGE_BASE)));
+        contexts.put(OP_ADD_DOCUMENTS,
+                new Context(new OTSUri(endpoint, OP_ADD_DOCUMENTS)));
+        contexts.put(OP_LIST_DOCUMENTS,
+                new Context(new OTSUri(endpoint, OP_LIST_DOCUMENTS)));
+        contexts.put(OP_GET_DOCUMENT,
+                new Context(new OTSUri(endpoint, OP_GET_DOCUMENT)));
+        contexts.put(OP_DELETE_DOCUMENTS,
+                new Context(new OTSUri(endpoint, OP_DELETE_DOCUMENTS)));
+        contexts.put(OP_UPDATE_DOCUMENT,
+                new Context(new OTSUri(endpoint, OP_UPDATE_DOCUMENT)));
+        contexts.put(OP_LIST_CHUNKS,
+                new Context(new OTSUri(endpoint, OP_LIST_CHUNKS)));
+        contexts.put(OP_UPDATE_CHUNKS,
+                new Context(new OTSUri(endpoint, OP_UPDATE_CHUNKS)));
+        contexts.put(OP_RETRIEVE,
+                new Context(new OTSUri(endpoint, OP_RETRIEVE)));
     }
 
     public CreateTableLauncher createTable(TraceLogger tracer, RetryStrategy retry, CreateTableRequest originRequest)
@@ -718,4 +746,101 @@ public class LauncherFactory {
         return new SQLQueryLauncher(
                 ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
     }
+
+    // KnowledgeBase Launchers
+    public CreateKnowledgeBaseLauncher createKnowledgeBase(TraceLogger tracer, RetryStrategy retry, CreateKnowledgeBaseRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_CREATE_KNOWLEDGE_BASE);
+        return new CreateKnowledgeBaseLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public UpdateKnowledgeBaseLauncher updateKnowledgeBase(TraceLogger tracer, RetryStrategy retry, UpdateKnowledgeBaseRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_UPDATE_KNOWLEDGE_BASE);
+        return new UpdateKnowledgeBaseLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DescribeKnowledgeBaseLauncher describeKnowledgeBase(TraceLogger tracer, RetryStrategy retry, DescribeKnowledgeBaseRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_DESCRIBE_KNOWLEDGE_BASE);
+        return new DescribeKnowledgeBaseLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public ListKnowledgeBaseLauncher listKnowledgeBase(TraceLogger tracer, RetryStrategy retry, ListKnowledgeBaseRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_LIST_KNOWLEDGE_BASE);
+        return new ListKnowledgeBaseLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DeleteKnowledgeBaseLauncher deleteKnowledgeBase(TraceLogger tracer, RetryStrategy retry, DeleteKnowledgeBaseRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_DELETE_KNOWLEDGE_BASE);
+        return new DeleteKnowledgeBaseLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    // Document Launchers
+    public AddDocumentsLauncher addDocuments(TraceLogger tracer, RetryStrategy retry, AddDocumentsRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_ADD_DOCUMENTS);
+        return new AddDocumentsLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public GetDocumentLauncher getDocument(TraceLogger tracer, RetryStrategy retry, GetDocumentRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_GET_DOCUMENT);
+        return new GetDocumentLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public ListDocumentsLauncher listDocuments(TraceLogger tracer, RetryStrategy retry, ListDocumentsRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_LIST_DOCUMENTS);
+        return new ListDocumentsLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public DeleteDocumentsLauncher deleteDocuments(TraceLogger tracer, RetryStrategy retry, DeleteDocumentsRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_DELETE_DOCUMENTS);
+        return new DeleteDocumentsLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    // Update Document Launcher
+    public UpdateDocumentLauncher updateDocument(TraceLogger tracer, RetryStrategy retry, UpdateDocumentRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_UPDATE_DOCUMENT);
+        return new UpdateDocumentLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    // Chunk Launchers
+    public ListChunksLauncher listChunks(TraceLogger tracer, RetryStrategy retry, ListChunksRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_LIST_CHUNKS);
+        return new ListChunksLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public UpdateChunksLauncher updateChunks(TraceLogger tracer, RetryStrategy retry, UpdateChunksRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_UPDATE_CHUNKS);
+        return new UpdateChunksLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    // Retrieval Launcher
+    public RetrieveLauncher retrieve(TraceLogger tracer, RetryStrategy retry, RetrieveRequest originRequest)
+    {
+        Context ctx = contexts.get(OP_RETRIEVE);
+        return new RetrieveLauncher(
+                ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
 }

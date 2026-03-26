@@ -85,6 +85,32 @@ import com.alicloud.openservices.tablestore.model.delivery.DescribeDeliveryTaskR
 import com.alicloud.openservices.tablestore.model.delivery.DescribeDeliveryTaskResponse;
 import com.alicloud.openservices.tablestore.model.delivery.ListDeliveryTaskRequest;
 import com.alicloud.openservices.tablestore.model.delivery.ListDeliveryTaskResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.AddDocumentsRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.AddDocumentsResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteDocumentsRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteDocumentsResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DescribeKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DescribeKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.GetDocumentRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.GetDocumentResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListDocumentsRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListDocumentsResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.RetrieveRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.RetrieveResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateDocumentRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateDocumentResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListChunksRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListChunksResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateChunksRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.UpdateChunksResponse;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexResponse;
 import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexRequest;
@@ -358,6 +384,58 @@ public class MockReaderAsyncClient implements AsyncClientInterface {
     }
 
     public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request, TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback) {
+        return null;
+    }
+
+    public Future<AddDocumentsResponse> addDocuments(AddDocumentsRequest request, TableStoreCallback<AddDocumentsRequest, AddDocumentsResponse> callback) {
+        return null;
+    }
+
+    public Future<CreateKnowledgeBaseResponse> createKnowledgeBase(CreateKnowledgeBaseRequest request, TableStoreCallback<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> callback) {
+        return null;
+    }
+
+    public Future<DeleteDocumentsResponse> deleteDocuments(DeleteDocumentsRequest request, TableStoreCallback<DeleteDocumentsRequest, DeleteDocumentsResponse> callback) {
+        return null;
+    }
+
+    public Future<DeleteKnowledgeBaseResponse> deleteKnowledgeBase(DeleteKnowledgeBaseRequest request, TableStoreCallback<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> callback) {
+        return null;
+    }
+
+    public Future<DescribeKnowledgeBaseResponse> describeKnowledgeBase(DescribeKnowledgeBaseRequest request, TableStoreCallback<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> callback) {
+        return null;
+    }
+
+    public Future<UpdateKnowledgeBaseResponse> updateKnowledgeBase(UpdateKnowledgeBaseRequest request, TableStoreCallback<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> callback) {
+        return null;
+    }
+
+    public Future<GetDocumentResponse> getDocument(GetDocumentRequest request, TableStoreCallback<GetDocumentRequest, GetDocumentResponse> callback) {
+        return null;
+    }
+
+    public Future<ListDocumentsResponse> listDocuments(ListDocumentsRequest request, TableStoreCallback<ListDocumentsRequest, ListDocumentsResponse> callback) {
+        return null;
+    }
+
+    public Future<ListKnowledgeBaseResponse> listKnowledgeBase(ListKnowledgeBaseRequest request, TableStoreCallback<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> callback) {
+        return null;
+    }
+
+    public Future<RetrieveResponse> retrieve(RetrieveRequest request, TableStoreCallback<RetrieveRequest, RetrieveResponse> callback) {
+        return null;
+    }
+
+    public Future<UpdateDocumentResponse> updateDocument(UpdateDocumentRequest request, TableStoreCallback<UpdateDocumentRequest, UpdateDocumentResponse> callback) {
+        return null;
+    }
+
+    public Future<ListChunksResponse> listChunks(ListChunksRequest request, TableStoreCallback<ListChunksRequest, ListChunksResponse> callback) {
+        return null;
+    }
+
+    public Future<UpdateChunksResponse> updateChunks(UpdateChunksRequest request, TableStoreCallback<UpdateChunksRequest, UpdateChunksResponse> callback) {
         return null;
     }
 }

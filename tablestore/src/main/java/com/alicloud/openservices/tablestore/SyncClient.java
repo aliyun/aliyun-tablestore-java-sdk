@@ -14,6 +14,7 @@ import com.alicloud.openservices.tablestore.model.iterator.*;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 
 public class SyncClient implements SyncClientInterface {
     public class DefaultPrepareCallback implements PrepareCallback {
@@ -663,4 +664,135 @@ public class SyncClient implements SyncClientInterface {
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider) {
         internalClient.switchCredentialsProvider(newCrdsProvider);
     }
+
+    @Override
+    public CreateKnowledgeBaseResponse createKnowledgeBase(CreateKnowledgeBaseRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<CreateKnowledgeBaseResponse> res = this.internalClient.createKnowledgeBase(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DescribeKnowledgeBaseResponse describeKnowledgeBase(DescribeKnowledgeBaseRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DescribeKnowledgeBaseResponse> res = this.internalClient.describeKnowledgeBase(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListKnowledgeBaseResponse listKnowledgeBase(ListKnowledgeBaseRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListKnowledgeBaseResponse> res = this.internalClient.listKnowledgeBase(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteKnowledgeBaseResponse deleteKnowledgeBase(DeleteKnowledgeBaseRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DeleteKnowledgeBaseResponse> res = this.internalClient.deleteKnowledgeBase(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateKnowledgeBaseResponse updateKnowledgeBase(UpdateKnowledgeBaseRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateKnowledgeBaseResponse> res = this.internalClient.updateKnowledgeBase(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public AddDocumentsResponse addDocuments(AddDocumentsRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<AddDocumentsResponse> res = this.internalClient.addDocuments(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public GetDocumentResponse getDocument(GetDocumentRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<GetDocumentResponse> res = this.internalClient.getDocument(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListDocumentsResponse listDocuments(ListDocumentsRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListDocumentsResponse> res = this.internalClient.listDocuments(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public DeleteDocumentsResponse deleteDocuments(DeleteDocumentsRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<DeleteDocumentsResponse> res = this.internalClient.deleteDocuments(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateDocumentResponse updateDocument(UpdateDocumentRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateDocumentResponse> res = this.internalClient.updateDocument(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public ListChunksResponse listChunks(ListChunksRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<ListChunksResponse> res = this.internalClient.listChunks(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public UpdateChunksResponse updateChunks(UpdateChunksRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<UpdateChunksResponse> res = this.internalClient.updateChunks(request, null);
+        return waitForFuture(res);
+    }
+
+    @Override
+    public RetrieveResponse retrieve(RetrieveRequest request) throws TableStoreException, ClientException {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+
+        prepareCallback.onPrepare();
+        Future<RetrieveResponse> res = this.internalClient.retrieve(request, null);
+        return waitForFuture(res);
+    }
+
 }

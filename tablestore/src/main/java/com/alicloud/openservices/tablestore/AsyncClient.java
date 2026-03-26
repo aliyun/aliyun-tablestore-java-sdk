@@ -11,6 +11,7 @@ import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 
 public class AsyncClient implements AsyncClientInterface {
 
@@ -409,4 +410,74 @@ public class AsyncClient implements AsyncClientInterface {
     public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request, TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback) {
         return internalClient.sqlQuery(request, callback);
     }
+
+    // KnowledgeBase operations
+    @Override
+    public Future<CreateKnowledgeBaseResponse> createKnowledgeBase(CreateKnowledgeBaseRequest request, TableStoreCallback<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> callback) {
+        return internalClient.createKnowledgeBase(request, callback);
+    }
+
+    @Override
+    public Future<DescribeKnowledgeBaseResponse> describeKnowledgeBase(DescribeKnowledgeBaseRequest request, TableStoreCallback<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> callback) {
+        return internalClient.describeKnowledgeBase(request, callback);
+    }
+
+    @Override
+    public Future<ListKnowledgeBaseResponse> listKnowledgeBase(ListKnowledgeBaseRequest request, TableStoreCallback<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> callback) {
+        return internalClient.listKnowledgeBase(request, callback);
+    }
+
+    @Override
+    public Future<DeleteKnowledgeBaseResponse> deleteKnowledgeBase(DeleteKnowledgeBaseRequest request, TableStoreCallback<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> callback) {
+        return internalClient.deleteKnowledgeBase(request, callback);
+    }
+
+    @Override
+    public Future<UpdateKnowledgeBaseResponse> updateKnowledgeBase(UpdateKnowledgeBaseRequest request, TableStoreCallback<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> callback) {
+        return internalClient.updateKnowledgeBase(request, callback);
+    }
+
+    // Document operations
+    @Override
+    public Future<AddDocumentsResponse> addDocuments(AddDocumentsRequest request, TableStoreCallback<AddDocumentsRequest, AddDocumentsResponse> callback) {
+        return internalClient.addDocuments(request, callback);
+    }
+
+    @Override
+    public Future<GetDocumentResponse> getDocument(GetDocumentRequest request, TableStoreCallback<GetDocumentRequest, GetDocumentResponse> callback) {
+        return internalClient.getDocument(request, callback);
+    }
+
+    @Override
+    public Future<ListDocumentsResponse> listDocuments(ListDocumentsRequest request, TableStoreCallback<ListDocumentsRequest, ListDocumentsResponse> callback) {
+        return internalClient.listDocuments(request, callback);
+    }
+
+    @Override
+    public Future<DeleteDocumentsResponse> deleteDocuments(DeleteDocumentsRequest request, TableStoreCallback<DeleteDocumentsRequest, DeleteDocumentsResponse> callback) {
+        return internalClient.deleteDocuments(request, callback);
+    }
+
+    @Override
+    public Future<UpdateDocumentResponse> updateDocument(UpdateDocumentRequest request, TableStoreCallback<UpdateDocumentRequest, UpdateDocumentResponse> callback) {
+        return internalClient.updateDocument(request, callback);
+    }
+
+    // Chunk operations
+    @Override
+    public Future<ListChunksResponse> listChunks(ListChunksRequest request, TableStoreCallback<ListChunksRequest, ListChunksResponse> callback) {
+        return internalClient.listChunks(request, callback);
+    }
+
+    @Override
+    public Future<UpdateChunksResponse> updateChunks(UpdateChunksRequest request, TableStoreCallback<UpdateChunksRequest, UpdateChunksResponse> callback) {
+        return internalClient.updateChunks(request, callback);
+    }
+
+    // Retrieval operations
+    @Override
+    public Future<RetrieveResponse> retrieve(RetrieveRequest request, TableStoreCallback<RetrieveRequest, RetrieveResponse> callback) {
+        return internalClient.retrieve(request, callback);
+    }
+
 }

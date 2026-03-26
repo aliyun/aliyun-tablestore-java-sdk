@@ -105,6 +105,9 @@ public class SearchQueryBuilder {
         builder.setFieldName(query.getFieldName());
         builder.setText(query.getText());
         builder.setWeight(query.getWeight());
+        if (query.getSlop() != null) {
+            builder.setSlop(query.getSlop());
+        }
         return builder.build();
     }
 

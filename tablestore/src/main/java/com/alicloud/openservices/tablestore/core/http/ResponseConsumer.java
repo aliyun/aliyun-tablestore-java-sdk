@@ -26,6 +26,7 @@ import com.alicloud.openservices.tablestore.core.http.ExecutionContext;
 import com.alicloud.openservices.tablestore.core.http.ResponseHandler;
 import com.alicloud.openservices.tablestore.core.protocol.ResultParseException;
 import com.alicloud.openservices.tablestore.core.protocol.ResultParser;
+import com.alicloud.openservices.tablestore.model.Response;
 import com.alicloud.openservices.tablestore.model.RetryStrategy;
 
 public abstract class ResponseConsumer<Res>
@@ -102,6 +103,40 @@ public abstract class ResponseConsumer<Res>
             closeResponseSilently(response);
             ClientException ex = new ClientException("Failed to parse response as protocol buffer message.", e);
             throw ex;
+        } catch (Exception ex) {
+            closeResponseSilently(response);
+            throw ex;
+        }
+    }
+
+    protected Response getJsonResponseContentWithMeta()
+            throws Exception {
+        ResponseMessage response = new ResponseMessage(httpResponse);
+        String traceInfo = response.getHeader(Constants.OTS_HEADER_TRACE_INFO);
+        if (traceInfo != null) {
+            if (LogUtil.LOG.isInfoEnabled()) {
+                LogUtil.LOG.info(
+                        LogUtil.TRACE_ID_WITH_COLON + traceLogger.getTraceId()
+                                + LogUtil.DELIMITER + LogUtil.SERVER_TRACE_INFO_WITH_COLON
+                                + traceInfo);
+            }
+        }
+        try {
+            List<ResponseHandler> responseHandlers =
+                    this.context.getResponseHandlers();
+            for (ResponseHandler h : responseHandlers) {
+                h.handle(response);
+            }
+            Object parsedResult = resultParser.getObject(response);
+            if (!(parsedResult instanceof Response)) {
+                closeResponseSilently(response);
+                throw new ClientException("Unexpected response type: " + parsedResult.getClass().getName());
+            }
+            closeResponseSilently(response);
+            return (Response) parsedResult;
+        } catch (ResultParseException e) {
+            closeResponseSilently(response);
+            throw new ClientException("Failed to parse JSON response.", e);
         } catch (Exception ex) {
             closeResponseSilently(response);
             throw ex;

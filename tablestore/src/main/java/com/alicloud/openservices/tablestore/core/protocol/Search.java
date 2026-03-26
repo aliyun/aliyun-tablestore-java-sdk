@@ -81152,6 +81152,17 @@ public final class Search {
      * @return The weight.
      */
     float getWeight();
+
+    /**
+     * <code>optional int32 slop = 4;</code>
+     * @return Whether the slop field is set.
+     */
+    boolean hasSlop();
+    /**
+     * <code>optional int32 slop = 4;</code>
+     * @return The slop.
+     */
+    int getSlop();
   }
   /**
    * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.MatchPhraseQuery}
@@ -81310,6 +81321,25 @@ public final class Search {
       return weight_;
     }
 
+    public static final int SLOP_FIELD_NUMBER = 4;
+    private int slop_ = 0;
+    /**
+     * <code>optional int32 slop = 4;</code>
+     * @return Whether the slop field is set.
+     */
+    @java.lang.Override
+    public boolean hasSlop() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional int32 slop = 4;</code>
+     * @return The slop.
+     */
+    @java.lang.Override
+    public int getSlop() {
+      return slop_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -81333,6 +81363,9 @@ public final class Search {
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeFloat(3, weight_);
       }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeInt32(4, slop_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -81351,6 +81384,10 @@ public final class Search {
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, weight_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, slop_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -81383,6 +81420,11 @@ public final class Search {
             != java.lang.Float.floatToIntBits(
                 other.getWeight())) return false;
       }
+      if (hasSlop() != other.hasSlop()) return false;
+      if (hasSlop()) {
+        if (getSlop()
+            != other.getSlop()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -81406,6 +81448,10 @@ public final class Search {
         hash = (37 * hash) + WEIGHT_FIELD_NUMBER;
         hash = (53 * hash) + java.lang.Float.floatToIntBits(
             getWeight());
+      }
+      if (hasSlop()) {
+        hash = (37 * hash) + SLOP_FIELD_NUMBER;
+        hash = (53 * hash) + getSlop();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -81541,6 +81587,7 @@ public final class Search {
         fieldName_ = "";
         text_ = "";
         weight_ = 0F;
+        slop_ = 0;
         return this;
       }
 
@@ -81587,6 +81634,10 @@ public final class Search {
           result.weight_ = weight_;
           to_bitField0_ |= 0x00000004;
         }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.slop_ = slop_;
+          to_bitField0_ |= 0x00000008;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -81614,6 +81665,9 @@ public final class Search {
         }
         if (other.hasWeight()) {
           setWeight(other.getWeight());
+        }
+        if (other.hasSlop()) {
+          setSlop(other.getSlop());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -81656,6 +81710,11 @@ public final class Search {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 29
+              case 32: {
+                slop_ = input.readInt32();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -81869,6 +81928,46 @@ public final class Search {
       public Builder clearWeight() {
         bitField0_ = (bitField0_ & ~0x00000004);
         weight_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private int slop_ ;
+      /**
+       * <code>optional int32 slop = 4;</code>
+       * @return Whether the slop field is set.
+       */
+      @java.lang.Override
+      public boolean hasSlop() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional int32 slop = 4;</code>
+       * @return The slop.
+       */
+      @java.lang.Override
+      public int getSlop() {
+        return slop_;
+      }
+      /**
+       * <code>optional int32 slop = 4;</code>
+       * @param value The slop to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSlop(int value) {
+
+        slop_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 slop = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSlop() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        slop_ = 0;
         onChanged();
         return this;
       }
@@ -87530,14 +87629,14 @@ public final class Search {
     /**
      * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-     *     See search.proto;l=681
+     *     See search.proto;l=682
      * @return Whether the minimumShouldMatch field is set.
      */
     @java.lang.Deprecated boolean hasMinimumShouldMatch();
     /**
      * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-     *     See search.proto;l=681
+     *     See search.proto;l=682
      * @return The minimumShouldMatch.
      */
     @java.lang.Deprecated int getMinimumShouldMatch();
@@ -87782,7 +87881,7 @@ public final class Search {
     /**
      * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-     *     See search.proto;l=681
+     *     See search.proto;l=682
      * @return Whether the minimumShouldMatch field is set.
      */
     @java.lang.Override
@@ -87792,7 +87891,7 @@ public final class Search {
     /**
      * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-     *     See search.proto;l=681
+     *     See search.proto;l=682
      * @return The minimumShouldMatch.
      */
     @java.lang.Override
@@ -89470,7 +89569,7 @@ public final class Search {
       /**
        * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-       *     See search.proto;l=681
+       *     See search.proto;l=682
        * @return Whether the minimumShouldMatch field is set.
        */
       @java.lang.Override
@@ -89480,7 +89579,7 @@ public final class Search {
       /**
        * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-       *     See search.proto;l=681
+       *     See search.proto;l=682
        * @return The minimumShouldMatch.
        */
       @java.lang.Override
@@ -89490,7 +89589,7 @@ public final class Search {
       /**
        * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-       *     See search.proto;l=681
+       *     See search.proto;l=682
        * @param value The minimumShouldMatch to set.
        * @return This builder for chaining.
        */
@@ -89504,7 +89603,7 @@ public final class Search {
       /**
        * <code>optional int32 minimum_should_match = 5 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.BoolQuery.minimum_should_match is deprecated.
-       *     See search.proto;l=681
+       *     See search.proto;l=682
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearMinimumShouldMatch() {
@@ -109105,21 +109204,21 @@ public final class Search {
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return Whether the missingField field is set.
      */
     @java.lang.Deprecated boolean hasMissingField();
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return The missingField.
      */
     @java.lang.Deprecated java.lang.String getMissingField();
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return The bytes for missingField.
      */
     @java.lang.Deprecated com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
@@ -109339,7 +109438,7 @@ public final class Search {
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return Whether the missingField field is set.
      */
     @java.lang.Override
@@ -109349,7 +109448,7 @@ public final class Search {
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return The missingField.
      */
     @java.lang.Override
@@ -109370,7 +109469,7 @@ public final class Search {
     /**
      * <code>optional string missing_field = 6 [deprecated = true];</code>
      * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-     *     See search.proto;l=903
+     *     See search.proto;l=904
      * @return The bytes for missingField.
      */
     @java.lang.Override
@@ -110283,7 +110382,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @return Whether the missingField field is set.
        */
       @java.lang.Deprecated public boolean hasMissingField() {
@@ -110292,7 +110391,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @return The missingField.
        */
       @java.lang.Deprecated public java.lang.String getMissingField() {
@@ -110312,7 +110411,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @return The bytes for missingField.
        */
       @java.lang.Deprecated public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
@@ -110331,7 +110430,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @param value The missingField to set.
        * @return This builder for chaining.
        */
@@ -110346,7 +110445,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @return This builder for chaining.
        */
       @java.lang.Deprecated public Builder clearMissingField() {
@@ -110358,7 +110457,7 @@ public final class Search {
       /**
        * <code>optional string missing_field = 6 [deprecated = true];</code>
        * @deprecated com.alicloud.openservices.tablestore.core.protocol.FieldSort.missing_field is deprecated.
-       *     See search.proto;l=903
+       *     See search.proto;l=904
        * @param value The bytes for missingField to set.
        * @return This builder for chaining.
        */
@@ -151159,396 +151258,396 @@ public final class Search {
       "match\030\003 \001(\005B\002\030\001\022S\n\010operator\030\004 \001(\0162A.com." +
       "alicloud.openservices.tablestore.core.pr" +
       "otocol.QueryOperator\022\016\n\006weight\030\005 \001(\002\022 \n\030" +
-      "new_minimum_should_match\030\006 \001(\t\"D\n\020MatchP" +
+      "new_minimum_should_match\030\006 \001(\t\"R\n\020MatchP" +
       "hraseQuery\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004text\030\002" +
-      " \001(\t\022\016\n\006weight\030\003 \001(\002\"\017\n\rMatchAllQuery\"=\n" +
-      "\tTermQuery\022\022\n\nfield_name\030\001 \001(\t\022\014\n\004term\030\002" +
-      " \001(\014\022\016\n\006weight\030\003 \001(\002\"?\n\nTermsQuery\022\022\n\nfi" +
-      "eld_name\030\001 \001(\t\022\r\n\005terms\030\002 \003(\014\022\016\n\006weight\030" +
-      "\003 \001(\002\"t\n\nRangeQuery\022\022\n\nfield_name\030\001 \001(\t\022" +
-      "\022\n\nrange_from\030\002 \001(\014\022\020\n\010range_to\030\003 \001(\014\022\025\n" +
-      "\rinclude_lower\030\004 \001(\010\022\025\n\rinclude_upper\030\005 " +
-      "\001(\010\"A\n\013PrefixQuery\022\022\n\nfield_name\030\001 \001(\t\022\016" +
-      "\n\006prefix\030\002 \001(\t\022\016\n\006weight\030\003 \001(\002\"B\n\rWildca" +
-      "rdQuery\022\022\n\nfield_name\030\001 \001(\t\022\r\n\005value\030\002 \001" +
-      "(\t\022\016\n\006weight\030\003 \001(\002\"~\n\013DisMaxQuery\022J\n\007que" +
-      "ries\030\001 \003(\01329.com.alicloud.openservices.t" +
-      "ablestore.core.protocol.Query\022\023\n\013tie_bre" +
-      "aker\030\002 \001(\002\022\016\n\006weight\030\003 \001(\002\"\253\003\n\tBoolQuery" +
-      "\022O\n\014must_queries\030\001 \003(\01329.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Quer" +
-      "y\022S\n\020must_not_queries\030\002 \003(\01329.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".Query\022Q\n\016filter_queries\030\003 \003(\01329.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.Query\022Q\n\016should_queries\030\004 \003(\01329.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.Query\022 \n\024minimum_should_match\030\005 \001" +
-      "(\005B\002\030\001\022 \n\030new_minimum_should_match\030\006 \001(\t" +
-      "\022\016\n\006weight\030\007 \001(\002\"\\\n\017ConstScoreQuery\022I\n\006f" +
-      "ilter\030\001 \001(\01329.com.alicloud.openservices." +
-      "tablestore.core.protocol.Query\"&\n\020FieldV" +
-      "alueFactor\022\022\n\nfield_name\030\001 \001(\t\"\300\001\n\022Funct" +
-      "ionScoreQuery\022H\n\005query\030\001 \001(\01329.com.alicl" +
-      "oud.openservices.tablestore.core.protoco" +
-      "l.Query\022`\n\022field_value_factor\030\002 \001(\0132D.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.FieldValueFactor\"\220\003\n\023FunctionsS" +
-      "coreQuery\022H\n\005query\030\001 \001(\01329.com.alicloud." +
+      " \001(\t\022\016\n\006weight\030\003 \001(\002\022\014\n\004slop\030\004 \001(\005\"\017\n\rMa" +
+      "tchAllQuery\"=\n\tTermQuery\022\022\n\nfield_name\030\001" +
+      " \001(\t\022\014\n\004term\030\002 \001(\014\022\016\n\006weight\030\003 \001(\002\"?\n\nTe" +
+      "rmsQuery\022\022\n\nfield_name\030\001 \001(\t\022\r\n\005terms\030\002 " +
+      "\003(\014\022\016\n\006weight\030\003 \001(\002\"t\n\nRangeQuery\022\022\n\nfie" +
+      "ld_name\030\001 \001(\t\022\022\n\nrange_from\030\002 \001(\014\022\020\n\010ran" +
+      "ge_to\030\003 \001(\014\022\025\n\rinclude_lower\030\004 \001(\010\022\025\n\rin" +
+      "clude_upper\030\005 \001(\010\"A\n\013PrefixQuery\022\022\n\nfiel" +
+      "d_name\030\001 \001(\t\022\016\n\006prefix\030\002 \001(\t\022\016\n\006weight\030\003" +
+      " \001(\002\"B\n\rWildcardQuery\022\022\n\nfield_name\030\001 \001(" +
+      "\t\022\r\n\005value\030\002 \001(\t\022\016\n\006weight\030\003 \001(\002\"~\n\013DisM" +
+      "axQuery\022J\n\007queries\030\001 \003(\01329.com.alicloud." +
       "openservices.tablestore.core.protocol.Qu" +
-      "ery\022O\n\tfunctions\030\002 \003(\0132<.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Func" +
-      "tion\022Y\n\nscore_mode\030\003 \001(\0162E.com.alicloud." +
-      "openservices.tablestore.core.protocol.Fu" +
-      "nctionScoreMode\022]\n\014combine_mode\030\004 \001(\0162G." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.FunctionCombineMode\022\021\n\tmin_sc" +
-      "ore\030\005 \001(\002\022\021\n\tmax_score\030\006 \001(\002\"A\n\013SuffixQu" +
-      "ery\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006suffix\030\002 \001(\t\022" +
-      "\016\n\006weight\030\003 \001(\002\"\372\002\n\010Function\022h\n\022field_va" +
-      "lue_factor\030\001 \001(\0132L.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.FieldValue" +
-      "FactorFunction\022W\n\006random\030\002 \001(\0132G.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.RandomScoreFunction\022P\n\005decay\030\003 \001(\0132A" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.DecayFunction\022\016\n\006weight\030\004 \001(" +
-      "\002\022I\n\006filter\030\005 \001(\01329.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.Query\"\247\001\n" +
-      "\030FieldValueFactorFunction\022\022\n\nfield_name\030" +
-      "\001 \001(\t\022\016\n\006factor\030\002 \001(\002\022V\n\010modifier\030\003 \001(\0162" +
-      "D.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.FunctionModifier\022\017\n\007missing" +
-      "\030\004 \001(\001\"\331\002\n\rDecayFunction\022\022\n\nfield_name\030\001" +
-      " \001(\t\022\\\n\rmath_function\030\002 \001(\0162E.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".DecayMathFunction\022Z\n\nparam_type\030\003 \001(\0162F" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.DecayFuncParamType\022\r\n\005param\030" +
-      "\004 \001(\014\022\r\n\005decay\030\005 \001(\001\022\\\n\020multi_value_mode" +
-      "\030\006 \001(\0162B.com.alicloud.openservices.table" +
-      "store.core.protocol.MultiValueMode\"\345\001\n\022D" +
-      "ecayFuncDateParam\022\023\n\013origin_long\030\001 \001(\003\022\025" +
-      "\n\rorigin_string\030\002 \001(\t\022P\n\005scale\030\003 \001(\0132A.c" +
+      "ery\022\023\n\013tie_breaker\030\002 \001(\002\022\016\n\006weight\030\003 \001(\002" +
+      "\"\253\003\n\tBoolQuery\022O\n\014must_queries\030\001 \003(\01329.c" +
       "om.alicloud.openservices.tablestore.core" +
-      ".protocol.DateTimeValue\022Q\n\006offset\030\004 \001(\0132" +
-      "A.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.DateTimeValue\"F\n\025DecayFuncN" +
-      "umericParam\022\016\n\006origin\030\001 \001(\001\022\r\n\005scale\030\002 \001" +
-      "(\001\022\016\n\006offset\030\003 \001(\001\"B\n\021DecayFuncGeoParam\022" +
-      "\016\n\006origin\030\001 \001(\t\022\r\n\005scale\030\002 \001(\001\022\016\n\006offset",
-      "\030\003 \001(\001\"\025\n\023RandomScoreFunction\"\233\002\n\013Nested" +
-      "Query\022\014\n\004path\030\001 \001(\t\022H\n\005query\030\002 \001(\01329.com" +
-      ".alicloud.openservices.tablestore.core.p" +
-      "rotocol.Query\022Q\n\nscore_mode\030\003 \001(\0162=.com." +
-      "alicloud.openservices.tablestore.core.pr" +
-      "otocol.ScoreMode\022\016\n\006weight\030\004 \001(\002\022Q\n\ninne" +
-      "r_hits\030\005 \001(\0132=.com.alicloud.openservices" +
-      ".tablestore.core.protocol.InnerHits\"\304\001\n\t" +
-      "InnerHits\022F\n\004sort\030\001 \001(\01328.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Sor" +
-      "t\022\016\n\006offset\030\002 \001(\005\022\r\n\005limit\030\003 \001(\005\022P\n\thigh" +
-      "light\030\004 \001(\0132=.com.alicloud.openservices." +
-      "tablestore.core.protocol.Highlight\"Q\n\023Ge" +
-      "oBoundingBoxQuery\022\022\n\nfield_name\030\001 \001(\t\022\020\n" +
-      "\010top_left\030\002 \001(\t\022\024\n\014bottom_right\030\003 \001(\t\"N\n" +
-      "\020GeoDistanceQuery\022\022\n\nfield_name\030\001 \001(\t\022\024\n" +
-      "\014center_point\030\002 \001(\t\022\020\n\010distance\030\003 \001(\001\"5\n" +
-      "\017GeoPolygonQuery\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006" +
-      "points\030\002 \003(\t\"!\n\013ExistsQuery\022\022\n\nfield_nam" +
-      "e\030\001 \001(\t\"\327\001\n\016KnnVectorQuery\022\022\n\nfield_name" +
-      "\030\001 \001(\t\022\r\n\005top_k\030\002 \001(\005\022\034\n\024float32_query_v" +
-      "ector\030\004 \003(\002\022I\n\006filter\030\005 \001(\01329.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".Query\022\016\n\006weight\030\006 \001(\002\022\021\n\tmin_score\030\007 \001(" +
-      "\002\022\026\n\016num_candidates\030\010 \001(\005\"c\n\005Query\022K\n\004ty" +
-      "pe\030\001 \001(\0162=.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.QueryType\022\r\n\005query" +
-      "\030\002 \001(\014\"\036\n\010Collapse\022\022\n\nfield_name\030\001 \001(\t\"g" +
-      "\n\014NestedFilter\022\014\n\004path\030\001 \001(\t\022I\n\006filter\030\002" +
-      " \001(\01329.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.Query\"Y\n\tScoreSort\022L\n\005" +
-      "order\030\001 \001(\0162=.com.alicloud.openservices." +
-      "tablestore.core.protocol.SortOrder\"^\n\016Pr" +
-      "imaryKeySort\022L\n\005order\030\001 \001(\0162=.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".SortOrder\"\334\002\n\tFieldSort\022\022\n\nfield_name\030\001" +
-      " \001(\t\022L\n\005order\030\002 \001(\0162=.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.SortOrd" +
-      "er\022J\n\004mode\030\003 \001(\0162<.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.SortMode\022W" +
-      "\n\rnested_filter\030\004 \001(\0132@.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.Neste" +
-      "dFilter\022\025\n\rmissing_value\030\005 \001(\014\022\031\n\rmissin" +
-      "g_field\030\006 \001(\tB\002\030\001\022\026\n\016missing_fields\030\007 \003(" +
-      "\t\"W\n\007DocSort\022L\n\005order\030\001 \001(\0162=.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".SortOrder\"\204\003\n\017GeoDistanceSort\022\022\n\nfield_" +
-      "name\030\001 \001(\t\022\016\n\006points\030\002 \003(\t\022L\n\005order\030\003 \001(" +
-      "\0162=.com.alicloud.openservices.tablestore" +
-      ".core.protocol.SortOrder\022J\n\004mode\030\004 \001(\0162<" +
-      ".com.alicloud.openservices.tablestore.co" +
-      "re.protocol.SortMode\022Z\n\rdistance_type\030\005 " +
-      "\001(\0162C.com.alicloud.openservices.tablesto" +
-      "re.core.protocol.GeoDistanceType\022W\n\rnest" +
-      "ed_filter\030\006 \001(\0132@.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.NestedFilte" +
-      "r\"\262\003\n\006Sorter\022Q\n\nfield_sort\030\001 \001(\0132=.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.FieldSort\022^\n\021geo_distance_sort\030\002 \001" +
-      "(\0132C.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.GeoDistanceSort\022Q\n\nscore" +
-      "_sort\030\003 \001(\0132=.com.alicloud.openservices." +
-      "tablestore.core.protocol.ScoreSort\022S\n\007pk" +
-      "_sort\030\004 \001(\0132B.com.alicloud.openservices." +
-      "tablestore.core.protocol.PrimaryKeySort\022" +
-      "M\n\010doc_sort\030\005 \001(\0132;.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.DocSort\"u" +
-      "\n\004Sort\022J\n\006sorter\030\001 \003(\0132:.com.alicloud.op" +
-      "enservices.tablestore.core.protocol.Sort" +
-      "er\022!\n\031disable_default_pk_sorter\030\002 \001(\010\"\375\004" +
-      "\n\013SearchQuery\022\016\n\006offset\030\001 \001(\005\022\r\n\005limit\030\002" +
-      " \001(\005\022H\n\005query\030\004 \001(\01329.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.Query\022N" +
-      "\n\010collapse\030\005 \001(\0132<.com.alicloud.openserv" +
-      "ices.tablestore.core.protocol.Collapse\022F" +
-      "\n\004sort\030\006 \001(\01328.com.alicloud.openservices" +
-      ".tablestore.core.protocol.Sort\022\r\n\005token\030" +
-      "\t \001(\014\022N\n\004aggs\030\n \001(\0132@.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.Aggrega" +
-      "tions\022O\n\tgroup_bys\030\013 \001(\0132<.com.alicloud." +
-      "openservices.tablestore.core.protocol.Gr" +
-      "oupBys\022P\n\thighlight\030\014 \001(\0132=.com.alicloud" +
-      ".openservices.tablestore.core.protocol.H" +
-      "ighlight\022\031\n\021track_total_count\030\r \001(\005\022P\n\006f" +
-      "ilter\030\016 \001(\0132@.com.alicloud.openservices." +
-      "tablestore.core.protocol.SearchFilter\"X\n" +
-      "\014SearchFilter\022H\n\005query\030\001 \001(\01329.com.alicl" +
-      "oud.openservices.tablestore.core.protoco" +
-      "l.Query\"\336\001\n\tHighlight\022d\n\024highlight_param" +
-      "eters\030\001 \003(\0132F.com.alicloud.openservices." +
-      "tablestore.core.protocol.HighlightParame" +
-      "ter\022k\n\021highlight_encoder\030\002 \001(\0162D.com.ali" +
-      "cloud.openservices.tablestore.core.proto" +
-      "col.HighlightEncoder:\nPLAIN_MODE\"\363\001\n\022Hig" +
-      "hlightParameter\022\022\n\nfield_name\030\001 \001(\t\022\033\n\023n" +
-      "umber_of_fragments\030\002 \001(\005\022\025\n\rfragment_siz" +
-      "e\030\003 \001(\005\022\017\n\007pre_tag\030\004 \001(\t\022\020\n\010post_tag\030\005 \001" +
-      "(\t\022r\n\017fragments_order\030\006 \001(\0162J.com.aliclo" +
-      "ud.openservices.tablestore.core.protocol" +
-      ".HighlightFragmentOrder:\rTEXT_SEQUENCE\"\177" +
-      "\n\014ColumnsToGet\022Y\n\013return_type\030\001 \001(\0162D.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.ColumnReturnType\022\024\n\014column_name" +
-      "s\030\002 \003(\t\"\323\001\n\rSearchRequest\022\022\n\ntable_name\030" +
-      "\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022X\n\016columns_to_" +
-      "get\030\003 \001(\0132@.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.ColumnsToGet\022\024\n\014s" +
-      "earch_query\030\004 \001(\014\022\026\n\016routing_values\030\005 \003(" +
-      "\014\022\022\n\ntimeout_ms\030\006 \001(\005\"\216\003\n\016SearchResponse" +
-      "\022\022\n\ntotal_hits\030\001 \001(\003\022\014\n\004rows\030\002 \003(\014\022\030\n\020is" +
-      "_all_succeeded\030\003 \001(\010\022R\n\013search_hits\030\005 \003(" +
-      "\0132=.com.alicloud.openservices.tablestore" +
-      ".core.protocol.SearchHit\022\022\n\nnext_token\030\006" +
-      " \001(\014\022\014\n\004aggs\030\007 \001(\014\022\021\n\tgroup_bys\030\010 \001(\014\022V\n" +
-      "\010consumed\030\t \001(\0132D.com.alicloud.openservi" +
-      "ces.tablestore.core.protocol.ConsumedCap" +
-      "acity\022_\n\021reserved_consumed\030\n \001(\0132D.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.ConsumedCapacity\"\363\001\n\tSearchHit\022\r\n\005" +
-      "score\030\003 \001(\001\022]\n\020highlight_result\030\004 \001(\0132C." +
-      "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.HighlightResult\022]\n\021search_inn" +
-      "er_hits\030\005 \003(\0132B.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.SearchInnerHi" +
-      "t\022\031\n\021nested_doc_offset\030\006 \001(\005\"r\n\016SearchIn" +
-      "nerHit\022\014\n\004path\030\001 \001(\t\022R\n\013search_hits\030\002 \003(" +
-      "\0132=.com.alicloud.openservices.tablestore" +
-      ".core.protocol.SearchHit\"o\n\017HighlightRes" +
-      "ult\022\\\n\020highlight_fields\030\001 \003(\0132B.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.HighlightField\"=\n\016HighlightField\022\022\n\nf" +
-      "ield_name\030\001 \001(\t\022\027\n\017field_fragments\030\002 \003(\t" +
-      "\"n\n\rDateTimeValue\022\r\n\005value\030\001 \001(\005\022N\n\004unit" +
-      "\030\002 \001(\0162@.com.alicloud.openservices.table" +
-      "store.core.protocol.DateTimeUnit\"K\n\033Sing" +
-      "leWordAnalyzerParameter\022\026\n\016case_sensitiv" +
-      "e\030\001 \001(\010\022\024\n\014delimit_word\030\002 \001(\010\"C\n\026SplitAn" +
-      "alyzerParameter\022\021\n\tdelimiter\030\001 \001(\t\022\026\n\016ca" +
-      "se_sensitive\030\002 \001(\010\"V\n\026FuzzyAnalyzerParam" +
-      "eter\022\021\n\tmin_chars\030\001 \001(\005\022\021\n\tmax_chars\030\002 \001" +
-      "(\005\022\026\n\016case_sensitive\030\003 \001(\010\"\256\005\n\013FieldSche" +
-      "ma\022\022\n\nfield_name\030\001 \001(\t\022Q\n\nfield_type\030\002 \001" +
-      "(\0162=.com.alicloud.openservices.tablestor" +
-      "e.core.protocol.FieldType\022W\n\rindex_optio" +
-      "ns\030\003 \001(\0162@.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.IndexOptions\022\020\n\010an" +
-      "alyzer\030\004 \001(\t\022\r\n\005index\030\005 \001(\010\022\024\n\014sort_and_" +
-      "agg\030\006 \001(\010\022\r\n\005store\030\007 \001(\010\022V\n\rfield_schema" +
-      "s\030\010 \003(\0132?.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.FieldSchema\022\020\n\010is_a" +
-      "rray\030\t \001(\010\022\032\n\022analyzer_parameter\030\n \001(\014\022\030" +
-      "\n\020is_virtual_field\030\013 \001(\010\022\032\n\022source_field" +
-      "_names\030\014 \003(\t\022\024\n\014date_formats\030\r \003(\t\022\033\n\023en" +
-      "able_highlighting\030\016 \001(\010\022Y\n\016vector_option" +
-      "s\030\017 \001(\0132A.com.alicloud.openservices.tabl" +
-      "estore.core.protocol.VectorOptions\022O\n\tjs" +
-      "on_type\030\020 \001(\0162<.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.JsonType\"\324\001\n\r" +
-      "VectorOptions\022U\n\tdata_type\030\001 \001(\0162B.com.a" +
-      "licloud.openservices.tablestore.core.pro" +
-      "tocol.VectorDataType\022\021\n\tdimension\030\002 \001(\005\022" +
-      "Y\n\013metric_type\030\003 \001(\0162D.com.alicloud.open" +
-      "services.tablestore.core.protocol.Vector" +
-      "MetricType\"\214\002\n\013IndexSchema\022V\n\rfield_sche" +
-      "mas\030\001 \003(\0132?.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.FieldSchema\022W\n\rin" +
-      "dex_setting\030\002 \001(\0132@.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.IndexSett" +
-      "ing\022L\n\nindex_sort\030\003 \001(\01328.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Sor" +
-      "t\"\206\001\n\014IndexSetting\022\030\n\020number_of_shards\030\001" +
-      " \001(\005\022\026\n\016routing_fields\030\002 \003(\t\022\036\n\026routing_" +
-      "partition_size\030\003 \001(\005\022$\n\034enable_custom_co" +
-      "lumn_version\030\007 \001(\010\"\304\001\n\030CreateSearchIndex" +
-      "Request\022\022\n\ntable_name\030\001 \002(\t\022\022\n\nindex_nam" +
-      "e\030\002 \002(\t\022O\n\006schema\030\003 \001(\0132?.com.alicloud.o" +
-      "penservices.tablestore.core.protocol.Ind" +
-      "exSchema\022\031\n\021source_index_name\030\004 \001(\t\022\024\n\014t" +
-      "ime_to_live\030\005 \001(\005\"\033\n\031CreateSearchIndexRe" +
-      "sponse\"5\n\017QueryFlowWeight\022\022\n\nindex_name\030" +
-      "\001 \001(\t\022\016\n\006weight\030\002 \001(\005\"\261\002\n\030UpdateSearchIn" +
-      "dexRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_" +
-      "name\030\002 \001(\t\022\031\n\021switch_index_name\030\003 \001(\t\022^\n" +
-      "\021query_flow_weight\030\004 \003(\0132C.com.alicloud." +
-      "openservices.tablestore.core.protocol.Qu" +
-      "eryFlowWeight\022\024\n\014time_to_live\030\005 \001(\005\022\\\n\023a" +
-      "dded_field_schemas\030\006 \003(\0132?.com.alicloud." +
-      "openservices.tablestore.core.protocol.Fi" +
-      "eldSchema\"\033\n\031UpdateSearchIndexResponse\"3" +
-      "\n\tIndexInfo\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex" +
-      "_name\030\002 \001(\t\",\n\026ListSearchIndexRequest\022\022\n" +
-      "\ntable_name\030\001 \001(\t\"i\n\027ListSearchIndexResp" +
-      "onse\022N\n\007indices\030\001 \003(\0132=.com.alicloud.ope" +
-      "nservices.tablestore.core.protocol.Index" +
-      "Info\"B\n\030DeleteSearchIndexRequest\022\022\n\ntabl" +
-      "e_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\"\033\n\031Dele" +
-      "teSearchIndexResponse\"}\n\010SyncStat\022Q\n\nsyn" +
-      "c_phase\030\001 \001(\0162=.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.SyncPhase\022\036\n\026" +
-      "current_sync_timestamp\030\002 \001(\003\"d\n\014Metering" +
-      "Info\022\024\n\014storage_size\030\001 \001(\003\022\021\n\trow_count\030" +
-      "\002 \001(\003\022\030\n\020reserved_read_cu\030\003 \001(\003\022\021\n\ttimes" +
-      "tamp\030\004 \001(\003\"_\n\032DescribeSearchIndexRequest" +
-      "\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t" +
-      "\022\031\n\021include_sync_stat\030\003 \001(\010\"\226\004\n\033Describe" +
-      "SearchIndexResponse\022O\n\006schema\030\001 \001(\0132?.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.IndexSchema\022O\n\tsync_stat\030\002 \001(\0132" +
-      "<.com.alicloud.openservices.tablestore.c" +
-      "ore.protocol.SyncStat\022W\n\rmetering_info\030\003" +
-      " \001(\0132@.com.alicloud.openservices.tablest" +
-      "ore.core.protocol.MeteringInfo\022\032\n\022brothe" +
-      "r_index_name\030\004 \001(\t\022^\n\021query_flow_weight\030" +
-      "\005 \003(\0132C.com.alicloud.openservices.tables" +
-      "tore.core.protocol.QueryFlowWeight\022\023\n\013cr" +
-      "eate_time\030\006 \001(\003\022\024\n\014time_to_live\030\007 \001(\005\022U\n" +
-      "\014index_status\030\010 \001(\0132?.com.alicloud.opens" +
-      "ervices.tablestore.core.protocol.IndexSt" +
-      "atus\"~\n\013IndexStatus\022S\n\006status\030\001 \001(\0162C.co" +
-      "m.alicloud.openservices.tablestore.core." +
-      "protocol.IndexStatusEnum\022\032\n\022status_descr" +
-      "iption\030\002 \001(\t\"\272\001\n\tScanQuery\022H\n\005query\030\001 \001(" +
+      ".protocol.Query\022S\n\020must_not_queries\030\002 \003(" +
       "\01329.com.alicloud.openservices.tablestore" +
-      ".core.protocol.Query\022\r\n\005limit\030\002 \001(\005\022\022\n\na" +
-      "live_time\030\003 \001(\005\022\r\n\005token\030\004 \001(\014\022\033\n\023curren" +
-      "t_parallel_id\030\005 \001(\005\022\024\n\014max_parallel\030\006 \001(" +
-      "\005\"\222\002\n\023ParallelScanRequest\022\022\n\ntable_name\030" +
-      "\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022X\n\016columns_to_" +
-      "get\030\003 \001(\0132@.com.alicloud.openservices.ta" +
-      "blestore.core.protocol.ColumnsToGet\022\022\n\ns" +
-      "ession_id\030\004 \001(\014\022Q\n\nscan_query\030\005 \001(\0132=.co" +
+      ".core.protocol.Query\022Q\n\016filter_queries\030\003" +
+      " \003(\01329.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.Query\022Q\n\016should_querie" +
+      "s\030\004 \003(\01329.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.Query\022 \n\024minimum_sh" +
+      "ould_match\030\005 \001(\005B\002\030\001\022 \n\030new_minimum_shou" +
+      "ld_match\030\006 \001(\t\022\016\n\006weight\030\007 \001(\002\"\\\n\017ConstS" +
+      "coreQuery\022I\n\006filter\030\001 \001(\01329.com.alicloud" +
+      ".openservices.tablestore.core.protocol.Q" +
+      "uery\"&\n\020FieldValueFactor\022\022\n\nfield_name\030\001" +
+      " \001(\t\"\300\001\n\022FunctionScoreQuery\022H\n\005query\030\001 \001" +
+      "(\01329.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.Query\022`\n\022field_value_fac" +
+      "tor\030\002 \001(\0132D.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.FieldValueFactor\"" +
+      "\220\003\n\023FunctionsScoreQuery\022H\n\005query\030\001 \001(\01329" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.Query\022O\n\tfunctions\030\002 \003(\0132<.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.Function\022Y\n\nscore_mode\030\003 \001(\0162E" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.FunctionScoreMode\022]\n\014combine" +
+      "_mode\030\004 \001(\0162G.com.alicloud.openservices." +
+      "tablestore.core.protocol.FunctionCombine" +
+      "Mode\022\021\n\tmin_score\030\005 \001(\002\022\021\n\tmax_score\030\006 \001" +
+      "(\002\"A\n\013SuffixQuery\022\022\n\nfield_name\030\001 \001(\t\022\016\n" +
+      "\006suffix\030\002 \001(\t\022\016\n\006weight\030\003 \001(\002\"\372\002\n\010Functi" +
+      "on\022h\n\022field_value_factor\030\001 \001(\0132L.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.FieldValueFactorFunction\022W\n\006random\030\002" +
+      " \001(\0132G.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.RandomScoreFunction\022P\n" +
+      "\005decay\030\003 \001(\0132A.com.alicloud.openservices" +
+      ".tablestore.core.protocol.DecayFunction\022" +
+      "\016\n\006weight\030\004 \001(\002\022I\n\006filter\030\005 \001(\01329.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.Query\"\247\001\n\030FieldValueFactorFunction\022" +
+      "\022\n\nfield_name\030\001 \001(\t\022\016\n\006factor\030\002 \001(\002\022V\n\010m" +
+      "odifier\030\003 \001(\0162D.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.FunctionModif" +
+      "ier\022\017\n\007missing\030\004 \001(\001\"\331\002\n\rDecayFunction\022\022" +
+      "\n\nfield_name\030\001 \001(\t\022\\\n\rmath_function\030\002 \001(" +
+      "\0162E.com.alicloud.openservices.tablestore" +
+      ".core.protocol.DecayMathFunction\022Z\n\npara" +
+      "m_type\030\003 \001(\0162F.com.alicloud.openservices" +
+      ".tablestore.core.protocol.DecayFuncParam" +
+      "Type\022\r\n\005param\030\004 \001(\014\022\r\n\005decay\030\005 \001(\001\022\\\n\020mu" +
+      "lti_value_mode\030\006 \001(\0162B.com.alicloud.open" +
+      "services.tablestore.core.protocol.MultiV" +
+      "alueMode\"\345\001\n\022DecayFuncDateParam\022\023\n\013origi" +
+      "n_long\030\001 \001(\003\022\025\n\rorigin_string\030\002 \001(\t\022P\n\005s" +
+      "cale\030\003 \001(\0132A.com.alicloud.openservices.t" +
+      "ablestore.core.protocol.DateTimeValue\022Q\n" +
+      "\006offset\030\004 \001(\0132A.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.DateTimeValue" +
+      "\"F\n\025DecayFuncNumericParam\022\016\n\006origin\030\001 \001(" +
+      "\001\022\r\n\005scale\030\002 \001(\001\022\016\n\006offset\030\003 \001(\001\"B\n\021Deca" +
+      "yFuncGeoParam\022\016\n\006origin\030\001 \001(\t\022\r\n\005scale\030\002",
+      " \001(\001\022\016\n\006offset\030\003 \001(\001\"\025\n\023RandomScoreFunct" +
+      "ion\"\233\002\n\013NestedQuery\022\014\n\004path\030\001 \001(\t\022H\n\005que" +
+      "ry\030\002 \001(\01329.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.Query\022Q\n\nscore_mod" +
+      "e\030\003 \001(\0162=.com.alicloud.openservices.tabl" +
+      "estore.core.protocol.ScoreMode\022\016\n\006weight" +
+      "\030\004 \001(\002\022Q\n\ninner_hits\030\005 \001(\0132=.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "InnerHits\"\304\001\n\tInnerHits\022F\n\004sort\030\001 \001(\01328." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.Sort\022\016\n\006offset\030\002 \001(\005\022\r\n\005limit" +
+      "\030\003 \001(\005\022P\n\thighlight\030\004 \001(\0132=.com.alicloud" +
+      ".openservices.tablestore.core.protocol.H" +
+      "ighlight\"Q\n\023GeoBoundingBoxQuery\022\022\n\nfield" +
+      "_name\030\001 \001(\t\022\020\n\010top_left\030\002 \001(\t\022\024\n\014bottom_" +
+      "right\030\003 \001(\t\"N\n\020GeoDistanceQuery\022\022\n\nfield" +
+      "_name\030\001 \001(\t\022\024\n\014center_point\030\002 \001(\t\022\020\n\010dis" +
+      "tance\030\003 \001(\001\"5\n\017GeoPolygonQuery\022\022\n\nfield_" +
+      "name\030\001 \001(\t\022\016\n\006points\030\002 \003(\t\"!\n\013ExistsQuer" +
+      "y\022\022\n\nfield_name\030\001 \001(\t\"\327\001\n\016KnnVectorQuery" +
+      "\022\022\n\nfield_name\030\001 \001(\t\022\r\n\005top_k\030\002 \001(\005\022\034\n\024f" +
+      "loat32_query_vector\030\004 \003(\002\022I\n\006filter\030\005 \001(" +
+      "\01329.com.alicloud.openservices.tablestore" +
+      ".core.protocol.Query\022\016\n\006weight\030\006 \001(\002\022\021\n\t" +
+      "min_score\030\007 \001(\002\022\026\n\016num_candidates\030\010 \001(\005\"" +
+      "c\n\005Query\022K\n\004type\030\001 \001(\0162=.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Quer" +
+      "yType\022\r\n\005query\030\002 \001(\014\"\036\n\010Collapse\022\022\n\nfiel" +
+      "d_name\030\001 \001(\t\"g\n\014NestedFilter\022\014\n\004path\030\001 \001" +
+      "(\t\022I\n\006filter\030\002 \001(\01329.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Query\"Y\n" +
+      "\tScoreSort\022L\n\005order\030\001 \001(\0162=.com.alicloud" +
+      ".openservices.tablestore.core.protocol.S" +
+      "ortOrder\"^\n\016PrimaryKeySort\022L\n\005order\030\001 \001(" +
+      "\0162=.com.alicloud.openservices.tablestore" +
+      ".core.protocol.SortOrder\"\334\002\n\tFieldSort\022\022" +
+      "\n\nfield_name\030\001 \001(\t\022L\n\005order\030\002 \001(\0162=.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.SortOrder\022J\n\004mode\030\003 \001(\0162<.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.SortMode\022W\n\rnested_filter\030\004 \001(\0132@.co" +
       "m.alicloud.openservices.tablestore.core." +
-      "protocol.ScanQuery\022\022\n\ntimeout_ms\030\006 \001(\005\"8" +
-      "\n\024ParallelScanResponse\022\014\n\004rows\030\001 \003(\014\022\022\n\n" +
-      "next_token\030\002 \001(\014*\226\002\n\007AggType\022\013\n\007AVG_AGG\020" +
-      "\001\022\023\n\017CARDINALITY_AGG\020\002\022\013\n\007MAX_AGG\020\003\022\013\n\007M" +
-      "IN_AGG\020\004\022\013\n\007SUM_AGG\020\005\022\r\n\tTERMS_AGG\020\006\022\016\n\n" +
-      "FILTER_AGG\020\007\022\016\n\nNESTED_AGG\020\010\022\022\n\016GEO_BOUN" +
-      "DS_AGG\020\t\022\024\n\020GEO_DISTANCE_AGG\020\n\022\r\n\tSTATS_" +
-      "AGG\020\013\022\026\n\022EXTENDED_STATS_AGG\020\014\022\023\n\017PERCENT" +
-      "ILES_AGG\020\r\022\030\n\024PERCENTILE_RANKS_AGG\020\016\022\023\n\017" +
-      "VALUE_COUNT_AGG\020\017*\223\001\n\017AggregationType\022\013\n" +
-      "\007AGG_AVG\020\001\022\026\n\022AGG_DISTINCT_COUNT\020\006\022\013\n\007AG" +
-      "G_MAX\020\002\022\013\n\007AGG_MIN\020\003\022\013\n\007AGG_SUM\020\004\022\r\n\tAGG" +
-      "_COUNT\020\005\022\020\n\014AGG_TOP_ROWS\020\007\022\023\n\017AGG_PERCEN" +
-      "TILES\020\010*\311\001\n\013GroupByType\022\022\n\016GROUP_BY_FIEL" +
-      "D\020\001\022\022\n\016GROUP_BY_RANGE\020\002\022\023\n\017GROUP_BY_FILT" +
-      "ER\020\003\022\031\n\025GROUP_BY_GEO_DISTANCE\020\004\022\026\n\022GROUP" +
-      "_BY_HISTOGRAM\020\005\022\033\n\027GROUP_BY_DATE_HISTOGR" +
-      "AM\020\006\022\025\n\021GROUP_BY_GEO_GRID\020\007\022\026\n\022GROUP_BY_" +
-      "COMPOSITE\020\010*\241\002\n\020GeoHashPrecision\022\027\n\023GHP_" +
-      "5009KM_4992KM_1\020\001\022\026\n\022GHP_1252KM_624KM_2\020" +
-      "\002\022\025\n\021GHP_156KM_156KM_3\020\003\022\023\n\017GHP_39KM_19K" +
-      "M_4\020\004\022\025\n\021GHP_4900M_4900M_5\020\005\022\024\n\020GHP_1200" +
-      "M_609M_6\020\006\022\023\n\017GHP_152M_152M_7\020\007\022\021\n\rGHP_3" +
-      "8M_19M_8\020\010\022\025\n\021GHP_480CM_480CM_9\020\t\022\026\n\022GHP" +
-      "_120CM_595MM_10\020\n\022\026\n\022GHP_149MM_149MM_11\020" +
-      "\013\022\024\n\020GHP_37MM_19MM_12\020\014*\247\003\n\tQueryType\022\017\n" +
-      "\013MATCH_QUERY\020\001\022\026\n\022MATCH_PHRASE_QUERY\020\002\022\016" +
-      "\n\nTERM_QUERY\020\003\022\017\n\013RANGE_QUERY\020\004\022\020\n\014PREFI" +
-      "X_QUERY\020\005\022\016\n\nBOOL_QUERY\020\006\022\025\n\021CONST_SCORE" +
-      "_QUERY\020\007\022\030\n\024FUNCTION_SCORE_QUERY\020\010\022\020\n\014NE" +
-      "STED_QUERY\020\t\022\022\n\016WILDCARD_QUERY\020\n\022\023\n\017MATC" +
-      "H_ALL_QUERY\020\013\022\032\n\026GEO_BOUNDING_BOX_QUERY\020" +
-      "\014\022\026\n\022GEO_DISTANCE_QUERY\020\r\022\025\n\021GEO_POLYGON" +
-      "_QUERY\020\016\022\017\n\013TERMS_QUERY\020\017\022\020\n\014EXISTS_QUER" +
-      "Y\020\020\022\024\n\020KNN_VECTOR_QUERY\020\021\022\031\n\025FUNCTIONS_S" +
-      "CORE_QUERY\020\022\022\020\n\014SUFFIX_QUERY\020\023\022\021\n\rDIS_MA" +
-      "X_QUERY\020\024* \n\rQueryOperator\022\006\n\002OR\020\001\022\007\n\003AN" +
-      "D\020\002*\233\001\n\020FunctionModifier\022\013\n\007FM_NONE\020\001\022\n\n" +
-      "\006FM_LOG\020\002\022\014\n\010FM_LOG1P\020\003\022\014\n\010FM_LOG2P\020\004\022\t\n" +
-      "\005FM_LN\020\005\022\013\n\007FM_LN1P\020\006\022\013\n\007FM_LN2P\020\007\022\r\n\tFM" +
-      "_SQUARE\020\010\022\013\n\007FM_SQRT\020\t\022\021\n\rFM_RECIPROCAL\020" +
-      "\n*O\n\022DecayFuncParamType\022\021\n\rDF_DATE_PARAM" +
-      "\020\001\022\024\n\020DF_NUMERIC_PARAM\020\002\022\020\n\014DF_GEO_PARAM" +
-      "\020\003*3\n\021DecayMathFunction\022\t\n\005GAUSS\020\001\022\007\n\003EX" +
-      "P\020\002\022\n\n\006LINEAR\020\003*D\n\016MultiValueMode\022\013\n\007MVM" +
-      "_MAX\020\001\022\013\n\007MVM_MIN\020\002\022\013\n\007MVM_SUM\020\003\022\013\n\007MVM_" +
-      "AVG\020\004*h\n\021FunctionScoreMode\022\013\n\007FSM_AVG\020\001\022" +
-      "\013\n\007FSM_MAX\020\002\022\013\n\007FSM_SUM\020\003\022\013\n\007FSM_MIN\020\004\022\020" +
-      "\n\014FSM_MULTIPLY\020\005\022\r\n\tFSM_FIRST\020\006*l\n\023Funct" +
-      "ionCombineMode\022\020\n\014FCM_MULTIPLY\020\001\022\013\n\007FCM_" +
-      "AVG\020\002\022\013\n\007FCM_MAX\020\003\022\013\n\007FCM_SUM\020\004\022\013\n\007FCM_M" +
-      "IN\020\005\022\017\n\013FCM_REPLACE\020\006*r\n\tScoreMode\022\023\n\017SC" +
-      "ORE_MODE_NONE\020\001\022\022\n\016SCORE_MODE_AVG\020\002\022\022\n\016S" +
-      "CORE_MODE_MAX\020\003\022\024\n\020SCORE_MODE_TOTAL\020\004\022\022\n" +
-      "\016SCORE_MODE_MIN\020\005*4\n\tSortOrder\022\022\n\016SORT_O" +
-      "RDER_ASC\020\000\022\023\n\017SORT_ORDER_DESC\020\001*C\n\010SortM" +
-      "ode\022\021\n\rSORT_MODE_MIN\020\000\022\021\n\rSORT_MODE_MAX\020" +
-      "\001\022\021\n\rSORT_MODE_AVG\020\002*?\n\017GeoDistanceType\022" +
-      "\024\n\020GEO_DISTANCE_ARC\020\000\022\026\n\022GEO_DISTANCE_PL" +
-      "ANE\020\001*6\n\026HighlightFragmentOrder\022\021\n\rTEXT_" +
-      "SEQUENCE\020\001\022\t\n\005SCORE\020\002*1\n\020HighlightEncode" +
-      "r\022\016\n\nPLAIN_MODE\020\001\022\r\n\tHTML_MODE\020\002*d\n\020Colu" +
-      "mnReturnType\022\016\n\nRETURN_ALL\020\001\022\024\n\020RETURN_S" +
-      "PECIFIED\020\002\022\017\n\013RETURN_NONE\020\003\022\031\n\025RETURN_AL" +
-      "L_FROM_INDEX\020\004*?\n\014IndexOptions\022\010\n\004DOCS\020\001" +
-      "\022\t\n\005FREQS\020\002\022\r\n\tPOSITIONS\020\003\022\013\n\007OFFSETS\020\004*" +
-      "\252\001\n\tFieldType\022\010\n\004LONG\020\001\022\n\n\006DOUBLE\020\002\022\013\n\007B" +
-      "OOLEAN\020\003\022\013\n\007KEYWORD\020\004\022\010\n\004TEXT\020\005\022\n\n\006NESTE" +
-      "D\020\006\022\r\n\tGEO_POINT\020\007\022\010\n\004DATE\020\010\022\n\n\006VECTOR\020\t" +
-      "\022\021\n\rFUZZY_KEYWORD\020\n\022\006\n\002IP\020\013\022\010\n\004JSON\020\014\022\r\n" +
-      "\tFLATTENED\020\r*{\n\014DateTimeUnit\022\010\n\004YEAR\020\001\022\020" +
-      "\n\014QUARTER_YEAR\020\002\022\t\n\005MONTH\020\003\022\010\n\004WEEK\020\004\022\007\n" +
-      "\003DAY\020\005\022\010\n\004HOUR\020\006\022\n\n\006MINUTE\020\007\022\n\n\006SECOND\020\010" +
-      "\022\017\n\013MILLISECOND\020\t*,\n\010JsonType\022\017\n\013OBJECT_" +
-      "JSON\020\001\022\017\n\013NESTED_JSON\020\002*!\n\016VectorDataTyp" +
-      "e\022\017\n\013VD_FLOAT_32\020\002*G\n\020VectorMetricType\022\020" +
-      "\n\014VM_EUCLIDEAN\020\000\022\r\n\tVM_COSINE\020\001\022\022\n\016VM_DO" +
-      "T_PRODUCT\020\002*\037\n\tSyncPhase\022\010\n\004FULL\020\001\022\010\n\004IN" +
-      "CR\020\002*7\n\017IndexStatusEnum\022\013\n\007PENDING\020\001\022\n\n\006" +
-      "FAILED\020\002\022\013\n\007RUNNING\020\003"
+      "protocol.NestedFilter\022\025\n\rmissing_value\030\005" +
+      " \001(\014\022\031\n\rmissing_field\030\006 \001(\tB\002\030\001\022\026\n\016missi" +
+      "ng_fields\030\007 \003(\t\"W\n\007DocSort\022L\n\005order\030\001 \001(" +
+      "\0162=.com.alicloud.openservices.tablestore" +
+      ".core.protocol.SortOrder\"\204\003\n\017GeoDistance" +
+      "Sort\022\022\n\nfield_name\030\001 \001(\t\022\016\n\006points\030\002 \003(\t" +
+      "\022L\n\005order\030\003 \001(\0162=.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.SortOrder\022J" +
+      "\n\004mode\030\004 \001(\0162<.com.alicloud.openservices" +
+      ".tablestore.core.protocol.SortMode\022Z\n\rdi" +
+      "stance_type\030\005 \001(\0162C.com.alicloud.openser" +
+      "vices.tablestore.core.protocol.GeoDistan" +
+      "ceType\022W\n\rnested_filter\030\006 \001(\0132@.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.NestedFilter\"\262\003\n\006Sorter\022Q\n\nfield_sort" +
+      "\030\001 \001(\0132=.com.alicloud.openservices.table" +
+      "store.core.protocol.FieldSort\022^\n\021geo_dis" +
+      "tance_sort\030\002 \001(\0132C.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.GeoDistanc" +
+      "eSort\022Q\n\nscore_sort\030\003 \001(\0132=.com.alicloud" +
+      ".openservices.tablestore.core.protocol.S" +
+      "coreSort\022S\n\007pk_sort\030\004 \001(\0132B.com.alicloud" +
+      ".openservices.tablestore.core.protocol.P" +
+      "rimaryKeySort\022M\n\010doc_sort\030\005 \001(\0132;.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.DocSort\"u\n\004Sort\022J\n\006sorter\030\001 \003(\0132:.c" +
+      "om.alicloud.openservices.tablestore.core" +
+      ".protocol.Sorter\022!\n\031disable_default_pk_s" +
+      "orter\030\002 \001(\010\"\375\004\n\013SearchQuery\022\016\n\006offset\030\001 " +
+      "\001(\005\022\r\n\005limit\030\002 \001(\005\022H\n\005query\030\004 \001(\01329.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.Query\022N\n\010collapse\030\005 \001(\0132<.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.Collapse\022F\n\004sort\030\006 \001(\01328.com.aliclou" +
+      "d.openservices.tablestore.core.protocol." +
+      "Sort\022\r\n\005token\030\t \001(\014\022N\n\004aggs\030\n \001(\0132@.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.Aggregations\022O\n\tgroup_bys\030\013 \001(\0132<" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.GroupBys\022P\n\thighlight\030\014 \001(\0132" +
+      "=.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.Highlight\022\031\n\021track_total_co" +
+      "unt\030\r \001(\005\022P\n\006filter\030\016 \001(\0132@.com.alicloud" +
+      ".openservices.tablestore.core.protocol.S" +
+      "earchFilter\"X\n\014SearchFilter\022H\n\005query\030\001 \001" +
+      "(\01329.com.alicloud.openservices.tablestor" +
+      "e.core.protocol.Query\"\336\001\n\tHighlight\022d\n\024h" +
+      "ighlight_parameters\030\001 \003(\0132F.com.alicloud" +
+      ".openservices.tablestore.core.protocol.H" +
+      "ighlightParameter\022k\n\021highlight_encoder\030\002" +
+      " \001(\0162D.com.alicloud.openservices.tablest" +
+      "ore.core.protocol.HighlightEncoder:\nPLAI" +
+      "N_MODE\"\363\001\n\022HighlightParameter\022\022\n\nfield_n" +
+      "ame\030\001 \001(\t\022\033\n\023number_of_fragments\030\002 \001(\005\022\025" +
+      "\n\rfragment_size\030\003 \001(\005\022\017\n\007pre_tag\030\004 \001(\t\022\020" +
+      "\n\010post_tag\030\005 \001(\t\022r\n\017fragments_order\030\006 \001(" +
+      "\0162J.com.alicloud.openservices.tablestore" +
+      ".core.protocol.HighlightFragmentOrder:\rT" +
+      "EXT_SEQUENCE\"\177\n\014ColumnsToGet\022Y\n\013return_t" +
+      "ype\030\001 \001(\0162D.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.ColumnReturnType\022" +
+      "\024\n\014column_names\030\002 \003(\t\"\323\001\n\rSearchRequest\022" +
+      "\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022" +
+      "X\n\016columns_to_get\030\003 \001(\0132@.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.Col" +
+      "umnsToGet\022\024\n\014search_query\030\004 \001(\014\022\026\n\016routi" +
+      "ng_values\030\005 \003(\014\022\022\n\ntimeout_ms\030\006 \001(\005\"\216\003\n\016" +
+      "SearchResponse\022\022\n\ntotal_hits\030\001 \001(\003\022\014\n\004ro" +
+      "ws\030\002 \003(\014\022\030\n\020is_all_succeeded\030\003 \001(\010\022R\n\013se" +
+      "arch_hits\030\005 \003(\0132=.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.SearchHit\022\022" +
+      "\n\nnext_token\030\006 \001(\014\022\014\n\004aggs\030\007 \001(\014\022\021\n\tgrou" +
+      "p_bys\030\010 \001(\014\022V\n\010consumed\030\t \001(\0132D.com.alic" +
+      "loud.openservices.tablestore.core.protoc" +
+      "ol.ConsumedCapacity\022_\n\021reserved_consumed" +
+      "\030\n \001(\0132D.com.alicloud.openservices.table" +
+      "store.core.protocol.ConsumedCapacity\"\363\001\n" +
+      "\tSearchHit\022\r\n\005score\030\003 \001(\001\022]\n\020highlight_r" +
+      "esult\030\004 \001(\0132C.com.alicloud.openservices." +
+      "tablestore.core.protocol.HighlightResult" +
+      "\022]\n\021search_inner_hits\030\005 \003(\0132B.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".SearchInnerHit\022\031\n\021nested_doc_offset\030\006 \001" +
+      "(\005\"r\n\016SearchInnerHit\022\014\n\004path\030\001 \001(\t\022R\n\013se" +
+      "arch_hits\030\002 \003(\0132=.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.SearchHit\"o" +
+      "\n\017HighlightResult\022\\\n\020highlight_fields\030\001 " +
+      "\003(\0132B.com.alicloud.openservices.tablesto" +
+      "re.core.protocol.HighlightField\"=\n\016Highl" +
+      "ightField\022\022\n\nfield_name\030\001 \001(\t\022\027\n\017field_f" +
+      "ragments\030\002 \003(\t\"n\n\rDateTimeValue\022\r\n\005value" +
+      "\030\001 \001(\005\022N\n\004unit\030\002 \001(\0162@.com.alicloud.open" +
+      "services.tablestore.core.protocol.DateTi" +
+      "meUnit\"K\n\033SingleWordAnalyzerParameter\022\026\n" +
+      "\016case_sensitive\030\001 \001(\010\022\024\n\014delimit_word\030\002 " +
+      "\001(\010\"C\n\026SplitAnalyzerParameter\022\021\n\tdelimit" +
+      "er\030\001 \001(\t\022\026\n\016case_sensitive\030\002 \001(\010\"V\n\026Fuzz" +
+      "yAnalyzerParameter\022\021\n\tmin_chars\030\001 \001(\005\022\021\n" +
+      "\tmax_chars\030\002 \001(\005\022\026\n\016case_sensitive\030\003 \001(\010" +
+      "\"\256\005\n\013FieldSchema\022\022\n\nfield_name\030\001 \001(\t\022Q\n\n" +
+      "field_type\030\002 \001(\0162=.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.FieldType\022" +
+      "W\n\rindex_options\030\003 \001(\0162@.com.alicloud.op" +
+      "enservices.tablestore.core.protocol.Inde" +
+      "xOptions\022\020\n\010analyzer\030\004 \001(\t\022\r\n\005index\030\005 \001(" +
+      "\010\022\024\n\014sort_and_agg\030\006 \001(\010\022\r\n\005store\030\007 \001(\010\022V" +
+      "\n\rfield_schemas\030\010 \003(\0132?.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Field" +
+      "Schema\022\020\n\010is_array\030\t \001(\010\022\032\n\022analyzer_par" +
+      "ameter\030\n \001(\014\022\030\n\020is_virtual_field\030\013 \001(\010\022\032" +
+      "\n\022source_field_names\030\014 \003(\t\022\024\n\014date_forma" +
+      "ts\030\r \003(\t\022\033\n\023enable_highlighting\030\016 \001(\010\022Y\n" +
+      "\016vector_options\030\017 \001(\0132A.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Vecto" +
+      "rOptions\022O\n\tjson_type\030\020 \001(\0162<.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".JsonType\"\324\001\n\rVectorOptions\022U\n\tdata_type" +
+      "\030\001 \001(\0162B.com.alicloud.openservices.table" +
+      "store.core.protocol.VectorDataType\022\021\n\tdi" +
+      "mension\030\002 \001(\005\022Y\n\013metric_type\030\003 \001(\0162D.com" +
+      ".alicloud.openservices.tablestore.core.p" +
+      "rotocol.VectorMetricType\"\214\002\n\013IndexSchema" +
+      "\022V\n\rfield_schemas\030\001 \003(\0132?.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.Fie" +
+      "ldSchema\022W\n\rindex_setting\030\002 \001(\0132@.com.al" +
+      "icloud.openservices.tablestore.core.prot" +
+      "ocol.IndexSetting\022L\n\nindex_sort\030\003 \001(\01328." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.Sort\"\206\001\n\014IndexSetting\022\030\n\020numb" +
+      "er_of_shards\030\001 \001(\005\022\026\n\016routing_fields\030\002 \003" +
+      "(\t\022\036\n\026routing_partition_size\030\003 \001(\005\022$\n\034en" +
+      "able_custom_column_version\030\007 \001(\010\"\304\001\n\030Cre" +
+      "ateSearchIndexRequest\022\022\n\ntable_name\030\001 \002(" +
+      "\t\022\022\n\nindex_name\030\002 \002(\t\022O\n\006schema\030\003 \001(\0132?." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.IndexSchema\022\031\n\021source_index_n" +
+      "ame\030\004 \001(\t\022\024\n\014time_to_live\030\005 \001(\005\"\033\n\031Creat" +
+      "eSearchIndexResponse\"5\n\017QueryFlowWeight\022" +
+      "\022\n\nindex_name\030\001 \001(\t\022\016\n\006weight\030\002 \001(\005\"\261\002\n\030" +
+      "UpdateSearchIndexRequest\022\022\n\ntable_name\030\001" +
+      " \001(\t\022\022\n\nindex_name\030\002 \001(\t\022\031\n\021switch_index" +
+      "_name\030\003 \001(\t\022^\n\021query_flow_weight\030\004 \003(\0132C" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.QueryFlowWeight\022\024\n\014time_to_l" +
+      "ive\030\005 \001(\005\022\\\n\023added_field_schemas\030\006 \003(\0132?" +
+      ".com.alicloud.openservices.tablestore.co" +
+      "re.protocol.FieldSchema\"\033\n\031UpdateSearchI" +
+      "ndexResponse\"3\n\tIndexInfo\022\022\n\ntable_name\030" +
+      "\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\",\n\026ListSearchI" +
+      "ndexRequest\022\022\n\ntable_name\030\001 \001(\t\"i\n\027ListS" +
+      "earchIndexResponse\022N\n\007indices\030\001 \003(\0132=.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.IndexInfo\"B\n\030DeleteSearchIndexR" +
+      "equest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name" +
+      "\030\002 \001(\t\"\033\n\031DeleteSearchIndexResponse\"}\n\010S" +
+      "yncStat\022Q\n\nsync_phase\030\001 \001(\0162=.com.aliclo" +
+      "ud.openservices.tablestore.core.protocol" +
+      ".SyncPhase\022\036\n\026current_sync_timestamp\030\002 \001" +
+      "(\003\"d\n\014MeteringInfo\022\024\n\014storage_size\030\001 \001(\003" +
+      "\022\021\n\trow_count\030\002 \001(\003\022\030\n\020reserved_read_cu\030" +
+      "\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"_\n\032DescribeSear" +
+      "chIndexRequest\022\022\n\ntable_name\030\001 \001(\t\022\022\n\nin" +
+      "dex_name\030\002 \001(\t\022\031\n\021include_sync_stat\030\003 \001(" +
+      "\010\"\226\004\n\033DescribeSearchIndexResponse\022O\n\006sch" +
+      "ema\030\001 \001(\0132?.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.IndexSchema\022O\n\tsy" +
+      "nc_stat\030\002 \001(\0132<.com.alicloud.openservice" +
+      "s.tablestore.core.protocol.SyncStat\022W\n\rm" +
+      "etering_info\030\003 \001(\0132@.com.alicloud.opense" +
+      "rvices.tablestore.core.protocol.Metering" +
+      "Info\022\032\n\022brother_index_name\030\004 \001(\t\022^\n\021quer" +
+      "y_flow_weight\030\005 \003(\0132C.com.alicloud.opens" +
+      "ervices.tablestore.core.protocol.QueryFl" +
+      "owWeight\022\023\n\013create_time\030\006 \001(\003\022\024\n\014time_to" +
+      "_live\030\007 \001(\005\022U\n\014index_status\030\010 \001(\0132?.com." +
+      "alicloud.openservices.tablestore.core.pr" +
+      "otocol.IndexStatus\"~\n\013IndexStatus\022S\n\006sta" +
+      "tus\030\001 \001(\0162C.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.IndexStatusEnum\022\032" +
+      "\n\022status_description\030\002 \001(\t\"\272\001\n\tScanQuery" +
+      "\022H\n\005query\030\001 \001(\01329.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Query\022\r\n\005li" +
+      "mit\030\002 \001(\005\022\022\n\nalive_time\030\003 \001(\005\022\r\n\005token\030\004" +
+      " \001(\014\022\033\n\023current_parallel_id\030\005 \001(\005\022\024\n\014max" +
+      "_parallel\030\006 \001(\005\"\222\002\n\023ParallelScanRequest\022" +
+      "\022\n\ntable_name\030\001 \001(\t\022\022\n\nindex_name\030\002 \001(\t\022" +
+      "X\n\016columns_to_get\030\003 \001(\0132@.com.alicloud.o" +
+      "penservices.tablestore.core.protocol.Col" +
+      "umnsToGet\022\022\n\nsession_id\030\004 \001(\014\022Q\n\nscan_qu" +
+      "ery\030\005 \001(\0132=.com.alicloud.openservices.ta" +
+      "blestore.core.protocol.ScanQuery\022\022\n\ntime" +
+      "out_ms\030\006 \001(\005\"8\n\024ParallelScanResponse\022\014\n\004" +
+      "rows\030\001 \003(\014\022\022\n\nnext_token\030\002 \001(\014*\226\002\n\007AggTy" +
+      "pe\022\013\n\007AVG_AGG\020\001\022\023\n\017CARDINALITY_AGG\020\002\022\013\n\007" +
+      "MAX_AGG\020\003\022\013\n\007MIN_AGG\020\004\022\013\n\007SUM_AGG\020\005\022\r\n\tT" +
+      "ERMS_AGG\020\006\022\016\n\nFILTER_AGG\020\007\022\016\n\nNESTED_AGG" +
+      "\020\010\022\022\n\016GEO_BOUNDS_AGG\020\t\022\024\n\020GEO_DISTANCE_A" +
+      "GG\020\n\022\r\n\tSTATS_AGG\020\013\022\026\n\022EXTENDED_STATS_AG" +
+      "G\020\014\022\023\n\017PERCENTILES_AGG\020\r\022\030\n\024PERCENTILE_R" +
+      "ANKS_AGG\020\016\022\023\n\017VALUE_COUNT_AGG\020\017*\223\001\n\017Aggr" +
+      "egationType\022\013\n\007AGG_AVG\020\001\022\026\n\022AGG_DISTINCT" +
+      "_COUNT\020\006\022\013\n\007AGG_MAX\020\002\022\013\n\007AGG_MIN\020\003\022\013\n\007AG" +
+      "G_SUM\020\004\022\r\n\tAGG_COUNT\020\005\022\020\n\014AGG_TOP_ROWS\020\007" +
+      "\022\023\n\017AGG_PERCENTILES\020\010*\311\001\n\013GroupByType\022\022\n" +
+      "\016GROUP_BY_FIELD\020\001\022\022\n\016GROUP_BY_RANGE\020\002\022\023\n" +
+      "\017GROUP_BY_FILTER\020\003\022\031\n\025GROUP_BY_GEO_DISTA" +
+      "NCE\020\004\022\026\n\022GROUP_BY_HISTOGRAM\020\005\022\033\n\027GROUP_B" +
+      "Y_DATE_HISTOGRAM\020\006\022\025\n\021GROUP_BY_GEO_GRID\020" +
+      "\007\022\026\n\022GROUP_BY_COMPOSITE\020\010*\241\002\n\020GeoHashPre" +
+      "cision\022\027\n\023GHP_5009KM_4992KM_1\020\001\022\026\n\022GHP_1" +
+      "252KM_624KM_2\020\002\022\025\n\021GHP_156KM_156KM_3\020\003\022\023" +
+      "\n\017GHP_39KM_19KM_4\020\004\022\025\n\021GHP_4900M_4900M_5" +
+      "\020\005\022\024\n\020GHP_1200M_609M_6\020\006\022\023\n\017GHP_152M_152" +
+      "M_7\020\007\022\021\n\rGHP_38M_19M_8\020\010\022\025\n\021GHP_480CM_48" +
+      "0CM_9\020\t\022\026\n\022GHP_120CM_595MM_10\020\n\022\026\n\022GHP_1" +
+      "49MM_149MM_11\020\013\022\024\n\020GHP_37MM_19MM_12\020\014*\247\003" +
+      "\n\tQueryType\022\017\n\013MATCH_QUERY\020\001\022\026\n\022MATCH_PH" +
+      "RASE_QUERY\020\002\022\016\n\nTERM_QUERY\020\003\022\017\n\013RANGE_QU" +
+      "ERY\020\004\022\020\n\014PREFIX_QUERY\020\005\022\016\n\nBOOL_QUERY\020\006\022" +
+      "\025\n\021CONST_SCORE_QUERY\020\007\022\030\n\024FUNCTION_SCORE" +
+      "_QUERY\020\010\022\020\n\014NESTED_QUERY\020\t\022\022\n\016WILDCARD_Q" +
+      "UERY\020\n\022\023\n\017MATCH_ALL_QUERY\020\013\022\032\n\026GEO_BOUND" +
+      "ING_BOX_QUERY\020\014\022\026\n\022GEO_DISTANCE_QUERY\020\r\022" +
+      "\025\n\021GEO_POLYGON_QUERY\020\016\022\017\n\013TERMS_QUERY\020\017\022" +
+      "\020\n\014EXISTS_QUERY\020\020\022\024\n\020KNN_VECTOR_QUERY\020\021\022" +
+      "\031\n\025FUNCTIONS_SCORE_QUERY\020\022\022\020\n\014SUFFIX_QUE" +
+      "RY\020\023\022\021\n\rDIS_MAX_QUERY\020\024* \n\rQueryOperator" +
+      "\022\006\n\002OR\020\001\022\007\n\003AND\020\002*\233\001\n\020FunctionModifier\022\013" +
+      "\n\007FM_NONE\020\001\022\n\n\006FM_LOG\020\002\022\014\n\010FM_LOG1P\020\003\022\014\n" +
+      "\010FM_LOG2P\020\004\022\t\n\005FM_LN\020\005\022\013\n\007FM_LN1P\020\006\022\013\n\007F" +
+      "M_LN2P\020\007\022\r\n\tFM_SQUARE\020\010\022\013\n\007FM_SQRT\020\t\022\021\n\r" +
+      "FM_RECIPROCAL\020\n*O\n\022DecayFuncParamType\022\021\n" +
+      "\rDF_DATE_PARAM\020\001\022\024\n\020DF_NUMERIC_PARAM\020\002\022\020" +
+      "\n\014DF_GEO_PARAM\020\003*3\n\021DecayMathFunction\022\t\n" +
+      "\005GAUSS\020\001\022\007\n\003EXP\020\002\022\n\n\006LINEAR\020\003*D\n\016MultiVa" +
+      "lueMode\022\013\n\007MVM_MAX\020\001\022\013\n\007MVM_MIN\020\002\022\013\n\007MVM" +
+      "_SUM\020\003\022\013\n\007MVM_AVG\020\004*h\n\021FunctionScoreMode" +
+      "\022\013\n\007FSM_AVG\020\001\022\013\n\007FSM_MAX\020\002\022\013\n\007FSM_SUM\020\003\022" +
+      "\013\n\007FSM_MIN\020\004\022\020\n\014FSM_MULTIPLY\020\005\022\r\n\tFSM_FI" +
+      "RST\020\006*l\n\023FunctionCombineMode\022\020\n\014FCM_MULT" +
+      "IPLY\020\001\022\013\n\007FCM_AVG\020\002\022\013\n\007FCM_MAX\020\003\022\013\n\007FCM_" +
+      "SUM\020\004\022\013\n\007FCM_MIN\020\005\022\017\n\013FCM_REPLACE\020\006*r\n\tS" +
+      "coreMode\022\023\n\017SCORE_MODE_NONE\020\001\022\022\n\016SCORE_M" +
+      "ODE_AVG\020\002\022\022\n\016SCORE_MODE_MAX\020\003\022\024\n\020SCORE_M" +
+      "ODE_TOTAL\020\004\022\022\n\016SCORE_MODE_MIN\020\005*4\n\tSortO" +
+      "rder\022\022\n\016SORT_ORDER_ASC\020\000\022\023\n\017SORT_ORDER_D" +
+      "ESC\020\001*C\n\010SortMode\022\021\n\rSORT_MODE_MIN\020\000\022\021\n\r" +
+      "SORT_MODE_MAX\020\001\022\021\n\rSORT_MODE_AVG\020\002*?\n\017Ge" +
+      "oDistanceType\022\024\n\020GEO_DISTANCE_ARC\020\000\022\026\n\022G" +
+      "EO_DISTANCE_PLANE\020\001*6\n\026HighlightFragment" +
+      "Order\022\021\n\rTEXT_SEQUENCE\020\001\022\t\n\005SCORE\020\002*1\n\020H" +
+      "ighlightEncoder\022\016\n\nPLAIN_MODE\020\001\022\r\n\tHTML_" +
+      "MODE\020\002*d\n\020ColumnReturnType\022\016\n\nRETURN_ALL" +
+      "\020\001\022\024\n\020RETURN_SPECIFIED\020\002\022\017\n\013RETURN_NONE\020" +
+      "\003\022\031\n\025RETURN_ALL_FROM_INDEX\020\004*?\n\014IndexOpt" +
+      "ions\022\010\n\004DOCS\020\001\022\t\n\005FREQS\020\002\022\r\n\tPOSITIONS\020\003" +
+      "\022\013\n\007OFFSETS\020\004*\252\001\n\tFieldType\022\010\n\004LONG\020\001\022\n\n" +
+      "\006DOUBLE\020\002\022\013\n\007BOOLEAN\020\003\022\013\n\007KEYWORD\020\004\022\010\n\004T" +
+      "EXT\020\005\022\n\n\006NESTED\020\006\022\r\n\tGEO_POINT\020\007\022\010\n\004DATE" +
+      "\020\010\022\n\n\006VECTOR\020\t\022\021\n\rFUZZY_KEYWORD\020\n\022\006\n\002IP\020" +
+      "\013\022\010\n\004JSON\020\014\022\r\n\tFLATTENED\020\r*{\n\014DateTimeUn" +
+      "it\022\010\n\004YEAR\020\001\022\020\n\014QUARTER_YEAR\020\002\022\t\n\005MONTH\020" +
+      "\003\022\010\n\004WEEK\020\004\022\007\n\003DAY\020\005\022\010\n\004HOUR\020\006\022\n\n\006MINUTE" +
+      "\020\007\022\n\n\006SECOND\020\010\022\017\n\013MILLISECOND\020\t*,\n\010JsonT" +
+      "ype\022\017\n\013OBJECT_JSON\020\001\022\017\n\013NESTED_JSON\020\002*!\n" +
+      "\016VectorDataType\022\017\n\013VD_FLOAT_32\020\002*G\n\020Vect" +
+      "orMetricType\022\020\n\014VM_EUCLIDEAN\020\000\022\r\n\tVM_COS" +
+      "INE\020\001\022\022\n\016VM_DOT_PRODUCT\020\002*\037\n\tSyncPhase\022\010" +
+      "\n\004FULL\020\001\022\010\n\004INCR\020\002*7\n\017IndexStatusEnum\022\013\n" +
+      "\007PENDING\020\001\022\n\n\006FAILED\020\002\022\013\n\007RUNNING\020\003"
     };
     descriptor = com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -152148,7 +152247,7 @@ public final class Search {
     internal_static_com_alicloud_openservices_tablestore_core_protocol_MatchPhraseQuery_fieldAccessorTable = new
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_MatchPhraseQuery_descriptor,
-        new java.lang.String[] { "FieldName", "Text", "Weight", });
+        new java.lang.String[] { "FieldName", "Text", "Weight", "Slop", });
     internal_static_com_alicloud_openservices_tablestore_core_protocol_MatchAllQuery_descriptor =
       getDescriptor().getMessageTypes().get(99);
     internal_static_com_alicloud_openservices_tablestore_core_protocol_MatchAllQuery_fieldAccessorTable = new

@@ -651,7 +651,10 @@ public abstract class BaseSearchTest {
         if (RANDOM.nextBoolean()) {
             query.setWeight(RANDOM.nextFloat());
         }
-        assertAllFieldTested(query, 4);
+        if (RANDOM.nextBoolean()) {
+            query.setSlop(RANDOM.nextInt(10));
+        }
+        assertAllFieldTested(query, 5);
         return query;
     }
 

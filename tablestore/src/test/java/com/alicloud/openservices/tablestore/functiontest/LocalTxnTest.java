@@ -37,6 +37,7 @@ public class LocalTxnTest {
         TableOptions tableOptions = new TableOptions(timeToLive, maxVersions);
 
         CreateTableRequest request = new CreateTableRequest(tableMeta, tableOptions);
+        request.setLocalTxnEnabled(true);
 
         Utils.deleteTableIfExist(client, tableName);
 
@@ -550,5 +551,197 @@ public class LocalTxnTest {
         client.createTable(createTableRequest);
         // Wait for partition loading
         Utils.waitForPartitionLoad(tableName);
+    }
+
+    @Test
+    public void TestStartTxnWithSingleRowKey() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        PrimaryKey rowKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(200L))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+        request.addRowKey(rowKey);
+
+        String txnId = client.startLocalTransaction(request).getTransactionID();
+        assertNotNull(txnId);
+        assertFalse(txnId.isEmpty());
+
+        commitTxn(txnId);
+    }
+
+    @Test
+    public void TestStartTxnWithMultipleRowKeys() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        PrimaryKey rowKey1 = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(201L))
+            .build();
+
+        PrimaryKey rowKey2 = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(202L))
+            .build();
+
+        List<PrimaryKey> rowKeys = new ArrayList<>();
+        rowKeys.add(rowKey1);
+        rowKeys.add(rowKey2);
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey, rowKeys);
+
+        String txnId = client.startLocalTransaction(request).getTransactionID();
+        assertNotNull(txnId);
+        assertFalse(txnId.isEmpty());
+
+        commitTxn(txnId);
+    }
+
+    @Test
+    public void TestStartTxnWithRowKeysThenPutCommit() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        PrimaryKey rowKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(203L))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+        request.addRowKey(rowKey);
+
+        String txnId = client.startLocalTransaction(request).getTransactionID();
+        assertNotNull(txnId);
+        assertFalse(txnId.isEmpty());
+
+        putRow(txnId, "chengdu", 203L, 9999L);
+        commitTxn(txnId);
+
+        Row row = getRow("", "chengdu", 203L);
+        PrimaryKeyColumn[] pks = row.getPrimaryKey().getPrimaryKeyColumns();
+        assertEquals(2, pks.length);
+        assertEquals("chengdu", pks[0].getValue().asString());
+        assertEquals(203L, pks[1].getValue().asLong());
+
+        Column[] columns = row.getColumns();
+        assertEquals(1, columns.length);
+        assertEquals(9999L, columns[0].getValue().asLong());
+    }
+
+    @Test
+    public void TestStartTxnWithRowKeysThenAbort() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        PrimaryKey rowKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(204L))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+        request.addRowKey(rowKey);
+
+        String txnId = client.startLocalTransaction(request).getTransactionID();
+        assertNotNull(txnId);
+        assertFalse(txnId.isEmpty());
+
+        putRow(txnId, "chengdu", 204L, 8888L);
+
+        AbortTransactionRequest abortRequest = new AbortTransactionRequest(txnId);
+        client.abortTransaction(abortRequest);
+
+        // After abort, the row should not exist
+        Row row = getRow("", "chengdu", 204L);
+        assertNull(row);
+    }
+
+    @Test
+    public void TestSetRowKeysReplacesExistingList() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        PrimaryKey rowKey1 = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(205L))
+            .build();
+
+        PrimaryKey rowKey2 = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .addPrimaryKeyColumn("pk2", PrimaryKeyValue.fromLong(206L))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+        request.addRowKey(rowKey1);
+
+        // setRowKeys should replace the existing list
+        List<PrimaryKey> newRowKeys = new ArrayList<>();
+        newRowKeys.add(rowKey2);
+        request.setRowKeys(newRowKeys);
+
+        assertEquals(1, request.getRowKeys().size());
+        assertEquals(rowKey2, request.getRowKeys().get(0));
+
+        String txnId = client.startLocalTransaction(request).getTransactionID();
+        assertNotNull(txnId);
+        assertFalse(txnId.isEmpty());
+
+        commitTxn(txnId);
+    }
+
+    @Test
+    public void TestSetRowKeysWithNullThrowsException() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+
+        try {
+            request.setRowKeys(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
+    }
+
+    @Test
+    public void TestSetRowKeysWithEmptyListThrowsException() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+
+        try {
+            request.setRowKeys(new ArrayList<>());
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
+    }
+
+    @Test
+    public void TestAddNullRowKeyThrowsException() {
+        PrimaryKey partitionKey = PrimaryKeyBuilder.createPrimaryKeyBuilder()
+            .addPrimaryKeyColumn("pk1", PrimaryKeyValue.fromString("chengdu"))
+            .build();
+
+        StartLocalTransactionRequest request = new StartLocalTransactionRequest(tableName, partitionKey);
+
+        try {
+            request.addRowKey(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
     }
 }

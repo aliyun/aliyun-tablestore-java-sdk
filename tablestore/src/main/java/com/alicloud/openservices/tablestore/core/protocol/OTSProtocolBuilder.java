@@ -1239,9 +1239,14 @@ public class OTSProtocolBuilder {
         builder.setTableName(request.getTableName());
         try {
             builder.setKey(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyWithHeader(request.getPrimaryKey())));
+            if (request.getRowKeys() != null && !request.getRowKeys().isEmpty()) {
+                for (PrimaryKey rowKey : request.getRowKeys()) {
+                    builder.addRowKeys(ByteString.copyFrom(PlainBufferBuilder.buildPrimaryKeyWithHeader(rowKey)));
+                }
+            }
         } catch (IOException e) {
             throw new ClientException("Bug: serialize StartLocalTransactionRequest failed.", e);
-       }
+        }
         return builder.build();
     }
 

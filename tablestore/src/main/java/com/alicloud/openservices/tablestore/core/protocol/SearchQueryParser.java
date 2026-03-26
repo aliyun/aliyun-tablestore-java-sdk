@@ -164,6 +164,9 @@ public class SearchQueryParser {
         if (pb.hasText()) {
             query.setText(pb.getText());
         }
+        if (pb.hasSlop()) {
+            query.setSlop(pb.getSlop());
+        }
         return query;
     }
 

@@ -8,6 +8,7 @@ import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 
 public interface AsyncClientInterface {
 
@@ -493,4 +494,48 @@ public interface AsyncClientInterface {
     public void switchCredentialsProvider(CredentialsProvider newCrdsProvider);
 
     public Future<SQLQueryResponse> sqlQuery(SQLQueryRequest request, TableStoreCallback<SQLQueryRequest, SQLQueryResponse> callback);
+
+    // KnowledgeBase operations
+    public Future<CreateKnowledgeBaseResponse> createKnowledgeBase(
+            CreateKnowledgeBaseRequest request, TableStoreCallback<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> callback);
+
+    public Future<DescribeKnowledgeBaseResponse> describeKnowledgeBase(
+            DescribeKnowledgeBaseRequest request, TableStoreCallback<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> callback);
+
+    public Future<ListKnowledgeBaseResponse> listKnowledgeBase(
+            ListKnowledgeBaseRequest request, TableStoreCallback<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> callback);
+
+    public Future<DeleteKnowledgeBaseResponse> deleteKnowledgeBase(
+            DeleteKnowledgeBaseRequest request, TableStoreCallback<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> callback);
+
+    public Future<UpdateKnowledgeBaseResponse> updateKnowledgeBase(
+            UpdateKnowledgeBaseRequest request, TableStoreCallback<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> callback);
+
+    // Document operations
+    public Future<AddDocumentsResponse> addDocuments(
+            AddDocumentsRequest request, TableStoreCallback<AddDocumentsRequest, AddDocumentsResponse> callback);
+
+    public Future<GetDocumentResponse> getDocument(
+            GetDocumentRequest request, TableStoreCallback<GetDocumentRequest, GetDocumentResponse> callback);
+
+    public Future<ListDocumentsResponse> listDocuments(
+            ListDocumentsRequest request, TableStoreCallback<ListDocumentsRequest, ListDocumentsResponse> callback);
+
+    public Future<DeleteDocumentsResponse> deleteDocuments(
+            DeleteDocumentsRequest request, TableStoreCallback<DeleteDocumentsRequest, DeleteDocumentsResponse> callback);
+
+    public Future<UpdateDocumentResponse> updateDocument(
+            UpdateDocumentRequest request, TableStoreCallback<UpdateDocumentRequest, UpdateDocumentResponse> callback);
+
+    // Chunk operations
+    public Future<ListChunksResponse> listChunks(
+            ListChunksRequest request, TableStoreCallback<ListChunksRequest, ListChunksResponse> callback);
+
+    public Future<UpdateChunksResponse> updateChunks(
+            UpdateChunksRequest request, TableStoreCallback<UpdateChunksRequest, UpdateChunksResponse> callback);
+
+    // Retrieval operations
+    public Future<RetrieveResponse> retrieve(
+            RetrieveRequest request, TableStoreCallback<RetrieveRequest, RetrieveResponse> callback);
+
 }

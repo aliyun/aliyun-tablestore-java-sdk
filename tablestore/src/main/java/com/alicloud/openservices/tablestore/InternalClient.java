@@ -9,6 +9,7 @@ import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
 import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.*;
+import com.alicloud.openservices.tablestore.model.NoRetryStrategy;
 import com.alicloud.openservices.tablestore.model.delivery.*;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
@@ -16,6 +17,8 @@ import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
 import com.alicloud.openservices.tablestore.model.tunnel.*;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.core.knowledgebase.*;
 import com.google.common.cache.Cache;
 
 import java.util.Map;
@@ -2079,4 +2082,284 @@ public class InternalClient {
 
         return f;
     }
+
+    // KnowledgeBase operations
+    public Future<CreateKnowledgeBaseResponse> createKnowledgeBase(CreateKnowledgeBaseRequest request,
+            TableStoreCallback<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        CreateKnowledgeBaseLauncher launcher = launcherFactory.createKnowledgeBase(tracer, retry, request);
+
+        AsyncCompletion<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> completion =
+                new AsyncCompletion<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse> f = new CallbackImpledFuture<CreateKnowledgeBaseRequest, CreateKnowledgeBaseResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DescribeKnowledgeBaseResponse> describeKnowledgeBase(DescribeKnowledgeBaseRequest request,
+            TableStoreCallback<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DescribeKnowledgeBaseLauncher launcher = launcherFactory.describeKnowledgeBase(tracer, retry, request);
+
+        AsyncCompletion<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> completion =
+                new AsyncCompletion<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse> f = new CallbackImpledFuture<DescribeKnowledgeBaseRequest, DescribeKnowledgeBaseResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ListKnowledgeBaseResponse> listKnowledgeBase(ListKnowledgeBaseRequest request,
+            TableStoreCallback<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ListKnowledgeBaseLauncher launcher = launcherFactory.listKnowledgeBase(tracer, retry, request);
+
+        AsyncCompletion<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> completion =
+                new AsyncCompletion<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse> f = new CallbackImpledFuture<ListKnowledgeBaseRequest, ListKnowledgeBaseResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteKnowledgeBaseResponse> deleteKnowledgeBase(DeleteKnowledgeBaseRequest request,
+            TableStoreCallback<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteKnowledgeBaseLauncher launcher = launcherFactory.deleteKnowledgeBase(tracer, retry, request);
+
+        AsyncCompletion<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> completion =
+                new AsyncCompletion<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse> f = new CallbackImpledFuture<DeleteKnowledgeBaseRequest, DeleteKnowledgeBaseResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    // Document operations
+    public Future<AddDocumentsResponse> addDocuments(AddDocumentsRequest request,
+            TableStoreCallback<AddDocumentsRequest, AddDocumentsResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        AddDocumentsLauncher launcher = launcherFactory.addDocuments(tracer, retry, request);
+
+        AsyncCompletion<AddDocumentsRequest, AddDocumentsResponse> completion =
+                new AsyncCompletion<AddDocumentsRequest, AddDocumentsResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<AddDocumentsRequest, AddDocumentsResponse> f = new CallbackImpledFuture<AddDocumentsRequest, AddDocumentsResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<GetDocumentResponse> getDocument(GetDocumentRequest request,
+            TableStoreCallback<GetDocumentRequest, GetDocumentResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        GetDocumentLauncher launcher = launcherFactory.getDocument(tracer, retry, request);
+
+        AsyncCompletion<GetDocumentRequest, GetDocumentResponse> completion =
+                new AsyncCompletion<GetDocumentRequest, GetDocumentResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<GetDocumentRequest, GetDocumentResponse> f = new CallbackImpledFuture<GetDocumentRequest, GetDocumentResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<ListDocumentsResponse> listDocuments(ListDocumentsRequest request,
+            TableStoreCallback<ListDocumentsRequest, ListDocumentsResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ListDocumentsLauncher launcher = launcherFactory.listDocuments(tracer, retry, request);
+
+        AsyncCompletion<ListDocumentsRequest, ListDocumentsResponse> completion =
+                new AsyncCompletion<ListDocumentsRequest, ListDocumentsResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ListDocumentsRequest, ListDocumentsResponse> f = new CallbackImpledFuture<ListDocumentsRequest, ListDocumentsResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<DeleteDocumentsResponse> deleteDocuments(DeleteDocumentsRequest request,
+            TableStoreCallback<DeleteDocumentsRequest, DeleteDocumentsResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        DeleteDocumentsLauncher launcher = launcherFactory.deleteDocuments(tracer, retry, request);
+
+        AsyncCompletion<DeleteDocumentsRequest, DeleteDocumentsResponse> completion =
+                new AsyncCompletion<DeleteDocumentsRequest, DeleteDocumentsResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<DeleteDocumentsRequest, DeleteDocumentsResponse> f = new CallbackImpledFuture<DeleteDocumentsRequest, DeleteDocumentsResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    // UpdateKnowledgeBase operation
+    public Future<UpdateKnowledgeBaseResponse> updateKnowledgeBase(UpdateKnowledgeBaseRequest request,
+            TableStoreCallback<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateKnowledgeBaseLauncher launcher = launcherFactory.updateKnowledgeBase(tracer, retry, request);
+
+        AsyncCompletion<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> completion =
+                new AsyncCompletion<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse> f = new CallbackImpledFuture<UpdateKnowledgeBaseRequest, UpdateKnowledgeBaseResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    // Update Document operation
+    public Future<UpdateDocumentResponse> updateDocument(UpdateDocumentRequest request,
+            TableStoreCallback<UpdateDocumentRequest, UpdateDocumentResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateDocumentLauncher launcher = launcherFactory.updateDocument(tracer, retry, request);
+
+        AsyncCompletion<UpdateDocumentRequest, UpdateDocumentResponse> completion =
+                new AsyncCompletion<UpdateDocumentRequest, UpdateDocumentResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateDocumentRequest, UpdateDocumentResponse> f = new CallbackImpledFuture<UpdateDocumentRequest, UpdateDocumentResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    // Chunk operations
+    public Future<ListChunksResponse> listChunks(ListChunksRequest request,
+            TableStoreCallback<ListChunksRequest, ListChunksResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        ListChunksLauncher launcher = launcherFactory.listChunks(tracer, retry, request);
+
+        AsyncCompletion<ListChunksRequest, ListChunksResponse> completion =
+                new AsyncCompletion<ListChunksRequest, ListChunksResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<ListChunksRequest, ListChunksResponse> f = new CallbackImpledFuture<ListChunksRequest, ListChunksResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    public Future<UpdateChunksResponse> updateChunks(UpdateChunksRequest request,
+            TableStoreCallback<UpdateChunksRequest, UpdateChunksResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        UpdateChunksLauncher launcher = launcherFactory.updateChunks(tracer, retry, request);
+
+        AsyncCompletion<UpdateChunksRequest, UpdateChunksResponse> completion =
+                new AsyncCompletion<UpdateChunksRequest, UpdateChunksResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<UpdateChunksRequest, UpdateChunksResponse> f = new CallbackImpledFuture<UpdateChunksRequest, UpdateChunksResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
+    // Retrieval operations
+    public Future<RetrieveResponse> retrieve(RetrieveRequest request,
+            TableStoreCallback<RetrieveRequest, RetrieveResponse> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        RetrieveLauncher launcher = launcherFactory.retrieve(tracer, retry, request);
+
+        AsyncCompletion<RetrieveRequest, RetrieveResponse> completion =
+                new AsyncCompletion<RetrieveRequest, RetrieveResponse>(launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<RetrieveRequest, RetrieveResponse> f = new CallbackImpledFuture<RetrieveRequest, RetrieveResponse>();
+        completion.watchBy(f);
+        if (callback != null) {
+            f.watchBy(callback);
+        }
+
+        launcher.fire(request, completion);
+
+        return f;
+    }
+
 }

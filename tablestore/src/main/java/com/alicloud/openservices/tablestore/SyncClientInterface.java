@@ -14,6 +14,7 @@ import com.alicloud.openservices.tablestore.model.iterator.RowIterator;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 
 /**
  * The access interface for Alibaba Cloud Table Store (TableStore, formerly OTS).
@@ -584,4 +585,35 @@ public interface SyncClientInterface {
      * @throws ClientException Request result is invalid or a network exception is encountered
      */
     public SQLQueryResponse sqlQuery(SQLQueryRequest request) throws TableStoreException, ClientException;
+
+    // KnowledgeBase operations
+    public CreateKnowledgeBaseResponse createKnowledgeBase(CreateKnowledgeBaseRequest request) throws TableStoreException, ClientException;
+
+    public DescribeKnowledgeBaseResponse describeKnowledgeBase(DescribeKnowledgeBaseRequest request) throws TableStoreException, ClientException;
+
+    public ListKnowledgeBaseResponse listKnowledgeBase(ListKnowledgeBaseRequest request) throws TableStoreException, ClientException;
+
+    public DeleteKnowledgeBaseResponse deleteKnowledgeBase(DeleteKnowledgeBaseRequest request) throws TableStoreException, ClientException;
+
+    public UpdateKnowledgeBaseResponse updateKnowledgeBase(UpdateKnowledgeBaseRequest request) throws TableStoreException, ClientException;
+
+    // Document operations
+    public AddDocumentsResponse addDocuments(AddDocumentsRequest request) throws TableStoreException, ClientException;
+
+    public GetDocumentResponse getDocument(GetDocumentRequest request) throws TableStoreException, ClientException;
+
+    public ListDocumentsResponse listDocuments(ListDocumentsRequest request) throws TableStoreException, ClientException;
+
+    public DeleteDocumentsResponse deleteDocuments(DeleteDocumentsRequest request) throws TableStoreException, ClientException;
+
+    public UpdateDocumentResponse updateDocument(UpdateDocumentRequest request) throws TableStoreException, ClientException;
+
+    // Chunk operations
+    public ListChunksResponse listChunks(ListChunksRequest request) throws TableStoreException, ClientException;
+
+    public UpdateChunksResponse updateChunks(UpdateChunksRequest request) throws TableStoreException, ClientException;
+
+    // Retrieval operations
+    public RetrieveResponse retrieve(RetrieveRequest request) throws TableStoreException, ClientException;
+
 }

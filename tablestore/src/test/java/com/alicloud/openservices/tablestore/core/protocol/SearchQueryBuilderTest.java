@@ -158,6 +158,57 @@ public class SearchQueryBuilderTest extends BaseSearchTest {
 
     }
 
+    @Test
+    public void testMatchPhraseQueryWithSlop() {
+        MatchPhraseQuery query = new MatchPhraseQuery();
+        query.setFieldName("FieldName");
+        query.setText("FieldValue");
+        query.setWeight(2.0f);
+        query.setSlop(3);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_PHRASE_QUERY, queryPB.getType());
+
+        Search.MatchPhraseQuery.Builder builder = Search.MatchPhraseQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        builder.setSlop(3);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testMatchPhraseQueryEmptySlop() {
+        MatchPhraseQuery query = new MatchPhraseQuery();
+        query.setFieldName("FieldName");
+        query.setText("FieldValue");
+        query.setWeight(2.0f);
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_PHRASE_QUERY, queryPB.getType());
+
+        Search.MatchPhraseQuery.Builder builder = Search.MatchPhraseQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
+    @Test
+    public void testMatchPhraseQueryUsingBuilder() {
+        MatchPhraseQuery query = QueryBuilders.matchPhrase("FieldName", "FieldValue").weight(2.0f).slop(5).build();
+
+        Search.Query queryPB = SearchQueryBuilder.buildQuery(query);
+        assertEquals(Search.QueryType.MATCH_PHRASE_QUERY, queryPB.getType());
+
+        Search.MatchPhraseQuery.Builder builder = Search.MatchPhraseQuery.newBuilder();
+        builder.setFieldName("FieldName");
+        builder.setText("FieldValue");
+        builder.setWeight(2.0f);
+        builder.setSlop(5);
+        assertEquals(builder.build().toByteString(), queryPB.getQuery());
+    }
+
     // nested query
     @Test
     public void testNestedQuery() {

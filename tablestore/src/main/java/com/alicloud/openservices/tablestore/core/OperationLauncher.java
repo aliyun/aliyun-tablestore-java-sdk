@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.Deflater;
 
@@ -69,14 +72,19 @@ public abstract class OperationLauncher<Req, Res> {
         String instanceName,
         ServiceCredentials credentials,
         ClientConfiguration config,
-        Object rpcContext)
+        Object rpcContext,
+        List<ResponseHandler> responseHandlers)
     {
         ExecutionContext ec = new ExecutionContext();
         ec.setSigner(new RequestSigner(instanceName, credentials));
 
         // ResponseHandlers need to follow the order below.
-        ec.getResponseHandlers().add(new OTSDeflateResponseHandler());
-        ec.getResponseHandlers().add(new ErrorResponseHandler());
+        if (responseHandlers != null) {
+            for (ResponseHandler handler : responseHandlers) {
+                ec.getResponseHandlers().add(handler);
+            }
+        }
+
         if (config.isEnableResponseContentMD5Checking()) {
             ec.getResponseHandlers().add(new ContentMD5ResponseHandler());
         }
@@ -105,15 +113,47 @@ public abstract class OperationLauncher<Req, Res> {
             ResponseConsumer<Res> consumer,
             FutureCallback<Res> callback)
     {
-        URI uri = buildURI(actionURI, queryParameters);
-        HttpPost request = new HttpPost(uri);
-
         if (logger.isDebugEnabled()) {
             logger.debug("Operation: {}, PBRequestMessage: {}, TraceId: {}",
                     actionURI, message.toString(), traceLogger.getTraceId());
         }
+        List<ResponseHandler> responseHandlers = new ArrayList<>();
+        responseHandlers.add(new OTSDeflateResponseHandler());
+        responseHandlers.add(new ErrorResponseHandler());
 
-        byte[] content = message.toByteArray();
+        asyncInvokePostInternal(actionURI, queryParameters, message.toByteArray(), traceLogger, responseHandlers, consumer, callback);
+    }
+
+    protected void asyncInvokePost(
+            OTSUri actionURI,
+            Map<String, String> queryParameters,
+            String message,
+            TraceLogger traceLogger,
+            ResponseConsumer<Res> consumer,
+            FutureCallback<Res> callback)
+    {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Operation: {}, RequestMessage: {}, TraceId: {}",
+                    actionURI, message, traceLogger.getTraceId());
+        }
+        List<ResponseHandler> responseHandlers = new ArrayList<>();
+        responseHandlers.add(new OTSDeflateResponseHandler());
+        responseHandlers.add(new ErrorJsonResponseHandler());
+
+        asyncInvokePostInternal(actionURI, queryParameters, message.getBytes(StandardCharsets.UTF_8), traceLogger, responseHandlers, consumer, callback);
+    }
+
+    private void asyncInvokePostInternal(
+            OTSUri actionURI,
+            Map<String, String> queryParameters,
+            byte[] content,
+            TraceLogger traceLogger,
+            List<ResponseHandler> responseHandlers,
+            ResponseConsumer<Res> consumer,
+            FutureCallback<Res> callback)
+    {
+        URI uri = buildURI(actionURI, queryParameters);
+        HttpPost request = new HttpPost(uri);
 
         if (config.isEnableRequestCompression() && content != null && content.length > 0) {
             int contentLength = content.length;
@@ -172,7 +212,7 @@ public abstract class OperationLauncher<Req, Res> {
                     keyDatePair.getSecond());
         }
         ExecutionContext ctx = createContext(
-                actionURI, instanceName, credentials, config, rpcContext);
+                actionURI, instanceName, credentials, config, rpcContext, responseHandlers);
 
         client.asyncSendRequest(requestMessage, ctx, consumer, callback, traceLogger, config.getRequestTracer(), rpcContext);
     }
