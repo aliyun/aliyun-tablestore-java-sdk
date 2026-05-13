@@ -7,6 +7,7 @@
     <artifactId>tablestore-parent</artifactId>
     <version>1.0.3</version>
   </parent>
+  <groupId>com.aliyun.openservices</groupId>
   <artifactId>tablestore-shaded-httpasyncclient</artifactId>
   <version>4.0.3-shaded-1</version>
   <name>AliCloud TableStore Shaded HttpAsyncClient</name>
