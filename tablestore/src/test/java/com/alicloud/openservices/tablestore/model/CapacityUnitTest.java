@@ -749,7 +749,11 @@ public class CapacityUnitTest extends BaseFT {
 
             UpdateRowResponse result = OTSHelper.updateRow(client, row);
             CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
-            assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
+            if (Utils.useGlobalTxn()) {
+                assertCapacityUnitEqual(cu, new CapacityUnit(0, 5));
+            } else {
+                assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
+            }
         }
 
         OTSHelper.deleteTable(client, modifiedTableName);
@@ -881,7 +885,8 @@ public class CapacityUnitTest extends BaseFT {
 
         List<BatchWriteRowResponse.RowResult> putRets = result.getRowStatus(modifiedTableName);
         for (BatchWriteRowResponse.RowResult ret : putRets) {
-            assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 3));
+            CapacityUnit cu = ret.getConsumedCapacity().getCapacityUnit();
+            assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
         }
 
         OTSHelper.deleteTable(client, modifiedTableName);
@@ -929,7 +934,12 @@ public class CapacityUnitTest extends BaseFT {
 
         List<BatchWriteRowResponse.RowResult> updateRets = result.getRowStatus(modifiedTableName);
         for (BatchWriteRowResponse.RowResult ret : updateRets) {
-            assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 3));
+            CapacityUnit cu = ret.getConsumedCapacity().getCapacityUnit();
+            if (Utils.useGlobalTxn()) {
+                assertCapacityUnitEqual(cu, new CapacityUnit(0, 5));
+            } else {
+                assertCapacityUnitEqual(cu, new CapacityUnit(0, 3));
+            }
         }
 
         OTSHelper.deleteTable(client, modifiedTableName);
@@ -975,7 +985,8 @@ public class CapacityUnitTest extends BaseFT {
 
         List<BatchWriteRowResponse.RowResult> deleteRets = result.getRowStatus(modifiedmodifiedTableName);
         for (BatchWriteRowResponse.RowResult ret : deleteRets) {
-            assertCapacityUnitEqual(ret.getConsumedCapacity().getCapacityUnit(), new CapacityUnit(0, 1));
+            CapacityUnit cu = ret.getConsumedCapacity().getCapacityUnit();
+            assertCapacityUnitEqual(cu, new CapacityUnit(0, 1));
         }
 
         OTSHelper.deleteTable(client, modifiedmodifiedTableName);

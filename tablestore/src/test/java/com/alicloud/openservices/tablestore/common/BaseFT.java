@@ -48,6 +48,9 @@ public class BaseFT {
     }
 
     public static void checkTimestampWithDeviation(long expect, long actual) {
+        if (Utils.useGlobalTxn()) {
+            actual = (actual & ~(1L << 60)) / 1000;
+        }
         LOG.info("Expect Ts: {}, Actual Ts: {}", expect, actual);
         long begin = expect - (OTSTestConst.TIMESTAMP_DEVIATION_IN_SECOND * 1000);
         long end = expect + (OTSTestConst.TIMESTAMP_DEVIATION_IN_SECOND * 1000);

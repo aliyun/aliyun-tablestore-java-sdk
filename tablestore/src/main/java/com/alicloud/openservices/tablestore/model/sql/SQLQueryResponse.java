@@ -22,6 +22,8 @@ public class SQLQueryResponse extends Response {
 
     private String nextSearchToken;
 
+    private long affectedRows;
+
     /**
      * internal use
      */
@@ -29,13 +31,15 @@ public class SQLQueryResponse extends Response {
                             Map<String, ConsumedCapacity> consumedCapacityByTable,
                             SQLPayloadVersion version,
                             SQLStatementType type,
-                            ByteString rows) {
+                            ByteString rows,
+                            long affectedRows) {
         super(meta);
         Preconditions.checkNotNull(consumedCapacityByTable);
         this.consumedCapacityByTable = consumedCapacityByTable;
         this.version = version;
         this.type = type;
         this.rows = rows;
+        this.affectedRows = affectedRows;
     }
 
     /**
@@ -72,5 +76,13 @@ public class SQLQueryResponse extends Response {
 
     public void setNextSearchToken(String nextSearchToken) {
         this.nextSearchToken = nextSearchToken;
+    }
+
+    /**
+     * Get the SQL AffectedRows
+     * @return AffectedRows
+     */
+    public long getAffectedRows() {
+        return affectedRows;
     }
 }

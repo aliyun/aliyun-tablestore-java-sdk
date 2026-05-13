@@ -26,6 +26,16 @@ public class StreamSpecification implements Jsonizable {
      */
     private Set<String> originColumnsToGet = new HashSet<String>();
 
+    /**
+     * Set the old row image configuration in the Stream data.
+     */
+    private StreamColumn oldColumnsToGet;
+
+    /**
+     * Set the new row image configuration in the Stream data.
+     */
+    private StreamColumn newColumnsToGet;
+
 
     /**
      * Construct a StreamSpecification object.
@@ -136,6 +146,22 @@ public class StreamSpecification implements Jsonizable {
         this.originColumnsToGet.addAll(originColumnsToGet);
     }
 
+    public StreamColumn getOldColumnsToGet() {
+        return oldColumnsToGet;
+    }
+
+    public void setOldColumnsToGet(StreamColumn oldColumnsToGet) {
+        this.oldColumnsToGet = oldColumnsToGet;
+    }
+
+    public StreamColumn getNewColumnsToGet() {
+        return newColumnsToGet;
+    }
+
+    public void setNewColumnsToGet(StreamColumn newColumnsToGet) {
+        this.newColumnsToGet = newColumnsToGet;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -158,6 +184,18 @@ public class StreamSpecification implements Jsonizable {
         }
         sb.append("\"OriginColumnToGet\": ");
         sb.append(originColumnsToGet);
+        if (oldColumnsToGet != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"OldColumnsToGet\": ");
+            sb.append("\"").append(oldColumnsToGet).append("\"");
+        }
+        if (newColumnsToGet != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"NewColumnsToGet\": ");
+            sb.append("\"").append(newColumnsToGet).append("\"");
+        }
         sb.append("}");
     }
 
@@ -172,6 +210,10 @@ public class StreamSpecification implements Jsonizable {
         }
         sb.append(", OriginColumnToGet: ");
         sb.append(originColumnsToGet);
+        sb.append(", OldColumnsToGet: ");
+        sb.append(oldColumnsToGet);
+        sb.append(", NewColumnsToGet: ");
+        sb.append(newColumnsToGet);
         return sb.toString();
     }
 }

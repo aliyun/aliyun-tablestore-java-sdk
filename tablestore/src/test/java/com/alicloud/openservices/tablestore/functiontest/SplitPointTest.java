@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.functiontest;
 import com.alicloud.openservices.tablestore.InternalClient;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.*;
 import org.junit.*;
 
@@ -65,6 +66,9 @@ public class  SplitPointTest {
 
         int timeToLive = -1;
         int maxVersions = 3;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
 
         TableOptions tableOptions = new TableOptions(timeToLive, maxVersions);
 
@@ -180,6 +184,9 @@ public class  SplitPointTest {
 
         int timeToLive = -1;
         int maxVersions = 3;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
 
         TableOptions tableOptions = new TableOptions(timeToLive, maxVersions);
 
@@ -386,6 +393,9 @@ public class  SplitPointTest {
 
         int timeToLive = -1;
         int maxVersions = 3;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
 
         TableOptions tableOptions = new TableOptions(timeToLive, maxVersions);
 

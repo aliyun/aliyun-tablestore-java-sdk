@@ -26,6 +26,10 @@ public class GetStreamRecordRequest implements Request {
      */
     private boolean parseInTimeseriesDataFormat = false;
 
+    private StreamColumn oldColumnsToGet;
+
+    private StreamColumn newColumnsToGet;
+
     public GetStreamRecordRequest(String shardIterator) {
         setShardIterator(shardIterator);
     }
@@ -99,5 +103,21 @@ public class GetStreamRecordRequest implements Request {
         Preconditions.checkArgument(tableName != null && !tableName.isEmpty(),
                 "The table name is null or empty.");
         this.tableName = tableName;
+    }
+
+    public StreamColumn getOldColumnsToGet() {
+        return oldColumnsToGet;
+    }
+
+    public void setOldColumnsToGet(StreamColumn oldColumnsToGet) {
+        this.oldColumnsToGet = oldColumnsToGet;
+    }
+
+    public StreamColumn getNewColumnsToGet() {
+        return newColumnsToGet;
+    }
+
+    public void setNewColumnsToGet(StreamColumn newColumnsToGet) {
+        this.newColumnsToGet = newColumnsToGet;
     }
 }

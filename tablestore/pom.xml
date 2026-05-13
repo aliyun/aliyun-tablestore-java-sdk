@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.aliyun.openservices</groupId>
   <artifactId>tablestore</artifactId>
-  <version>5.17.10</version>
+  <version>5.17.11</version>
   <packaging>jar</packaging>
   <name>AliCloud TableStore SDK for Java</name>
   <parent>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.aliyun.openservices</groupId>
       <artifactId>tablestore-shaded-protobuf</artifactId>
-      <version>4.28.2</version>
+      <version>4.28.3</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.protobuf</groupId>
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>com.aliyun.openservices</groupId>
       <artifactId>tablestore-shaded-httpasyncclient</artifactId>
-      <version>4.0.2</version>
+      <version>4.0.3-shaded-1</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>

@@ -39,6 +39,7 @@ public class UnifiedFilterAdvanceTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         OTSHelper.deleteAllTable(ots);
     }
 

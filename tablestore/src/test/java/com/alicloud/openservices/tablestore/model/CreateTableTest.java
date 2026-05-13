@@ -108,7 +108,13 @@ public class CreateTableTest extends BaseFT {
         int writeCU = 0;
         int readCU = 0;
         int timeToLive = 86400;
+        if (Utils.useGlobalTxn()) {
+            timeToLive = -1;
+        }
         int maxVersions = (int)(Math.random() * 100) + 1;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
         PrimaryKeyType type = PrimaryKeyType.STRING;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }
@@ -123,6 +129,9 @@ public class CreateTableTest extends BaseFT {
         int readCU = 0;
         int timeToLive = -1;
         int maxVersions = (int)(Math.random() * 100) + 1;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
         PrimaryKeyType type = PrimaryKeyType.STRING;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }
@@ -136,7 +145,13 @@ public class CreateTableTest extends BaseFT {
         int writeCU = 0;
         int readCU = 0;
         int timeToLive = 86400;
+        if (Utils.useGlobalTxn()) {
+            timeToLive = -1;
+        }
         int maxVersions = (int)(Math.random() * 100) + 1;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
         PrimaryKeyType type = PrimaryKeyType.STRING;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }
@@ -150,7 +165,13 @@ public class CreateTableTest extends BaseFT {
         int writeCU = 0;
         int readCU = 0;
         int timeToLive = 86400;
+        if (Utils.useGlobalTxn()) {
+            timeToLive = -1;
+        }
         int maxVersions = (int)(Math.random() * 100) + 1;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
         PrimaryKeyType type = PrimaryKeyType.INTEGER;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }
@@ -164,7 +185,13 @@ public class CreateTableTest extends BaseFT {
         int writeCU = 0;
         int readCU = 0;
         int timeToLive = 86400;
+        if (Utils.useGlobalTxn()) {
+            timeToLive = -1;
+        }
         int maxVersions = (int)(Math.random() * 100) + 1;
+        if (Utils.useGlobalTxn()) {
+            maxVersions = 1;
+        }
         PrimaryKeyType type = PrimaryKeyType.BINARY;
         testCommon(client, type, writeCU, readCU, timeToLive, maxVersions);
     }

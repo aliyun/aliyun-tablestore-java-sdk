@@ -5,13 +5,11 @@ import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.TimeseriesClient;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.timeseries.CreateTimeseriesLastpointIndexRequest;
 import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesLastpointIndexRequest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +43,11 @@ public class WideColumnLastpointIndexTest {
     @AfterClass
     public static void afterClass() {
         client.shutdown();
+    }
+
+    @Before
+    public void setup() throws Exception {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
     }
 
     public static void sleepSecond(long second) {

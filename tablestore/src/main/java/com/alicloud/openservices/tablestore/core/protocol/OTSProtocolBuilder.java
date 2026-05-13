@@ -990,6 +990,28 @@ public class OTSProtocolBuilder {
         return builder.build();
     }
 
+    private static OtsInternalApi.StreamColumnType buildStreamColumnType(StreamColumnType columnType) {
+        switch (columnType) {
+            case INVALID:
+                return OtsInternalApi.StreamColumnType.INVALID;
+            case SPECIFIED_COLUMN:
+                return OtsInternalApi.StreamColumnType.SPECIFIED_COLUMN;
+            case INPUT_COLUMNS:
+                return OtsInternalApi.StreamColumnType.INPUT_COLUMNS;
+            case ALL_COLUMNS:
+                return OtsInternalApi.StreamColumnType.ALL_COLUMNS;
+            default:
+                throw new IllegalArgumentException("Unknown stream column type: " + columnType);
+        }
+    }
+
+    private static OtsInternalApi.StreamColumn buildStreamColumn(StreamColumn streamColumn) {
+        OtsInternalApi.StreamColumn.Builder builder = OtsInternalApi.StreamColumn.newBuilder();
+        builder.setType(buildStreamColumnType(streamColumn.getColumnType()));
+        builder.addAllColumnName(streamColumn.getColumnNames());
+        return builder.build();
+    }
+
     private static OtsInternalApi.StreamSpecification buildStreamSpecification(StreamSpecification streamSpecification) {
         OtsInternalApi.StreamSpecification.Builder builder = OtsInternalApi.StreamSpecification.newBuilder();
         builder.setEnableStream(streamSpecification.isEnableStream());
@@ -1000,6 +1022,12 @@ public class OTSProtocolBuilder {
             for (String column : streamSpecification.getOriginColumnsToGet()) {
                 builder.addColumnsToGet(column);
             }
+        }
+        if (streamSpecification.getOldColumnsToGet() != null) {
+            builder.setOldColumnsToGet(buildStreamColumn(streamSpecification.getOldColumnsToGet()));
+        }
+        if (streamSpecification.getNewColumnsToGet() != null) {
+            builder.setNewColumnsToGet(buildStreamColumn(streamSpecification.getNewColumnsToGet()));
         }
         return builder.build();
     }
@@ -1224,6 +1252,12 @@ public class OTSProtocolBuilder {
         }
         if (request.getTableName() != null && !request.getTableName().isEmpty()) {
             builder.setTableName(request.getTableName());
+        }
+        if (request.getOldColumnsToGet() != null) {
+            builder.setOldColumnsToGet(buildStreamColumn(request.getOldColumnsToGet()));
+        }
+        if (request.getNewColumnsToGet() != null) {
+            builder.setNewColumnsToGet(buildStreamColumn(request.getNewColumnsToGet()));
         }
         return builder.build();
     }

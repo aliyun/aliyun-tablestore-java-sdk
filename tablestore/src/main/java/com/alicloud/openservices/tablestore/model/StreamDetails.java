@@ -35,6 +35,10 @@ public class StreamDetails implements Jsonizable {
      */
     private Set<String> originColumnsToGet = new HashSet<String>();
 
+    private StreamColumn oldColumnsToGet;
+
+    private StreamColumn newColumnsToGet;
+
     public StreamDetails() {
 
     }
@@ -134,6 +138,22 @@ public class StreamDetails implements Jsonizable {
         this.originColumnsToGet.addAll(originColumnsToGet);
     }
 
+    public StreamColumn getOldColumnsToGet() {
+        return oldColumnsToGet;
+    }
+
+    public void setOldColumnsToGet(StreamColumn oldColumnsToGet) {
+        this.oldColumnsToGet = oldColumnsToGet;
+    }
+
+    public StreamColumn getNewColumnsToGet() {
+        return newColumnsToGet;
+    }
+
+    public void setNewColumnsToGet(StreamColumn newColumnsToGet) {
+        this.newColumnsToGet = newColumnsToGet;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -162,6 +182,18 @@ public class StreamDetails implements Jsonizable {
         sb.append(newline);
         sb.append("\"OriginColumnToGet\": ");
         sb.append(originColumnsToGet);
+        if (oldColumnsToGet != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"OldColumnsToGet\": ");
+            sb.append("\"").append(oldColumnsToGet).append("\"");
+        }
+        if (newColumnsToGet != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"NewColumnsToGet\": ");
+            sb.append("\"").append(newColumnsToGet).append("\"");
+        }
         sb.append("}");
     }
 
@@ -178,6 +210,10 @@ public class StreamDetails implements Jsonizable {
         sb.append(lastEnableTime);
         sb.append(", OriginColumnToGet: ");
         sb.append(originColumnsToGet);
+        sb.append(", OldColumnsToGet: ");
+        sb.append(oldColumnsToGet);
+        sb.append(", NewColumnsToGet: ");
+        sb.append(newColumnsToGet);
         return sb.toString();
     }
 }

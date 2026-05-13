@@ -19,6 +19,7 @@ message Tunnel {
     required string tunnel_name = 3;
     required TunnelType tunnel_type = 4;
     optional StreamTunnelConfig StreamTunnelConfig = 5;
+    optional StreamRecordOptions stream_record_options = 7;
 }
 
 message CreateTunnelRequest {
@@ -54,6 +55,7 @@ message TunnelInfo {
     optional bool   public = 9;
     optional StreamTunnelConfig stream_tunnel_config = 10;
     optional int64  create_time = 11;
+    optional StreamRecordOptions stream_record_options = 14;
 }
 
 message ListTunnelResponse {
@@ -175,6 +177,7 @@ message Record {
     required ActionType action_type = 1;
     required bytes record = 2;
     optional bytes origin_record = 3;
+    optional bytes latest_record = 7;
 }
 
 message ReadRecordsResponse {
@@ -212,3 +215,22 @@ message StreamTunnelConfig {
     optional uint64 endOffset = 3;
 }
 
+enum StreamColumnType {
+    INVALID = 0;
+    SPECIFIED_COLUMN = 1;
+    INPUT_COLUMNS = 2;
+    ALL_COLUMNS = 3;
+}
+
+message StreamColumn {
+    required StreamColumnType type = 1;
+    repeated string column_name = 2;
+}
+
+message StreamRecordOptions {
+    optional bool get_version_generator_value = 1;
+    optional bool get_sys_columns = 2;
+    optional bool get_new_row_info = 3;
+    optional StreamColumn old_columns_to_get = 4;
+    optional StreamColumn new_columns_to_get = 5;
+}

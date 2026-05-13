@@ -211,7 +211,11 @@ public class OTSHelper {
     public static TableOptions getDefaultTableOptions() {
     	TableOptions tableOptions = new TableOptions();
         tableOptions.setTimeToLive(OTSTestConst.DEFAULT_TTL);
-        tableOptions.setMaxVersions(OTSTestConst.DEFAULT_MAX_VERSION);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setMaxVersions(1);
+        } else {
+            tableOptions.setMaxVersions(OTSTestConst.DEFAULT_MAX_VERSION);
+        }
         tableOptions.setMaxTimeDeviation(Long.MAX_VALUE / 1000000);
         return tableOptions;
     }
@@ -542,11 +546,12 @@ public class OTSHelper {
             List<RowUpdateChange> updates,
             List<RowDeleteChange> deletes) {
         int count = 0;
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
         if (puts != null)
         {
             List<RowPutChange> newPuts = new ArrayList<RowPutChange>();
             for (RowPutChange put : puts) {
-                if (newPuts.size() == OTSRestrictedItemConst.BATCH_WRITE_ROW_COUNT_MAX) {
+                if (newPuts.size() == max_column) {
                     count += newPuts.size();
                     BatchWriteRowResponse r = batchWriteRow(ots, newPuts, null, null);
                     LOG.info("RequestID:{}", r.getRequestId());
@@ -574,7 +579,7 @@ public class OTSHelper {
         {
             List<RowUpdateChange> newUpdates = new ArrayList<RowUpdateChange>();
             for (RowUpdateChange update : updates) {
-                if (newUpdates.size() == OTSRestrictedItemConst.BATCH_WRITE_ROW_COUNT_MAX) {
+                if (newUpdates.size() == max_column) {
                     count += newUpdates.size();
                     BatchWriteRowResponse r = batchWriteRow(ots, null, newUpdates, null);
                     LOG.info("RequestID:{}", r.getRequestId());
@@ -604,7 +609,7 @@ public class OTSHelper {
         {
             List<RowDeleteChange> newDeletes = new ArrayList<RowDeleteChange>();
             for (RowDeleteChange delete : deletes) {
-                if (newDeletes.size() == OTSRestrictedItemConst.BATCH_WRITE_ROW_COUNT_MAX) {
+                if (newDeletes.size() == max_column) {
                     count += newDeletes.size();
                     BatchWriteRowResponse r = batchWriteRow(ots, null, null, newDeletes);
                     LOG.info("RequestID:{}", r.getRequestId());

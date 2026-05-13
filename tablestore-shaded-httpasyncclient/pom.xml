@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
-  <modelVersion>4.0.0</modelVersion>  
-  <parent> 
-    <groupId>com.aliyun.openservices</groupId>  
-    <artifactId>tablestore-parent</artifactId>  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.aliyun.openservices</groupId>
+    <artifactId>tablestore-parent</artifactId>
     <version>1.0.3</version>
-  </parent>  
-  <artifactId>tablestore-shaded-httpasyncclient</artifactId>  
-  <version>4.0.3</version>
+  </parent>
+  <artifactId>tablestore-shaded-httpasyncclient</artifactId>
+  <version>4.0.3-shaded-1</version>
   <name>AliCloud TableStore Shaded HttpAsyncClient</name>
   <description>AliCloud TableStore Shaded HttpAsyncClient</description>
-  <packaging>jar</packaging>  
-  <dependencies> 
-    <dependency> 
-      <groupId>org.apache.httpcomponents</groupId>  
-      <artifactId>httpasyncclient</artifactId>  
-      <version>4.0.2</version> 
-    </dependency> 
-  </dependencies>  
-  <build> 
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpasyncclient</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+  </dependencies>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -51,34 +51,38 @@
           </execution>
         </executions>
       </plugin>
-      <plugin> 
-        <groupId>org.apache.maven.plugins</groupId>  
-        <artifactId>maven-shade-plugin</artifactId>  
-        <version>3.2.4</version>  
-        <executions> 
-          <execution> 
-            <phase>package</phase>  
-            <goals> 
-              <goal>shade</goal> 
-            </goals>  
-            <configuration> 
-              <artifactSet> 
-                <includes> 
-                  <include>org.apache.httpcomponents:*</include>  
-                  <include>commons-logging:*</include>  
-                  <include>commons-codec:*</include> 
-                </includes> 
-              </artifactSet>  
-              <relocations> 
-                <relocation> 
-                  <pattern>org.apache.http</pattern>  
-                  <shadedPattern>com.aliyun.ots.thirdparty.org.apache.http</shadedPattern> 
-                </relocation> 
-              </relocations> 
-            </configuration> 
-          </execution> 
-        </executions> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.apache.httpcomponents:*</include>
+                  <include>commons-logging:*</include>
+                  <include>commons-codec:*</include>
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.http</pattern>
+                  <shadedPattern>com.aliyun.ots.thirdparty.org.apache.http</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons</pattern>
+                  <shadedPattern>com.aliyun.ots.thirdparty.org.apache.commons</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
-    </plugins> 
+    </plugins>
   </build>
 </project>

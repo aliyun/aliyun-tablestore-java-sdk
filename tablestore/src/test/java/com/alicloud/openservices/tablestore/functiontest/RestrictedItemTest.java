@@ -10,11 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +72,7 @@ public class RestrictedItemTest extends BaseFT {
      */
     @Test
     public void testCase3() throws UnsupportedEncodingException {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
         
@@ -449,8 +446,12 @@ public class RestrictedItemTest extends BaseFT {
     public void testCase4() throws UnsupportedEncodingException {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
-        
-        OTSHelper.createTable(ots, tableName, scheme, -1, 3);
+
+        if (Utils.useGlobalTxn()) {
+            OTSHelper.createTable(ots, tableName, scheme, -1, 1);
+        } else {
+            OTSHelper.createTable(ots, tableName, scheme, -1, 3);
+        }
         
         Utils.waitForPartitionLoad(tableName);
         
@@ -459,8 +460,8 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         {// UpdateRow
-            
             long ts = System.currentTimeMillis();
+
             for (int i = 0; i < 3; i++) {
                 List<Column> columns = new ArrayList<Column>();
                 columns.add(new Column("attr_0", ColumnValue.fromLong(i + 1)));
@@ -478,72 +479,88 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            assertEquals(15, cols.length); // 5(column) * 3(version)
+            if (Utils.useGlobalTxn()) {
+                assertEquals(5, cols.length);
+            } else {
+                assertEquals(15, cols.length); // 5(column) * 3(version)
+            }
+
+            int i = 0;
             
             // attr 0
-            assertEquals("attr_0", cols[0].getName());
-            assertEquals(3, cols[0].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[0].getTimestamp());
-            
-            assertEquals("attr_0", cols[1].getName());
-            assertEquals(2, cols[1].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[1].getTimestamp());
-            
-            assertEquals("attr_0", cols[2].getName());
-            assertEquals(1, cols[2].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[2].getTimestamp());
+            assertEquals("attr_0", cols[i].getName());
+            assertEquals(3, cols[i].getValue().asLong());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_0", cols[i].getName());
+                assertEquals(2, cols[i].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_0", cols[i].getName());
+                assertEquals(1, cols[i].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
             
             // attr 1
-            assertEquals("attr_1", cols[3].getName());
-            assertEquals("3", cols[3].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[3].getTimestamp());
-            
-            assertEquals("attr_1", cols[4].getName());
-            assertEquals("2", cols[4].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[4].getTimestamp());
-            
-            assertEquals("attr_1", cols[5].getName());
-            assertEquals("1", cols[5].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[5].getTimestamp());
+            assertEquals("attr_1", cols[i].getName());
+            assertEquals("3", cols[i].getValue().asString());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_1", cols[i].getName());
+                assertEquals("2", cols[i].getValue().asString());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_1", cols[i].getName());
+                assertEquals("1", cols[i].getValue().asString());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
             
             // attr 2
-            assertEquals("attr_2", cols[6].getName());
-            assertEquals(true, 3 == cols[6].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[6].getTimestamp());
-            
-            assertEquals("attr_2", cols[7].getName());
-            assertEquals(true, 2 == cols[7].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[7].getTimestamp());
-            
-            assertEquals("attr_2", cols[8].getName());
-            assertEquals(true, 1 == cols[8].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[8].getTimestamp());
+            assertEquals("attr_2", cols[i].getName());
+            assertEquals(true, 3 == cols[i].getValue().asDouble());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_2", cols[i].getName());
+                assertEquals(true, 2 == cols[i].getValue().asDouble());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_2", cols[i].getName());
+                assertEquals(true, 1 == cols[i].getValue().asDouble());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
             
             // attr 3
-            assertEquals("attr_3", cols[9].getName());
-            assertEquals(false, cols[9].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[9].getTimestamp());
-            
-            assertEquals("attr_3", cols[10].getName());
-            assertEquals(false, cols[10].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[10].getTimestamp());
-            
-            assertEquals("attr_3", cols[11].getName());
-            assertEquals(false, cols[11].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[11].getTimestamp());
+            assertEquals("attr_3", cols[i].getName());
+            assertEquals(false, cols[i].getValue().asBoolean());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_3", cols[i].getName());
+                assertEquals(false, cols[i].getValue().asBoolean());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_3", cols[i].getName());
+                assertEquals(false, cols[i].getValue().asBoolean());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
             
             // attr 4
-            assertEquals("attr_4", cols[12].getName());
-            assertEquals("3", new String(cols[12].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[12].getTimestamp());
-            
-            assertEquals("attr_4", cols[13].getName());
-            assertEquals("2", new String(cols[13].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[13].getTimestamp());
-            
-            assertEquals("attr_4", cols[14].getName());
-            assertEquals("1", new String(cols[14].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[14].getTimestamp());
+            assertEquals("attr_4", cols[i].getName());
+            assertEquals("3", new String(cols[i].getValue().asBinary(), "UTF-8"));
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_4", cols[i].getName());
+                assertEquals("2", new String(cols[i].getValue().asBinary(), "UTF-8"));
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_4", cols[i].getName());
+                assertEquals("1", new String(cols[i].getValue().asBinary(), "UTF-8"));
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
         }
         
         OTSHelper.deleteRow(ots, tableName, pk);
@@ -569,73 +586,89 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            
-            assertEquals(15, cols.length); // 5(column) * 3(version)
-            
+
+            if (Utils.useGlobalTxn()) {
+                assertEquals(5, cols.length);
+            } else {
+                assertEquals(15, cols.length); // 5(column) * 3(version)
+            }
+
+            int i = 0;
+
             // attr 0
-            assertEquals("attr_0", cols[0].getName());
-            assertEquals(3, cols[0].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[0].getTimestamp());
-            
-            assertEquals("attr_0", cols[1].getName());
-            assertEquals(2, cols[1].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[1].getTimestamp());
-            
-            assertEquals("attr_0", cols[2].getName());
-            assertEquals(1, cols[2].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[2].getTimestamp());
-            
+            assertEquals("attr_0", cols[i].getName());
+            assertEquals(3, cols[i].getValue().asLong());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_0", cols[i].getName());
+                assertEquals(2, cols[i].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_0", cols[i].getName());
+                assertEquals(1, cols[i].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
+
             // attr 1
-            assertEquals("attr_1", cols[3].getName());
-            assertEquals("3", cols[3].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[3].getTimestamp());
-            
-            assertEquals("attr_1", cols[4].getName());
-            assertEquals("2", cols[4].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[4].getTimestamp());
-            
-            assertEquals("attr_1", cols[5].getName());
-            assertEquals("1", cols[5].getValue().asString());
-            checkTimestampWithDeviation(ts, cols[5].getTimestamp());
-            
+            assertEquals("attr_1", cols[i].getName());
+            assertEquals("3", cols[i].getValue().asString());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_1", cols[i].getName());
+                assertEquals("2", cols[i].getValue().asString());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_1", cols[i].getName());
+                assertEquals("1", cols[i].getValue().asString());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
+
             // attr 2
-            assertEquals("attr_2", cols[6].getName());
-            assertEquals(true, 3 == cols[6].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[6].getTimestamp());
-            
-            assertEquals("attr_2", cols[7].getName());
-            assertEquals(true, 2 == cols[7].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[7].getTimestamp());
-            
-            assertEquals("attr_2", cols[8].getName());
-            assertEquals(true, 1 == cols[8].getValue().asDouble());
-            checkTimestampWithDeviation(ts, cols[8].getTimestamp());
-            
+            assertEquals("attr_2", cols[i].getName());
+            assertEquals(true, 3 == cols[i].getValue().asDouble());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_2", cols[i].getName());
+                assertEquals(true, 2 == cols[i].getValue().asDouble());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_2", cols[i].getName());
+                assertEquals(true, 1 == cols[i].getValue().asDouble());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
+
             // attr 3
-            assertEquals("attr_3", cols[9].getName());
-            assertEquals(false, cols[9].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[9].getTimestamp());
-            
-            assertEquals("attr_3", cols[10].getName());
-            assertEquals(false, cols[10].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[10].getTimestamp());
-            
-            assertEquals("attr_3", cols[11].getName());
-            assertEquals(false, cols[11].getValue().asBoolean());
-            checkTimestampWithDeviation(ts, cols[11].getTimestamp());
-            
+            assertEquals("attr_3", cols[i].getName());
+            assertEquals(false, cols[i].getValue().asBoolean());
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_3", cols[i].getName());
+                assertEquals(false, cols[i].getValue().asBoolean());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_3", cols[i].getName());
+                assertEquals(false, cols[i].getValue().asBoolean());
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
+
             // attr 4
-            assertEquals("attr_4", cols[12].getName());
-            assertEquals("3", new String(cols[12].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[12].getTimestamp());
-            
-            assertEquals("attr_4", cols[13].getName());
-            assertEquals("2", new String(cols[13].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[13].getTimestamp());
-            
-            assertEquals("attr_4", cols[14].getName());
-            assertEquals("1", new String(cols[14].getValue().asBinary(), "UTF-8"));
-            checkTimestampWithDeviation(ts, cols[14].getTimestamp());
+            assertEquals("attr_4", cols[i].getName());
+            assertEquals("3", new String(cols[i].getValue().asBinary(), "UTF-8"));
+            checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+            if (!Utils.useGlobalTxn()) {
+                assertEquals("attr_4", cols[i].getName());
+                assertEquals("2", new String(cols[i].getValue().asBinary(), "UTF-8"));
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+
+                assertEquals("attr_4", cols[i].getName());
+                assertEquals("1", new String(cols[i].getValue().asBinary(), "UTF-8"));
+                checkTimestampWithDeviation(ts, cols[i++].getTimestamp());
+            }
         }
     }
     
@@ -745,7 +778,11 @@ public class RestrictedItemTest extends BaseFT {
         // max version = INT32_MAX
         {
             TableOptions tableOptions = new TableOptions();
-            tableOptions.setMaxVersions(Integer.MAX_VALUE);
+            if (Utils.useGlobalTxn()) {
+                tableOptions.setMaxVersions(1);
+            } else {
+                tableOptions.setMaxVersions(Integer.MAX_VALUE);
+            }
             tableOptions.setTimeToLive(-1);
             
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
@@ -795,14 +832,18 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(pk, row.getPrimaryKey());
                 
                 Column[] cols = row.getColumns();
-                
-                assertEquals(2, cols.length);
+
+                if (Utils.useGlobalTxn()) {
+                    assertEquals(1, cols.length);
+                } else {
+                    assertEquals(2, cols.length);
+                    assertEquals("attr", cols[1].getName());
+                    assertEquals(0, cols[1].getValue().asLong());
+                    checkTimestampWithDeviation(ts, cols[1].getTimestamp());
+                }
                 assertEquals("attr", cols[0].getName());
-                assertEquals("attr", cols[1].getName());
                 assertEquals("0", cols[0].getValue().asString());
-                assertEquals(0, cols[1].getValue().asLong());
                 checkTimestampWithDeviation(ts, cols[0].getTimestamp());
-                checkTimestampWithDeviation(ts, cols[1].getTimestamp());
             }
             // batch write row
             {
@@ -849,7 +890,11 @@ public class RestrictedItemTest extends BaseFT {
         {
             TableOptions tableOptions = new TableOptions();
             tableOptions.setTimeToLive(-1);
-            tableOptions.setMaxVersions(Integer.MAX_VALUE);
+            if (Utils.useGlobalTxn()) {
+                tableOptions.setMaxVersions(1);
+            } else {
+                tableOptions.setMaxVersions(Integer.MAX_VALUE);
+            }
             
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
             Utils.waitForPartitionLoad(tableName);
@@ -899,15 +944,18 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(pk, row.getPrimaryKey());
                 
                 Column[] cols = row.getColumns();
-                
-                assertEquals(2, cols.length);
-                
+
+                if (Utils.useGlobalTxn()) {
+                    assertEquals(1, cols.length);
+                } else {
+                    assertEquals(2, cols.length);
+                    assertEquals("attr", cols[1].getName());
+                    assertEquals(0, cols[1].getValue().asLong());
+                    checkTimestampWithDeviation(System.currentTimeMillis(), cols[1].getTimestamp());
+                }
                 assertEquals("attr", cols[0].getName());
-                assertEquals("attr", cols[1].getName());
                 assertEquals("0", cols[0].getValue().asString());
-                assertEquals(0, cols[1].getValue().asLong());
                 checkTimestampWithDeviation(System.currentTimeMillis(), cols[0].getTimestamp());
-                checkTimestampWithDeviation(System.currentTimeMillis(), cols[1].getTimestamp());
             }
             Utils.sleepSeconds(2);
             // batch write row
@@ -953,7 +1001,11 @@ public class RestrictedItemTest extends BaseFT {
         meta.addPrimaryKeyColumns(scheme);
         
         TableOptions tableOptions = new TableOptions();
-        tableOptions.setMaxVersions(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setMaxVersions(1);
+        } else {
+            tableOptions.setMaxVersions(Integer.MAX_VALUE);
+        }
         tableOptions.setTimeToLive(-1);
         tableOptions.setMaxTimeDeviation(Long.MAX_VALUE / 1000000);
         
@@ -970,7 +1022,11 @@ public class RestrictedItemTest extends BaseFT {
                         .build();
                 
                 List<Column> columns = new ArrayList<Column>();
-                columns.add(new Column("attr", ColumnValue.fromLong(0), 0)) ;
+                if (Utils.useGlobalTxn()) {
+                    columns.add(new Column("attr", ColumnValue.fromLong(0)));
+                } else {
+                    columns.add(new Column("attr", ColumnValue.fromLong(0), 0));
+                }
                 
                 OTSHelper.putRow(ots, tableName, pk, columns);
                 
@@ -986,7 +1042,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals(0, cols[0].getValue().asLong());
-                assertEquals(0, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(0, cols[0].getTimestamp());
+                }
             }
             // update row
             {
@@ -994,7 +1052,11 @@ public class RestrictedItemTest extends BaseFT {
                         .addPrimaryKeyColumn("pk_0", PrimaryKeyValue.fromLong(0))
                         .build();
                 List<Column> puts = new ArrayList<Column>();
-                puts.add(new Column("attr", ColumnValue.fromString("0"), 0)) ;
+                if (Utils.useGlobalTxn()) {
+                    puts.add(new Column("attr", ColumnValue.fromString("0")));
+                } else {
+                    puts.add(new Column("attr", ColumnValue.fromString("0"), 0));
+                }
                 
                 OTSHelper.updateRow(ots, tableName, pk, puts, null, null);
                 
@@ -1010,7 +1072,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals("0", cols[0].getValue().asString());
-                assertEquals(0, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(0, cols[0].getTimestamp());
+                }
             }
             // batch write row
             {
@@ -1020,7 +1084,11 @@ public class RestrictedItemTest extends BaseFT {
                 
                 List<RowPutChange> puts = new ArrayList<RowPutChange>();
                 RowPutChange put = new RowPutChange(tableName, pk);
-                put.addColumn("attr", ColumnValue.fromLong(1), 0);
+                if (Utils.useGlobalTxn()) {
+                    put.addColumn("attr", ColumnValue.fromLong(1));
+                } else {
+                    put.addColumn("attr", ColumnValue.fromLong(1), 0);
+                }
                 puts.add(put);
                 OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
                 
@@ -1036,7 +1104,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals(1, cols[0].getValue().asLong());
-                assertEquals(0, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(0, cols[0].getTimestamp());
+                }
             }
         }
         
@@ -1053,7 +1123,11 @@ public class RestrictedItemTest extends BaseFT {
                         .build();
                 
                 List<Column> columns = new ArrayList<Column>();
-                columns.add(new Column("attr", ColumnValue.fromLong(0), Long.MAX_VALUE/1000 - 1)) ;
+                if (Utils.useGlobalTxn()) {
+                    columns.add(new Column("attr", ColumnValue.fromLong(0)));
+                } else {
+                    columns.add(new Column("attr", ColumnValue.fromLong(0), Long.MAX_VALUE/1000 - 1));
+                }
                 
                 OTSHelper.putRow(ots, tableName, pk, columns);
                 
@@ -1069,7 +1143,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals(0, cols[0].getValue().asLong());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                }
             }
             // update row
             {
@@ -1077,7 +1153,11 @@ public class RestrictedItemTest extends BaseFT {
                         .addPrimaryKeyColumn("pk_0", PrimaryKeyValue.fromLong(0))
                         .build();
                 List<Column> puts = new ArrayList<Column>();
-                puts.add(new Column("attr", ColumnValue.fromString("0"), Long.MAX_VALUE/1000 - 1)) ;
+                if (Utils.useGlobalTxn()) {
+                    puts.add(new Column("attr", ColumnValue.fromString("0")));
+                } else {
+                    puts.add(new Column("attr", ColumnValue.fromString("0"), Long.MAX_VALUE/1000 - 1));
+                }
                 
                 OTSHelper.updateRow(ots, tableName, pk, puts, null, null);
                 
@@ -1093,7 +1173,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals("0", cols[0].getValue().asString());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                }
             }
             // batch write row
             {
@@ -1103,7 +1185,11 @@ public class RestrictedItemTest extends BaseFT {
                 
                 List<RowPutChange> puts = new ArrayList<RowPutChange>();
                 RowPutChange put = new RowPutChange(tableName, pk);
-                put.addColumn("attr", ColumnValue.fromLong(1), Long.MAX_VALUE/1000 - 1);
+                if (Utils.useGlobalTxn()) {
+                    put.addColumn("attr", ColumnValue.fromLong(1));
+                } else {
+                    put.addColumn("attr", ColumnValue.fromLong(1), Long.MAX_VALUE/1000 - 1);
+                }
                 puts.add(put);
                 OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
                 
@@ -1119,7 +1205,9 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, cols.length);
                 assertEquals("attr", cols[0].getName());
                 assertEquals(1, cols[0].getValue().asLong());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[0].getTimestamp());
+                }
             }
         }
     }
@@ -1420,13 +1508,17 @@ public class RestrictedItemTest extends BaseFT {
             assertTrue(null != row);
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(2, cols.length);
+            if (Utils.useGlobalTxn()) {
+                assertEquals(1, cols.length);
+            } else {
+                assertEquals(2, cols.length);
+                assertEquals("attr", cols[1].getName());
+                assertEquals("hello", cols[1].getValue().asString());
+                checkTimestampWithDeviation(ts, cols[1].getTimestamp());
+            }
             assertEquals("attr", cols[0].getName());
-            assertEquals("attr", cols[1].getName());
             assertEquals(1, cols[0].getValue().asLong());
-            assertEquals("hello", cols[1].getValue().asString());
             checkTimestampWithDeviation(ts, cols[0].getTimestamp());
-            checkTimestampWithDeviation(ts, cols[1].getTimestamp());
             
         }
         // delete row
@@ -1760,12 +1852,16 @@ public class RestrictedItemTest extends BaseFT {
             assertTrue(null != row);
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(2, cols.length);
+            if (Utils.useGlobalTxn()) {
+                assertEquals(1, cols.length);
+            } else {
+                assertEquals(2, cols.length);
+                assertEquals(columnName, cols[1].getName());
+                assertEquals(100, cols[1].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[1].getTimestamp());
+            }
             assertEquals(columnName, cols[0].getName());
-            assertEquals(columnName, cols[1].getName());
             assertEquals(1, cols[0].getValue().asLong());
-            assertEquals(100, cols[1].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[0].getTimestamp());
             checkTimestampWithDeviation(ts, cols[0].getTimestamp());
         }
         // batch get row
@@ -1792,12 +1888,16 @@ public class RestrictedItemTest extends BaseFT {
             
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(2, cols.length);
+            if (Utils.useGlobalTxn()) {
+                assertEquals(1, cols.length);
+            } else {
+                assertEquals(2, cols.length);
+                assertEquals(columnName, cols[1].getName());
+                assertEquals(100, cols[1].getValue().asLong());
+                checkTimestampWithDeviation(ts, cols[1].getTimestamp());
+            }
             assertEquals(columnName, cols[0].getName());
-            assertEquals(columnName, cols[1].getName());
             assertEquals(1, cols[0].getValue().asLong());
-            assertEquals(100, cols[1].getValue().asLong());
-            checkTimestampWithDeviation(ts, cols[0].getTimestamp());
             checkTimestampWithDeviation(ts, cols[0].getTimestamp());
             
         }
@@ -2720,13 +2820,17 @@ public class RestrictedItemTest extends BaseFT {
             Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
             assertTrue(null != row);
             assertEquals(new PrimaryKey(primaryKeyColumn), row.getPrimaryKey());
-            assertEquals(2, row.getColumns().length);
+            if (Utils.useGlobalTxn()) {
+                assertEquals(1, row.getColumns().length);
+            } else {
+                assertEquals(2, row.getColumns().length);
+                assertEquals("attr", row.getColumns()[1].getName());
+                assertEquals(value, row.getColumns()[1].getValue().asString());
+                checkTimestampWithDeviation(ts, row.getColumns()[1].getTimestamp());
+            }
             assertEquals("attr", row.getColumns()[0].getName());
-            assertEquals("attr", row.getColumns()[1].getName());
             assertEquals(value, row.getColumns()[0].getValue().asString());
-            assertEquals(value, row.getColumns()[1].getValue().asString());
             checkTimestampWithDeviation(ts, row.getColumns()[0].getTimestamp());
-            checkTimestampWithDeviation(ts, row.getColumns()[1].getTimestamp());
         }
         { // batch write row
             List<RowPutChange> puts = new ArrayList<RowPutChange>();
@@ -2793,11 +2897,15 @@ public class RestrictedItemTest extends BaseFT {
             Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
             assertTrue(null != row);
             assertEquals(new PrimaryKey(primaryKeyColumn), row.getPrimaryKey());
-            assertEquals(2, row.getColumns().length);
+            if (Utils.useGlobalTxn()) {
+                assertEquals(1, row.getColumns().length);
+            } else {
+                assertEquals(2, row.getColumns().length);
+                assertEquals(value, row.getColumns()[1].getValue().asString());
+                checkTimestampWithDeviation(ts, row.getColumns()[1].getTimestamp());
+            }
             assertEquals(value, row.getColumns()[0].getValue().asString());
-            assertEquals(value, row.getColumns()[1].getValue().asString());
             checkTimestampWithDeviation(ts, row.getColumns()[0].getTimestamp());
-            checkTimestampWithDeviation(ts, row.getColumns()[1].getTimestamp());
         }
         { // batch write row
             List<RowPutChange> puts = new ArrayList<RowPutChange>();
@@ -2900,7 +3008,11 @@ public class RestrictedItemTest extends BaseFT {
         end.add(new PrimaryKeyColumn("pk_0", PrimaryKeyValue.INF_MAX));
         long ts = System.currentTimeMillis();
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8"))));
+        } else {
+            columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts));
+        }
         
         OTSHelper.createTable(ots, tableName, scheme);
         
@@ -2911,23 +3023,37 @@ public class RestrictedItemTest extends BaseFT {
             
             Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
             assertTrue(null != row);
-            Row expect = OTSRowBuilder.newInstance()
-                    .addPrimaryKeyColumn(primaryKeyColumn)
-                    .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                    .toRow();
-            
-            checkRow(expect, row);
+            OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                                                .addPrimaryKeyColumn(primaryKeyColumn);
+            if (Utils.useGlobalTxn()) {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+            }
+
+            if (Utils.useGlobalTxn()) {
+                checkRowNoTimestamp(expect.toRow(), row);
+            } else {
+                checkRow(expect.toRow(), row);
+            }
         }
         { // update row
             OTSHelper.updateRow(ots, tableName, new PrimaryKey(primaryKeyColumn), columns, null, null);
             Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
             assertTrue(null != row);
-            Row expect = OTSRowBuilder.newInstance()
-                    .addPrimaryKeyColumn(primaryKeyColumn)
-                    .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                    .toRow();
-            
-            checkRow(expect, row);
+            OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                    .addPrimaryKeyColumn(primaryKeyColumn);
+            if (Utils.useGlobalTxn()) {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+            }
+
+            if (Utils.useGlobalTxn()) {
+                checkRowNoTimestamp(expect.toRow(), row);
+            } else {
+                checkRow(expect.toRow(), row);
+            }
         }
         
         // batchGetRow
@@ -2947,13 +3073,20 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(1, suc.size());
             
             Row row = suc.get(0).getRow();
-            
-            Row expect = OTSRowBuilder.newInstance()
-                    .addPrimaryKeyColumn(primaryKeyColumn)
-                    .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                    .toRow();
-            
-            checkRow(expect, row);
+
+            OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                    .addPrimaryKeyColumn(primaryKeyColumn);
+            if (Utils.useGlobalTxn()) {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+            }
+
+            if (Utils.useGlobalTxn()) {
+                checkRowNoTimestamp(expect.toRow(), row);
+            } else {
+                checkRow(expect.toRow(), row);
+            }
         }
         // getRange
         {
@@ -2964,29 +3097,47 @@ public class RestrictedItemTest extends BaseFT {
             GetRangeResponse result = OTSHelper.getRange(ots, rangeRowQueryCriteria);
             assertEquals(null, result.getNextStartPrimaryKey());
             assertEquals(1, result.getRows().size());
-            
-            Row expect = OTSRowBuilder.newInstance()
-                    .addPrimaryKeyColumn(primaryKeyColumn)
-                    .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                    .toRow();
-            
-            checkRow(expect, result.getRows().get(0));
+
+            OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                    .addPrimaryKeyColumn(primaryKeyColumn);
+            if (Utils.useGlobalTxn()) {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+            }
+
+            if (Utils.useGlobalTxn()) {
+                checkRowNoTimestamp(expect.toRow(), result.getRows().get(0));
+            } else {
+                checkRow(expect.toRow(), result.getRows().get(0));
+            }
         }
         { // batch write row
             List<RowPutChange> puts = new ArrayList<RowPutChange>();
             RowPutChange put = new RowPutChange(tableName, new PrimaryKey(primaryKeyColumn));
-            put.addColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts + 1);
+            if (Utils.useGlobalTxn()) {
+                put.addColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                put.addColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts + 1);
+            }
             puts.add(put);
             OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
             
             Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
-            
-            Row expect = OTSRowBuilder.newInstance()
-                    .addPrimaryKeyColumn(primaryKeyColumn)
-                    .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts + 1)
-                    .toRow();
-            
-            checkRow(expect, row);
+
+            OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                    .addPrimaryKeyColumn(primaryKeyColumn);
+            if (Utils.useGlobalTxn()) {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+            } else {
+                expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts + 1);
+            }
+
+            if (Utils.useGlobalTxn()) {
+                checkRowNoTimestamp(expect.toRow(), row);
+            } else {
+                checkRow(expect.toRow(), row);
+            }
         }
     }
     
@@ -3014,7 +3165,11 @@ public class RestrictedItemTest extends BaseFT {
         
         long ts = System.currentTimeMillis();
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8"))));
+        } else {
+            columns.add(new Column("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts));
+        }
         
         OTSHelper.createTable(ots, tableName, scheme);
         
@@ -3025,12 +3180,19 @@ public class RestrictedItemTest extends BaseFT {
             // get row
             {
                 Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                        .toRow();
-                
-                checkRow(expect, row);
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), row);
+                } else {
+                    checkRow(expect.toRow(), row);
+                }
             }
             // batchGetRow
             {
@@ -3049,13 +3211,20 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, suc.size());
                 
                 Row row = suc.get(0).getRow();
-                
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                        .toRow();
-                
-                checkRow(expect, row);
+
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), row);
+                } else {
+                    checkRow(expect.toRow(), row);
+                }
             }
             // getRange
             {
@@ -3066,13 +3235,20 @@ public class RestrictedItemTest extends BaseFT {
                 GetRangeResponse result = OTSHelper.getRange(ots, rangeRowQueryCriteria);
                 assertEquals(null, result.getNextStartPrimaryKey());
                 assertEquals(1, result.getRows().size());
-                
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                        .toRow();
-                
-                checkRow(expect, result.getRows().get(0));
+
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), result.getRows().get(0));
+                } else {
+                    checkRow(expect.toRow(), result.getRows().get(0));
+                }
             }
         }
         { // update row
@@ -3080,12 +3256,19 @@ public class RestrictedItemTest extends BaseFT {
             // get row
             {
                 Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                        .toRow();
-                
-                checkRow(expect, row);
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), row);
+                } else {
+                    checkRow(expect.toRow(), row);
+                }
             }
             // batchGetRow
             {
@@ -3109,8 +3292,12 @@ public class RestrictedItemTest extends BaseFT {
                         .addPrimaryKeyColumn(primaryKeyColumn)
                         .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
                         .toRow();
-                
-                checkRow(expect, row);
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect, row);
+                } else {
+                    checkRow(expect, row);
+                }
             }
             // getRange
             {
@@ -3121,31 +3308,49 @@ public class RestrictedItemTest extends BaseFT {
                 GetRangeResponse result = OTSHelper.getRange(ots, rangeRowQueryCriteria);
                 assertEquals(null, result.getNextStartPrimaryKey());
                 assertEquals(1, result.getRows().size());
-                
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts)
-                        .toRow();
-                
-                checkRow(expect, result.getRows().get(0));
+
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromBinary(value.getBytes("UTF-8")), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), result.getRows().get(0));
+                } else {
+                    checkRow(expect.toRow(), result.getRows().get(0));
+                }
             }
         }
         { // batch write row
             List<RowPutChange> puts = new ArrayList<RowPutChange>();
             RowPutChange put = new RowPutChange(tableName, new PrimaryKey(primaryKeyColumn));
-            put.addColumn("attr", ColumnValue.fromLong(1), ts);
+            if (Utils.useGlobalTxn()) {
+                put.addColumn("attr", ColumnValue.fromLong(1));
+            } else {
+                put.addColumn("attr", ColumnValue.fromLong(1), ts);
+            }
             puts.add(put);
             
             OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
             // get row
             {
                 Row row = OTSHelper.getRowForAll(ots, tableName, new PrimaryKey(primaryKeyColumn)).getRow();
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromLong(1), ts)
-                        .toRow();
-                
-                checkRow(expect, row);
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), row);
+                } else {
+                    checkRow(expect.toRow(), row);
+                }
             }
             // batchGetRow
             {
@@ -3164,13 +3369,20 @@ public class RestrictedItemTest extends BaseFT {
                 assertEquals(1, suc.size());
                 
                 Row row = suc.get(0).getRow();
-                
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromLong(1), ts)
-                        .toRow();
-                
-                checkRow(expect, row);
+
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), row);
+                } else {
+                    checkRow(expect.toRow(), row);
+                }
             }
             // getRange
             {
@@ -3181,13 +3393,20 @@ public class RestrictedItemTest extends BaseFT {
                 GetRangeResponse result = OTSHelper.getRange(ots, rangeRowQueryCriteria);
                 assertEquals(null, result.getNextStartPrimaryKey());
                 assertEquals(1, result.getRows().size());
-                
-                Row expect = OTSRowBuilder.newInstance()
-                        .addPrimaryKeyColumn(primaryKeyColumn)
-                        .addAttrColumn("attr", ColumnValue.fromLong(1), ts)
-                        .toRow();
-                
-                checkRow(expect, result.getRows().get(0));
+
+                OTSRowBuilder expect = OTSRowBuilder.newInstance()
+                        .addPrimaryKeyColumn(primaryKeyColumn);
+                if (Utils.useGlobalTxn()) {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1));
+                } else {
+                    expect.addAttrColumn("attr", ColumnValue.fromLong(1), ts);
+                }
+
+                if (Utils.useGlobalTxn()) {
+                    checkRowNoTimestamp(expect.toRow(), result.getRows().get(0));
+                } else {
+                    checkRow(expect.toRow(), result.getRows().get(0));
+                }
             }
         }
     }
@@ -3466,7 +3685,7 @@ public class RestrictedItemTest extends BaseFT {
     }
     
     /**
-     * A table contains max + 1 bytes of data, number of rows < max, GetRange is expected to complete reading in 2 attempts.
+     * A table contains max + 1 bytes of data, number of rows < max, GetRange is expected to complete reading in more than 2 attempts.
      */
     @Test
     public void testCase35() {
@@ -3530,13 +3749,17 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         assertEquals(nextPK, r.getNextStartPrimaryKey());
-        
-        rangeRowQueryCriteria.setInclusiveStartPrimaryKey(nextPK);
-        rangeRowQueryCriteria.setExclusiveEndPrimaryKey(exclusiveEndPrimaryKey);
-        rangeRowQueryCriteria.setMaxVersions(Integer.MAX_VALUE);
-        r = OTSHelper.getRange(ots, rangeRowQueryCriteria);
-        
-        rows.addAll(r.getRows());
+        assertTrue(rows.size() < expectCount);
+
+        while (r.getNextStartPrimaryKey() != null) {
+            nextPK = r.getNextStartPrimaryKey();
+            rangeRowQueryCriteria.setInclusiveStartPrimaryKey(nextPK);
+            rangeRowQueryCriteria.setExclusiveEndPrimaryKey(exclusiveEndPrimaryKey);
+            rangeRowQueryCriteria.setMaxVersions(Integer.MAX_VALUE);
+            r = OTSHelper.getRange(ots, rangeRowQueryCriteria);
+
+            rows.addAll(r.getRows());
+        }
         
         assertEquals(expectCount, rows.size());
         
@@ -3547,8 +3770,6 @@ public class RestrictedItemTest extends BaseFT {
                     .toRow();
             checkRowNoTimestamp(row, rows.get(i));
         }
-        
-        assertEquals(null, r.getNextStartPrimaryKey());
     }
 
     /**
@@ -3579,7 +3800,8 @@ public class RestrictedItemTest extends BaseFT {
         RowPutChange putChange = new RowPutChange(tableName, pk);
         RowUpdateChange updateChange = new RowUpdateChange(tableName, pk);
         RowUpdateChange updateForDeleteChange = new RowUpdateChange(tableName, pk);
-        for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW; i++) {
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
+        for (int i = 0; i < max_column; i++) {
             String columnName = String.format("attr_%06d", i);
             puts.add(new Column(columnName, ColumnValue.fromLong(i)));
             
@@ -3606,7 +3828,7 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3625,7 +3847,7 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 System.out.println(cols[i].toString());
@@ -3648,7 +3870,7 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3666,7 +3888,7 @@ public class RestrictedItemTest extends BaseFT {
             assertEquals(pk, row.getPrimaryKey());
             
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3674,7 +3896,7 @@ public class RestrictedItemTest extends BaseFT {
             }
             OTSHelper.deleteTable(ots, tableName);
         }
-        
+        if (!Utils.useGlobalTxn())
         {
             OTSHelper.createTable(ots, tableName, scheme);
             Utils.waitForPartitionLoad(tableName);
@@ -3711,9 +3933,13 @@ public class RestrictedItemTest extends BaseFT {
         RowPutChange put = new RowPutChange(tableName, pk);
         RowUpdateChange update = new RowUpdateChange(tableName, pk);
         RowUpdateChange updateForDelete = new RowUpdateChange(tableName, pk);
-        for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW + 1; i++) {
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
+        for (int i = 0; i < max_column + 1; i++) {
             String columnName = "attr_" + i;
             puts.add(new Column(columnName, ColumnValue.fromLong(i)));
+        }
+        for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW + 1; i++) {
+            String columnName = "attr_" + i;
             deletes.add(columnName);
             put.addColumn(new Column(columnName, ColumnValue.fromLong(i)));
             update.put(new Column(columnName, ColumnValue.fromLong(i)));
@@ -3733,7 +3959,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.putRow(ots, tableName, pk, puts);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
             OTSHelper.deleteTable(ots, tableName);
         }
@@ -3746,7 +3973,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.updateRow(ots, tableName, pk, puts, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
         }
         
@@ -3756,7 +3984,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.updateRow(ots, tableName, pk, null, deletes, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
             
             OTSHelper.deleteTable(ots, tableName);
@@ -3769,7 +3998,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.batchWriteRow(ots, putChanges, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
             
             OTSHelper.deleteTable(ots, tableName);
@@ -3782,7 +4012,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.batchWriteRow(ots, null, updateChanges, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
             OTSHelper.deleteTable(ots, tableName);
         }
@@ -3795,7 +4026,8 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.batchWriteRow(ots, null, updateChangesForDelete, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The number of attribute columns exceeds the limit, limit count: 1024, column count: 1025.", 400, e);
+                assertEquals(ErrorCode.INVALID_PARAMETER, e.getErrorCode());
+                assertEquals(400, e.getHttpStatus());
             }
             OTSHelper.deleteTable(ots, tableName);
         }
@@ -3818,7 +4050,8 @@ public class RestrictedItemTest extends BaseFT {
         
         List<Column> puts = new ArrayList<Column>();
         List<String> columnsToGet = new ArrayList<String>();
-        for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW; i++) {
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
+        for (int i = 0; i < max_column; i++) {
             columnsToGet.add(String.format("attr_%06d", i));
             puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i)));
         }
@@ -3835,7 +4068,7 @@ public class RestrictedItemTest extends BaseFT {
             Row row = OTSHelper.getRow(ots, rowQueryCriteria).getRow();
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3859,7 +4092,7 @@ public class RestrictedItemTest extends BaseFT {
             
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3887,7 +4120,7 @@ public class RestrictedItemTest extends BaseFT {
             Row row = rows.get(0);
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -3913,9 +4146,12 @@ public class RestrictedItemTest extends BaseFT {
         
         List<Column> puts = new ArrayList<Column>();
         List<String> columnsToGet = new ArrayList<String>();
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
+        for (int i = 0; i < max_column; i++) {
+            puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i)));
+        }
         for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW; i++) {
             columnsToGet.add(String.format("attr_%06d", i));
-            puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i)));
         }
         columnsToGet.add(String.format("attr_%06d", OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW));
         
@@ -3993,7 +4229,8 @@ public class RestrictedItemTest extends BaseFT {
         
         List<Column> puts = new ArrayList<Column>();
         List<String> columnsToGet = new ArrayList<String>();
-        for (int i = 0; i < OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW; i++) {
+        int max_column = Utils.useGlobalTxn() ? OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE : OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW;
+        for (int i = 0; i < max_column; i++) {
             columnsToGet.add(String.format("attr_%06d", i));
             puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i)));
         }
@@ -4010,7 +4247,7 @@ public class RestrictedItemTest extends BaseFT {
             Row row = OTSHelper.getRow(ots, rowQueryCriteria).getRow();
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -4034,7 +4271,7 @@ public class RestrictedItemTest extends BaseFT {
             
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -4062,7 +4299,7 @@ public class RestrictedItemTest extends BaseFT {
             Row row = rows.get(0);
             assertEquals(pk, row.getPrimaryKey());
             Column[] cols = row.getColumns();
-            assertEquals(OTSRestrictedItemConst.COLUMN_COUNT_MAX_IN_SINGLE_ROW, cols.length);
+            assertEquals(max_column, cols.length);
             
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
@@ -4090,7 +4327,11 @@ public class RestrictedItemTest extends BaseFT {
         List<String> columnsToGet = new ArrayList<String>();
         for (int i = 0; i < 10; i++) {
             columnsToGet.add(String.format("attr_%06d", i));
-            puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i), Long.MAX_VALUE/1000 - 1));
+            if (Utils.useGlobalTxn()) {
+                puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i)));
+            } else {
+                puts.add(new Column(String.format("attr_%06d", i), ColumnValue.fromLong(i), Long.MAX_VALUE/1000 - 1));
+            }
         }
         
         {
@@ -4105,7 +4346,9 @@ public class RestrictedItemTest extends BaseFT {
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
                 assertEquals(i, cols[i].getValue().asLong());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                }
             }
         }
         {
@@ -4124,7 +4367,9 @@ public class RestrictedItemTest extends BaseFT {
             for (int i = 0; i < cols.length; i++) {
                 assertEquals(String.format("attr_%06d", i), cols[i].getName());
                 assertEquals(i, cols[i].getValue().asLong());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                }
             }
             OTSHelper.deleteRow(ots, tableName, pk);
             row = OTSHelper.getRowForAll(ots, tableName, pk).getRow();
@@ -4134,7 +4379,11 @@ public class RestrictedItemTest extends BaseFT {
             List<RowPutChange> putsChange = new ArrayList<RowPutChange>();
             RowPutChange p = new RowPutChange(tableName, pk);
             for (int i = 0; i < 10; i++) {
-                p.addColumn(new Column("attr_" + i, ColumnValue.fromLong(i), Long.MAX_VALUE/1000 - 1));
+                if (Utils.useGlobalTxn()) {
+                    p.addColumn(new Column("attr_" + i, ColumnValue.fromLong(i)));
+                } else {
+                    p.addColumn(new Column("attr_" + i, ColumnValue.fromLong(i), Long.MAX_VALUE/1000 - 1));
+                }
             }
             putsChange.add(p);
             
@@ -4158,7 +4407,9 @@ public class RestrictedItemTest extends BaseFT {
             
             for (int i = 0; i < 10; i++) {
                 assertEquals(i, cols[i].getValue().asLong());
-                assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(Long.MAX_VALUE/1000 - 1, cols[i].getTimestamp());
+                }
             }
         }
     }
@@ -4258,7 +4509,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromString(getString('a', 64 * 1024)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 64 * 1024)));
+            } else {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 64 * 1024)), (new Date()).getTime());
+            }
             puts.add(put);
         }
         
@@ -4267,7 +4522,11 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         RowPutChange put = new RowPutChange(tableName, pk);
-        put.addColumn(columName, ColumnValue.fromString(getString('a', 63008)), (new Date()).getTime());
+        if (Utils.useGlobalTxn()) {
+            put.addColumn(columName, ColumnValue.fromString(getString('a', 63008)));
+        } else {
+            put.addColumn(columName, ColumnValue.fromString(getString('a', 63008)), (new Date()).getTime());
+        }
         puts.add(put);
         
         OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
@@ -4330,7 +4589,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromString(getString('a', 64 * 1024)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                up.put(columName, ColumnValue.fromString(getString('a', 64 * 1024)));
+            } else {
+                up.put(columName, ColumnValue.fromString(getString('a', 64 * 1024)), (new Date()).getTime());
+            }
             updates.add(up);
         }
         
@@ -4339,7 +4602,11 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         RowUpdateChange up = new RowUpdateChange(tableName, pk);
-        up.put(columName, ColumnValue.fromString(getString('a', 63008)), (new Date()).getTime());
+        if (Utils.useGlobalTxn()) {
+            up.put(columName, ColumnValue.fromString(getString('a', 63008)));
+        } else {
+            up.put(columName, ColumnValue.fromString(getString('a', 63008)), (new Date()).getTime());
+        }
         updates.add(up);
         
         OTSHelper.batchWriteRowNoLimit(ots, null, updates, null);
@@ -4402,7 +4669,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                put.addColumn(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")));
+            } else {
+                put.addColumn(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")), (new Date()).getTime());
+            }
             puts.add(put);
         }
         
@@ -4411,7 +4682,11 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         RowPutChange put = new RowPutChange(tableName, pk);
-        put.addColumn(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")), (new Date()).getTime());
+        if (Utils.useGlobalTxn()) {
+            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")));
+        } else {
+            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")), (new Date()).getTime());
+        }
         puts.add(put);
         
         OTSHelper.batchWriteRowNoLimit(ots, puts, null, null);
@@ -4473,7 +4748,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                up.put(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")));
+            } else {
+                up.put(columName, ColumnValue.fromBinary(getString('a', 64 * 1024).getBytes("UTF-8")), (new Date()).getTime());
+            }
             updates.add(up);
         }
         
@@ -4482,7 +4761,11 @@ public class RestrictedItemTest extends BaseFT {
                 .build();
         
         RowUpdateChange up = new RowUpdateChange(tableName, pk);
-        up.put(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")), (new Date()).getTime());
+        if (Utils.useGlobalTxn()) {
+            up.put(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")));
+        } else {
+            up.put(columName, ColumnValue.fromBinary(getString('a', 63008).getBytes("UTF-8")), (new Date()).getTime());
+        }
         updates.add(up);
         
         OTSHelper.batchWriteRowNoLimit(ots, null, updates, null);
@@ -4557,7 +4840,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397953)));
+            } else {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+            }
             puts.add(put);
         }
         {
@@ -4566,7 +4853,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397951)));
+            } else {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            }
             puts.add(put);
         }
         {
@@ -4575,7 +4866,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397951)));
+            } else {
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            }
             puts.add(put);
         }
        
@@ -4619,7 +4914,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397953)));
+            } else {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+            }
             updates.add(up);
         }
         {
@@ -4628,7 +4927,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397951)));
+            } else {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            }
             updates.add(up);
         }
         {
@@ -4637,7 +4940,11 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            if (Utils.useGlobalTxn()) {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397951)));
+            } else {
+                up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+            }
             updates.add(up);
         }
        

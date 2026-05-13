@@ -714,6 +714,7 @@ public class ResponseFactory {
                 }
                 PlainBufferRow row = rows.get(0);
 
+                StreamRecord streamRecord;
                 if (respRecord.hasOriginRecord()) {
                     PlainBufferCodedInputStream inputOriginStream = new PlainBufferCodedInputStream(
                             new PlainBufferInputStream(respRecord.getOriginRecord().asReadOnlyByteBuffer())
@@ -723,10 +724,15 @@ public class ResponseFactory {
                         throw new IOException("Expect only returns one row, Row count: " + rows.size());
                     }
                     PlainBufferRow originRow = originRows.get(0);
-                    records.add(PlainBufferConversion.toStreamRecord(row, originRow, respRecord.getActionType(), parseInTimeseriesDataFormat));
+                    streamRecord = PlainBufferConversion.toStreamRecord(row, originRow, respRecord.getActionType(), parseInTimeseriesDataFormat);
                 } else {
-                    records.add(PlainBufferConversion.toStreamRecord(row, null, respRecord.getActionType(), parseInTimeseriesDataFormat));
+                    streamRecord = PlainBufferConversion.toStreamRecord(row, null, respRecord.getActionType(), parseInTimeseriesDataFormat);
                 }
+                if (respRecord.hasLatestColumns()) {
+                    streamRecord.setLatestColumns(parseRecordColumns(
+                        respRecord.getLatestColumns(), false, parseInTimeseriesDataFormat));
+                }
+                records.add(streamRecord);
 
             } catch (Exception e) {
                 throw new ClientException("Failed to parse row", e);
@@ -947,7 +953,47 @@ public class ResponseFactory {
         }
         // NanoSecond to MilliSecond
         actualInfo.setCreateTime(tunnelInfo.getCreateTime() / MILLIS_TO_NANO);
+        if (tunnelInfo.hasStreamRecordOptions()) {
+            actualInfo.setStreamRecordOptions(createStreamRecordOptions(tunnelInfo.getStreamRecordOptions()));
+        }
         return actualInfo;
+    }
+
+    private static StreamColumnType createStreamColumnType(TunnelServiceApi.StreamColumnType columnType) {
+        switch (columnType) {
+            case INVALID:
+                return StreamColumnType.INVALID;
+            case SPECIFIED_COLUMN:
+                return StreamColumnType.SPECIFIED_COLUMN;
+            case INPUT_COLUMNS:
+                return StreamColumnType.INPUT_COLUMNS;
+            case ALL_COLUMNS:
+                return StreamColumnType.ALL_COLUMNS;
+            default:
+                throw new ClientException("Unknown tunnel stream column type: " + columnType);
+        }
+    }
+
+    private static StreamColumn createStreamColumn(TunnelServiceApi.StreamColumn streamColumn) {
+        StreamColumnType columnType = createStreamColumnType(streamColumn.getType());
+        if (columnType == StreamColumnType.INVALID && streamColumn.getColumnNameCount() == 0) {
+            return null;
+        }
+        return new StreamColumn(columnType, streamColumn.getColumnNameList());
+    }
+
+    private static StreamRecordOptions createStreamRecordOptions(TunnelServiceApi.StreamRecordOptions options) {
+        StreamRecordOptions actualOptions = new StreamRecordOptions();
+        actualOptions.setGetVersionGeneratorValue(options.getGetVersionGeneratorValue());
+        actualOptions.setGetSysColumns(options.getGetSysColumns());
+        actualOptions.setGetNewRowInfo(options.getGetNewRowInfo());
+        if (options.hasOldColumnsToGet()) {
+            actualOptions.setOldColumnsToGet(createStreamColumn(options.getOldColumnsToGet()));
+        }
+        if (options.hasNewColumnsToGet()) {
+            actualOptions.setNewColumnsToGet(createStreamColumn(options.getNewColumnsToGet()));
+        }
+        return actualOptions;
     }
 
     private static ChannelType createChannelType(String type) {
@@ -1093,6 +1139,7 @@ public class ResponseFactory {
                 }
                 PlainBufferRow row = rows.get(0);
 
+                StreamRecord streamRecord;
                 if (record.hasOriginRecord()) {
                     PlainBufferCodedInputStream inputOriginStream = new PlainBufferCodedInputStream(
                             new PlainBufferInputStream(record.getOriginRecord().asReadOnlyByteBuffer())
@@ -1102,10 +1149,14 @@ public class ResponseFactory {
                         throw new IOException("Expect only returns one row, Row count: " + rows.size());
                     }
                     PlainBufferRow originRow = originRows.get(0);
-                    records.add(PlainBufferConversion.toStreamRecord(row, originRow, record.getActionType(), false));
+                    streamRecord = PlainBufferConversion.toStreamRecord(row, originRow, record.getActionType(), false);
                 } else {
-                    records.add(PlainBufferConversion.toStreamRecord(row, null, record.getActionType(), false));
+                    streamRecord = PlainBufferConversion.toStreamRecord(row, null, record.getActionType(), false);
                 }
+                if (record.hasLatestRecord()) {
+                    streamRecord.setLatestColumns(parseRecordColumns(record.getLatestRecord(), false, false));
+                }
+                records.add(streamRecord);
             } catch (Exception e) {
                 throw new ClientException("Failed to parse row", e);
             }
@@ -1113,6 +1164,24 @@ public class ResponseFactory {
 
         resp.setRecords(records);
         return resp;
+    }
+
+    private static List<RecordColumn> parseRecordColumns(
+        ByteString recordBytes, boolean withPrimaryKey, boolean parseInTimeseriesDataFormat) throws IOException {
+        PlainBufferCodedInputStream inputStream = new PlainBufferCodedInputStream(
+            new PlainBufferInputStream(recordBytes.asReadOnlyByteBuffer()));
+        List<PlainBufferRow> rows = withPrimaryKey ? inputStream.readRowsWithHeader() : inputStream.readRowsWithoutPk();
+        if (rows.size() != 1) {
+            throw new IOException("Expect only returns one row, Row count: " + rows.size());
+        }
+
+        List<RecordColumn> columns = new ArrayList<RecordColumn>();
+        for (PlainBufferCell cell : rows.get(0).getCells()) {
+            columns.add(parseInTimeseriesDataFormat
+                ? PlainBufferConversion.toTimeseriesRecordColumn(cell)
+                : PlainBufferConversion.toRecordColumn(cell));
+        }
+        return columns;
     }
 
     public static CheckpointResponse createCheckpointResponse(
@@ -1136,7 +1205,7 @@ public class ResponseFactory {
             switch (sqlPayloadVersion) {
                 case SQL_FLAT_BUFFERS:
                     SQLQueryResponse result = new SQLQueryResponse(response.getMeta(), consumedCapacityByTable,
-                            sqlPayloadVersion, sqlStatementType, sqlQueryResponse.getRows());
+                            sqlPayloadVersion, sqlStatementType, sqlQueryResponse.getRows(), sqlQueryResponse.getAffectedRows());
                     if (sqlQueryResponse.hasNextSearchToken() && !sqlQueryResponse.getNextSearchToken().isEmpty()) {
                         result.setNextSearchToken(sqlQueryResponse.getNextSearchToken());
                     }

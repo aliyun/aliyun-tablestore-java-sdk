@@ -72,7 +72,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -90,7 +94,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(PrimaryKeyType.STRING, describeTableResult.getTableMeta().getPrimaryKeyList().get(0).getType());
 
         assertEquals(1, describeTableResult.getTableOptions().getMaxVersions());
-        assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        if (Utils.useGlobalTxn()) {
+            assertEquals(-1, describeTableResult.getTableOptions().getTimeToLive());
+        } else {
+            assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        }
     }
 
     private void createTableWithTwoPrimaryKeys(String tableName) throws Exception {
@@ -108,7 +116,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -127,7 +139,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(PrimaryKeyType.INTEGER, describeTableResult.getTableMeta().getPrimaryKeyList().get(1).getType());
 
         assertEquals(1, describeTableResult.getTableOptions().getMaxVersions());
-        assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        if (Utils.useGlobalTxn()) {
+            assertEquals(-1, describeTableResult.getTableOptions().getTimeToLive());
+        } else {
+            assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        }
     }
 
     private void createTableWithThreePrimaryKeys(String tableName) throws Exception {
@@ -146,7 +162,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -168,7 +188,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(PrimaryKeyType.INTEGER, describeTableResult.getTableMeta().getPrimaryKeyList().get(2).getType());
 
         assertEquals(1, describeTableResult.getTableOptions().getMaxVersions());
-        assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        if (Utils.useGlobalTxn()) {
+            assertEquals(-1, describeTableResult.getTableOptions().getTimeToLive());
+        } else {
+            assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        }
     }
 
     private void createTableWithFourPrimaryKeys(String tableName) throws Exception {
@@ -188,7 +212,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -212,7 +240,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(PrimaryKeyType.INTEGER, describeTableResult.getTableMeta().getPrimaryKeyList().get(3).getType());
 
         assertEquals(1, describeTableResult.getTableOptions().getMaxVersions());
-        assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        if (Utils.useGlobalTxn()) {
+            assertEquals(-1, describeTableResult.getTableOptions().getTimeToLive());
+        } else {
+            assertEquals(Integer.MAX_VALUE, describeTableResult.getTableOptions().getTimeToLive());
+        }
     }
 
     private void createTableWithOnePrimaryKeyString(String tableName) throws Exception {
@@ -229,7 +261,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -252,7 +288,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -309,7 +349,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -334,7 +378,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -358,7 +406,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -382,7 +434,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);
@@ -449,7 +505,11 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(1);
-        tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setTimeToLive(-1);
+        } else {
+            tableOptions.setTimeToLive(Integer.MAX_VALUE);
+        }
 
         CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
         createTableRequest.setReservedThroughput(reservedThroughput);

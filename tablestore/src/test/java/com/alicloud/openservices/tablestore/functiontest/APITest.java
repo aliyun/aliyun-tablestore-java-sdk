@@ -10,11 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +55,7 @@ public class APITest {
      */
     @Test
     public void testCase1() throws UnsupportedEncodingException {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.STRING));
         
@@ -160,6 +157,7 @@ public class APITest {
      */
     @Test
     public void testCase2() throws UnsupportedEncodingException {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.STRING));
         
@@ -266,7 +264,11 @@ public class APITest {
     public void testCase5() {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
-        OTSHelper.createTable(ots, tableName, scheme, Integer.MAX_VALUE, 100);
+        if (Utils.useGlobalTxn()) {
+            OTSHelper.createTable(ots, tableName, scheme, -1, 1);
+        } else {
+            OTSHelper.createTable(ots, tableName, scheme, Integer.MAX_VALUE, 100);
+        }
         Utils.waitForPartitionLoad(tableName);
         
         PrimaryKey pk = PrimaryKeyBuilder.createPrimaryKeyBuilder()
@@ -278,7 +280,11 @@ public class APITest {
         List<Column> columns = new ArrayList<Column>();
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 8; j++) {
-                columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j), ts));
+                if (Utils.useGlobalTxn()) {
+                    columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j)));
+                } else {
+                    columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j), ts));
+                }
             }
         }
         
@@ -292,7 +298,9 @@ public class APITest {
             for (int i = 0; i < 16; i++) {
                 assertEquals(String.format("%s%02d", getString('p', 253), i), cols[i].getName());
                 assertEquals(7, cols[i].getValue().asLong());
-                assertEquals(ts, cols[i].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(ts, cols[i].getTimestamp());
+                }
             }
         }
         
@@ -306,7 +314,9 @@ public class APITest {
             for (int i = 0; i < 16; i++) {
                 assertEquals(String.format("%s%02d", getString('p', 253), i), cols[i].getName());
                 assertEquals(7, cols[i].getValue().asLong());
-                assertEquals(ts, cols[i].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(ts, cols[i].getTimestamp());
+                }
             }
         }
     }
@@ -321,7 +331,11 @@ public class APITest {
     public void testCase6() {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
-        OTSHelper.createTable(ots, tableName, scheme, Integer.MAX_VALUE, 100);
+        if (Utils.useGlobalTxn()) {
+            OTSHelper.createTable(ots, tableName, scheme, -1, 1);
+        } else {
+            OTSHelper.createTable(ots, tableName, scheme, Integer.MAX_VALUE, 100);
+        }
         Utils.waitForPartitionLoad(tableName);
         
         List<RowPutChange> puts = new ArrayList<RowPutChange>();
@@ -346,7 +360,11 @@ public class APITest {
                 
                 for (int i = 0; i < 16; i++) {
                     for (int j = 0; j < 8; j++) {
-                        columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j), ts));
+                        if (Utils.useGlobalTxn()) {
+                            columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j)));
+                        } else {
+                            columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(j), ts));
+                        }
                     }
                 }
                 
@@ -375,7 +393,9 @@ public class APITest {
             for (int j = 0; j < 16; j++) {
                 assertEquals(String.format("%s%02d", getString('p', 253), j), cols[j].getName());
                 assertEquals(7, cols[j].getValue().asLong());
-                assertEquals(ts, cols[j].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(ts, cols[j].getTimestamp());
+                }
             }
         }
 
@@ -390,7 +410,11 @@ public class APITest {
                 
                 for (int i = 0; i < 16; i++) {
                     for (int j = 0; j < 8; j++) {
-                        columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(-1), ts));
+                        if (Utils.useGlobalTxn()) {
+                            columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(-1)));
+                        } else {
+                            columns.add(new Column(String.format("%s%02d", getString('p', 253), i), ColumnValue.fromLong(-1), ts));
+                        }
                     }
                 }
                 
@@ -416,7 +440,9 @@ public class APITest {
             for (int j = 0; j < 16; j++) {
                 assertEquals(String.format("%s%02d", getString('p', 253), j), cols[j].getName());
                 assertEquals(-1, cols[j].getValue().asLong());
-                assertEquals(ts, cols[j].getTimestamp());
+                if (!Utils.useGlobalTxn()) {
+                    assertEquals(ts, cols[j].getTimestamp());
+                }
             }
         }
 

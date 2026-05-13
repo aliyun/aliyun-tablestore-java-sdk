@@ -134,6 +134,8 @@ message StreamSpecification {
     required bool enable_stream = 1;
     optional int32 expiration_time = 2;
     repeated string columns_to_get = 3;
+    optional StreamColumn old_columns_to_get = 4;
+    optional StreamColumn new_columns_to_get = 5;
 }
 
 message StreamDetails {
@@ -142,6 +144,20 @@ message StreamDetails {
     optional int32 expiration_time = 3;
     optional int64 last_enable_time = 4;
     repeated string column_to_get = 5;
+    optional StreamColumn old_columns_to_get = 6;
+    optional StreamColumn new_columns_to_get = 7;
+}
+
+enum StreamColumnType {
+    INVALID = 0;
+    SPECIFIED_COLUMN = 1;
+    INPUT_COLUMNS = 2;
+    ALL_COLUMNS = 3;
+}
+
+message StreamColumn {
+    required StreamColumnType type = 1;
+    repeated string column_name = 2;
 }
 
 enum SSEKeyType {
@@ -516,6 +532,8 @@ message GetStreamRecordRequest {
     required string shard_iterator = 1;
     optional int32 limit = 2;
     optional string table_name = 3;
+    optional StreamColumn old_columns_to_get = 6;
+    optional StreamColumn new_columns_to_get = 7;
 }
 
 enum ActionType {
@@ -529,6 +547,7 @@ message GetStreamRecordResponse {
         required ActionType action_type = 1;
         required bytes record = 2;
         optional bytes origin_record = 3;
+        optional bytes latest_columns = 8;
     }
     repeated StreamRecord stream_records = 1;
     optional string next_shard_iterator = 2;
@@ -643,6 +662,9 @@ enum SQLStatementType {
     SQL_DESCRIBE_TABLE = 4;
     SQL_DROP_TABLE = 5;
     SQL_ALTER_TABLE = 6;
+    SQL_INSERT = 7;
+    SQL_UPDATE = 8;
+    SQL_DELETE = 9;
 }
 
 message SQLQueryRequest {
@@ -658,10 +680,19 @@ message TableConsumedCapacity {
     optional ReservedThroughput reserved_throughput = 3;
 }
 
+message SearchConsumedCapacity {
+    optional string table_name = 1;
+    optional string index_name = 2;
+    optional ConsumedCapacity consumed = 3;
+    optional ReservedThroughput reserved_throughput = 4;
+}
+
 message SQLQueryResponse {
     repeated TableConsumedCapacity consumes = 1;
     optional bytes rows = 2;
     optional SQLPayloadVersion version = 3;
     optional SQLStatementType type = 4;
+    repeated SearchConsumedCapacity search_consumes = 5;
+    optional int64 affected_rows = 6;
     optional string next_search_token = 8;
 }

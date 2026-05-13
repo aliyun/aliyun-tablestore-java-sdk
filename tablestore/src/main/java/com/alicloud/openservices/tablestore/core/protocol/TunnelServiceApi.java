@@ -481,6 +481,129 @@ public final class TunnelServiceApi {
     // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.StartOffsetFlag)
   }
 
+  /**
+   * Protobuf enum {@code com.alicloud.openservices.tablestore.core.protocol.StreamColumnType}
+   */
+  public enum StreamColumnType
+      implements com.aliyun.ots.thirdparty.com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>INVALID = 0;</code>
+     */
+    INVALID(0),
+    /**
+     * <code>SPECIFIED_COLUMN = 1;</code>
+     */
+    SPECIFIED_COLUMN(1),
+    /**
+     * <code>INPUT_COLUMNS = 2;</code>
+     */
+    INPUT_COLUMNS(2),
+    /**
+     * <code>ALL_COLUMNS = 3;</code>
+     */
+    ALL_COLUMNS(3),
+    ;
+
+    static {
+      com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 28,
+        /* patch= */ 2,
+        /* suffix= */ "",
+        StreamColumnType.class.getName());
+    }
+    /**
+     * <code>INVALID = 0;</code>
+     */
+    public static final int INVALID_VALUE = 0;
+    /**
+     * <code>SPECIFIED_COLUMN = 1;</code>
+     */
+    public static final int SPECIFIED_COLUMN_VALUE = 1;
+    /**
+     * <code>INPUT_COLUMNS = 2;</code>
+     */
+    public static final int INPUT_COLUMNS_VALUE = 2;
+    /**
+     * <code>ALL_COLUMNS = 3;</code>
+     */
+    public static final int ALL_COLUMNS_VALUE = 3;
+
+
+    public final int getNumber() {
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static StreamColumnType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static StreamColumnType forNumber(int value) {
+      switch (value) {
+        case 0: return INVALID;
+        case 1: return SPECIFIED_COLUMN;
+        case 2: return INPUT_COLUMNS;
+        case 3: return ALL_COLUMNS;
+        default: return null;
+      }
+    }
+
+    public static com.aliyun.ots.thirdparty.com.google.protobuf.Internal.EnumLiteMap<StreamColumnType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.aliyun.ots.thirdparty.com.google.protobuf.Internal.EnumLiteMap<
+        StreamColumnType> internalValueMap =
+          new com.aliyun.ots.thirdparty.com.google.protobuf.Internal.EnumLiteMap<StreamColumnType>() {
+            public StreamColumnType findValueByNumber(int number) {
+              return StreamColumnType.forNumber(number);
+            }
+          };
+
+    public final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.getDescriptor().getEnumTypes().get(4);
+    }
+
+    private static final StreamColumnType[] VALUES = values();
+
+    public static StreamColumnType valueOf(
+        com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private StreamColumnType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:com.alicloud.openservices.tablestore.core.protocol.StreamColumnType)
+  }
+
   public interface ErrorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.alicloud.openservices.tablestore.core.protocol.Error)
       com.aliyun.ots.thirdparty.com.google.protobuf.MessageOrBuilder {
@@ -1447,6 +1570,21 @@ public final class TunnelServiceApi {
      * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamTunnelConfig StreamTunnelConfig = 5;</code>
      */
     com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfigOrBuilder getStreamTunnelConfigOrBuilder();
+
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     * @return Whether the streamRecordOptions field is set.
+     */
+    boolean hasStreamRecordOptions();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     * @return The streamRecordOptions.
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder();
   }
   /**
    * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.Tunnel}
@@ -1631,6 +1769,32 @@ public final class TunnelServiceApi {
       return streamTunnelConfig_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamTunnelConfig.getDefaultInstance() : streamTunnelConfig_;
     }
 
+    public static final int STREAM_RECORD_OPTIONS_FIELD_NUMBER = 7;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions streamRecordOptions_;
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     * @return Whether the streamRecordOptions field is set.
+     */
+    @java.lang.Override
+    public boolean hasStreamRecordOptions() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     * @return The streamRecordOptions.
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions() {
+      return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder() {
+      return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1650,6 +1814,12 @@ public final class TunnelServiceApi {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (hasStreamRecordOptions()) {
+        if (!getStreamRecordOptions().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1668,6 +1838,9 @@ public final class TunnelServiceApi {
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeMessage(5, getStreamTunnelConfig());
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeMessage(7, getStreamRecordOptions());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1691,6 +1864,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, getStreamTunnelConfig());
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, getStreamRecordOptions());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1726,6 +1903,11 @@ public final class TunnelServiceApi {
         if (!getStreamTunnelConfig()
             .equals(other.getStreamTunnelConfig())) return false;
       }
+      if (hasStreamRecordOptions() != other.hasStreamRecordOptions()) return false;
+      if (hasStreamRecordOptions()) {
+        if (!getStreamRecordOptions()
+            .equals(other.getStreamRecordOptions())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1752,6 +1934,10 @@ public final class TunnelServiceApi {
       if (hasStreamTunnelConfig()) {
         hash = (37 * hash) + STREAMTUNNELCONFIG_FIELD_NUMBER;
         hash = (53 * hash) + getStreamTunnelConfig().hashCode();
+      }
+      if (hasStreamRecordOptions()) {
+        hash = (37 * hash) + STREAM_RECORD_OPTIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getStreamRecordOptions().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1884,6 +2070,7 @@ public final class TunnelServiceApi {
         if (com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
                 .alwaysUseFieldBuilders) {
           getStreamTunnelConfigFieldBuilder();
+          getStreamRecordOptionsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1897,6 +2084,11 @@ public final class TunnelServiceApi {
         if (streamTunnelConfigBuilder_ != null) {
           streamTunnelConfigBuilder_.dispose();
           streamTunnelConfigBuilder_ = null;
+        }
+        streamRecordOptions_ = null;
+        if (streamRecordOptionsBuilder_ != null) {
+          streamRecordOptionsBuilder_.dispose();
+          streamRecordOptionsBuilder_ = null;
         }
         return this;
       }
@@ -1950,6 +2142,12 @@ public final class TunnelServiceApi {
               : streamTunnelConfigBuilder_.build();
           to_bitField0_ |= 0x00000008;
         }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.streamRecordOptions_ = streamRecordOptionsBuilder_ == null
+              ? streamRecordOptions_
+              : streamRecordOptionsBuilder_.build();
+          to_bitField0_ |= 0x00000010;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -1981,6 +2179,9 @@ public final class TunnelServiceApi {
         if (other.hasStreamTunnelConfig()) {
           mergeStreamTunnelConfig(other.getStreamTunnelConfig());
         }
+        if (other.hasStreamRecordOptions()) {
+          mergeStreamRecordOptions(other.getStreamRecordOptions());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1996,6 +2197,11 @@ public final class TunnelServiceApi {
         }
         if (!hasTunnelType()) {
           return false;
+        }
+        if (hasStreamRecordOptions()) {
+          if (!getStreamRecordOptions().isInitialized()) {
+            return false;
+          }
         }
         return true;
       }
@@ -2045,6 +2251,13 @@ public final class TunnelServiceApi {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 42
+              case 58: {
+                input.readMessage(
+                    getStreamRecordOptionsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2383,6 +2596,127 @@ public final class TunnelServiceApi {
           streamTunnelConfig_ = null;
         }
         return streamTunnelConfigBuilder_;
+      }
+
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions streamRecordOptions_;
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder> streamRecordOptionsBuilder_;
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       * @return Whether the streamRecordOptions field is set.
+       */
+      public boolean hasStreamRecordOptions() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       * @return The streamRecordOptions.
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions() {
+        if (streamRecordOptionsBuilder_ == null) {
+          return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+        } else {
+          return streamRecordOptionsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public Builder setStreamRecordOptions(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions value) {
+        if (streamRecordOptionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          streamRecordOptions_ = value;
+        } else {
+          streamRecordOptionsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public Builder setStreamRecordOptions(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder builderForValue) {
+        if (streamRecordOptionsBuilder_ == null) {
+          streamRecordOptions_ = builderForValue.build();
+        } else {
+          streamRecordOptionsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public Builder mergeStreamRecordOptions(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions value) {
+        if (streamRecordOptionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            streamRecordOptions_ != null &&
+            streamRecordOptions_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance()) {
+            getStreamRecordOptionsBuilder().mergeFrom(value);
+          } else {
+            streamRecordOptions_ = value;
+          }
+        } else {
+          streamRecordOptionsBuilder_.mergeFrom(value);
+        }
+        if (streamRecordOptions_ != null) {
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public Builder clearStreamRecordOptions() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        streamRecordOptions_ = null;
+        if (streamRecordOptionsBuilder_ != null) {
+          streamRecordOptionsBuilder_.dispose();
+          streamRecordOptionsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder getStreamRecordOptionsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getStreamRecordOptionsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder() {
+        if (streamRecordOptionsBuilder_ != null) {
+          return streamRecordOptionsBuilder_.getMessageOrBuilder();
+        } else {
+          return streamRecordOptions_ == null ?
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 7;</code>
+       */
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder> 
+          getStreamRecordOptionsFieldBuilder() {
+        if (streamRecordOptionsBuilder_ == null) {
+          streamRecordOptionsBuilder_ = new com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder>(
+                  getStreamRecordOptions(),
+                  getParentForChildren(),
+                  isClean());
+          streamRecordOptions_ = null;
+        }
+        return streamRecordOptionsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.Tunnel)
@@ -5546,6 +5880,21 @@ public final class TunnelServiceApi {
      * @return The createTime.
      */
     long getCreateTime();
+
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     * @return Whether the streamRecordOptions field is set.
+     */
+    boolean hasStreamRecordOptions();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     * @return The streamRecordOptions.
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder();
   }
   /**
    * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.TunnelInfo}
@@ -6018,6 +6367,32 @@ public final class TunnelServiceApi {
       return createTime_;
     }
 
+    public static final int STREAM_RECORD_OPTIONS_FIELD_NUMBER = 14;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions streamRecordOptions_;
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     * @return Whether the streamRecordOptions field is set.
+     */
+    @java.lang.Override
+    public boolean hasStreamRecordOptions() {
+      return ((bitField0_ & 0x00000800) != 0);
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     * @return The streamRecordOptions.
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions() {
+      return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder() {
+      return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6048,6 +6423,12 @@ public final class TunnelServiceApi {
       if (!hasStage()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      if (hasStreamRecordOptions()) {
+        if (!getStreamRecordOptions().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -6088,6 +6469,9 @@ public final class TunnelServiceApi {
       }
       if (((bitField0_ & 0x00000400) != 0)) {
         output.writeInt64(11, createTime_);
+      }
+      if (((bitField0_ & 0x00000800) != 0)) {
+        output.writeMessage(14, getStreamRecordOptions());
       }
       getUnknownFields().writeTo(output);
     }
@@ -6134,6 +6518,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000400) != 0)) {
         size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
           .computeInt64Size(11, createTime_);
+      }
+      if (((bitField0_ & 0x00000800) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, getStreamRecordOptions());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -6205,6 +6593,11 @@ public final class TunnelServiceApi {
         if (getCreateTime()
             != other.getCreateTime()) return false;
       }
+      if (hasStreamRecordOptions() != other.hasStreamRecordOptions()) return false;
+      if (hasStreamRecordOptions()) {
+        if (!getStreamRecordOptions()
+            .equals(other.getStreamRecordOptions())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6262,6 +6655,10 @@ public final class TunnelServiceApi {
         hash = (37 * hash) + CREATE_TIME_FIELD_NUMBER;
         hash = (53 * hash) + com.aliyun.ots.thirdparty.com.google.protobuf.Internal.hashLong(
             getCreateTime());
+      }
+      if (hasStreamRecordOptions()) {
+        hash = (37 * hash) + STREAM_RECORD_OPTIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getStreamRecordOptions().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -6394,6 +6791,7 @@ public final class TunnelServiceApi {
         if (com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
                 .alwaysUseFieldBuilders) {
           getStreamTunnelConfigFieldBuilder();
+          getStreamRecordOptionsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -6415,6 +6813,11 @@ public final class TunnelServiceApi {
           streamTunnelConfigBuilder_ = null;
         }
         createTime_ = 0L;
+        streamRecordOptions_ = null;
+        if (streamRecordOptionsBuilder_ != null) {
+          streamRecordOptionsBuilder_.dispose();
+          streamRecordOptionsBuilder_ = null;
+        }
         return this;
       }
 
@@ -6495,6 +6898,12 @@ public final class TunnelServiceApi {
           result.createTime_ = createTime_;
           to_bitField0_ |= 0x00000400;
         }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.streamRecordOptions_ = streamRecordOptionsBuilder_ == null
+              ? streamRecordOptions_
+              : streamRecordOptionsBuilder_.build();
+          to_bitField0_ |= 0x00000800;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -6557,6 +6966,9 @@ public final class TunnelServiceApi {
         if (other.hasCreateTime()) {
           setCreateTime(other.getCreateTime());
         }
+        if (other.hasStreamRecordOptions()) {
+          mergeStreamRecordOptions(other.getStreamRecordOptions());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -6581,6 +6993,11 @@ public final class TunnelServiceApi {
         }
         if (!hasStage()) {
           return false;
+        }
+        if (hasStreamRecordOptions()) {
+          if (!getStreamRecordOptions().isInitialized()) {
+            return false;
+          }
         }
         return true;
       }
@@ -6658,6 +7075,13 @@ public final class TunnelServiceApi {
                 bitField0_ |= 0x00000400;
                 break;
               } // case 88
+              case 114: {
+                input.readMessage(
+                    getStreamRecordOptionsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 114
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7474,6 +7898,127 @@ public final class TunnelServiceApi {
         createTime_ = 0L;
         onChanged();
         return this;
+      }
+
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions streamRecordOptions_;
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder> streamRecordOptionsBuilder_;
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       * @return Whether the streamRecordOptions field is set.
+       */
+      public boolean hasStreamRecordOptions() {
+        return ((bitField0_ & 0x00000800) != 0);
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       * @return The streamRecordOptions.
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getStreamRecordOptions() {
+        if (streamRecordOptionsBuilder_ == null) {
+          return streamRecordOptions_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+        } else {
+          return streamRecordOptionsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public Builder setStreamRecordOptions(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions value) {
+        if (streamRecordOptionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          streamRecordOptions_ = value;
+        } else {
+          streamRecordOptionsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public Builder setStreamRecordOptions(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder builderForValue) {
+        if (streamRecordOptionsBuilder_ == null) {
+          streamRecordOptions_ = builderForValue.build();
+        } else {
+          streamRecordOptionsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public Builder mergeStreamRecordOptions(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions value) {
+        if (streamRecordOptionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000800) != 0) &&
+            streamRecordOptions_ != null &&
+            streamRecordOptions_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance()) {
+            getStreamRecordOptionsBuilder().mergeFrom(value);
+          } else {
+            streamRecordOptions_ = value;
+          }
+        } else {
+          streamRecordOptionsBuilder_.mergeFrom(value);
+        }
+        if (streamRecordOptions_ != null) {
+          bitField0_ |= 0x00000800;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public Builder clearStreamRecordOptions() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        streamRecordOptions_ = null;
+        if (streamRecordOptionsBuilder_ != null) {
+          streamRecordOptionsBuilder_.dispose();
+          streamRecordOptionsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder getStreamRecordOptionsBuilder() {
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return getStreamRecordOptionsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder getStreamRecordOptionsOrBuilder() {
+        if (streamRecordOptionsBuilder_ != null) {
+          return streamRecordOptionsBuilder_.getMessageOrBuilder();
+        } else {
+          return streamRecordOptions_ == null ?
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance() : streamRecordOptions_;
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions stream_record_options = 14;</code>
+       */
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder> 
+          getStreamRecordOptionsFieldBuilder() {
+        if (streamRecordOptionsBuilder_ == null) {
+          streamRecordOptionsBuilder_ = new com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder>(
+                  getStreamRecordOptions(),
+                  getParentForChildren(),
+                  isClean());
+          streamRecordOptions_ = null;
+        }
+        return streamRecordOptionsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.TunnelInfo)
@@ -22762,6 +23307,17 @@ public final class TunnelServiceApi {
      * @return The originRecord.
      */
     com.aliyun.ots.thirdparty.com.google.protobuf.ByteString getOriginRecord();
+
+    /**
+     * <code>optional bytes latest_record = 7;</code>
+     * @return Whether the latestRecord field is set.
+     */
+    boolean hasLatestRecord();
+    /**
+     * <code>optional bytes latest_record = 7;</code>
+     * @return The latestRecord.
+     */
+    com.aliyun.ots.thirdparty.com.google.protobuf.ByteString getLatestRecord();
   }
   /**
    * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.Record}
@@ -22788,6 +23344,7 @@ public final class TunnelServiceApi {
       actionType_ = 1;
       record_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
       originRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
+      latestRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
@@ -22860,6 +23417,25 @@ public final class TunnelServiceApi {
       return originRecord_;
     }
 
+    public static final int LATEST_RECORD_FIELD_NUMBER = 7;
+    private com.aliyun.ots.thirdparty.com.google.protobuf.ByteString latestRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>optional bytes latest_record = 7;</code>
+     * @return Whether the latestRecord field is set.
+     */
+    @java.lang.Override
+    public boolean hasLatestRecord() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional bytes latest_record = 7;</code>
+     * @return The latestRecord.
+     */
+    @java.lang.Override
+    public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString getLatestRecord() {
+      return latestRecord_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -22891,6 +23467,9 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeBytes(3, originRecord_);
       }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeBytes(7, latestRecord_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -22911,6 +23490,10 @@ public final class TunnelServiceApi {
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, originRecord_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeBytesSize(7, latestRecord_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -22941,6 +23524,11 @@ public final class TunnelServiceApi {
         if (!getOriginRecord()
             .equals(other.getOriginRecord())) return false;
       }
+      if (hasLatestRecord() != other.hasLatestRecord()) return false;
+      if (hasLatestRecord()) {
+        if (!getLatestRecord()
+            .equals(other.getLatestRecord())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -22963,6 +23551,10 @@ public final class TunnelServiceApi {
       if (hasOriginRecord()) {
         hash = (37 * hash) + ORIGIN_RECORD_FIELD_NUMBER;
         hash = (53 * hash) + getOriginRecord().hashCode();
+      }
+      if (hasLatestRecord()) {
+        hash = (37 * hash) + LATEST_RECORD_FIELD_NUMBER;
+        hash = (53 * hash) + getLatestRecord().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -23098,6 +23690,7 @@ public final class TunnelServiceApi {
         actionType_ = 1;
         record_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
         originRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
+        latestRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -23144,6 +23737,10 @@ public final class TunnelServiceApi {
           result.originRecord_ = originRecord_;
           to_bitField0_ |= 0x00000004;
         }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.latestRecord_ = latestRecord_;
+          to_bitField0_ |= 0x00000008;
+        }
         result.bitField0_ |= to_bitField0_;
       }
 
@@ -23167,6 +23764,9 @@ public final class TunnelServiceApi {
         }
         if (other.hasOriginRecord()) {
           setOriginRecord(other.getOriginRecord());
+        }
+        if (other.hasLatestRecord()) {
+          setLatestRecord(other.getLatestRecord());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -23222,6 +23822,11 @@ public final class TunnelServiceApi {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 58: {
+                latestRecord_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -23357,6 +23962,46 @@ public final class TunnelServiceApi {
       public Builder clearOriginRecord() {
         bitField0_ = (bitField0_ & ~0x00000004);
         originRecord_ = getDefaultInstance().getOriginRecord();
+        onChanged();
+        return this;
+      }
+
+      private com.aliyun.ots.thirdparty.com.google.protobuf.ByteString latestRecord_ = com.aliyun.ots.thirdparty.com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes latest_record = 7;</code>
+       * @return Whether the latestRecord field is set.
+       */
+      @java.lang.Override
+      public boolean hasLatestRecord() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional bytes latest_record = 7;</code>
+       * @return The latestRecord.
+       */
+      @java.lang.Override
+      public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString getLatestRecord() {
+        return latestRecord_;
+      }
+      /**
+       * <code>optional bytes latest_record = 7;</code>
+       * @param value The latestRecord to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLatestRecord(com.aliyun.ots.thirdparty.com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        latestRecord_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes latest_record = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLatestRecord() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        latestRecord_ = getDefaultInstance().getLatestRecord();
         onChanged();
         return this;
       }
@@ -27285,6 +27930,1790 @@ public final class TunnelServiceApi {
 
   }
 
+  public interface StreamColumnOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.alicloud.openservices.tablestore.core.protocol.StreamColumn)
+      com.aliyun.ots.thirdparty.com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+     * @return Whether the type field is set.
+     */
+    boolean hasType();
+    /**
+     * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+     * @return The type.
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType getType();
+
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @return A list containing the columnName.
+     */
+    java.util.List<java.lang.String>
+        getColumnNameList();
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @return The count of columnName.
+     */
+    int getColumnNameCount();
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @param index The index of the element to return.
+     * @return The columnName at the given index.
+     */
+    java.lang.String getColumnName(int index);
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the columnName at the given index.
+     */
+    com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getColumnNameBytes(int index);
+  }
+  /**
+   * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.StreamColumn}
+   */
+  public static final class StreamColumn extends
+      com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:com.alicloud.openservices.tablestore.core.protocol.StreamColumn)
+      StreamColumnOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 28,
+        /* patch= */ 2,
+        /* suffix= */ "",
+        StreamColumn.class.getName());
+    }
+    // Use StreamColumn.newBuilder() to construct.
+    private StreamColumn(com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private StreamColumn() {
+      type_ = 0;
+      columnName_ =
+          com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.class, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_ = 0;
+    /**
+     * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+     * @return Whether the type field is set.
+     */
+    @java.lang.Override public boolean hasType() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType getType() {
+      com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType result = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType.forNumber(type_);
+      return result == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType.INVALID : result;
+    }
+
+    public static final int COLUMN_NAME_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList columnName_ =
+        com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @return A list containing the columnName.
+     */
+    public com.aliyun.ots.thirdparty.com.google.protobuf.ProtocolStringList
+        getColumnNameList() {
+      return columnName_;
+    }
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @return The count of columnName.
+     */
+    public int getColumnNameCount() {
+      return columnName_.size();
+    }
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @param index The index of the element to return.
+     * @return The columnName at the given index.
+     */
+    public java.lang.String getColumnName(int index) {
+      return columnName_.get(index);
+    }
+    /**
+     * <code>repeated string column_name = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the columnName at the given index.
+     */
+    public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+        getColumnNameBytes(int index) {
+      return columnName_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeEnum(1, type_);
+      }
+      for (int i = 0; i < columnName_.size(); i++) {
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.writeString(output, 2, columnName_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, type_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < columnName_.size(); i++) {
+          dataSize += computeStringSizeNoTag(columnName_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getColumnNameList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn)) {
+        return super.equals(obj);
+      }
+      com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn other = (com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn) obj;
+
+      if (hasType() != other.hasType()) return false;
+      if (hasType()) {
+        if (type_ != other.type_) return false;
+      }
+      if (!getColumnNameList()
+          .equals(other.getColumnNameList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasType()) {
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + type_;
+      }
+      if (getColumnNameCount() > 0) {
+        hash = (37 * hash) + COLUMN_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getColumnNameList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        java.nio.ByteBuffer data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(byte[] data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        byte[] data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        java.io.InputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseDelimitedFrom(
+        java.io.InputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.StreamColumn}
+     */
+    public static final class Builder extends
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.alicloud.openservices.tablestore.core.protocol.StreamColumn)
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder {
+      public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.class, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder.class);
+      }
+
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        type_ = 0;
+        columnName_ =
+            com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor;
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn build() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.type_ = type_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          columnName_.makeImmutable();
+          result.columnName_ = columnName_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.aliyun.ots.thirdparty.com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance()) return this;
+        if (other.hasType()) {
+          setType(other.getType());
+        }
+        if (!other.columnName_.isEmpty()) {
+          if (columnName_.isEmpty()) {
+            columnName_ = other.columnName_;
+            bitField0_ |= 0x00000002;
+          } else {
+            ensureColumnNameIsMutable();
+            columnName_.addAll(other.columnName_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasType()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+          com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                int tmpRaw = input.readEnum();
+                com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType tmpValue =
+                    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType.forNumber(tmpRaw);
+                if (tmpValue == null) {
+                  mergeUnknownVarintField(1, tmpRaw);
+                } else {
+                  type_ = tmpRaw;
+                  bitField0_ |= 0x00000001;
+                }
+                break;
+              } // case 8
+              case 18: {
+                com.aliyun.ots.thirdparty.com.google.protobuf.ByteString bs = input.readBytes();
+                ensureColumnNameIsMutable();
+                columnName_.add(bs);
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int type_ = 0;
+      /**
+       * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+       * @return Whether the type field is set.
+       */
+      @java.lang.Override public boolean hasType() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType getType() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType result = com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType.forNumber(type_);
+        return result == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType.INVALID : result;
+      }
+      /**
+       * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required .com.alicloud.openservices.tablestore.core.protocol.StreamColumnType type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList columnName_ =
+          com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureColumnNameIsMutable() {
+        if (!columnName_.isModifiable()) {
+          columnName_ = new com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList(columnName_);
+        }
+        bitField0_ |= 0x00000002;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @return A list containing the columnName.
+       */
+      public com.aliyun.ots.thirdparty.com.google.protobuf.ProtocolStringList
+          getColumnNameList() {
+        columnName_.makeImmutable();
+        return columnName_;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @return The count of columnName.
+       */
+      public int getColumnNameCount() {
+        return columnName_.size();
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param index The index of the element to return.
+       * @return The columnName at the given index.
+       */
+      public java.lang.String getColumnName(int index) {
+        return columnName_.get(index);
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the columnName at the given index.
+       */
+      public com.aliyun.ots.thirdparty.com.google.protobuf.ByteString
+          getColumnNameBytes(int index) {
+        return columnName_.getByteString(index);
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The columnName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setColumnName(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureColumnNameIsMutable();
+        columnName_.set(index, value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param value The columnName to add.
+       * @return This builder for chaining.
+       */
+      public Builder addColumnName(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureColumnNameIsMutable();
+        columnName_.add(value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param values The columnName to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllColumnName(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureColumnNameIsMutable();
+        com.aliyun.ots.thirdparty.com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, columnName_);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearColumnName() {
+        columnName_ =
+          com.aliyun.ots.thirdparty.com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string column_name = 2;</code>
+       * @param value The bytes of the columnName to add.
+       * @return This builder for chaining.
+       */
+      public Builder addColumnNameBytes(
+          com.aliyun.ots.thirdparty.com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureColumnNameIsMutable();
+        columnName_.add(value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.StreamColumn)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.StreamColumn)
+    private static final com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn();
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamColumn>
+        PARSER = new com.aliyun.ots.thirdparty.com.google.protobuf.AbstractParser<StreamColumn>() {
+      @java.lang.Override
+      public StreamColumn parsePartialFrom(
+          com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+          com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamColumn> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamColumn> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface StreamRecordOptionsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions)
+      com.aliyun.ots.thirdparty.com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional bool get_version_generator_value = 1;</code>
+     * @return Whether the getVersionGeneratorValue field is set.
+     */
+    boolean hasGetVersionGeneratorValue();
+    /**
+     * <code>optional bool get_version_generator_value = 1;</code>
+     * @return The getVersionGeneratorValue.
+     */
+    boolean getGetVersionGeneratorValue();
+
+    /**
+     * <code>optional bool get_sys_columns = 2;</code>
+     * @return Whether the getSysColumns field is set.
+     */
+    boolean hasGetSysColumns();
+    /**
+     * <code>optional bool get_sys_columns = 2;</code>
+     * @return The getSysColumns.
+     */
+    boolean getGetSysColumns();
+
+    /**
+     * <code>optional bool get_new_row_info = 3;</code>
+     * @return Whether the getNewRowInfo field is set.
+     */
+    boolean hasGetNewRowInfo();
+    /**
+     * <code>optional bool get_new_row_info = 3;</code>
+     * @return The getNewRowInfo.
+     */
+    boolean getGetNewRowInfo();
+
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     * @return Whether the oldColumnsToGet field is set.
+     */
+    boolean hasOldColumnsToGet();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     * @return The oldColumnsToGet.
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getOldColumnsToGet();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getOldColumnsToGetOrBuilder();
+
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     * @return Whether the newColumnsToGet field is set.
+     */
+    boolean hasNewColumnsToGet();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     * @return The newColumnsToGet.
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getNewColumnsToGet();
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     */
+    com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getNewColumnsToGetOrBuilder();
+  }
+  /**
+   * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions}
+   */
+  public static final class StreamRecordOptions extends
+      com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions)
+      StreamRecordOptionsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.aliyun.ots.thirdparty.com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 28,
+        /* patch= */ 2,
+        /* suffix= */ "",
+        StreamRecordOptions.class.getName());
+    }
+    // Use StreamRecordOptions.newBuilder() to construct.
+    private StreamRecordOptions(com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private StreamRecordOptions() {
+    }
+
+    public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.class, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int GET_VERSION_GENERATOR_VALUE_FIELD_NUMBER = 1;
+    private boolean getVersionGeneratorValue_ = false;
+    /**
+     * <code>optional bool get_version_generator_value = 1;</code>
+     * @return Whether the getVersionGeneratorValue field is set.
+     */
+    @java.lang.Override
+    public boolean hasGetVersionGeneratorValue() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional bool get_version_generator_value = 1;</code>
+     * @return The getVersionGeneratorValue.
+     */
+    @java.lang.Override
+    public boolean getGetVersionGeneratorValue() {
+      return getVersionGeneratorValue_;
+    }
+
+    public static final int GET_SYS_COLUMNS_FIELD_NUMBER = 2;
+    private boolean getSysColumns_ = false;
+    /**
+     * <code>optional bool get_sys_columns = 2;</code>
+     * @return Whether the getSysColumns field is set.
+     */
+    @java.lang.Override
+    public boolean hasGetSysColumns() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional bool get_sys_columns = 2;</code>
+     * @return The getSysColumns.
+     */
+    @java.lang.Override
+    public boolean getGetSysColumns() {
+      return getSysColumns_;
+    }
+
+    public static final int GET_NEW_ROW_INFO_FIELD_NUMBER = 3;
+    private boolean getNewRowInfo_ = false;
+    /**
+     * <code>optional bool get_new_row_info = 3;</code>
+     * @return Whether the getNewRowInfo field is set.
+     */
+    @java.lang.Override
+    public boolean hasGetNewRowInfo() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional bool get_new_row_info = 3;</code>
+     * @return The getNewRowInfo.
+     */
+    @java.lang.Override
+    public boolean getGetNewRowInfo() {
+      return getNewRowInfo_;
+    }
+
+    public static final int OLD_COLUMNS_TO_GET_FIELD_NUMBER = 4;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn oldColumnsToGet_;
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     * @return Whether the oldColumnsToGet field is set.
+     */
+    @java.lang.Override
+    public boolean hasOldColumnsToGet() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     * @return The oldColumnsToGet.
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getOldColumnsToGet() {
+      return oldColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : oldColumnsToGet_;
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getOldColumnsToGetOrBuilder() {
+      return oldColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : oldColumnsToGet_;
+    }
+
+    public static final int NEW_COLUMNS_TO_GET_FIELD_NUMBER = 5;
+    private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn newColumnsToGet_;
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     * @return Whether the newColumnsToGet field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewColumnsToGet() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     * @return The newColumnsToGet.
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getNewColumnsToGet() {
+      return newColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : newColumnsToGet_;
+    }
+    /**
+     * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+     */
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getNewColumnsToGetOrBuilder() {
+      return newColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : newColumnsToGet_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (hasOldColumnsToGet()) {
+        if (!getOldColumnsToGet().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasNewColumnsToGet()) {
+        if (!getNewColumnsToGet().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeBool(1, getVersionGeneratorValue_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeBool(2, getSysColumns_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeBool(3, getNewRowInfo_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeMessage(4, getOldColumnsToGet());
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeMessage(5, getNewColumnsToGet());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, getVersionGeneratorValue_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, getSysColumns_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, getNewRowInfo_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getOldColumnsToGet());
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.aliyun.ots.thirdparty.com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getNewColumnsToGet());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions)) {
+        return super.equals(obj);
+      }
+      com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions other = (com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions) obj;
+
+      if (hasGetVersionGeneratorValue() != other.hasGetVersionGeneratorValue()) return false;
+      if (hasGetVersionGeneratorValue()) {
+        if (getGetVersionGeneratorValue()
+            != other.getGetVersionGeneratorValue()) return false;
+      }
+      if (hasGetSysColumns() != other.hasGetSysColumns()) return false;
+      if (hasGetSysColumns()) {
+        if (getGetSysColumns()
+            != other.getGetSysColumns()) return false;
+      }
+      if (hasGetNewRowInfo() != other.hasGetNewRowInfo()) return false;
+      if (hasGetNewRowInfo()) {
+        if (getGetNewRowInfo()
+            != other.getGetNewRowInfo()) return false;
+      }
+      if (hasOldColumnsToGet() != other.hasOldColumnsToGet()) return false;
+      if (hasOldColumnsToGet()) {
+        if (!getOldColumnsToGet()
+            .equals(other.getOldColumnsToGet())) return false;
+      }
+      if (hasNewColumnsToGet() != other.hasNewColumnsToGet()) return false;
+      if (hasNewColumnsToGet()) {
+        if (!getNewColumnsToGet()
+            .equals(other.getNewColumnsToGet())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasGetVersionGeneratorValue()) {
+        hash = (37 * hash) + GET_VERSION_GENERATOR_VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + com.aliyun.ots.thirdparty.com.google.protobuf.Internal.hashBoolean(
+            getGetVersionGeneratorValue());
+      }
+      if (hasGetSysColumns()) {
+        hash = (37 * hash) + GET_SYS_COLUMNS_FIELD_NUMBER;
+        hash = (53 * hash) + com.aliyun.ots.thirdparty.com.google.protobuf.Internal.hashBoolean(
+            getGetSysColumns());
+      }
+      if (hasGetNewRowInfo()) {
+        hash = (37 * hash) + GET_NEW_ROW_INFO_FIELD_NUMBER;
+        hash = (53 * hash) + com.aliyun.ots.thirdparty.com.google.protobuf.Internal.hashBoolean(
+            getGetNewRowInfo());
+      }
+      if (hasOldColumnsToGet()) {
+        hash = (37 * hash) + OLD_COLUMNS_TO_GET_FIELD_NUMBER;
+        hash = (53 * hash) + getOldColumnsToGet().hashCode();
+      }
+      if (hasNewColumnsToGet()) {
+        hash = (37 * hash) + NEW_COLUMNS_TO_GET_FIELD_NUMBER;
+        hash = (53 * hash) + getNewColumnsToGet().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        java.nio.ByteBuffer data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.ByteString data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(byte[] data)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        byte[] data,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        java.io.InputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseDelimitedFrom(
+        java.io.InputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions parseFrom(
+        com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+        com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions}
+     */
+    public static final class Builder extends
+        com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions)
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptionsOrBuilder {
+      public static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.class, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.Builder.class);
+      }
+
+      // Construct using com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          getOldColumnsToGetFieldBuilder();
+          getNewColumnsToGetFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        getVersionGeneratorValue_ = false;
+        getSysColumns_ = false;
+        getNewRowInfo_ = false;
+        oldColumnsToGet_ = null;
+        if (oldColumnsToGetBuilder_ != null) {
+          oldColumnsToGetBuilder_.dispose();
+          oldColumnsToGetBuilder_ = null;
+        }
+        newColumnsToGet_ = null;
+        if (newColumnsToGetBuilder_ != null) {
+          newColumnsToGetBuilder_.dispose();
+          newColumnsToGetBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor;
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getDefaultInstanceForType() {
+        return com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions build() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions buildPartial() {
+        com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions result = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.getVersionGeneratorValue_ = getVersionGeneratorValue_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.getSysColumns_ = getSysColumns_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.getNewRowInfo_ = getNewRowInfo_;
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.oldColumnsToGet_ = oldColumnsToGetBuilder_ == null
+              ? oldColumnsToGet_
+              : oldColumnsToGetBuilder_.build();
+          to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.newColumnsToGet_ = newColumnsToGetBuilder_ == null
+              ? newColumnsToGet_
+              : newColumnsToGetBuilder_.build();
+          to_bitField0_ |= 0x00000010;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.aliyun.ots.thirdparty.com.google.protobuf.Message other) {
+        if (other instanceof com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions) {
+          return mergeFrom((com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions other) {
+        if (other == com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions.getDefaultInstance()) return this;
+        if (other.hasGetVersionGeneratorValue()) {
+          setGetVersionGeneratorValue(other.getGetVersionGeneratorValue());
+        }
+        if (other.hasGetSysColumns()) {
+          setGetSysColumns(other.getGetSysColumns());
+        }
+        if (other.hasGetNewRowInfo()) {
+          setGetNewRowInfo(other.getGetNewRowInfo());
+        }
+        if (other.hasOldColumnsToGet()) {
+          mergeOldColumnsToGet(other.getOldColumnsToGet());
+        }
+        if (other.hasNewColumnsToGet()) {
+          mergeNewColumnsToGet(other.getNewColumnsToGet());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (hasOldColumnsToGet()) {
+          if (!getOldColumnsToGet().isInitialized()) {
+            return false;
+          }
+        }
+        if (hasNewColumnsToGet()) {
+          if (!getNewColumnsToGet().isInitialized()) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+          com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                getVersionGeneratorValue_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                getSysColumns_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                getNewRowInfo_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                input.readMessage(
+                    getOldColumnsToGetFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                input.readMessage(
+                    getNewColumnsToGetFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean getVersionGeneratorValue_ ;
+      /**
+       * <code>optional bool get_version_generator_value = 1;</code>
+       * @return Whether the getVersionGeneratorValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasGetVersionGeneratorValue() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional bool get_version_generator_value = 1;</code>
+       * @return The getVersionGeneratorValue.
+       */
+      @java.lang.Override
+      public boolean getGetVersionGeneratorValue() {
+        return getVersionGeneratorValue_;
+      }
+      /**
+       * <code>optional bool get_version_generator_value = 1;</code>
+       * @param value The getVersionGeneratorValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGetVersionGeneratorValue(boolean value) {
+
+        getVersionGeneratorValue_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool get_version_generator_value = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGetVersionGeneratorValue() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        getVersionGeneratorValue_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean getSysColumns_ ;
+      /**
+       * <code>optional bool get_sys_columns = 2;</code>
+       * @return Whether the getSysColumns field is set.
+       */
+      @java.lang.Override
+      public boolean hasGetSysColumns() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional bool get_sys_columns = 2;</code>
+       * @return The getSysColumns.
+       */
+      @java.lang.Override
+      public boolean getGetSysColumns() {
+        return getSysColumns_;
+      }
+      /**
+       * <code>optional bool get_sys_columns = 2;</code>
+       * @param value The getSysColumns to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGetSysColumns(boolean value) {
+
+        getSysColumns_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool get_sys_columns = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGetSysColumns() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        getSysColumns_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean getNewRowInfo_ ;
+      /**
+       * <code>optional bool get_new_row_info = 3;</code>
+       * @return Whether the getNewRowInfo field is set.
+       */
+      @java.lang.Override
+      public boolean hasGetNewRowInfo() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional bool get_new_row_info = 3;</code>
+       * @return The getNewRowInfo.
+       */
+      @java.lang.Override
+      public boolean getGetNewRowInfo() {
+        return getNewRowInfo_;
+      }
+      /**
+       * <code>optional bool get_new_row_info = 3;</code>
+       * @param value The getNewRowInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGetNewRowInfo(boolean value) {
+
+        getNewRowInfo_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool get_new_row_info = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGetNewRowInfo() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        getNewRowInfo_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn oldColumnsToGet_;
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder> oldColumnsToGetBuilder_;
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       * @return Whether the oldColumnsToGet field is set.
+       */
+      public boolean hasOldColumnsToGet() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       * @return The oldColumnsToGet.
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getOldColumnsToGet() {
+        if (oldColumnsToGetBuilder_ == null) {
+          return oldColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : oldColumnsToGet_;
+        } else {
+          return oldColumnsToGetBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public Builder setOldColumnsToGet(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn value) {
+        if (oldColumnsToGetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          oldColumnsToGet_ = value;
+        } else {
+          oldColumnsToGetBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public Builder setOldColumnsToGet(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder builderForValue) {
+        if (oldColumnsToGetBuilder_ == null) {
+          oldColumnsToGet_ = builderForValue.build();
+        } else {
+          oldColumnsToGetBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public Builder mergeOldColumnsToGet(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn value) {
+        if (oldColumnsToGetBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0) &&
+            oldColumnsToGet_ != null &&
+            oldColumnsToGet_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance()) {
+            getOldColumnsToGetBuilder().mergeFrom(value);
+          } else {
+            oldColumnsToGet_ = value;
+          }
+        } else {
+          oldColumnsToGetBuilder_.mergeFrom(value);
+        }
+        if (oldColumnsToGet_ != null) {
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public Builder clearOldColumnsToGet() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        oldColumnsToGet_ = null;
+        if (oldColumnsToGetBuilder_ != null) {
+          oldColumnsToGetBuilder_.dispose();
+          oldColumnsToGetBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder getOldColumnsToGetBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getOldColumnsToGetFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getOldColumnsToGetOrBuilder() {
+        if (oldColumnsToGetBuilder_ != null) {
+          return oldColumnsToGetBuilder_.getMessageOrBuilder();
+        } else {
+          return oldColumnsToGet_ == null ?
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : oldColumnsToGet_;
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn old_columns_to_get = 4;</code>
+       */
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder> 
+          getOldColumnsToGetFieldBuilder() {
+        if (oldColumnsToGetBuilder_ == null) {
+          oldColumnsToGetBuilder_ = new com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder>(
+                  getOldColumnsToGet(),
+                  getParentForChildren(),
+                  isClean());
+          oldColumnsToGet_ = null;
+        }
+        return oldColumnsToGetBuilder_;
+      }
+
+      private com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn newColumnsToGet_;
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder> newColumnsToGetBuilder_;
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       * @return Whether the newColumnsToGet field is set.
+       */
+      public boolean hasNewColumnsToGet() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       * @return The newColumnsToGet.
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn getNewColumnsToGet() {
+        if (newColumnsToGetBuilder_ == null) {
+          return newColumnsToGet_ == null ? com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : newColumnsToGet_;
+        } else {
+          return newColumnsToGetBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public Builder setNewColumnsToGet(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn value) {
+        if (newColumnsToGetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          newColumnsToGet_ = value;
+        } else {
+          newColumnsToGetBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public Builder setNewColumnsToGet(
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder builderForValue) {
+        if (newColumnsToGetBuilder_ == null) {
+          newColumnsToGet_ = builderForValue.build();
+        } else {
+          newColumnsToGetBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public Builder mergeNewColumnsToGet(com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn value) {
+        if (newColumnsToGetBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            newColumnsToGet_ != null &&
+            newColumnsToGet_ != com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance()) {
+            getNewColumnsToGetBuilder().mergeFrom(value);
+          } else {
+            newColumnsToGet_ = value;
+          }
+        } else {
+          newColumnsToGetBuilder_.mergeFrom(value);
+        }
+        if (newColumnsToGet_ != null) {
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public Builder clearNewColumnsToGet() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        newColumnsToGet_ = null;
+        if (newColumnsToGetBuilder_ != null) {
+          newColumnsToGetBuilder_.dispose();
+          newColumnsToGetBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder getNewColumnsToGetBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getNewColumnsToGetFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder getNewColumnsToGetOrBuilder() {
+        if (newColumnsToGetBuilder_ != null) {
+          return newColumnsToGetBuilder_.getMessageOrBuilder();
+        } else {
+          return newColumnsToGet_ == null ?
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.getDefaultInstance() : newColumnsToGet_;
+        }
+      }
+      /**
+       * <code>optional .com.alicloud.openservices.tablestore.core.protocol.StreamColumn new_columns_to_get = 5;</code>
+       */
+      private com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+          com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder> 
+          getNewColumnsToGetFieldBuilder() {
+        if (newColumnsToGetBuilder_ == null) {
+          newColumnsToGetBuilder_ = new com.aliyun.ots.thirdparty.com.google.protobuf.SingleFieldBuilder<
+              com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumn.Builder, com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamColumnOrBuilder>(
+                  getNewColumnsToGet(),
+                  getParentForChildren(),
+                  isClean());
+          newColumnsToGet_ = null;
+        }
+        return newColumnsToGetBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.alicloud.openservices.tablestore.core.protocol.StreamRecordOptions)
+    private static final com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions();
+    }
+
+    public static com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamRecordOptions>
+        PARSER = new com.aliyun.ots.thirdparty.com.google.protobuf.AbstractParser<StreamRecordOptions>() {
+      @java.lang.Override
+      public StreamRecordOptions parsePartialFrom(
+          com.aliyun.ots.thirdparty.com.google.protobuf.CodedInputStream input,
+          com.aliyun.ots.thirdparty.com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.aliyun.ots.thirdparty.com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.aliyun.ots.thirdparty.com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamRecordOptions> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.aliyun.ots.thirdparty.com.google.protobuf.Parser<StreamRecordOptions> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi.StreamRecordOptions getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Error_descriptor;
   private static final 
@@ -27450,6 +29879,16 @@ public final class TunnelServiceApi {
   private static final 
     com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_fieldAccessorTable;
+  private static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor;
+  private static final 
+    com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_fieldAccessorTable;
+  private static final com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor;
+  private static final 
+    com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_fieldAccessorTable;
 
   public static com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -27462,92 +29901,111 @@ public final class TunnelServiceApi {
       "\n\030tunnel_service_api.proto\0222com.alicloud" +
       ".openservices.tablestore.core.protocol\"9" +
       "\n\005Error\022\014\n\004code\030\001 \002(\t\022\017\n\007message\030\002 \001(\t\022\021" +
-      "\n\ttunnel_id\030\003 \001(\t\"\352\001\n\006Tunnel\022\022\n\ntable_na" +
+      "\n\ttunnel_id\030\003 \001(\t\"\322\002\n\006Tunnel\022\022\n\ntable_na" +
       "me\030\001 \002(\t\022\023\n\013tunnel_name\030\003 \002(\t\022S\n\013tunnel_" +
       "type\030\004 \002(\0162>.com.alicloud.openservices.t" +
       "ablestore.core.protocol.TunnelType\022b\n\022St" +
       "reamTunnelConfig\030\005 \001(\0132F.com.alicloud.op" +
       "enservices.tablestore.core.protocol.Stre" +
-      "amTunnelConfig\"a\n\023CreateTunnelRequest\022J\n" +
-      "\006tunnel\030\001 \002(\0132:.com.alicloud.openservice" +
-      "s.tablestore.core.protocol.Tunnel\")\n\024Cre" +
-      "ateTunnelResponse\022\021\n\ttunnel_id\030\001 \002(\t\"Q\n\023" +
-      "DeleteTunnelRequest\022\022\n\ntable_name\030\001 \002(\t\022" +
-      "\023\n\013tunnel_name\030\002 \002(\t\022\021\n\ttunnel_id\030\003 \001(\t\"" +
-      "\026\n\024DeleteTunnelResponse\"\'\n\021ListTunnelReq" +
-      "uest\022\022\n\ntable_name\030\001 \001(\t\"\262\002\n\nTunnelInfo\022" +
-      "\021\n\ttunnel_id\030\001 \002(\t\022\023\n\013tunnel_type\030\002 \002(\t\022" +
-      "\022\n\ntable_name\030\003 \002(\t\022\025\n\rinstance_name\030\004 \002" +
-      "(\t\022\021\n\tstream_id\030\005 \002(\t\022\r\n\005stage\030\006 \002(\t\022\017\n\007" +
-      "expired\030\007 \001(\010\022\023\n\013tunnel_name\030\010 \001(\t\022\016\n\006pu" +
-      "blic\030\t \001(\010\022d\n\024stream_tunnel_config\030\n \001(\013" +
-      "2F.com.alicloud.openservices.tablestore." +
-      "core.protocol.StreamTunnelConfig\022\023\n\013crea" +
-      "te_time\030\013 \001(\003\"e\n\022ListTunnelResponse\022O\n\007t" +
-      "unnels\030\001 \003(\0132>.com.alicloud.openservices" +
-      ".tablestore.core.protocol.TunnelInfo\"S\n\025" +
-      "DescribeTunnelRequest\022\022\n\ntable_name\030\001 \002(" +
-      "\t\022\023\n\013tunnel_name\030\002 \002(\t\022\021\n\ttunnel_id\030\003 \001(" +
-      "\t\"\216\001\n\013ChannelInfo\022\022\n\nchannel_id\030\001 \002(\t\022\024\n" +
-      "\014channel_type\030\002 \001(\t\022\026\n\016channel_status\030\003 " +
-      "\001(\t\022\021\n\tclient_id\030\004 \001(\t\022\023\n\013channel_rpo\030\005 " +
-      "\001(\003\022\025\n\rchannel_count\030\006 \001(\003\"\317\001\n\026DescribeT" +
-      "unnelResponse\022N\n\006tunnel\030\001 \002(\0132>.com.alic" +
-      "loud.openservices.tablestore.core.protoc" +
-      "ol.TunnelInfo\022Q\n\010channels\030\002 \003(\0132?.com.al" +
-      "icloud.openservices.tablestore.core.prot" +
-      "ocol.ChannelInfo\022\022\n\ntunnel_rpo\030\003 \001(\003\"\"\n\r" +
-      "GetRpoRequest\022\021\n\ttunnel_id\030\001 \001(\t\"=\n\016GetR" +
-      "poResponse\022\021\n\trpo_infos\030\001 \001(\014\022\030\n\020tunnel_" +
-      "rpo_infos\030\002 \001(\014\"3\n\014ClientConfig\022\017\n\007timeo" +
-      "ut\030\001 \001(\003\022\022\n\nclient_tag\030\002 \001(\t\"|\n\016ConnectR" +
-      "equest\022\021\n\ttunnel_id\030\001 \002(\t\022W\n\rclient_conf" +
-      "ig\030\002 \001(\0132@.com.alicloud.openservices.tab" +
-      "lestore.core.protocol.ClientConfig\"$\n\017Co" +
-      "nnectResponse\022\021\n\tclient_id\030\001 \002(\t\"\221\001\n\007Cha" +
-      "nnel\022\022\n\nchannel_id\030\001 \002(\t\022\017\n\007version\030\002 \002(" +
-      "\003\022Q\n\006status\030\003 \002(\0162A.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.ChannelSt" +
-      "atus\022\016\n\006detail\030\004 \001(\014\"\207\001\n\020HeartbeatReques" +
-      "t\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022" +
-      "M\n\010channels\030\003 \003(\0132;.com.alicloud.openser" +
-      "vices.tablestore.core.protocol.Channel\"b" +
-      "\n\021HeartbeatResponse\022M\n\010channels\030\001 \003(\0132;." +
+      "amTunnelConfig\022f\n\025stream_record_options\030" +
+      "\007 \001(\0132G.com.alicloud.openservices.tables" +
+      "tore.core.protocol.StreamRecordOptions\"a" +
+      "\n\023CreateTunnelRequest\022J\n\006tunnel\030\001 \002(\0132:." +
       "com.alicloud.openservices.tablestore.cor" +
-      "e.protocol.Channel\"7\n\017ShutdownRequest\022\021\n" +
-      "\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\"\022\n\020S" +
-      "hutdownResponse\"P\n\024GetCheckpointRequest\022" +
-      "\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n" +
-      "\nchannel_id\030\003 \002(\t\"D\n\025GetCheckpointRespon" +
-      "se\022\022\n\ncheckpoint\030\001 \002(\t\022\027\n\017sequence_numbe" +
-      "r\030\002 \002(\003\"z\n\021CheckpointRequest\022\021\n\ttunnel_i" +
-      "d\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nchannel_id" +
-      "\030\003 \002(\t\022\022\n\ncheckpoint\030\004 \002(\t\022\027\n\017sequence_n" +
-      "umber\030\005 \002(\003\"\024\n\022CheckpointResponse\"]\n\022Rea" +
-      "dRecordsRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tcl" +
-      "ient_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\022\r\n\005tok" +
-      "en\030\004 \002(\t\"\204\001\n\006Record\022S\n\013action_type\030\001 \002(\016" +
-      "2>.com.alicloud.openservices.tablestore." +
-      "core.protocol.ActionType\022\016\n\006record\030\002 \002(\014" +
-      "\022\025\n\rorigin_record\030\003 \001(\014\"\217\001\n\023ReadRecordsR" +
-      "esponse\022K\n\007records\030\001 \003(\0132:.com.alicloud." +
-      "openservices.tablestore.core.protocol.Re" +
-      "cord\022\022\n\nnext_token\030\002 \002(\t\022\027\n\017may_more_rec" +
-      "ord\030\003 \001(\010\")\n\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007c" +
-      "ontent\030\002 \002(\014\"H\n\014TokenContent\022\023\n\013primary_" +
-      "key\030\001 \001(\014\022\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp" +
-      "\030\003 \001(\003\"_\n\016TokenContentV2\022\023\n\013primary_key\030" +
-      "\001 \001(\014\022\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001" +
-      "(\003\022\023\n\013total_count\030\004 \001(\003\"\217\001\n\022StreamTunnel" +
-      "Config\022Q\n\004flag\030\001 \001(\0162C.com.alicloud.open" +
-      "services.tablestore.core.protocol.StartO" +
-      "ffsetFlag\022\023\n\013startOffset\030\002 \001(\004\022\021\n\tendOff" +
-      "set\030\003 \001(\004*9\n\nTunnelType\022\014\n\010BaseData\020\001\022\n\n" +
-      "\006Stream\020\002\022\021\n\rBaseAndStream\020\003*A\n\rChannelS" +
-      "tatus\022\010\n\004OPEN\020\001\022\013\n\007CLOSING\020\002\022\t\n\005CLOSE\020\003\022" +
-      "\016\n\nTERMINATED\020\004*9\n\nActionType\022\013\n\007PUT_ROW" +
-      "\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE_ROW\020\003*+\n\017St" +
-      "artOffsetFlag\022\n\n\006LATEST\020\000\022\014\n\010EARLIEST\020\001"
+      "e.protocol.Tunnel\")\n\024CreateTunnelRespons" +
+      "e\022\021\n\ttunnel_id\030\001 \002(\t\"Q\n\023DeleteTunnelRequ" +
+      "est\022\022\n\ntable_name\030\001 \002(\t\022\023\n\013tunnel_name\030\002" +
+      " \002(\t\022\021\n\ttunnel_id\030\003 \001(\t\"\026\n\024DeleteTunnelR" +
+      "esponse\"\'\n\021ListTunnelRequest\022\022\n\ntable_na" +
+      "me\030\001 \001(\t\"\232\003\n\nTunnelInfo\022\021\n\ttunnel_id\030\001 \002" +
+      "(\t\022\023\n\013tunnel_type\030\002 \002(\t\022\022\n\ntable_name\030\003 " +
+      "\002(\t\022\025\n\rinstance_name\030\004 \002(\t\022\021\n\tstream_id\030" +
+      "\005 \002(\t\022\r\n\005stage\030\006 \002(\t\022\017\n\007expired\030\007 \001(\010\022\023\n" +
+      "\013tunnel_name\030\010 \001(\t\022\016\n\006public\030\t \001(\010\022d\n\024st" +
+      "ream_tunnel_config\030\n \001(\0132F.com.alicloud." +
+      "openservices.tablestore.core.protocol.St" +
+      "reamTunnelConfig\022\023\n\013create_time\030\013 \001(\003\022f\n" +
+      "\025stream_record_options\030\016 \001(\0132G.com.alicl" +
+      "oud.openservices.tablestore.core.protoco" +
+      "l.StreamRecordOptions\"e\n\022ListTunnelRespo" +
+      "nse\022O\n\007tunnels\030\001 \003(\0132>.com.alicloud.open" +
+      "services.tablestore.core.protocol.Tunnel" +
+      "Info\"S\n\025DescribeTunnelRequest\022\022\n\ntable_n" +
+      "ame\030\001 \002(\t\022\023\n\013tunnel_name\030\002 \002(\t\022\021\n\ttunnel" +
+      "_id\030\003 \001(\t\"\216\001\n\013ChannelInfo\022\022\n\nchannel_id\030" +
+      "\001 \002(\t\022\024\n\014channel_type\030\002 \001(\t\022\026\n\016channel_s" +
+      "tatus\030\003 \001(\t\022\021\n\tclient_id\030\004 \001(\t\022\023\n\013channe" +
+      "l_rpo\030\005 \001(\003\022\025\n\rchannel_count\030\006 \001(\003\"\317\001\n\026D" +
+      "escribeTunnelResponse\022N\n\006tunnel\030\001 \002(\0132>." +
+      "com.alicloud.openservices.tablestore.cor" +
+      "e.protocol.TunnelInfo\022Q\n\010channels\030\002 \003(\0132" +
+      "?.com.alicloud.openservices.tablestore.c" +
+      "ore.protocol.ChannelInfo\022\022\n\ntunnel_rpo\030\003" +
+      " \001(\003\"\"\n\rGetRpoRequest\022\021\n\ttunnel_id\030\001 \001(\t" +
+      "\"=\n\016GetRpoResponse\022\021\n\trpo_infos\030\001 \001(\014\022\030\n" +
+      "\020tunnel_rpo_infos\030\002 \001(\014\"3\n\014ClientConfig\022" +
+      "\017\n\007timeout\030\001 \001(\003\022\022\n\nclient_tag\030\002 \001(\t\"|\n\016" +
+      "ConnectRequest\022\021\n\ttunnel_id\030\001 \002(\t\022W\n\rcli" +
+      "ent_config\030\002 \001(\0132@.com.alicloud.openserv" +
+      "ices.tablestore.core.protocol.ClientConf" +
+      "ig\"$\n\017ConnectResponse\022\021\n\tclient_id\030\001 \002(\t" +
+      "\"\221\001\n\007Channel\022\022\n\nchannel_id\030\001 \002(\t\022\017\n\007vers" +
+      "ion\030\002 \002(\003\022Q\n\006status\030\003 \002(\0162A.com.alicloud" +
+      ".openservices.tablestore.core.protocol.C" +
+      "hannelStatus\022\016\n\006detail\030\004 \001(\014\"\207\001\n\020Heartbe" +
+      "atRequest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_i" +
+      "d\030\002 \002(\t\022M\n\010channels\030\003 \003(\0132;.com.alicloud" +
+      ".openservices.tablestore.core.protocol.C" +
+      "hannel\"b\n\021HeartbeatResponse\022M\n\010channels\030" +
+      "\001 \003(\0132;.com.alicloud.openservices.tables" +
+      "tore.core.protocol.Channel\"7\n\017ShutdownRe" +
+      "quest\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 " +
+      "\002(\t\"\022\n\020ShutdownResponse\"P\n\024GetCheckpoint" +
+      "Request\022\021\n\ttunnel_id\030\001 \002(\t\022\021\n\tclient_id\030" +
+      "\002 \002(\t\022\022\n\nchannel_id\030\003 \002(\t\"D\n\025GetCheckpoi" +
+      "ntResponse\022\022\n\ncheckpoint\030\001 \002(\t\022\027\n\017sequen" +
+      "ce_number\030\002 \002(\003\"z\n\021CheckpointRequest\022\021\n\t" +
+      "tunnel_id\030\001 \002(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nch" +
+      "annel_id\030\003 \002(\t\022\022\n\ncheckpoint\030\004 \002(\t\022\027\n\017se" +
+      "quence_number\030\005 \002(\003\"\024\n\022CheckpointRespons" +
+      "e\"]\n\022ReadRecordsRequest\022\021\n\ttunnel_id\030\001 \002" +
+      "(\t\022\021\n\tclient_id\030\002 \002(\t\022\022\n\nchannel_id\030\003 \002(" +
+      "\t\022\r\n\005token\030\004 \002(\t\"\233\001\n\006Record\022S\n\013action_ty" +
+      "pe\030\001 \002(\0162>.com.alicloud.openservices.tab" +
+      "lestore.core.protocol.ActionType\022\016\n\006reco" +
+      "rd\030\002 \002(\014\022\025\n\rorigin_record\030\003 \001(\014\022\025\n\rlates" +
+      "t_record\030\007 \001(\014\"\217\001\n\023ReadRecordsResponse\022K" +
+      "\n\007records\030\001 \003(\0132:.com.alicloud.openservi" +
+      "ces.tablestore.core.protocol.Record\022\022\n\nn" +
+      "ext_token\030\002 \002(\t\022\027\n\017may_more_record\030\003 \001(\010" +
+      "\")\n\005Token\022\017\n\007version\030\001 \002(\003\022\017\n\007content\030\002 " +
+      "\002(\014\"H\n\014TokenContent\022\023\n\013primary_key\030\001 \001(\014" +
+      "\022\020\n\010iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"_\n" +
+      "\016TokenContentV2\022\023\n\013primary_key\030\001 \001(\014\022\020\n\010" +
+      "iterator\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\022\023\n\013tot" +
+      "al_count\030\004 \001(\003\"\217\001\n\022StreamTunnelConfig\022Q\n" +
+      "\004flag\030\001 \001(\0162C.com.alicloud.openservices." +
+      "tablestore.core.protocol.StartOffsetFlag" +
+      "\022\023\n\013startOffset\030\002 \001(\004\022\021\n\tendOffset\030\003 \001(\004" +
+      "\"w\n\014StreamColumn\022R\n\004type\030\001 \002(\0162D.com.ali" +
+      "cloud.openservices.tablestore.core.proto" +
+      "col.StreamColumnType\022\023\n\013column_name\030\002 \003(" +
+      "\t\"\251\002\n\023StreamRecordOptions\022#\n\033get_version" +
+      "_generator_value\030\001 \001(\010\022\027\n\017get_sys_column" +
+      "s\030\002 \001(\010\022\030\n\020get_new_row_info\030\003 \001(\010\022\\\n\022old" +
+      "_columns_to_get\030\004 \001(\0132@.com.alicloud.ope" +
+      "nservices.tablestore.core.protocol.Strea" +
+      "mColumn\022\\\n\022new_columns_to_get\030\005 \001(\0132@.co" +
+      "m.alicloud.openservices.tablestore.core." +
+      "protocol.StreamColumn*9\n\nTunnelType\022\014\n\010B" +
+      "aseData\020\001\022\n\n\006Stream\020\002\022\021\n\rBaseAndStream\020\003" +
+      "*A\n\rChannelStatus\022\010\n\004OPEN\020\001\022\013\n\007CLOSING\020\002" +
+      "\022\t\n\005CLOSE\020\003\022\016\n\nTERMINATED\020\004*9\n\nActionTyp" +
+      "e\022\013\n\007PUT_ROW\020\001\022\016\n\nUPDATE_ROW\020\002\022\016\n\nDELETE" +
+      "_ROW\020\003*+\n\017StartOffsetFlag\022\n\n\006LATEST\020\000\022\014\n" +
+      "\010EARLIEST\020\001*Y\n\020StreamColumnType\022\013\n\007INVAL" +
+      "ID\020\000\022\024\n\020SPECIFIED_COLUMN\020\001\022\021\n\rINPUT_COLU" +
+      "MNS\020\002\022\017\n\013ALL_COLUMNS\020\003"
     };
     descriptor = com.aliyun.ots.thirdparty.com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -27564,7 +30022,7 @@ public final class TunnelServiceApi {
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Tunnel_fieldAccessorTable = new
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_Tunnel_descriptor,
-        new java.lang.String[] { "TableName", "TunnelName", "TunnelType", "StreamTunnelConfig", });
+        new java.lang.String[] { "TableName", "TunnelName", "TunnelType", "StreamTunnelConfig", "StreamRecordOptions", });
     internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateTunnelRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_alicloud_openservices_tablestore_core_protocol_CreateTunnelRequest_fieldAccessorTable = new
@@ -27600,7 +30058,7 @@ public final class TunnelServiceApi {
     internal_static_com_alicloud_openservices_tablestore_core_protocol_TunnelInfo_fieldAccessorTable = new
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_TunnelInfo_descriptor,
-        new java.lang.String[] { "TunnelId", "TunnelType", "TableName", "InstanceName", "StreamId", "Stage", "Expired", "TunnelName", "Public", "StreamTunnelConfig", "CreateTime", });
+        new java.lang.String[] { "TunnelId", "TunnelType", "TableName", "InstanceName", "StreamId", "Stage", "Expired", "TunnelName", "Public", "StreamTunnelConfig", "CreateTime", "StreamRecordOptions", });
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ListTunnelResponse_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ListTunnelResponse_fieldAccessorTable = new
@@ -27720,7 +30178,7 @@ public final class TunnelServiceApi {
     internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_fieldAccessorTable = new
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_Record_descriptor,
-        new java.lang.String[] { "ActionType", "Record", "OriginRecord", });
+        new java.lang.String[] { "ActionType", "Record", "OriginRecord", "LatestRecord", });
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_descriptor =
       getDescriptor().getMessageTypes().get(28);
     internal_static_com_alicloud_openservices_tablestore_core_protocol_ReadRecordsResponse_fieldAccessorTable = new
@@ -27751,6 +30209,18 @@ public final class TunnelServiceApi {
       com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamTunnelConfig_descriptor,
         new java.lang.String[] { "Flag", "StartOffset", "EndOffset", });
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor =
+      getDescriptor().getMessageTypes().get(33);
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_fieldAccessorTable = new
+      com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamColumn_descriptor,
+        new java.lang.String[] { "Type", "ColumnName", });
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor =
+      getDescriptor().getMessageTypes().get(34);
+    internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_fieldAccessorTable = new
+      com.aliyun.ots.thirdparty.com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_alicloud_openservices_tablestore_core_protocol_StreamRecordOptions_descriptor,
+        new java.lang.String[] { "GetVersionGeneratorValue", "GetSysColumns", "GetNewRowInfo", "OldColumnsToGet", "NewColumnsToGet", });
     descriptor.resolveAllFeaturesImmutable();
   }
 

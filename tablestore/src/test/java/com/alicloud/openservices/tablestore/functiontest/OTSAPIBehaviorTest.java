@@ -42,6 +42,7 @@ public class OTSAPIBehaviorTest {
     @Before
     public void setup() throws Exception {
         // Clean up the environment
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         OTSHelper.deleteAllTable(ots);
     }
 

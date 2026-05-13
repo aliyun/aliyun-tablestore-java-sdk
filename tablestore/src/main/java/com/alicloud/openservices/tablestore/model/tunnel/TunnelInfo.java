@@ -40,6 +40,8 @@ public class TunnelInfo {
      */
     private long createTime;
 
+    private StreamRecordOptions streamRecordOptions;
+
     /**
      * Get the Tunnel name.
      * @return The Tunnel name.
@@ -168,6 +170,14 @@ public class TunnelInfo {
         this.createTime = createTime;
     }
 
+    public StreamRecordOptions getStreamRecordOptions() {
+        return streamRecordOptions;
+    }
+
+    public void setStreamRecordOptions(StreamRecordOptions streamRecordOptions) {
+        this.streamRecordOptions = streamRecordOptions;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -175,6 +185,7 @@ public class TunnelInfo {
             .append(tunnelId).append(", TunnelType: ").append(tunnelType).append(", TableName: ").append(tableName)
             .append(", InstanceName: ").append(instanceName).append(", Stage: ").append(stage.name())
             .append(", Expired: ").append(expired).append(", StreamTunnelConfig: ").append(streamTunnelConfig)
+                .append(", StreamRecordOptions: ").append(streamRecordOptions)
                 .append(", CreateTime: ").append(createTime).append("}");
         return sb.toString();
     }

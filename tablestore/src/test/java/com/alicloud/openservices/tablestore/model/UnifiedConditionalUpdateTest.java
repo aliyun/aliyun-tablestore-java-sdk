@@ -13,6 +13,7 @@ import com.alicloud.openservices.tablestore.model.condition.CompositeColumnValue
 import com.alicloud.openservices.tablestore.model.condition.SingleColumnValueCondition;
 import com.google.gson.JsonSyntaxException;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -280,6 +281,7 @@ public class UnifiedConditionalUpdateTest {
      */
     @Test
     public void testLatestVersionOnly() throws Exception {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         CreateTable(100);
 
         int row = 1;
@@ -378,7 +380,12 @@ public class UnifiedConditionalUpdateTest {
         List<BatchWriteRowResponse.RowResult> rowStatus = Response.getRowStatus(tableName);
         assertEquals(3, rowStatus.size());
         assertTrue(!rowStatus.get(0).isSucceed());
-        assertTrue(rowStatus.get(1).isSucceed());
+        if (Utils.useGlobalTxn()) {
+            // BatchWriteRow is an atomic operation in GlobalTxn table
+            assertTrue(!rowStatus.get(1).isSucceed());
+        } else {
+            assertTrue(rowStatus.get(1).isSucceed());
+        }
         assertTrue(!rowStatus.get(2).isSucceed());
     }
 

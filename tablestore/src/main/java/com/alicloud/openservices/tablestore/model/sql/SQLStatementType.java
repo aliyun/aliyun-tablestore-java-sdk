@@ -33,4 +33,19 @@ public enum SQLStatementType {
      * Modify the table.
      */
     SQL_ALTER_TABLE,
+
+    /**
+     * Insert.
+     */
+    SQL_INSERT,
+
+    /**
+     * Update.
+     */
+    SQL_UPDATE,
+
+    /**
+     * Delete.
+     */
+    SQL_DELETE,
 }

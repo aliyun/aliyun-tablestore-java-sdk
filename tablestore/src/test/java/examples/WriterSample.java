@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
+import static com.aliyun.ots.thirdparty.org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 
 public class WriterSample {

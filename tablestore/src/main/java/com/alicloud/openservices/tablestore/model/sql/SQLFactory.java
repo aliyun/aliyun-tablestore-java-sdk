@@ -19,6 +19,9 @@ public class SQLFactory {
             case SQL_CREATE_TABLE:
             case SQL_DROP_TABLE:
             case SQL_ALTER_TABLE:
+            case SQL_INSERT:
+            case SQL_UPDATE:
+            case SQL_DELETE:
             default:
                 return null;
         }

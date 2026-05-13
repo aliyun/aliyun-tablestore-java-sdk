@@ -28,6 +28,8 @@ public class CreateTunnelRequest implements Request {
      */
     private StreamTunnelConfig streamTunnelConfig;
 
+    private StreamRecordOptions streamRecordOptions;
+
     /**
      * Initialize the CreateTunnelRequest instance.
      *
@@ -113,5 +115,13 @@ public class CreateTunnelRequest implements Request {
 
     public void setStreamTunnelConfig(StreamTunnelConfig streamTunnelConfig) {
         this.streamTunnelConfig = streamTunnelConfig;
+    }
+
+    public StreamRecordOptions getStreamRecordOptions() {
+        return streamRecordOptions;
+    }
+
+    public void setStreamRecordOptions(StreamRecordOptions streamRecordOptions) {
+        this.streamRecordOptions = streamRecordOptions;
     }
 }

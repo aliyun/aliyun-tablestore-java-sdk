@@ -173,6 +173,12 @@ public class OTSProtocolParser {
                 return SQLStatementType.SQL_DROP_TABLE;
             case SQL_ALTER_TABLE:
                 return SQLStatementType.SQL_ALTER_TABLE;
+            case SQL_INSERT:
+                return SQLStatementType.SQL_INSERT;
+            case SQL_UPDATE:
+                return SQLStatementType.SQL_UPDATE;
+            case SQL_DELETE:
+                return SQLStatementType.SQL_DELETE;
             default:
                 throw new UnsupportedOperationException("not supported sql type: " + sqlStatementType);
         }
@@ -285,7 +291,36 @@ public class OTSProtocolParser {
         if (!streamDetails.getColumnToGetList().isEmpty()) {
             result.addOriginColumnsToGet(streamDetails.getColumnToGetList());
         }
+        if (streamDetails.hasOldColumnsToGet()) {
+            result.setOldColumnsToGet(parseStreamColumn(streamDetails.getOldColumnsToGet()));
+        }
+        if (streamDetails.hasNewColumnsToGet()) {
+            result.setNewColumnsToGet(parseStreamColumn(streamDetails.getNewColumnsToGet()));
+        }
         return result;
+    }
+
+    public static StreamColumnType parseStreamColumnType(OtsInternalApi.StreamColumnType columnType) {
+        switch (columnType) {
+            case INVALID:
+                return StreamColumnType.INVALID;
+            case SPECIFIED_COLUMN:
+                return StreamColumnType.SPECIFIED_COLUMN;
+            case INPUT_COLUMNS:
+                return StreamColumnType.INPUT_COLUMNS;
+            case ALL_COLUMNS:
+                return StreamColumnType.ALL_COLUMNS;
+            default:
+                throw new ClientException("Unknown stream column type: " + columnType);
+        }
+    }
+
+    public static StreamColumn parseStreamColumn(OtsInternalApi.StreamColumn streamColumn) {
+        StreamColumnType columnType = parseStreamColumnType(streamColumn.getType());
+        if (columnType == StreamColumnType.INVALID && streamColumn.getColumnNameCount() == 0) {
+            return null;
+        }
+        return new StreamColumn(columnType, streamColumn.getColumnNameList());
     }
 
     public static Stream parseStream(OtsInternalApi.Stream stream) {

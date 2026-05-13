@@ -51,6 +51,11 @@ public class StreamRecord {
     private List<RecordColumn> originColumns;
 
     /**
+     * The latest attribute columns contained in this Record, of type RecordColumn
+     */
+    private List<RecordColumn> latestColumns;
+
+    /**
      * Get the type of Record
      * @return the type of Record
      */
@@ -117,6 +122,18 @@ public class StreamRecord {
         this.originColumns = originColumns;
     }
 
+    public List<RecordColumn> getLatestColumns() {
+        if (latestColumns != null) {
+            return latestColumns;
+        } else {
+            return new ArrayList<RecordColumn>();
+        }
+    }
+
+    public void setLatestColumns(List<RecordColumn> latestColumns) {
+        this.latestColumns = latestColumns;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -136,6 +153,12 @@ public class StreamRecord {
         for (RecordColumn originColumn : this.getOriginColumns()) {
             sb.append("(");
             sb.append(originColumn);
+            sb.append(")");
+        }
+        sb.append("\n[latestColumns:]");
+        for (RecordColumn latestColumn : this.getLatestColumns()) {
+            sb.append("(");
+            sb.append(latestColumn);
             sb.append(")");
         }
         return sb.toString();

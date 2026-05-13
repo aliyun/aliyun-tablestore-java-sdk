@@ -1,7 +1,7 @@
 package com.alicloud.openservices.tablestore.tunnel.pipeline;
 
 import com.alicloud.openservices.tablestore.core.protocol.TunnelServiceApi;
-import org.apache.commons.codec.binary.Base64;
+import com.aliyun.ots.thirdparty.org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

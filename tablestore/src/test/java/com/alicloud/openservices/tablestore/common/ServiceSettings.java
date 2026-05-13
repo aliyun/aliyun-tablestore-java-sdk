@@ -1,7 +1,7 @@
 package com.alicloud.openservices.tablestore.common;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.aliyun.ots.thirdparty.org.apache.commons.logging.Log;
+import com.aliyun.ots.thirdparty.org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 import java.util.Properties;

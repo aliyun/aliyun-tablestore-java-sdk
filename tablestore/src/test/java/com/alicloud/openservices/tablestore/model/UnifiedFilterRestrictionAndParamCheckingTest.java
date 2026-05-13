@@ -11,10 +11,7 @@ import com.alicloud.openservices.tablestore.model.filter.Filter;
 import com.alicloud.openservices.tablestore.model.filter.SingleColumnValueFilter;
 import com.google.gson.JsonSyntaxException;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +45,7 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         OTSHelper.deleteAllTable(ots);
 
         TableMeta tableMeta = new TableMeta(tableName);

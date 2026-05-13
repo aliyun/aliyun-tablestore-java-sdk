@@ -2,11 +2,13 @@ package com.alicloud.openservices.tablestore.functiontest;
 
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
 import com.alicloud.openservices.tablestore.model.knowledgebase.DenseVectorSearchConfiguration;
 import com.alicloud.openservices.tablestore.model.knowledgebase.DenseVectorSearchConfiguration;
 import com.alicloud.openservices.tablestore.model.knowledgebase.FullTextSearchConfiguration;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +27,7 @@ public class KnowledgeBaseRetrieveE2ETest {
 
     @Before
     public void setUp() {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
         ServiceSettings settings = ServiceSettings.load();
         final String endPoint = settings.getOTSEndpoint();
         final String accessId = settings.getOTSAccessKeyId();

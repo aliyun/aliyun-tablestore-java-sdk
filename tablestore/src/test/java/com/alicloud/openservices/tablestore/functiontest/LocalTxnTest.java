@@ -6,6 +6,7 @@ import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,6 +23,8 @@ public class LocalTxnTest {
 
     @Before
     public void setUp() {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
+
         ServiceSettings settings = ServiceSettings.load();
 
         client = new SyncClient(settings.getOTSEndpoint(), settings.getOTSAccessKeyId(),

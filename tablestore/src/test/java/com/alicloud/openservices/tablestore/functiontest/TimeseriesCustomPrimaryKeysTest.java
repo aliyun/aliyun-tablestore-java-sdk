@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.functiontest;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.TimeseriesClient;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
+import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
 import org.junit.*;

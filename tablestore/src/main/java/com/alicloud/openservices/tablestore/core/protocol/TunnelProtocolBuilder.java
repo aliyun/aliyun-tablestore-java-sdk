@@ -1,5 +1,7 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
+import com.alicloud.openservices.tablestore.model.StreamColumn;
+import com.alicloud.openservices.tablestore.model.StreamColumnType;
 import com.alicloud.openservices.tablestore.model.tunnel.*;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
 import com.alicloud.openservices.tablestore.tunnel.worker.TunnelClientConfig;
@@ -47,7 +49,45 @@ public class TunnelProtocolBuilder {
         return builder.build();
     }
 
-    public static TunnelServiceApi.Tunnel buildTunnel(String tableName, String tunnelName, TunnelType tunnelType, StreamTunnelConfig streamConfig) {
+    public static TunnelServiceApi.StreamColumnType buildStreamColumnType(StreamColumnType columnType) {
+        switch (columnType) {
+            case INVALID:
+                return TunnelServiceApi.StreamColumnType.INVALID;
+            case SPECIFIED_COLUMN:
+                return TunnelServiceApi.StreamColumnType.SPECIFIED_COLUMN;
+            case INPUT_COLUMNS:
+                return TunnelServiceApi.StreamColumnType.INPUT_COLUMNS;
+            case ALL_COLUMNS:
+                return TunnelServiceApi.StreamColumnType.ALL_COLUMNS;
+            default:
+                throw new IllegalArgumentException("unknown stream column type: " + columnType.name());
+        }
+    }
+
+    public static TunnelServiceApi.StreamColumn buildStreamColumn(StreamColumn column) {
+        TunnelServiceApi.StreamColumn.Builder builder = TunnelServiceApi.StreamColumn.newBuilder();
+        builder.setType(buildStreamColumnType(column.getColumnType()));
+        builder.addAllColumnName(column.getColumnNames());
+        return builder.build();
+    }
+
+    public static TunnelServiceApi.StreamRecordOptions buildStreamRecordOptions(StreamRecordOptions options) {
+        TunnelServiceApi.StreamRecordOptions.Builder builder = TunnelServiceApi.StreamRecordOptions.newBuilder();
+        builder.setGetVersionGeneratorValue(options.isGetVersionGeneratorValue());
+        builder.setGetSysColumns(options.isGetSysColumns());
+        builder.setGetNewRowInfo(options.isGetNewRowInfo());
+        if (options.getOldColumnsToGet() != null) {
+            builder.setOldColumnsToGet(buildStreamColumn(options.getOldColumnsToGet()));
+        }
+        if (options.getNewColumnsToGet() != null) {
+            builder.setNewColumnsToGet(buildStreamColumn(options.getNewColumnsToGet()));
+        }
+        return builder.build();
+    }
+
+    public static TunnelServiceApi.Tunnel buildTunnel(
+        String tableName, String tunnelName, TunnelType tunnelType, StreamTunnelConfig streamConfig,
+        StreamRecordOptions streamRecordOptions) {
         TunnelServiceApi.Tunnel.Builder builder = TunnelServiceApi.Tunnel.newBuilder();
         builder.setTableName(tableName);
         builder.setTunnelName(tunnelName);
@@ -55,12 +95,20 @@ public class TunnelProtocolBuilder {
         if (streamConfig != null) {
             builder.setStreamTunnelConfig(buildStreamTunnelConfig(streamConfig));
         }
+        if (streamRecordOptions != null) {
+            builder.setStreamRecordOptions(buildStreamRecordOptions(streamRecordOptions));
+        }
         return builder.build();
     }
 
     public static TunnelServiceApi.CreateTunnelRequest buildCreateTunnelRequest(CreateTunnelRequest request) {
         TunnelServiceApi.CreateTunnelRequest.Builder builder = TunnelServiceApi.CreateTunnelRequest.newBuilder();
-        builder.setTunnel(buildTunnel(request.getTableName(), request.getTunnelName(), request.getTunnelType(), request.getStreamTunnelConfig()));
+        builder.setTunnel(buildTunnel(
+            request.getTableName(),
+            request.getTunnelName(),
+            request.getTunnelType(),
+            request.getStreamTunnelConfig(),
+            request.getStreamRecordOptions()));
         return builder.build();
     }
 

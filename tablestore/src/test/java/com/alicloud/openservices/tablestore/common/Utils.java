@@ -82,6 +82,10 @@ public class Utils {
         return getOTSInstance(null);
     }
 
+    public static boolean useGlobalTxn() {
+        ServiceSettings serviceSettings = ServiceSettings.load();
+        return serviceSettings.getOTSInstanceName().equals("javasdk-gtxn");
+    }
 
     public static TimeseriesClient getTsClient() {
         ServiceSettings serviceSettings = ServiceSettings.load();

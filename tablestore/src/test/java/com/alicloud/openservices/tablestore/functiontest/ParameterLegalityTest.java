@@ -96,7 +96,11 @@ public class ParameterLegalityTest extends BaseFT {
         TableMeta meta = new TableMeta(tableName);
         meta.addPrimaryKeyColumns(pks);
         TableOptions tableOptions = new TableOptions();
-        tableOptions.setMaxVersions(Integer.MAX_VALUE);
+        if (Utils.useGlobalTxn()) {
+            tableOptions.setMaxVersions(1);
+        } else {
+            tableOptions.setMaxVersions(Integer.MAX_VALUE);
+        }
         tableOptions.setMaxTimeDeviation(Long.MAX_VALUE / 1000000);
         tableOptions.setTimeToLive(-1);
         if (ex == null) {
@@ -114,6 +118,9 @@ public class ParameterLegalityTest extends BaseFT {
     }
 
     private void checkUpdateTable(SyncClientInterface ots, String tableName, Exception ex) {
+        if (Utils.useGlobalTxn()) {
+            return;
+        }
         TableOptions tableOptions = new TableOptions();
         tableOptions.setMaxVersions(10);
         if (ex == null) {
@@ -174,9 +181,12 @@ public class ParameterLegalityTest extends BaseFT {
 
     private void checkUpdateRow(SyncClientInterface ots, String tableName, PrimaryKey pk, String columnName, Exception ex) {
         List<Column> puts = new ArrayList<Column>();
-        Column column = new Column(columnName, ColumnValue.fromString("col_value"), 1L);
-        puts.add(column);
-        puts.add(new Column(columnName, ColumnValue.fromString("col_value"), 2L));
+        if (Utils.useGlobalTxn()) {
+            puts.add(new Column(columnName, ColumnValue.fromString("col_value")));
+        } else {
+            puts.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+            puts.add(new Column(columnName, ColumnValue.fromString("col_value"), 2L));
+        }
         List<String> deletes = new ArrayList<String>();
         deletes.add(columnName);
         List<Pair<String, Long>> deleteCells = new ArrayList<Pair<String, Long>>();
@@ -184,7 +194,9 @@ public class ParameterLegalityTest extends BaseFT {
         if (ex == null) {
             OTSHelper.updateRow(ots, tableName, pk, null, deletes, null);
             OTSHelper.updateRow(ots, tableName, pk, puts, null, null);
-            OTSHelper.updateRow(ots, tableName, pk, null, null, deleteCells);
+            if (!Utils.useGlobalTxn()) {
+                OTSHelper.updateRow(ots, tableName, pk, null, null, deleteCells);
+            }
         } else {
             try {
                 OTSHelper.updateRow(ots, tableName, pk, puts, null, null);
@@ -198,11 +210,13 @@ public class ParameterLegalityTest extends BaseFT {
             } catch (Exception e) {
                 checkException(ex, e);
             }
-            try {
-                OTSHelper.updateRow(ots, tableName, pk, null, null, deleteCells);
-                fail();
-            } catch (Exception e) {
-                checkException(ex, e);
+            if (!Utils.useGlobalTxn()) {
+                try {
+                    OTSHelper.updateRow(ots, tableName, pk, null, null, deleteCells);
+                    fail();
+                } catch (Exception e) {
+                    checkException(ex, e);
+                }
             }
         }
     }
@@ -224,7 +238,11 @@ public class ParameterLegalityTest extends BaseFT {
     private void checkPutRow(SyncClientInterface ots, String tableName, PrimaryKey pk, String columnName, Exception ex) {
         List<Column> columns = new ArrayList<Column>();
         ColumnValue cv = ColumnValue.fromString("col_value");
-        columns.add(new Column(columnName, cv, 1L));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column(columnName, cv));
+        } else {
+            columns.add(new Column(columnName, cv, 1L));
+        }
         if (ex == null) {
             OTSHelper.putRow(ots, tableName, pk, columns);
         } else {
@@ -240,7 +258,11 @@ public class ParameterLegalityTest extends BaseFT {
 
     private void checkBatchWriteRow(SyncClientInterface ots, String tableName, PrimaryKey pk, String columnName, TableStoreException ex) {
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value")));
+        } else {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        }
         List<RowPutChange> puts = new ArrayList<RowPutChange>();
         RowPutChange rowPutChange = new RowPutChange(tableName, pk);
         rowPutChange.addColumns(columns);
@@ -286,7 +308,11 @@ public class ParameterLegalityTest extends BaseFT {
 
     private void checkBatchWriteRowForException(SyncClientInterface ots, String tableName, PrimaryKey pk, String columnName, TableStoreException ex) {
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value")));
+        } else {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        }
         List<RowPutChange> puts = new ArrayList<RowPutChange>();
         RowPutChange rowPutChange = new RowPutChange(tableName, pk);
         rowPutChange.addColumns(columns);
@@ -340,7 +366,11 @@ public class ParameterLegalityTest extends BaseFT {
 
     private void checkBatchWriteRowNoDeleteForException(SyncClientInterface ots, String tableName, PrimaryKey pk, String columnName, TableStoreException ex) {
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value")));
+        } else {
+            columns.add(new Column(columnName, ColumnValue.fromString("col_value"), 1L));
+        }
         List<RowPutChange> puts = new ArrayList<RowPutChange>();
         RowPutChange rowPutChange = new RowPutChange(tableName, pk);
         rowPutChange.addColumns(columns);
@@ -543,7 +573,11 @@ public class ParameterLegalityTest extends BaseFT {
     public void testInvalidColumnName() {
 
         // createTable
-        createTable(3);
+        if (Utils.useGlobalTxn()) {
+            createTable(1);
+        } else {
+            createTable(3);
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 256; i++) {
@@ -575,7 +609,7 @@ public class ParameterLegalityTest extends BaseFT {
             criteria.addColumnsToGet(columnName);
             checkGetRange(ots, criteria, expect);
 
-            {
+            if (!Utils.useGlobalTxn()) {
                 // check filter
                 SingleRowQueryCriteria singleRowCriteria = new SingleRowQueryCriteria(tableName, getPrimaryKey());
                 singleRowCriteria.setMaxVersions(100);
@@ -599,7 +633,11 @@ public class ParameterLegalityTest extends BaseFT {
     public void testValidColumnName() {
 
         // createTable
-        createTable(3);
+        if (Utils.useGlobalTxn()) {
+            createTable(1);
+        } else {
+            createTable(3);
+        }
 
         List<String> columnNames = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
@@ -656,7 +694,11 @@ public class ParameterLegalityTest extends BaseFT {
         ColumnValue cv2 = ColumnValue.fromString("col_value_2");
         ColumnValue cv3 = ColumnValue.fromString("col_value_3");
 
-        columns.add(new Column(columnName, cv, 1L));
+        if (Utils.useGlobalTxn()) {
+            columns.add(new Column(columnName, cv));
+        } else {
+            columns.add(new Column(columnName, cv, 1L));
+        }
 
         // put on row
         OTSHelper.putRow(ots, tableName, pk, columns);
@@ -778,7 +820,11 @@ public class ParameterLegalityTest extends BaseFT {
     @Test
     public void testInvalidPrimaryKey() {
         // createTable
-        createTable(3);
+        if (Utils.useGlobalTxn()) {
+            createTable(1);
+        } else {
+            createTable(3);
+        }
 
         List<PrimaryKey> pks = new ArrayList<PrimaryKey>();
         List<PrimaryKeyColumn> primaryKey = new ArrayList<PrimaryKeyColumn>();
@@ -1016,7 +1062,11 @@ public class ParameterLegalityTest extends BaseFT {
     @Test
     public void testNotSetVersionOptionsInGetOperations() {
         // createTable
-        createTable(3);
+        if (Utils.useGlobalTxn()) {
+            createTable(1);
+        } else {
+            createTable(3);
+        }
 
         TableStoreException expect = new TableStoreException("No version condition is specified.", null, ErrorCode.INVALID_PARAMETER, "", 400);
 

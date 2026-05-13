@@ -15,4 +15,5 @@ public class OTSRestrictedItemConst {
     public static final int GET_RANGE_COUNT_MAX = 5000;
     public static final int GET_RANGE_SIZE_MAX = 4 * 1024 * 1024;
     public static final int COLUMN_COUNT_MAX_IN_SINGLE_ROW = 1024;
+    public static final int COLUMN_COUNT_MAX_IN_ROW_VERSION_TABLE = 256;
 }

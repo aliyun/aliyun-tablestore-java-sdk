@@ -9,10 +9,7 @@ import com.alicloud.openservices.tablestore.model.search.ListSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.ListSearchIndexResponse;
 import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
 import com.google.gson.JsonSyntaxException;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +54,8 @@ public class BatchWriteTest extends BaseFT {
      */
     @Test
     public void testBatchWriteDuplicateRowsForPublic() throws Exception {
+        Assume.assumeTrue(!Utils.useGlobalTxn());
+
     	Map<String, PrimaryKeyType> pks = new TreeMap<String, PrimaryKeyType>();
         pks.put("PK1", PrimaryKeyType.STRING);
         
