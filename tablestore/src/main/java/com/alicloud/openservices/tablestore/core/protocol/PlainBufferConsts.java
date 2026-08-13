@@ -24,6 +24,13 @@ public class PlainBufferConsts {
     public final static byte DELETE_ALL_VERSION = 0x1;
     public final static byte DELETE_ONE_VERSION = 0x3;
     public final static byte INCREMENT = 0x4;
+    public final static byte JSON_SET = 0x5;
+    public final static byte JSON_INSERT = 0x6;
+    public final static byte JSON_REPLACE = 0x7;
+    public final static byte JSON_REMOVE = 0x8;
+    public final static byte JSON_ARRAY_APPEND = 0x9;
+    public final static byte JSON_ARRAY_INSERT = 0xa;
+    public final static byte JSON_ARRAY_REMOVE = 0xb;
 
     // variant type
     public final static byte VT_INTEGER = 0x0;
@@ -108,5 +115,9 @@ public class PlainBufferConsts {
         } else {
             return false;
         }
+    }
+
+    public static boolean isJsonUpdateOp(byte opType) {
+        return opType >= JSON_SET && opType <= JSON_ARRAY_REMOVE;
     }
 }

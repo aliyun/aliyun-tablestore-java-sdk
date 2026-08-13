@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import com.alicloud.openservices.tablestore.model.condition.ColumnCondition;
 import com.alicloud.openservices.tablestore.model.condition.ColumnConditionType;
@@ -27,6 +28,8 @@ public class OTSProtocolBuilder {
             return OtsInternalApi.PrimaryKeyType.STRING;
         case BINARY:
             return OtsInternalApi.PrimaryKeyType.BINARY;
+        case BOOLEAN:
+            return OtsInternalApi.PrimaryKeyType.PK_BOOLEAN;
         default:
             throw new IllegalArgumentException("Unknown primary key type: " + type);
         }
@@ -361,6 +364,10 @@ public class OTSProtocolBuilder {
 
         if (createTableRequest.hasLocalTxnSet()) {
             builder.setEnableLocalTxn(createTableRequest.isLocalTxnEnabled());
+        }
+
+        if (createTableRequest.getStoragePolicy() != null) {
+            builder.setStoragePolicy(buildTieredStoragePolicy(createTableRequest.getStoragePolicy()));
         }
 
         return builder;
@@ -987,6 +994,10 @@ public class OTSProtocolBuilder {
             builder.setStreamSpec(buildStreamSpecification(updateTableRequest.getStreamSpecification()));
         }
 
+        if (updateTableRequest.getStoragePolicy() != null) {
+            builder.setStoragePolicy(buildTieredStoragePolicy(updateTableRequest.getStoragePolicy()));
+        }
+
         return builder.build();
     }
 
@@ -1053,6 +1064,62 @@ public class OTSProtocolBuilder {
         }
         if (sseSpecification.getRoleArn() != null) {
             builder.setRoleArn(ByteString.copyFrom(sseSpecification.getRoleArn().getBytes()));
+        }
+        return builder.build();
+    }
+
+    private static OtsInternalApi.StoragePolicyType buildStoragePolicyType(StoragePolicyType type) {
+        switch (type) {
+            case SPT_BY_TIMESTAMP:
+                return OtsInternalApi.StoragePolicyType.SPT_BY_TIMESTAMP;
+            case SPT_BY_COLUMN:
+                return OtsInternalApi.StoragePolicyType.SPT_BY_COLUMN;
+            default:
+                throw new IllegalArgumentException("Unknown storage policy type: " + type);
+        }
+    }
+
+    private static OtsInternalApi.TimeUnit buildTimeUnit(TimeUnit timeUnit) {
+        switch (timeUnit) {
+            case DAYS:
+                return OtsInternalApi.TimeUnit.TU_DAY;
+            case HOURS:
+                return OtsInternalApi.TimeUnit.TU_HOUR;
+            case MINUTES:
+                return OtsInternalApi.TimeUnit.TU_MINUTE;
+            case SECONDS:
+                return OtsInternalApi.TimeUnit.TU_SECOND;
+            case MILLISECONDS:
+                return OtsInternalApi.TimeUnit.TU_MILLISECOND;
+            case MICROSECONDS:
+                return OtsInternalApi.TimeUnit.TU_MICROSECOND;
+            case NANOSECONDS:
+                return OtsInternalApi.TimeUnit.TU_NANOSECOND;
+            default:
+                throw new IllegalArgumentException("Unknown time unit: " + timeUnit);
+        }
+    }
+
+    private static OtsInternalApi.TieredStorageColumn buildTieredStorageColumn(TieredStorageColumn column) {
+        OtsInternalApi.TieredStorageColumn.Builder builder = OtsInternalApi.TieredStorageColumn.newBuilder();
+        builder.setName(column.getName());
+        if (column.getValueTimeUnit() != null) {
+            builder.setValueTimeUnit(buildTimeUnit(column.getValueTimeUnit()));
+        }
+        return builder.build();
+    }
+
+    private static OtsInternalApi.TieredStoragePolicy buildTieredStoragePolicy(TieredStoragePolicy policy) {
+        OtsInternalApi.TieredStoragePolicy.Builder builder = OtsInternalApi.TieredStoragePolicy.newBuilder();
+        builder.setEnableTieredStorage(policy.isEnableTieredStorage());
+        if (policy.getType() != null) {
+            builder.setType(buildStoragePolicyType(policy.getType()));
+        }
+        if (policy.getHotRetentionPeriod() != null) {
+            builder.setHotRetentionPeriod(policy.getHotRetentionPeriod());
+        }
+        if (policy.getColumn() != null) {
+            builder.setColumn(buildTieredStorageColumn(policy.getColumn()));
         }
         return builder.build();
     }

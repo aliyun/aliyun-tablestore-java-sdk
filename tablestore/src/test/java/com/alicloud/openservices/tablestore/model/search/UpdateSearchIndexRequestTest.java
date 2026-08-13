@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.model.search;
 
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,6 +10,18 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class UpdateSearchIndexRequestTest extends BaseSearchTest {
+
+    @Test
+    public void testSetStorageClass() {
+        UpdateSearchIndexRequest request = new UpdateSearchIndexRequest("table", "index");
+        Assert.assertNull(request.getStorageClass());
+
+        Assert.assertSame(request, request.setStorageClass(StorageClass.SC_IA));
+        Assert.assertEquals(StorageClass.SC_IA, request.getStorageClass());
+
+        request.setStorageClass(StorageClass.SC_STANDARD);
+        Assert.assertEquals(StorageClass.SC_STANDARD, request.getStorageClass());
+    }
 
     @Test
     public void testSetTTL() {

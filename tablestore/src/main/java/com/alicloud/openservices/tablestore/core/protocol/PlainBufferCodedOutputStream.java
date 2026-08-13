@@ -77,9 +77,15 @@ public class PlainBufferCodedOutputStream {
                 output.writeBytes(rawData);
                 break;
             }
+            case BOOLEAN: {
+                output.writeRawLittleEndian32(1 + 1); // type + value
+                output.writeRawByte(PlainBufferConsts.VT_BOOLEAN);
+                output.writeBoolean(value.asBoolean());
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported primary key type: " + value.getType());
-        }  	
+        }
     }
 
     public void writeCellValue(ColumnValue value) throws IOException {
@@ -237,6 +243,11 @@ public class PlainBufferCodedOutputStream {
                 output.writeRawByte(VT_BLOB);
                 output.writeRawLittleEndian32(rawData.length);
                 output.writeBytes(rawData);
+                break;
+            }
+            case BOOLEAN: {
+                output.writeRawByte(VT_BOOLEAN);
+                output.writeBoolean(value.asBoolean());
                 break;
             }
             default:

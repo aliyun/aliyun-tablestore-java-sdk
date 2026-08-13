@@ -18,7 +18,10 @@ import com.alicloud.openservices.tablestore.model.tunnel.DescribeTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.ListTunnelRequest;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
 import com.alicloud.openservices.tablestore.core.knowledgebase.*;
+import com.alicloud.openservices.tablestore.core.memory.JsonOperationLauncher;
+import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.MemoryRequest;
 import com.google.common.cache.Cache;
 
 import java.util.HashMap;
@@ -232,6 +235,41 @@ public class LauncherFactory {
                 new Context(new OTSUri(endpoint, OP_UPDATE_CHUNKS)));
         contexts.put(OP_RETRIEVE,
                 new Context(new OTSUri(endpoint, OP_RETRIEVE)));
+        String[] memoryOperations = {
+                OP_CREATE_MEMORY_STORE,
+                OP_GET_MEMORY_STORE,
+                OP_LIST_MEMORY_STORES,
+                OP_UPDATE_MEMORY_STORE,
+                OP_DELETE_MEMORY_STORE,
+                OP_ADD_MEMORIES,
+                OP_SEARCH_MEMORIES,
+                OP_LIST_MEMORIES,
+                OP_GET_MEMORY,
+                OP_UPDATE_MEMORY,
+                OP_DELETE_MEMORY,
+                OP_LIST_MEMORY_STORE_MESSAGES,
+                OP_LIST_MEMORY_STORE_REQUESTS,
+                OP_GET_MEMORY_TASK,
+                OP_LIST_MEMORY_TASKS,
+                OP_LIST_MEMORY_STORE_SCOPES,
+                OP_CREATE_MEMORY_DREAM_TASK,
+                OP_GET_MEMORY_DREAM_TASK,
+                OP_LIST_MEMORY_DREAM_TASKS,
+                OP_CANCEL_MEMORY_DREAM_TASK,
+                OP_LIST_MEMORY_DREAM_ACTIONS,
+                OP_APPLY_MEMORY_DREAM_ACTIONS,
+                OP_ADD_ITEM,
+                OP_LIST_ITEMS,
+                OP_GET_ITEM,
+                OP_UPDATE_ITEM,
+                OP_DELETE_ITEM,
+                OP_LIST_ITEM_VERSIONS,
+                OP_GET_ITEM_VERSION,
+                OP_REDACT_ITEM_VERSION
+        };
+        for (String operation : memoryOperations) {
+            contexts.put(operation, new Context(new OTSUri(endpoint, operation)));
+        }
     }
 
     public CreateTableLauncher createTable(TraceLogger tracer, RetryStrategy retry, CreateTableRequest originRequest)
@@ -841,6 +879,14 @@ public class LauncherFactory {
         Context ctx = contexts.get(OP_RETRIEVE);
         return new RetrieveLauncher(
                 ctx.uri, tracer, retry, instanceName, client, crdsProvider, config, originRequest);
+    }
+
+    public <Req extends MemoryRequest, Res extends Response> JsonOperationLauncher<Req, Res> memoryOperation(
+            TraceLogger tracer, RetryStrategy retry, Req request, Class<Res> responseClass) {
+        Context context = contexts.get(request.getOperationName());
+        Preconditions.checkNotNull(context, "Unsupported memory operation: " + request.getOperationName());
+        return new JsonOperationLauncher<Req, Res>(context.uri, tracer, retry, instanceName,
+                client, crdsProvider, config, request, responseClass);
     }
 
 }

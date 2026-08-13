@@ -29,6 +29,11 @@ public class UpdateTableRequest implements Request {
      */
     private StreamSpecification streamSpecification;
 
+    /**
+     * The tiered storage policy change, controlling how data is migrated between hot and cold storage tiers.
+     */
+    private TieredStoragePolicy storagePolicy;
+
     public UpdateTableRequest() {
     }
 
@@ -114,5 +119,25 @@ public class UpdateTableRequest implements Request {
      */
     public void setStreamSpecification(StreamSpecification streamSpecification) {
         this.streamSpecification = streamSpecification;
+    }
+
+    /**
+     * Get the tiered storage policy change of the table.
+     *
+     * @return The tiered storage policy change, or null if not set.
+     */
+    public TieredStoragePolicy getStoragePolicy() {
+        return storagePolicy;
+    }
+
+    /**
+     * Set the tiered storage policy change for the table.
+     * The policy controls how data is migrated between hot and cold storage tiers,
+     * either by timestamp or by a custom time column.
+     *
+     * @param storagePolicy The tiered storage policy change for the table.
+     */
+    public void setStoragePolicy(TieredStoragePolicy storagePolicy) {
+        this.storagePolicy = storagePolicy;
     }
 }

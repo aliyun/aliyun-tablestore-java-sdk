@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
 public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
     private static Logger LOG = Logger.getLogger(UnifiedFilterAdvanceTest.class.getName());
 
-    private static String tableName = "FilterRestrictionTest";
+    private String tableName;
     
     private static SyncClientInterface ots;
 
@@ -46,13 +46,18 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
     @Before
     public void setup() throws Exception {
         Assume.assumeTrue(!Utils.useGlobalTxn());
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("FilterRestrictionTest");
 
         TableMeta tableMeta = new TableMeta(tableName);
         tableMeta.addPrimaryKeyColumn("PK0", PrimaryKeyType.INTEGER);
 
         OTSHelper.createTable(ots, tableMeta);
         Utils.sleepSeconds(SECONDS_UNTIL_TABLE_READY);
+    }
+
+    @After
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
     }
 
     public Filter makeFilterWithMaxDepth(int depth, CompositeColumnValueFilter.LogicOperator operator) {

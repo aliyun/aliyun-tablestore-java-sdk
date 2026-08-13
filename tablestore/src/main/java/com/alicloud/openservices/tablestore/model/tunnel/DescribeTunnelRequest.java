@@ -6,6 +6,7 @@ import com.alicloud.openservices.tablestore.model.Request;
 
 /**
  * DescribeTunnelRequest includes some necessary parameters to describe a Tunnel, including the table name and Tunnel name.
+ * Optionally, a Tunnel ID can be provided to identify the Tunnel directly.
  */
 public class DescribeTunnelRequest implements Request {
     /**
@@ -19,13 +20,29 @@ public class DescribeTunnelRequest implements Request {
     private String tunnelName;
 
     /**
+     * Tunnel ID (optional).
+     */
+    private String tunnelId;
+
+    /**
      * Initialize the DescribeTunnelRequest instance.
-     * @param tableName The name of the table.
+     * @param tableName  The name of the table.
      * @param tunnelName The name of the Tunnel.
      */
     public DescribeTunnelRequest(String tableName, String tunnelName) {
+        this(tableName, tunnelName, null);
+    }
+
+    /**
+     * Initialize the DescribeTunnelRequest instance.
+     * @param tableName  The name of the table.
+     * @param tunnelName The name of the Tunnel.
+     * @param tunnelId   The ID of the tunnel.
+     */
+    public DescribeTunnelRequest(String tableName, String tunnelName, String tunnelId) {
         setTableName(tableName);
         setTunnelName(tunnelName);
+        setTunnelId(tunnelId);
     }
 
     /**
@@ -62,6 +79,22 @@ public class DescribeTunnelRequest implements Request {
         Preconditions.checkArgument(tunnelName != null && !tunnelName.isEmpty(),
             "The tunnel name should not be empty.");
         this.tunnelName = tunnelName;
+    }
+
+    /**
+     * Get the Tunnel ID.
+     * @return The Tunnel ID, or null if not set.
+     */
+    public String getTunnelId() {
+        return tunnelId;
+    }
+
+    /**
+     * Set the Tunnel ID (optional).
+     * @param tunnelId The ID of the Tunnel.
+     */
+    public void setTunnelId(String tunnelId) {
+        this.tunnelId = tunnelId;
     }
 
     @Override

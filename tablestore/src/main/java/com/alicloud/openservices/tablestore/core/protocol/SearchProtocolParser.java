@@ -5,6 +5,7 @@ import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.CapacityUnit;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
 import com.alicloud.openservices.tablestore.model.ReservedThroughput;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
 import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
 import com.alicloud.openservices.tablestore.model.search.DateTimeValue;
@@ -15,6 +16,7 @@ import com.alicloud.openservices.tablestore.model.search.IndexOptions;
 import com.alicloud.openservices.tablestore.model.search.IndexSchema;
 import com.alicloud.openservices.tablestore.model.search.IndexSetting;
 import com.alicloud.openservices.tablestore.model.search.JsonType;
+import com.alicloud.openservices.tablestore.model.search.TextSimilarity;
 import com.alicloud.openservices.tablestore.model.search.MeteringInfo;
 import com.alicloud.openservices.tablestore.model.search.ParallelScanRequest;
 import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
@@ -68,8 +70,8 @@ public class SearchProtocolParser {
                 return FieldType.IP;
             case JSON:
                 return FieldType.JSON;
-            case FLATTENED:
-                return FieldType.FLATTENED;
+            case FLAT_OBJECT:
+                return FieldType.FLAT_OBJECT;
             default:
                 return FieldType.UNKNOWN;
         }
@@ -87,6 +89,17 @@ public class SearchProtocolParser {
                 return IndexOptions.OFFSETS;
             default:
                 throw new IllegalArgumentException("Unknown indexOptions: " + indexOptions.name());
+        }
+    }
+
+    static StorageClass toStorageClass(Search.StorageClass storageClass) {
+        switch (storageClass) {
+            case SC_STANDARD:
+                return StorageClass.SC_STANDARD;
+            case SC_IA:
+                return StorageClass.SC_IA;
+            default:
+                throw new IllegalArgumentException("Unknown storageClass: " + storageClass.name());
         }
     }
 
@@ -193,6 +206,9 @@ public class SearchProtocolParser {
         if (fieldSchema.hasJsonType()) {
             result.setJsonType(toJsonType(fieldSchema.getJsonType()));
         }
+        if (fieldSchema.hasTextSimilarity()) {
+            result.setTextSimilarity(toTextSimilarity(fieldSchema.getTextSimilarity()));
+        }
         return result;
     }
 
@@ -240,6 +256,17 @@ public class SearchProtocolParser {
                 return JsonType.NESTED;
             default:
                 throw new IllegalArgumentException("unknown json type: " + jsonType.name());
+        }
+    }
+
+    private static TextSimilarity toTextSimilarity(Search.TextSimilarity textSimilarity) {
+        switch (textSimilarity) {
+            case BM25:
+                return TextSimilarity.BM25;
+            case SHORT_TEXT:
+                return TextSimilarity.SHORT_TEXT;
+            default:
+                throw new IllegalArgumentException("unknown text similarity: " + textSimilarity.name());
         }
     }
 

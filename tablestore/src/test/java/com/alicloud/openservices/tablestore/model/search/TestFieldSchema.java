@@ -406,8 +406,8 @@ public class TestFieldSchema extends BaseSearchTest {
     }
 
     @Test
-    public void testFlattenedType() {
-        FieldSchema fieldSchema = new FieldSchema("f1", FieldType.FLATTENED);
+    public void testFlatObjectType() {
+        FieldSchema fieldSchema = new FieldSchema("f1", FieldType.FLAT_OBJECT);
         fieldSchema.setEnableSortAndAgg(true);
         assertTrue(fieldSchema.isEnableSortAndAgg());
         fieldSchema.setIndex(true);
@@ -416,7 +416,7 @@ public class TestFieldSchema extends BaseSearchTest {
         String jsonString = fieldSchema.jsonize();
         Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
         assertEquals("f1", fieldSchemaMap.get("FieldName"));
-        assertEquals(FieldType.FLATTENED.toString(), fieldSchemaMap.get("FieldType"));
+        assertEquals(FieldType.FLAT_OBJECT.toString(), fieldSchemaMap.get("FieldType"));
     }
 
     @Test
@@ -437,5 +437,33 @@ public class TestFieldSchema extends BaseSearchTest {
         fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
         assertEquals("f1", fieldSchemaMap.get("FieldName"));
         assertEquals(JsonType.NESTED.toString(), fieldSchemaMap.get("JsonType"));
+    }
+
+    @Test
+    public void testTextSimilarity() {
+        FieldSchema fieldSchema = new FieldSchema("f1", FieldType.TEXT);
+        assertNull(fieldSchema.getTextSimilarity());
+
+        fieldSchema.setTextSimilarity(TextSimilarity.BM25);
+        assertEquals(TextSimilarity.BM25, fieldSchema.getTextSimilarity());
+        String jsonString = fieldSchema.jsonize();
+        Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertEquals("f1", fieldSchemaMap.get("FieldName"));
+        assertEquals(TextSimilarity.BM25.toString(), fieldSchemaMap.get("TextSimilarity"));
+
+        fieldSchema.setTextSimilarity(TextSimilarity.SHORT_TEXT);
+        assertEquals(TextSimilarity.SHORT_TEXT, fieldSchema.getTextSimilarity());
+        jsonString = fieldSchema.jsonize();
+        fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertEquals("f1", fieldSchemaMap.get("FieldName"));
+        assertEquals(TextSimilarity.SHORT_TEXT.toString(), fieldSchemaMap.get("TextSimilarity"));
+    }
+
+    @Test
+    public void testTextSimilarityNotSet() {
+        FieldSchema fieldSchema = new FieldSchema("f1", FieldType.TEXT);
+        String jsonString = fieldSchema.jsonize();
+        Map<?, ?> fieldSchemaMap = new Gson().fromJson(jsonString, Map.class);
+        assertNull(fieldSchemaMap.get("TextSimilarity"));
     }
 }

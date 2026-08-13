@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class OTSAPIBehaviorTest {
 
-    private static String tableName = "SystemStatusTestTable";
+    private String tableName;
 
     private static SyncClientInterface ots;
 
@@ -43,11 +43,12 @@ public class OTSAPIBehaviorTest {
     public void setup() throws Exception {
         // Clean up the environment
         Assume.assumeTrue(!Utils.useGlobalTxn());
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("SystemStatusTestTable");
     }
 
     @After
-    public void teardown() {
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
 
     }
 

@@ -131,6 +131,11 @@ public class FieldSchema implements Jsonizable {
      */
     private JsonType jsonType;
 
+    /**
+     * When the field type is {@link FieldType#TEXT}, the text similarity algorithm can be set.
+     */
+    private TextSimilarity textSimilarity;
+
     public FieldSchema(String fieldName, FieldType fieldType) {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
@@ -282,6 +287,15 @@ public class FieldSchema implements Jsonizable {
 
     public FieldSchema setJsonType(JsonType jsonType) {
         this.jsonType = jsonType;
+        return this;
+    }
+
+    public TextSimilarity getTextSimilarity() {
+        return textSimilarity;
+    }
+
+    public FieldSchema setTextSimilarity(TextSimilarity textSimilarity) {
+        this.textSimilarity = textSimilarity;
         return this;
     }
 
@@ -437,6 +451,12 @@ public class FieldSchema implements Jsonizable {
             sb.append(newline);
             sb.append("\"JsonType\": ");
             sb.append("\"").append(jsonType.name()).append("\"");
+        }
+        if (textSimilarity != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"TextSimilarity\": ");
+            sb.append("\"").append(textSimilarity.name()).append("\"");
         }
         sb.append(newline);
         sb.append("}");

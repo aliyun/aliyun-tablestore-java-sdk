@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class SecondaryIndexTest extends BaseFT {
 
-    private static String tableName = "SecondaryIndexFunctiontest";
+    private String tableName;
     private static SyncClientInterface ots;
 
     private static final Logger LOG = LoggerFactory.getLogger(SecondaryIndexTest.class);
@@ -33,12 +33,19 @@ public class SecondaryIndexTest extends BaseFT {
     @Before
     public void setup() throws Exception {
         Assume.assumeTrue(!Utils.useGlobalTxn());
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("SecondaryIndexFunctiontest");
     }
 
     @After
-    public void teardown() {
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
+    }
 
+    // Secondary-index tables share the instance-wide table namespace: derive index
+    // names from the run-unique tableName so concurrent gate runs cannot collide on
+    // fixed names like "i"/"i0".."i4". (tableName ~45 chars, well under the 255 cap.)
+    private String indexName(String suffix) {
+        return tableName + "_" + suffix;
     }
 
     @Test
@@ -78,7 +85,7 @@ public class SecondaryIndexTest extends BaseFT {
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
 
             for (int i = 0; i < limit + 1; i++) {
-                IndexMeta indexMeta = new IndexMeta("i" + i);
+                IndexMeta indexMeta = new IndexMeta(indexName("i" + i));
                 indexMeta.addPrimaryKeyColumn("d" + i);
                 indexMeta.addDefinedColumn("d9");
                 createTableRequest.addIndex(indexMeta);
@@ -113,7 +120,7 @@ public class SecondaryIndexTest extends BaseFT {
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
 
             for (int i = 0; i < limit; i++) {
-                IndexMeta indexMeta = new IndexMeta("i" + i);
+                IndexMeta indexMeta = new IndexMeta(indexName("i" + i));
                 indexMeta.addPrimaryKeyColumn("d" + i);
                 indexMeta.addDefinedColumn("d9");
                 createTableRequest.addIndex(indexMeta);
@@ -152,7 +159,7 @@ public class SecondaryIndexTest extends BaseFT {
         Utils.waitForPartitionLoad(tableName);
 
         for (int i = 0; i < limit; i++) {
-            IndexMeta indexMeta = new IndexMeta("i" + i);
+            IndexMeta indexMeta = new IndexMeta(indexName("i" + i));
             indexMeta.addPrimaryKeyColumn("d" + i);
             indexMeta.addDefinedColumn("d9");
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(tableName, indexMeta, false);
@@ -163,7 +170,7 @@ public class SecondaryIndexTest extends BaseFT {
         Utils.waitForPartitionLoad(tableName);
 
         {
-            IndexMeta indexMeta = new IndexMeta("i" + limit);
+            IndexMeta indexMeta = new IndexMeta(indexName("i" + limit));
             indexMeta.addPrimaryKeyColumn("d" + limit);
             indexMeta.addDefinedColumn("d9");
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(tableName, indexMeta, false);
@@ -244,7 +251,7 @@ public class SecondaryIndexTest extends BaseFT {
             tableOptions.setMaxVersions(1);
 
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             for (int i = 0; i < limit + 1 ; i++) {
                 indexMeta.addPrimaryKeyColumn("d" + i);
             }
@@ -261,7 +268,7 @@ public class SecondaryIndexTest extends BaseFT {
 
         // by create index
         {
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             for (int i = 0; i < limit + 1; i++) {
                 indexMeta.addPrimaryKeyColumn("d" + i);
             }
@@ -295,7 +302,7 @@ public class SecondaryIndexTest extends BaseFT {
             tableOptions.setMaxVersions(1);
 
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             indexMeta.addPrimaryKeyColumn("gid");
             for (int i = 0; i < limit + 1; i++) {
                 indexMeta.addDefinedColumn("d" + i);
@@ -324,7 +331,7 @@ public class SecondaryIndexTest extends BaseFT {
             tableOptions.setMaxVersions(1);
 
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             indexMeta.addPrimaryKeyColumn("gid");
             for (int i = 0; i < limit; i++) {
                 indexMeta.addDefinedColumn("d" + i);
@@ -357,7 +364,7 @@ public class SecondaryIndexTest extends BaseFT {
             tableOptions.setMaxVersions(1);
 
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             // indexMeta.addPrimaryKeyColumn("d"); // no pk
             indexMeta.addDefinedColumn("d9");
             createTableRequest.addIndex(indexMeta);
@@ -389,7 +396,7 @@ public class SecondaryIndexTest extends BaseFT {
             tableOptions.setMaxVersions(1);
 
             CreateTableRequest createTableRequest = new CreateTableRequest(tableMeta, tableOptions);
-            IndexMeta indexMeta = new IndexMeta("i");
+            IndexMeta indexMeta = new IndexMeta(indexName("i"));
             indexMeta.addPrimaryKeyColumn("d0");
             // indexMeta.addDefinedColumn("d9");// no attr
             createTableRequest.addIndex(indexMeta);
@@ -397,7 +404,7 @@ public class SecondaryIndexTest extends BaseFT {
         }
         {
 
-            IndexMeta indexMeta = new IndexMeta("i1");
+            IndexMeta indexMeta = new IndexMeta(indexName("i1"));
             //indexMeta.addPrimaryKeyColumn("d0");
             indexMeta.addDefinedColumn("d9");
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(tableName, indexMeta, false);
@@ -412,7 +419,7 @@ public class SecondaryIndexTest extends BaseFT {
         }
         {
 
-            IndexMeta indexMeta = new IndexMeta("i2");
+            IndexMeta indexMeta = new IndexMeta(indexName("i2"));
             indexMeta.addPrimaryKeyColumn("d0");
             //indexMeta.addDefinedColumn("d9");
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(tableName, indexMeta, false);

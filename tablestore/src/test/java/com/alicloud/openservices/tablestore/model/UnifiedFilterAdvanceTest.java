@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class UnifiedFilterAdvanceTest extends BaseFT {
     private static Logger LOG = Logger.getLogger(UnifiedFilterAdvanceTest.class.getName());
 
-    private static String tableName = "FilterAdvanceFunctionTest";
+    private String tableName;
     private static SyncClientInterface ots;
 
     private static final int SECONDS_UNTIL_TABLE_READY = 10;
@@ -40,13 +40,12 @@ public class UnifiedFilterAdvanceTest extends BaseFT {
     @Before
     public void setup() throws Exception {
         Assume.assumeTrue(!Utils.useGlobalTxn());
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("FilterAdvanceFunctionTest");
     }
 
-
     @After
-    public void teardown() {
-
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
     }
 
     public void checkReadRangeResponse(long expectRowNum, Direction direction) throws Exception {

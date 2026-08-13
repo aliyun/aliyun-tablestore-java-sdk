@@ -1,7 +1,9 @@
 package com.alicloud.openservices.tablestore.model;
 
 /**
- * Indicates the data type of the primary key column. Currently, only three data types are supported: {@link #STRING}, {@link #INTEGER}, and {@link #BINARY}.
+ * Indicates the data type of the primary key column. Currently supported types are:
+ * {@link #STRING}, {@link #INTEGER}, {@link #BINARY}, and {@link #BOOLEAN}.
+ * <p>Note: {@link #BOOLEAN} can only be used as a non-first primary key column.</p>
  */
 public enum PrimaryKeyType {
     /**
@@ -17,5 +19,10 @@ public enum PrimaryKeyType {
     /**
      * Binary data.
      */
-    BINARY;
+    BINARY,
+
+    /**
+     * Boolean. Can only be used as a non-first primary key column.
+     */
+    BOOLEAN;
 }

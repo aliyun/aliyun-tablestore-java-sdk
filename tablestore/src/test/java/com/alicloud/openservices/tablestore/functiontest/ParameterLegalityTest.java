@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ParameterLegalityTest extends BaseFT {
 
-    private static String tableName = "ParameterLegalityFunctiontest";
+    private String tableName;
 
     private static SyncClientInterface ots;
 
@@ -41,12 +41,12 @@ public class ParameterLegalityTest extends BaseFT {
     @Before
     public void setup() throws Exception {
         // Clean up the environment
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("ParameterLegalityFunctiontest");
     }
 
     @After
-    public void teardown() {
-
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
     }
 
     /**
@@ -518,51 +518,65 @@ public class ParameterLegalityTest extends BaseFT {
      * Test all related APIs with table names '_0', '_T', 'A0', expecting successful operations.
      */
     @Test
-    public void testValidTableName() {
+    public void testValidTableName() throws Exception {
 
-        String tableNames[] = {"_0", "_T", "A0"};
+        // The case validates the *prefix* rules for legal table names (underscore+digit,
+        // underscore+letter, letter+digit). A unique suffix keeps that semantics while
+        // avoiding fixed names, which concurrent gate runs would create/delete under
+        // each other (OTSObjectAlreadyExist / mutual deletion).
+        String tableNames[] = {
+                OTSHelper.generateUniqueTableName("_0"),
+                OTSHelper.generateUniqueTableName("_T"),
+                OTSHelper.generateUniqueTableName("A0")};
         String columnName = "col_name";
         List<Column> expectColumns = new ArrayList<Column>();
         expectColumns.add(new Column(columnName, ColumnValue.fromString("col_value")));
 
-        for (int i = 0; i < tableNames.length; i++) {
-            String tableName = tableNames[i];
+        try {
+            for (int i = 0; i < tableNames.length; i++) {
+                String tableName = tableNames[i];
 
-            TableStoreException expect = null;
+                TableStoreException expect = null;
 
-            checkCreateTable(ots, tableName, expect);
+                checkCreateTable(ots, tableName, expect);
 
-            Utils.sleepSeconds(OTSTestConst.UPDATE_TABLE_SLEEP_IN_SECOND);
+                Utils.sleepSeconds(OTSTestConst.UPDATE_TABLE_SLEEP_IN_SECOND);
 
-            checkUpdateTable(ots, tableName, expect);
+                checkUpdateTable(ots, tableName, expect);
 
-            checkDescribeTable(ots, tableName, expect);
+                checkDescribeTable(ots, tableName, expect);
 
-            checkDeleteTable(ots, tableName, expect);
+                checkDeleteTable(ots, tableName, expect);
 
-            checkCreateTable(ots, tableName, expect);
+                checkCreateTable(ots, tableName, expect);
 
-            Utils.waitForPartitionLoad(tableName);
+                Utils.waitForPartitionLoad(tableName);
 
-            checkPutRow(ots, tableName, getPrimaryKey(), columnName, expect);
+                checkPutRow(ots, tableName, getPrimaryKey(), columnName, expect);
 
-            GetRowResponse getRowResult = checkGetRow(ots, tableName, getPrimaryKey(), columnName, expect);
-            Utils.checkColumns(getRowResult.getRow().getColumns(), expectColumns, false);
+                GetRowResponse getRowResult = checkGetRow(ots, tableName, getPrimaryKey(), columnName, expect);
+                Utils.checkColumns(getRowResult.getRow().getColumns(), expectColumns, false);
 
-            checkUpdateRow(ots, tableName, getPrimaryKey(), columnName, expect);
+                checkUpdateRow(ots, tableName, getPrimaryKey(), columnName, expect);
 
-            BatchGetRowResponse batchGetRowResult = checkBatchGetRow(ots, tableName, getPrimaryKey(), columnName, expect);
-            Utils.checkColumns(batchGetRowResult.getSucceedRows().get(0).getRow().getColumns(), expectColumns, false);
+                BatchGetRowResponse batchGetRowResult = checkBatchGetRow(ots, tableName, getPrimaryKey(), columnName, expect);
+                Utils.checkColumns(batchGetRowResult.getSucceedRows().get(0).getRow().getColumns(), expectColumns, false);
 
-            checkDeleteRow(ots, tableName, getPrimaryKey(), expect);
+                checkDeleteRow(ots, tableName, getPrimaryKey(), expect);
 
-            checkBatchWriteRow(ots, tableName, getPrimaryKey(), columnName, expect);
+                checkBatchWriteRow(ots, tableName, getPrimaryKey(), columnName, expect);
 
-            RangeRowQueryCriteria criteria = new RangeRowQueryCriteria(tableName);
-            criteria.setInclusiveStartPrimaryKey(getPrimaryKey("1"));
-            criteria.setExclusiveEndPrimaryKey(getPrimaryKey("2"));
-            criteria.setMaxVersions(Integer.MAX_VALUE);
-            checkGetRange(ots, criteria, expect);
+                RangeRowQueryCriteria criteria = new RangeRowQueryCriteria(tableName);
+                criteria.setInclusiveStartPrimaryKey(getPrimaryKey("1"));
+                criteria.setExclusiveEndPrimaryKey(getPrimaryKey("2"));
+                criteria.setMaxVersions(Integer.MAX_VALUE);
+                checkGetRange(ots, criteria, expect);
+            }
+        } finally {
+            // the loop re-creates each table after checkDeleteTable: always clean all of
+            // them, even when an assertion/request fails mid-loop (class teardown only
+            // covers `this.tableName`)
+            OTSHelper.deleteTablesByNames(ots, tableNames);
         }
     }
 

@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.core.protocol;
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.core.protocol.Search.ColumnReturnType;
 import com.alicloud.openservices.tablestore.model.PrimaryKey;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 import com.alicloud.openservices.tablestore.model.search.Collapse;
 import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.DateTimeUnit;
@@ -15,6 +16,7 @@ import com.alicloud.openservices.tablestore.model.search.IndexOptions;
 import com.alicloud.openservices.tablestore.model.search.IndexSchema;
 import com.alicloud.openservices.tablestore.model.search.IndexSetting;
 import com.alicloud.openservices.tablestore.model.search.JsonType;
+import com.alicloud.openservices.tablestore.model.search.TextSimilarity;
 import com.alicloud.openservices.tablestore.model.search.ListSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.ParallelScanRequest;
 import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
@@ -62,8 +64,8 @@ public class SearchProtocolBuilder {
                 return Search.FieldType.IP;
             case JSON:
                 return Search.FieldType.JSON;
-            case FLATTENED:
-                return Search.FieldType.FLATTENED;
+            case FLAT_OBJECT:
+                return Search.FieldType.FLAT_OBJECT;
             default:
                 throw new IllegalArgumentException("Unknown fieldType: " + fieldType.name());
         }
@@ -81,6 +83,17 @@ public class SearchProtocolBuilder {
                 return Search.IndexOptions.OFFSETS;
             default:
                 throw new IllegalArgumentException("Unknown indexOptions: " + indexOptions.name());
+        }
+    }
+
+    private static Search.StorageClass buildStorageClass(StorageClass storageClass) {
+        switch (storageClass) {
+            case SC_STANDARD:
+                return Search.StorageClass.SC_STANDARD;
+            case SC_IA:
+                return Search.StorageClass.SC_IA;
+            default:
+                throw new IllegalArgumentException("Unknown storageClass: " + storageClass.name());
         }
     }
 
@@ -153,6 +166,9 @@ public class SearchProtocolBuilder {
         if (fieldSchema.getJsonType() != null) {
             builder.setJsonType(buildJsonType(fieldSchema.getJsonType()));
         }
+        if (fieldSchema.getTextSimilarity() != null) {
+            builder.setTextSimilarity(buildTextSimilarity(fieldSchema.getTextSimilarity()));
+        }
         return builder.build();
     }
 
@@ -188,6 +204,17 @@ public class SearchProtocolBuilder {
                 return Search.JsonType.NESTED_JSON;
             default:
                 throw new IllegalArgumentException("unknown json type type:" + type.name());
+        }
+    }
+
+    private static Search.TextSimilarity buildTextSimilarity(TextSimilarity type) {
+        switch (type) {
+            case BM25:
+                return Search.TextSimilarity.BM25;
+            case SHORT_TEXT:
+                return Search.TextSimilarity.SHORT_TEXT;
+            default:
+                throw new IllegalArgumentException("unknown text similarity type: " + type.name());
         }
     }
 
@@ -243,6 +270,9 @@ public class SearchProtocolBuilder {
         if (request.getTimeToLive() != null) {
             builder.setTimeToLive(request.getTimeToLive());
         }
+        if (request.getStorageClass() != null) {
+            builder.setStorageClass(buildStorageClass(request.getStorageClass()));
+        }
         return builder.build();
     }
 
@@ -265,9 +295,18 @@ public class SearchProtocolBuilder {
         builder.setTableName(request.getTableName());
         builder.setIndexName(request.getIndexName());
 
-        if (request.getSwitchIndexName() != null) {
+        boolean hasSwitchIndex = request.getSwitchIndexName() != null;
+        boolean hasQueryFlowWeight = request.getQueryFlowWeight() != null && request.getQueryFlowWeight().size() > 0;
+        boolean hasTimeToLive = request.getTimeToLive() != null;
+        boolean hasAddedFieldSchemas = request.getAddedFieldSchemas() != null && !request.getAddedFieldSchemas().isEmpty();
+        if (request.getStorageClass() != null
+                && (hasSwitchIndex || hasQueryFlowWeight || hasTimeToLive || hasAddedFieldSchemas)) {
+            throw new ClientException("[storage_class] must not be set with other update operations");
+        }
+
+        if (hasSwitchIndex) {
             builder.setSwitchIndexName(request.getSwitchIndexName());
-        } else if (request.getQueryFlowWeight() != null && request.getQueryFlowWeight().size() > 0) {
+        } else if (hasQueryFlowWeight) {
             List<QueryFlowWeight> queryFlowWeight = request.getQueryFlowWeight();
             if (queryFlowWeight.size() != 2) {
                 throw new ClientException("[query_flow_weight] size must be 2");
@@ -276,13 +315,16 @@ public class SearchProtocolBuilder {
                 builder.addQueryFlowWeight(buildQueryFlowWeight(fw));
             }
         }
-        if (request.getTimeToLive() != null) {
+        if (hasTimeToLive) {
             builder.setTimeToLive(request.getTimeToLive());
         }
-        if (request.getAddedFieldSchemas() != null && !request.getAddedFieldSchemas().isEmpty()) {
+        if (hasAddedFieldSchemas) {
             for (FieldSchema schema : request.getAddedFieldSchemas()) {
                 builder.addAddedFieldSchemas(buildFieldSchema(schema));
             }
+        }
+        if (request.getStorageClass() != null) {
+            builder.setStorageClass(buildStorageClass(request.getStorageClass()));
         }
         return builder.build();
     }

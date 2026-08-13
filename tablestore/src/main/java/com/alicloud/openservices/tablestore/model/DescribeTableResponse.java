@@ -46,6 +46,11 @@ public class DescribeTableResponse extends Response implements Jsonizable {
      */
     private long creationTime;
 
+    /**
+     * The tiered storage policy of the table, describing how data is migrated between hot and cold storage tiers.
+     */
+    private TieredStoragePolicy storagePolicy;
+
     /*
      * Internal interface. Do not use.
      */
@@ -163,6 +168,19 @@ public class DescribeTableResponse extends Response implements Jsonizable {
         this.creationTime = creationTime;
     }
 
+    /**
+     * Get the tiered storage policy of the table.
+     *
+     * @return The tiered storage policy of the table.
+     */
+    public TieredStoragePolicy getStoragePolicy() {
+        return storagePolicy;
+    }
+
+    public void setStoragePolicy(TieredStoragePolicy storagePolicy) {
+        this.storagePolicy = storagePolicy;
+    }
+
     @Override
     public String jsonize() {
         StringBuilder sb = new StringBuilder();
@@ -201,6 +219,13 @@ public class DescribeTableResponse extends Response implements Jsonizable {
             }
             index.jsonize(sb, newline + " ");
         }
-        sb.append("]}");
+        sb.append("]");
+        if (storagePolicy != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"StoragePolicy\": ");
+            storagePolicy.jsonize(sb, newline + "  ");
+        }
+        sb.append("}");
     }
 }

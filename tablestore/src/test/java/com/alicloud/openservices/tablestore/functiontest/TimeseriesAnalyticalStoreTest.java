@@ -23,15 +23,24 @@ public class TimeseriesAnalyticalStoreTest {
     static TimeseriesClient client = null;
     static SyncClient tableStoreClient = null;
 
+    // unique per run: fixed names get deleted by / collide with concurrent gate shards
+    static final String TABLE_AS1 = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_analytical_store1");
+    static final String TABLE_AS2 = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_analytical_store2");
+    static final String TABLE_AS3 = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_analytical_store3");
+    static final String TABLE_CD_AS1 = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_create_and_delete_analytical_store1");
+    static final String TABLE_CD_AS2 = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_create_and_delete_analytical_store2");
+    static final String TABLE_UPDATE_AS = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_update_analytical_store");
+    static final String TABLE_DESC_SYNC_PHASE = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_describe_index_sync_phase");
+
     @BeforeClass
     public static void beforeClass() {
-        deleteTable("test_analytical_store1");
-        deleteTable("test_analytical_store2");
-        deleteTable("test_analytical_store3");
-        deleteTable("test_create_and_delete_analytical_store1");
-        deleteTable("test_create_and_delete_analytical_store2");
-        deleteTable("test_update_analytical_store");
-        deleteTable("test_describe_index_sync_phase");
+        deleteTable(TABLE_AS1);
+        deleteTable(TABLE_AS2);
+        deleteTable(TABLE_AS3);
+        deleteTable(TABLE_CD_AS1);
+        deleteTable(TABLE_CD_AS2);
+        deleteTable(TABLE_UPDATE_AS);
+        deleteTable(TABLE_DESC_SYNC_PHASE);
 
         ServiceSettings settings = ServiceSettings.load();
         final String endPoint = settings.getOTSEndpoint();
@@ -45,13 +54,13 @@ public class TimeseriesAnalyticalStoreTest {
 
     @AfterClass
     public static void afterClass() {
-        deleteTable("test_analytical_store1");
-        deleteTable("test_analytical_store2");
-        deleteTable("test_analytical_store3");
-        deleteTable("test_create_and_delete_analytical_store1");
-        deleteTable("test_create_and_delete_analytical_store2");
-        deleteTable("test_update_analytical_store");
-        deleteTable("test_describe_index_sync_phase");
+        deleteTable(TABLE_AS1);
+        deleteTable(TABLE_AS2);
+        deleteTable(TABLE_AS3);
+        deleteTable(TABLE_CD_AS1);
+        deleteTable(TABLE_CD_AS2);
+        deleteTable(TABLE_UPDATE_AS);
+        deleteTable(TABLE_DESC_SYNC_PHASE);
         client.shutdown();
         tableStoreClient.shutdown();
     }
@@ -65,13 +74,13 @@ public class TimeseriesAnalyticalStoreTest {
     @Test
     public void testCreateTable() {
         // create table with default analytical store
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_analytical_store1");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_AS1);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
         // describe table
-        DescribeTimeseriesTableRequest describeTableRequest = new DescribeTimeseriesTableRequest("test_analytical_store1");
+        DescribeTimeseriesTableRequest describeTableRequest = new DescribeTimeseriesTableRequest(TABLE_AS1);
         DescribeTimeseriesTableResponse describeTableResponse = client.describeTimeseriesTable(describeTableRequest);
         List<TimeseriesAnalyticalStore> analyticalStores = describeTableResponse.getAnalyticalStores();
         Assert.assertEquals(1, analyticalStores.size());
@@ -79,7 +88,7 @@ public class TimeseriesAnalyticalStoreTest {
         Assert.assertEquals(-1, analyticalStores.get(0).getTimeToLive());
         Assert.assertEquals(AnalyticalStoreSyncType.SYNC_TYPE_FULL, analyticalStores.get(0).getSyncOption());
         // describe analytical store
-        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest("test_analytical_store1", "default_analytical_store");
+        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest(TABLE_AS1, "default_analytical_store");
         DescribeTimeseriesAnalyticalStoreResponse describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
         Assert.assertEquals( "default_analytical_store", describeResponse.getAnalyticalStore().getAnalyticalStoreName());
         Assert.assertEquals( -1, describeResponse.getAnalyticalStore().getTimeToLive());
@@ -89,19 +98,19 @@ public class TimeseriesAnalyticalStoreTest {
         Assert.assertNull(describeResponse.getStorageSize());
 
         // create table without analytical store
-        meta = new TimeseriesTableMeta("test_analytical_store2");
+        meta = new TimeseriesTableMeta(TABLE_AS2);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(false);
         client.createTimeseriesTable(createTimeseriesTableRequest);
         // describe table
-        describeTableRequest = new DescribeTimeseriesTableRequest("test_analytical_store2");
+        describeTableRequest = new DescribeTimeseriesTableRequest(TABLE_AS2);
         describeTableResponse = client.describeTimeseriesTable(describeTableRequest);
         analyticalStores = describeTableResponse.getAnalyticalStores();
         Assert.assertEquals(0, analyticalStores.size());
 
         // create table with custom analytical store
-        meta = new TimeseriesTableMeta("test_analytical_store3");
+        meta = new TimeseriesTableMeta(TABLE_AS3);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore("custom_analytical_store");
@@ -112,7 +121,7 @@ public class TimeseriesAnalyticalStoreTest {
         createTimeseriesTableRequest.setAnalyticalStores(analyticalStoreList);
         client.createTimeseriesTable(createTimeseriesTableRequest);
         // describe table
-        describeTableRequest = new DescribeTimeseriesTableRequest("test_analytical_store3");
+        describeTableRequest = new DescribeTimeseriesTableRequest(TABLE_AS3);
         describeTableResponse = client.describeTimeseriesTable(describeTableRequest);
         analyticalStores = describeTableResponse.getAnalyticalStores();
         Assert.assertEquals(1, analyticalStores.size());
@@ -124,12 +133,12 @@ public class TimeseriesAnalyticalStoreTest {
     @Test
     public void testCreateAndDelete() {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_create_and_delete_analytical_store1");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_CD_AS1);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(false);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        meta = new TimeseriesTableMeta("test_create_and_delete_analytical_store2");
+        meta = new TimeseriesTableMeta(TABLE_CD_AS2);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(false);
@@ -139,9 +148,9 @@ public class TimeseriesAnalyticalStoreTest {
         TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore("full_sync_analytical_store");
         analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_FULL);
         analyticalStore.setTimeToLive(-1);
-        CreateTimeseriesAnalyticalStoreRequest createRequest = new CreateTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store1", analyticalStore);
+        CreateTimeseriesAnalyticalStoreRequest createRequest = new CreateTimeseriesAnalyticalStoreRequest(TABLE_CD_AS1, analyticalStore);
         client.createTimeseriesAnalyticalStore(createRequest);
-        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store1", "full_sync_analytical_store");
+        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest(TABLE_CD_AS1, "full_sync_analytical_store");
         DescribeTimeseriesAnalyticalStoreResponse describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
         Assert.assertEquals( "full_sync_analytical_store", describeResponse.getAnalyticalStore().getAnalyticalStoreName());
         Assert.assertEquals( -1, describeResponse.getAnalyticalStore().getTimeToLive());
@@ -151,16 +160,16 @@ public class TimeseriesAnalyticalStoreTest {
         Assert.assertNull(describeResponse.getStorageSize());
 
         // delete analytical store without mapping table
-        DeleteTimeseriesAnalyticalStoreRequest deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store1", "full_sync_analytical_store");
+        DeleteTimeseriesAnalyticalStoreRequest deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest(TABLE_CD_AS1, "full_sync_analytical_store");
         client.deleteTimeseriesAnalyticalStore(deleteRequest);
 
         // create incremental sync analytical store
         analyticalStore = new TimeseriesAnalyticalStore("incr_sync_analytical_store");
         analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_INCR);
         analyticalStore.setTimeToLive(86400*30);
-        createRequest = new CreateTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store2", analyticalStore);
+        createRequest = new CreateTimeseriesAnalyticalStoreRequest(TABLE_CD_AS2, analyticalStore);
         client.createTimeseriesAnalyticalStore(createRequest);
-        describeRequest = new DescribeTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store2", "incr_sync_analytical_store");
+        describeRequest = new DescribeTimeseriesAnalyticalStoreRequest(TABLE_CD_AS2, "incr_sync_analytical_store");
         describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
         Assert.assertEquals( "incr_sync_analytical_store", describeResponse.getAnalyticalStore().getAnalyticalStoreName());
         Assert.assertEquals( 86400*30, describeResponse.getAnalyticalStore().getTimeToLive());
@@ -170,7 +179,7 @@ public class TimeseriesAnalyticalStoreTest {
         Assert.assertNull(describeResponse.getStorageSize());
 
         // create sql mapping table
-        SQLQueryRequest sqlQueryRequest = new SQLQueryRequest("CREATE TABLE `test_create_and_delete_analytical_store2::cpu` (" +
+        SQLQueryRequest sqlQueryRequest = new SQLQueryRequest("CREATE TABLE `" + TABLE_CD_AS2 + "::cpu` (" +
             "`_m_name` varchar(1024) NOT NULL," +
             "`_data_source` varchar(1024) NOT NULL," +
             "`_tags` varchar(1024) NOT NULL," +
@@ -181,7 +190,7 @@ public class TimeseriesAnalyticalStoreTest {
 
         // delete analytical store with mapping table
         try {
-            deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store2", "incr_sync_analytical_store");
+            deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest(TABLE_CD_AS2, "incr_sync_analytical_store");
             client.deleteTimeseriesAnalyticalStore(deleteRequest);
             Assert.fail();
         } catch (Exception e) {
@@ -189,26 +198,26 @@ public class TimeseriesAnalyticalStoreTest {
         }
 
         // delete analytical store and drop mapping table
-        deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest("test_create_and_delete_analytical_store2", "incr_sync_analytical_store");
+        deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest(TABLE_CD_AS2, "incr_sync_analytical_store");
         deleteRequest.setDropMappingTable(true);
         client.deleteTimeseriesAnalyticalStore(deleteRequest);
         SQLQueryResponse showTablesResponse = tableStoreClient.sqlQuery(new SQLQueryRequest("SHOW TABLES"));
         SQLResultSet resultSet = showTablesResponse.getSQLResultSet();
         while (resultSet.hasNext()) {
             SQLRow row = resultSet.next();
-            Assert.assertFalse(row.getString(0).equals("test_create_and_delete_analytical_store2::cpu"));
+            Assert.assertFalse(row.getString(0).equals(TABLE_CD_AS2 + "::cpu"));
         }
     }
 
     @Test
     public void testUpdate() {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_update_analytical_store");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_UPDATE_AS);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest("test_update_analytical_store", "default_analytical_store");
+        DescribeTimeseriesAnalyticalStoreRequest describeRequest = new DescribeTimeseriesAnalyticalStoreRequest(TABLE_UPDATE_AS, "default_analytical_store");
         DescribeTimeseriesAnalyticalStoreResponse describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
         Assert.assertEquals( "default_analytical_store", describeResponse.getAnalyticalStore().getAnalyticalStoreName());
         Assert.assertEquals( -1, describeResponse.getAnalyticalStore().getTimeToLive());
@@ -216,7 +225,7 @@ public class TimeseriesAnalyticalStoreTest {
         // update analytical store
         TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore("default_analytical_store");
         analyticalStore.setTimeToLive(86400*30);
-        UpdateTimeseriesAnalyticalStoreRequest updateRequest = new UpdateTimeseriesAnalyticalStoreRequest("test_update_analytical_store");
+        UpdateTimeseriesAnalyticalStoreRequest updateRequest = new UpdateTimeseriesAnalyticalStoreRequest(TABLE_UPDATE_AS);
         updateRequest.setAnalyticStore(analyticalStore);
         client.updateTimeseriesAnalyticalStore(updateRequest);
         describeResponse = client.describeTimeseriesAnalyticalStore(describeRequest);
@@ -227,25 +236,29 @@ public class TimeseriesAnalyticalStoreTest {
     @Test
     public void testDescribeIndexSyncPhase() {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_describe_index_sync_phase");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_DESC_SYNC_PHASE);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         createTimeseriesTableRequest.setEnableAnalyticalStore(true);
         client.createTimeseriesTable(createTimeseriesTableRequest);
+        // wait until the table is actually served before writing data, otherwise
+        // putTimeseriesData below races with async table creation and fails with
+        // OTSParameterInvalid "the timeseries table is still being creating".
+        com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, TABLE_DESC_SYNC_PHASE);
 
         // describe table
-        DescribeTableRequest describeTableRequest = new DescribeTableRequest("test_describe_index_sync_phase#timeseries");
+        DescribeTableRequest describeTableRequest = new DescribeTableRequest(TABLE_DESC_SYNC_PHASE + "#timeseries");
         DescribeTableResponse describeTableResponse = tableStoreClient.describeTable(describeTableRequest);
         List<IndexMeta> indexMetas = describeTableResponse.getIndexMeta();
         Assert.assertEquals(1, indexMetas.size());
         Assert.assertEquals(SyncStat.SyncPhase.INCR, indexMetas.get(0).getIndexSyncPhase());
 
         // delete default analytical store
-        DeleteTimeseriesAnalyticalStoreRequest deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest("test_describe_index_sync_phase", "default_analytical_store");
+        DeleteTimeseriesAnalyticalStoreRequest deleteRequest = new DeleteTimeseriesAnalyticalStoreRequest(TABLE_DESC_SYNC_PHASE, "default_analytical_store");
         client.deleteTimeseriesAnalyticalStore(deleteRequest);
 
         // write data
-        PutTimeseriesDataRequest putRequest = new PutTimeseriesDataRequest("test_describe_index_sync_phase");
+        PutTimeseriesDataRequest putRequest = new PutTimeseriesDataRequest(TABLE_DESC_SYNC_PHASE);
         for (int i = 0; i < 100; i++) {
             TimeseriesKey key = new TimeseriesKey("cpu", "intel");
             TimeseriesRow row = new TimeseriesRow(key);
@@ -259,11 +272,11 @@ public class TimeseriesAnalyticalStoreTest {
         TimeseriesAnalyticalStore analyticalStore = new TimeseriesAnalyticalStore("full_sync_analytical_store");
         analyticalStore.setSyncOption(AnalyticalStoreSyncType.SYNC_TYPE_FULL);
         analyticalStore.setTimeToLive(-1);
-        CreateTimeseriesAnalyticalStoreRequest createRequest = new CreateTimeseriesAnalyticalStoreRequest("test_describe_index_sync_phase", analyticalStore);
+        CreateTimeseriesAnalyticalStoreRequest createRequest = new CreateTimeseriesAnalyticalStoreRequest(TABLE_DESC_SYNC_PHASE, analyticalStore);
         client.createTimeseriesAnalyticalStore(createRequest);
 
         // describe table
-        describeTableRequest = new DescribeTableRequest("test_describe_index_sync_phase#timeseries");
+        describeTableRequest = new DescribeTableRequest(TABLE_DESC_SYNC_PHASE + "#timeseries");
         describeTableResponse = tableStoreClient.describeTable(describeTableRequest);
         indexMetas = describeTableResponse.getIndexMeta();
         Assert.assertEquals(1, indexMetas.size());

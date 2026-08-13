@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.common;
 
 import com.alicloud.openservices.tablestore.SyncClientInterface;
+import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.TimeseriesClient;
 import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.model.BatchGetRowRequest;
@@ -48,8 +49,16 @@ import com.alicloud.openservices.tablestore.model.UpdateTableResponse;
 import com.alicloud.openservices.tablestore.model.search.DeleteSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.ListSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
+import com.alicloud.openservices.tablestore.model.TimeseriesTableMeta;
+import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.timeseries.DescribeTimeseriesTableRequest;
+import com.alicloud.openservices.tablestore.model.timeseries.DescribeTimeseriesTableResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesTableRequest;
+import com.alicloud.openservices.tablestore.model.timeseries.GetTimeseriesDataRequest;
 import com.alicloud.openservices.tablestore.model.timeseries.ListTimeseriesTableResponse;
+import com.alicloud.openservices.tablestore.model.timeseries.SplitTimeseriesScanTaskRequest;
+import com.alicloud.openservices.tablestore.model.timeseries.TimeseriesKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,24 +157,47 @@ public class OTSHelper {
 
 
 
-    public static void deleteAllTable(SyncClientInterface ots) throws Exception {
-        LOG.info("Begin deleteAllTable");
+    public static void deleteTablesByNames(SyncClientInterface ots, String... tableNames) throws Exception {
+        LOG.info("Begin deleteTablesByNames");
         ListTableResponse r = ots.listTable();
+        List<String> existingTables = r.getTableNames();
 
-        for (String name : r.getTableNames()) {
-            LOG.info("delete search index: ");
-            List<String> indices = listSearchIndex(ots, name);
-            for (String index : indices) {
-                LOG.info("delete search index: " + index);
-                deleteSearchIndex(ots, name, index);
+        for (String tableName : tableNames) {
+            if (!existingTables.contains(tableName)) {
+                continue;
             }
 
-            LOG.info("delete : " + name);
-            deleteTable(ots, name);
+            try {
+                List<String> indices = listSearchIndex(ots, tableName);
+                for (String index : indices) {
+                    LOG.info("delete search index: " + index);
+                    deleteSearchIndex(ots, tableName, index);
+                }
+
+                LOG.info("delete : " + tableName);
+                deleteTable(ots, tableName);
+            } catch (com.alicloud.openservices.tablestore.TableStoreException e) {
+                // Tests may delete tables inline; listTable() metadata can lag behind and
+                // still report a just-deleted table. Treat "not exist" as already cleaned.
+                boolean notExist = com.alicloud.openservices.tablestore.core.ErrorCode.OBJECT_NOT_EXIST.equals(e.getErrorCode())
+                        || (e.getMessage() != null && e.getMessage().contains("not exist"));
+                if (!notExist) {
+                    throw e;
+                }
+                LOG.info("table {} already gone, skip: {}", tableName, e.getMessage());
+            }
 
             Thread.sleep(1000L);
         }
-        LOG.info("End deleteAllTable");
+        LOG.info("End deleteTablesByNames");
+    }
+
+    public static void deleteTablesByNames(SyncClientInterface ots, java.util.Collection<String> tableNames) throws Exception {
+        deleteTablesByNames(ots, tableNames.toArray(new String[0]));
+    }
+
+    public static String generateUniqueTableName(String baseName) {
+        return baseName + "_" + System.currentTimeMillis() + "_" + Thread.currentThread().getId();
     }
 
     public static void deleteTsTable(TimeseriesClient client) throws Exception {
@@ -177,6 +209,161 @@ public class OTSHelper {
             client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(name));
         }
         LOG.info("End deleteTsTable");
+    }
+
+    /**
+     * Wait until a timeseries table is actually served after createTimeseriesTable.
+     *
+     * <p>Timeseries table creation is asynchronous on the server side: right after
+     * createTimeseriesTable returns, subsequent writes/queries may still fail with
+     * {@code OTSParameterInvalid} "the timeseries table is still being creating".
+     * This helper polls describeTimeseriesTable until the table reports "CREATED"
+     * (treating the "still being creating" error and any transient non-CREATED
+     * status as not-ready) instead of relying on a fixed sleep, which is inherently
+     * flaky under load.
+     *
+     * @param client    the timeseries client
+     * @param tableName the timeseries table name
+     * @param timeoutMs maximum time to wait in milliseconds
+     */
+    public static void waitForTimeseriesTableReady(TimeseriesClient client, String tableName, long timeoutMs) {
+        long intervalMs = 1000;
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        while (true) {
+            try {
+                DescribeTimeseriesTableResponse resp =
+                        client.describeTimeseriesTable(new DescribeTimeseriesTableRequest(tableName));
+                TimeseriesTableMeta meta = resp.getTimeseriesTableMeta();
+                if (meta != null && "CREATED".equals(meta.getStatus())) {
+                    // CREATED alone is not enough: data-plane ops may still be rejected
+                    waitForTimeseriesDataPlaneReady(client, tableName, deadline);
+                    return;
+                }
+                // table exists but not yet CREATED: keep polling until deadline
+                if (System.currentTimeMillis() >= deadline) {
+                    throw new IllegalStateException("timeseries table " + tableName
+                            + " not ready before timeout, last status: "
+                            + (meta == null ? "null" : meta.getStatus()));
+                }
+            } catch (TableStoreException e) {
+                boolean stillCreating = "OTSParameterInvalid".equals(e.getErrorCode())
+                        && e.getMessage() != null && e.getMessage().contains("still being creating");
+                if (!stillCreating || System.currentTimeMillis() >= deadline) {
+                    throw e;
+                }
+            }
+            try {
+                Thread.sleep(intervalMs);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("interrupted while waiting for timeseries table " + tableName, ie);
+            }
+        }
+    }
+
+    /**
+     * Data-plane operations (put/get/scan/split) can still be rejected with
+     * "the timeseries table is still being creating" for a while after
+     * describeTimeseriesTable already reports CREATED. Probe with a harmless read
+     * until the table actually serves requests; any error other than the
+     * "still being creating" rejection means the data plane is up and is swallowed.
+     */
+    private static void waitForTimeseriesDataPlaneReady(TimeseriesClient client, String tableName, long deadline) {
+        long intervalMs = 2000;
+        // grant the probe its own minimum budget even if the CREATED wait ate the deadline
+        long probeDeadline = Math.max(deadline, System.currentTimeMillis() + 60 * 1000);
+        while (true) {
+            try {
+                GetTimeseriesDataRequest probe = new GetTimeseriesDataRequest(tableName);
+                probe.setTimeseriesKey(new TimeseriesKey("__ready_probe__", ""));
+                probe.setTimeRange(0, 1);
+                client.getTimeseriesData(probe);
+                return;
+            } catch (TableStoreException e) {
+                boolean stillCreating = "OTSParameterInvalid".equals(e.getErrorCode())
+                        && e.getMessage() != null && e.getMessage().contains("still being creating");
+                if (!stillCreating) {
+                    // table rejects the dummy key for schema reasons etc.: data plane is serving
+                    return;
+                }
+                if (System.currentTimeMillis() >= probeDeadline) {
+                    throw e;
+                }
+            }
+            try {
+                Thread.sleep(intervalMs);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("interrupted while waiting for timeseries data plane on " + tableName, ie);
+            }
+        }
+    }
+
+    /**
+     * Convenience overload using a default 90s timeout, comfortably above the
+     * fixed sleeps (35s/60s) that existing timeseries tests previously used after
+     * createTimeseriesTable, so a slow-but-successful creation no longer flakes.
+     */
+    public static void waitForTimeseriesTableReady(TimeseriesClient client, String tableName) {
+        waitForTimeseriesTableReady(client, tableName, 90 * 1000);
+    }
+
+    /**
+     * SplitTimeseriesScanTask readiness lags behind the table's CREATED status (the scan
+     * component keeps rejecting with "still being creating" for a while), so tests using
+     * scan-task APIs must additionally poll split readiness after waitForTimeseriesTableReady.
+     */
+    public static void waitForTimeseriesSplitReady(TimeseriesClient client, String tableName, long timeoutMs) {
+        long intervalMs = 2000;
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        while (true) {
+            try {
+                client.splitTimeseriesScanTask(new SplitTimeseriesScanTaskRequest(tableName, 1));
+                return;
+            } catch (TableStoreException e) {
+                boolean stillCreating = "OTSParameterInvalid".equals(e.getErrorCode())
+                        && e.getMessage() != null && e.getMessage().contains("still being creating");
+                if (!stillCreating || System.currentTimeMillis() >= deadline) {
+                    throw e;
+                }
+            }
+            try {
+                Thread.sleep(intervalMs);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("interrupted while waiting for timeseries split ready on " + tableName, ie);
+            }
+        }
+    }
+
+    /**
+     * The shared gate instance intermittently answers createKnowledgeBase with
+     * OTSInternalServerError (HTTP 500) when several shards exercise the knowledge base
+     * backend concurrently; retry that transient server error with backoff instead of
+     * failing the whole case. Any other error is rethrown immediately.
+     */
+    public static CreateKnowledgeBaseResponse createKnowledgeBaseWithRetry(
+            SyncClientInterface client, CreateKnowledgeBaseRequest request) {
+        int maxAttempts = 4;
+        long backoffMs = 2000;
+        for (int attempt = 1; ; attempt++) {
+            try {
+                return client.createKnowledgeBase(request);
+            } catch (TableStoreException e) {
+                if (attempt >= maxAttempts || !"OTSInternalServerError".equals(e.getErrorCode())) {
+                    throw e;
+                }
+                LOG.warn("createKnowledgeBase got transient server error (attempt {}/{}): {}",
+                        attempt, maxAttempts, e.getMessage());
+                try {
+                    Thread.sleep(backoffMs);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw e;
+                }
+                backoffMs *= 2;
+            }
+        }
     }
     
     public static TableMeta getTableMeta(String tableName, List<PrimaryKeySchema> pk) {

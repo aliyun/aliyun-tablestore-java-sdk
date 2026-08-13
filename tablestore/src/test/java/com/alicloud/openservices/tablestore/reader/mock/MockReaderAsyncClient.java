@@ -438,4 +438,5 @@ public class MockReaderAsyncClient implements AsyncClientInterface {
     public Future<UpdateChunksResponse> updateChunks(UpdateChunksRequest request, TableStoreCallback<UpdateChunksRequest, UpdateChunksResponse> callback) {
         return null;
     }
+
 }

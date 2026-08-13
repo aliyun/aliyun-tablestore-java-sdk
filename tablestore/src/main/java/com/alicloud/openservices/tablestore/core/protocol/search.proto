@@ -1055,7 +1055,12 @@ enum FieldType {
     FUZZY_KEYWORD = 10;
     IP = 11;
     JSON = 12;
-    FLATTENED = 13;
+    FLAT_OBJECT = 13;
+}
+
+enum StorageClass {
+    SC_STANDARD = 1;
+    SC_IA = 2;
 }
 
 enum DateTimeUnit {
@@ -1091,6 +1096,11 @@ message FuzzyAnalyzerParameter {
     optional bool case_sensitive = 3;
 }
 
+enum TextSimilarity {
+    BM25 = 1;
+    SHORT_TEXT = 2;
+}
+
 message FieldSchema {
     optional string field_name = 1;
     optional FieldType field_type = 2;
@@ -1108,6 +1118,7 @@ message FieldSchema {
     optional bool enable_highlighting = 14;
     optional VectorOptions vector_options = 15;
     optional JsonType json_type = 16;
+    optional TextSimilarity text_similarity = 17;
 }
 
 enum JsonType {
@@ -1150,6 +1161,7 @@ message CreateSearchIndexRequest {
     optional IndexSchema schema = 3;
     optional string source_index_name = 4;
     optional int32 time_to_live = 5; // unit is seconds
+    optional StorageClass storage_class = 6;
 }
 
 message CreateSearchIndexResponse {
@@ -1168,6 +1180,7 @@ message UpdateSearchIndexRequest {
     repeated QueryFlowWeight query_flow_weight = 4;
     optional int32 time_to_live = 5;  // unit is seconds
     repeated FieldSchema added_field_schemas = 6;
+    optional StorageClass storage_class = 7;
 }
 
 message UpdateSearchIndexResponse {
@@ -1233,6 +1246,7 @@ message DescribeSearchIndexResponse {
     optional int64 create_time = 6;
     optional int32 time_to_live = 7;  // unit is seconds
     optional IndexStatus index_status = 8;
+    optional StorageClass storage_class = 9;
 }
 
 message IndexStatus {
@@ -1269,4 +1283,3 @@ message ParallelScanResponse {
     repeated bytes rows = 1;
     optional bytes next_token = 2;
 }
-

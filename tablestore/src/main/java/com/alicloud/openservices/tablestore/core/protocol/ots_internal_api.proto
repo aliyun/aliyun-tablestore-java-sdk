@@ -22,6 +22,7 @@ enum PrimaryKeyType {
     INTEGER = 1;
     STRING = 2;
     BINARY = 3;
+    PK_BOOLEAN = 5;
 }
 
 enum DefinedColumnType {
@@ -179,6 +180,33 @@ message SSEDetails {
     optional bytes role_arn = 4; // only useful when key_type is SSE_BYOK
 }
 
+enum StoragePolicyType {
+    SPT_BY_TIMESTAMP = 1;
+    SPT_BY_COLUMN = 2;
+}
+
+enum TimeUnit {
+    TU_DAY = 1;
+    TU_HOUR = 2;
+    TU_MINUTE = 3;
+    TU_SECOND = 4;
+    TU_MILLISECOND = 5;
+    TU_MICROSECOND = 6;
+    TU_NANOSECOND = 7;
+}
+
+message TieredStorageColumn {
+    required string name = 1;
+    optional TimeUnit value_time_unit = 2 [default = TU_MILLISECOND];
+}
+
+message TieredStoragePolicy {
+    required bool enable_tiered_storage = 1;
+    optional StoragePolicyType type = 2;
+    optional int64 hot_retention_period = 3;
+    optional TieredStorageColumn column = 4;
+}
+
 message CreateTableRequest {
     required TableMeta table_meta = 1;
     required ReservedThroughput reserved_throughput = 2;
@@ -188,6 +216,7 @@ message CreateTableRequest {
     optional SSESpecification sse_spec = 6;
     repeated IndexMeta index_metas = 7;
     optional bool enable_local_txn = 8;
+    optional TieredStoragePolicy storage_policy = 11;
 }
 
 message CreateTableResponse {
@@ -231,6 +260,7 @@ message UpdateTableRequest {
     optional ReservedThroughput reserved_throughput = 2;
     optional TableOptions table_options = 3;
     optional StreamSpecification stream_spec = 4;
+    optional TieredStoragePolicy storage_policy = 6;
 }
 
 message UpdateTableResponse {
@@ -251,6 +281,7 @@ message DescribeTableResponse {
     optional SSEDetails sse_details = 7;
     repeated IndexMeta index_metas = 8;
     optional int64 creation_time = 9;
+    optional TieredStoragePolicy storage_policy = 12;
 }
 message ListTableRequest {
 }

@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class InstanceProfileCredentialsProviderTest {
@@ -105,7 +106,10 @@ public class InstanceProfileCredentialsProviderTest {
             fetcher.fetch(3);
             fail("expect failure.");
         } catch (Exception e) {
-            e.printStackTrace();
+            // Expected: fail-injection makes the mock return an invalid metadata body, so fetch() throws.
+            // Assert the expected exception instead of printStackTrace(), so this intended failure does not
+            // surface as a misleading "ECS Metadata"/"parse [] exception" stack trace in CI logs.
+            assertTrue("expected ClientException, got: " + e, e instanceof ClientException);
         }
         assertEquals(accessCount.get(), 3);
 

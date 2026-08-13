@@ -22,7 +22,8 @@ import com.google.gson.JsonSyntaxException;
 
 public class APITest {
     
-    private static String tableName = "APIFunctiontest";
+    private String tableName;
+    private final List<String> createdTables = new ArrayList<String>();
     private static SyncClientInterface ots;
     private static final Logger LOG = LoggerFactory.getLogger(APITest.class);
     
@@ -38,13 +39,18 @@ public class APITest {
     
     @Before
     public void setup() throws Exception {
-        // Clean up the environment
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("APIFunctiontest");
+        createdTables.clear();
     }
     
     @After
-    public void teardown() {
-        
+    public void teardown() throws Exception {
+        // Some cases create `tableName` without registering it in createdTables;
+        // always include it so no case leaks its table (leaks eat the 64-table quota).
+        if (!createdTables.contains(tableName)) {
+            createdTables.add(tableName);
+        }
+        OTSHelper.deleteTablesByNames(ots, createdTables);
     }
     
     /**
@@ -486,17 +492,28 @@ public class APITest {
         assertEquals(0, rows.size());
     }
 
+    /**
+     * Keeps the target total length but embeds a run-unique prefix: fixed all-'a'
+     * names collide across concurrent gate shards/runs (e.g. the 255-byte name also
+     * used by RestrictedItemTest), causing OTSObjectAlreadyExist or mutual deletion.
+     */
+    private static String buildLongTableName(String uniquePrefix, int size) {
+        StringBuilder sb = new StringBuilder(uniquePrefix);
+        while (sb.length() < size) {
+            sb.append('a');
+        }
+        return sb.toString();
+    }
+
     @Test
     public void testStreamWithLongTableName() throws Exception {
         int startSize = 230;
         int maxSize = 256;
         int maxSizeForStream = 238;
+        String uniquePrefix = OTSHelper.generateUniqueTableName("LongNameStream");
         for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < longTableNameSize; i++) {
-                sb.append("a");
-            }
-            String longTableName = sb.toString();
+            String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
+            createdTables.add(longTableName);
             List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
             scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
             OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
@@ -506,11 +523,7 @@ public class APITest {
         }
         Utils.waitForPartitionLoad("");
         for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < longTableNameSize; i++) {
-                sb.append("a");
-            }
-            String longTableName = sb.toString();
+            String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
             for (int i = 0; i < 10; i++) {
                 OTSHelper.putRow(ots, longTableName, PrimaryKeyBuilder.createPrimaryKeyBuilder().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i)).build(),
                         Arrays.asList(new Column("col", ColumnValue.fromLong(i))));
@@ -535,7 +548,6 @@ public class APITest {
                 assertEquals(10, getStreamRecordResponse.getRecords().size());
             }
         }
-        OTSHelper.deleteAllTable(ots);
     }
 
 
@@ -543,7 +555,8 @@ public class APITest {
 
     @Test
     public void testStreamWithMayMoreRecord() throws Exception {
-        String longTableName = "test" + System.currentTimeMillis();
+        String longTableName = OTSHelper.generateUniqueTableName("test");
+        createdTables.add(longTableName);
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
         OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
@@ -584,7 +597,6 @@ public class APITest {
             assertEquals(false, getStreamRecordResponse.getMayMoreRecord());
         }
 
-        OTSHelper.deleteAllTable(ots);
     }
 
 

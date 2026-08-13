@@ -5,6 +5,7 @@ import com.alicloud.openservices.tablestore.core.Constants;
 import com.alicloud.openservices.tablestore.core.http.ResponseMessage;
 import com.alicloud.openservices.tablestore.core.utils.GsonUtils;
 import com.alicloud.openservices.tablestore.model.Response;
+import com.alicloud.openservices.tablestore.model.memory.AddMemoriesResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
@@ -52,6 +53,10 @@ public class JsonResultParser<T extends Response> implements ResultParser {
 
             if (logger.isDebugEnabled()) {
                 logger.debug("JSON Response: {}, RequestId: {}, TraceId: {}", result.toString(), requestId, traceId);
+            }
+            if (result instanceof AddMemoriesResponse) {
+                AddMemoriesResponse addMemoriesResponse = (AddMemoriesResponse) result;
+                addMemoriesResponse.setMemoryRequestId(addMemoriesResponse.getRequestId());
             }
             result.setRequestId(requestId);
             if (traceId != null) {

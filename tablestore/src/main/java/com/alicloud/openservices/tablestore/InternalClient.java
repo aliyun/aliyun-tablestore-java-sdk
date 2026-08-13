@@ -8,6 +8,7 @@ import com.alicloud.openservices.tablestore.core.auth.ServiceCredentialsV4;
 import com.alicloud.openservices.tablestore.core.http.AsyncServiceClient;
 import com.alicloud.openservices.tablestore.core.utils.HttpUtil;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
+import com.alicloud.openservices.tablestore.core.memory.JsonOperationLauncher;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.NoRetryStrategy;
 import com.alicloud.openservices.tablestore.model.delivery.*;
@@ -18,6 +19,7 @@ import com.alicloud.openservices.tablestore.model.timeseries.*;
 import com.alicloud.openservices.tablestore.model.tunnel.*;
 import com.alicloud.openservices.tablestore.model.tunnel.internal.*;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.*;
 import com.alicloud.openservices.tablestore.core.knowledgebase.*;
 import com.google.common.cache.Cache;
 
@@ -2360,6 +2362,175 @@ public class InternalClient {
         launcher.fire(request, completion);
 
         return f;
+    }
+
+    private <Req extends MemoryRequest, Res extends Response> Future<Res> executeMemoryOperation(
+            Req request, Class<Res> responseClass, TableStoreCallback<Req, Res> callback) {
+        Preconditions.checkNotNull(request);
+
+        TraceLogger tracer = getTraceLogger();
+        RetryStrategy retry = this.retryStrategy.clone();
+        JsonOperationLauncher<Req, Res> launcher =
+                launcherFactory.memoryOperation(tracer, retry, request, responseClass);
+        AsyncCompletion<Req, Res> completion = new AsyncCompletion<Req, Res>(
+                launcher, request, tracer, callbackExecutor, retry, retryExecutor);
+        CallbackImpledFuture<Req, Res> future = new CallbackImpledFuture<Req, Res>();
+        completion.watchBy(future);
+        if (callback != null) {
+            future.watchBy(callback);
+        }
+        launcher.fire(request, completion);
+        return future;
+    }
+
+    public Future<CreateMemoryStoreResponse> createMemoryStore(CreateMemoryStoreRequest request,
+            TableStoreCallback<CreateMemoryStoreRequest, CreateMemoryStoreResponse> callback) {
+        return executeMemoryOperation(request, CreateMemoryStoreResponse.class, callback);
+    }
+
+    public Future<GetMemoryStoreResponse> getMemoryStore(GetMemoryStoreRequest request,
+            TableStoreCallback<GetMemoryStoreRequest, GetMemoryStoreResponse> callback) {
+        return executeMemoryOperation(request, GetMemoryStoreResponse.class, callback);
+    }
+
+    public Future<ListMemoryStoresResponse> listMemoryStores(ListMemoryStoresRequest request,
+            TableStoreCallback<ListMemoryStoresRequest, ListMemoryStoresResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryStoresResponse.class, callback);
+    }
+
+    public Future<UpdateMemoryStoreResponse> updateMemoryStore(UpdateMemoryStoreRequest request,
+            TableStoreCallback<UpdateMemoryStoreRequest, UpdateMemoryStoreResponse> callback) {
+        return executeMemoryOperation(request, UpdateMemoryStoreResponse.class, callback);
+    }
+
+    public Future<DeleteMemoryStoreResponse> deleteMemoryStore(DeleteMemoryStoreRequest request,
+            TableStoreCallback<DeleteMemoryStoreRequest, DeleteMemoryStoreResponse> callback) {
+        return executeMemoryOperation(request, DeleteMemoryStoreResponse.class, callback);
+    }
+
+    public Future<AddMemoriesResponse> addMemories(AddMemoriesRequest request,
+            TableStoreCallback<AddMemoriesRequest, AddMemoriesResponse> callback) {
+        return executeMemoryOperation(request, AddMemoriesResponse.class, callback);
+    }
+
+    public Future<SearchMemoriesResponse> searchMemories(SearchMemoriesRequest request,
+            TableStoreCallback<SearchMemoriesRequest, SearchMemoriesResponse> callback) {
+        return executeMemoryOperation(request, SearchMemoriesResponse.class, callback);
+    }
+
+    public Future<ListMemoriesResponse> listMemories(ListMemoriesRequest request,
+            TableStoreCallback<ListMemoriesRequest, ListMemoriesResponse> callback) {
+        return executeMemoryOperation(request, ListMemoriesResponse.class, callback);
+    }
+
+    public Future<GetMemoryResponse> getMemory(GetMemoryRequest request,
+            TableStoreCallback<GetMemoryRequest, GetMemoryResponse> callback) {
+        return executeMemoryOperation(request, GetMemoryResponse.class, callback);
+    }
+
+    public Future<UpdateMemoryResponse> updateMemory(UpdateMemoryRequest request,
+            TableStoreCallback<UpdateMemoryRequest, UpdateMemoryResponse> callback) {
+        return executeMemoryOperation(request, UpdateMemoryResponse.class, callback);
+    }
+
+    public Future<DeleteMemoryResponse> deleteMemory(DeleteMemoryRequest request,
+            TableStoreCallback<DeleteMemoryRequest, DeleteMemoryResponse> callback) {
+        return executeMemoryOperation(request, DeleteMemoryResponse.class, callback);
+    }
+
+    public Future<ListMemoryStoreMessagesResponse> listMemoryStoreMessages(ListMemoryStoreMessagesRequest request,
+            TableStoreCallback<ListMemoryStoreMessagesRequest, ListMemoryStoreMessagesResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryStoreMessagesResponse.class, callback);
+    }
+
+    public Future<ListMemoryStoreRequestsResponse> listMemoryStoreRequests(ListMemoryStoreRequestsRequest request,
+            TableStoreCallback<ListMemoryStoreRequestsRequest, ListMemoryStoreRequestsResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryStoreRequestsResponse.class, callback);
+    }
+
+    public Future<GetMemoryTaskResponse> getMemoryTask(GetMemoryTaskRequest request,
+            TableStoreCallback<GetMemoryTaskRequest, GetMemoryTaskResponse> callback) {
+        return executeMemoryOperation(request, GetMemoryTaskResponse.class, callback);
+    }
+
+    public Future<ListMemoryTasksResponse> listMemoryTasks(ListMemoryTasksRequest request,
+            TableStoreCallback<ListMemoryTasksRequest, ListMemoryTasksResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryTasksResponse.class, callback);
+    }
+
+    public Future<ListMemoryStoreScopesResponse> listMemoryStoreScopes(ListMemoryStoreScopesRequest request,
+            TableStoreCallback<ListMemoryStoreScopesRequest, ListMemoryStoreScopesResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryStoreScopesResponse.class, callback);
+    }
+
+    public Future<CreateMemoryDreamTaskResponse> createMemoryDreamTask(CreateMemoryDreamTaskRequest request,
+            TableStoreCallback<CreateMemoryDreamTaskRequest, CreateMemoryDreamTaskResponse> callback) {
+        return executeMemoryOperation(request, CreateMemoryDreamTaskResponse.class, callback);
+    }
+
+    public Future<GetMemoryDreamTaskResponse> getMemoryDreamTask(GetMemoryDreamTaskRequest request,
+            TableStoreCallback<GetMemoryDreamTaskRequest, GetMemoryDreamTaskResponse> callback) {
+        return executeMemoryOperation(request, GetMemoryDreamTaskResponse.class, callback);
+    }
+
+    public Future<ListMemoryDreamTasksResponse> listMemoryDreamTasks(ListMemoryDreamTasksRequest request,
+            TableStoreCallback<ListMemoryDreamTasksRequest, ListMemoryDreamTasksResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryDreamTasksResponse.class, callback);
+    }
+
+    public Future<CancelMemoryDreamTaskResponse> cancelMemoryDreamTask(CancelMemoryDreamTaskRequest request,
+            TableStoreCallback<CancelMemoryDreamTaskRequest, CancelMemoryDreamTaskResponse> callback) {
+        return executeMemoryOperation(request, CancelMemoryDreamTaskResponse.class, callback);
+    }
+
+    public Future<ListMemoryDreamActionsResponse> listMemoryDreamActions(ListMemoryDreamActionsRequest request,
+            TableStoreCallback<ListMemoryDreamActionsRequest, ListMemoryDreamActionsResponse> callback) {
+        return executeMemoryOperation(request, ListMemoryDreamActionsResponse.class, callback);
+    }
+
+    public Future<ApplyMemoryDreamActionsResponse> applyMemoryDreamActions(ApplyMemoryDreamActionsRequest request,
+            TableStoreCallback<ApplyMemoryDreamActionsRequest, ApplyMemoryDreamActionsResponse> callback) {
+        return executeMemoryOperation(request, ApplyMemoryDreamActionsResponse.class, callback);
+    }
+
+    public Future<AddItemResponse> addItem(AddItemRequest request,
+            TableStoreCallback<AddItemRequest, AddItemResponse> callback) {
+        return executeMemoryOperation(request, AddItemResponse.class, callback);
+    }
+
+    public Future<ListItemsResponse> listItems(ListItemsRequest request,
+            TableStoreCallback<ListItemsRequest, ListItemsResponse> callback) {
+        return executeMemoryOperation(request, ListItemsResponse.class, callback);
+    }
+
+    public Future<GetItemResponse> getItem(GetItemRequest request,
+            TableStoreCallback<GetItemRequest, GetItemResponse> callback) {
+        return executeMemoryOperation(request, GetItemResponse.class, callback);
+    }
+
+    public Future<UpdateItemResponse> updateItem(UpdateItemRequest request,
+            TableStoreCallback<UpdateItemRequest, UpdateItemResponse> callback) {
+        return executeMemoryOperation(request, UpdateItemResponse.class, callback);
+    }
+
+    public Future<DeleteItemResponse> deleteItem(DeleteItemRequest request,
+            TableStoreCallback<DeleteItemRequest, DeleteItemResponse> callback) {
+        return executeMemoryOperation(request, DeleteItemResponse.class, callback);
+    }
+
+    public Future<ListItemVersionsResponse> listItemVersions(ListItemVersionsRequest request,
+            TableStoreCallback<ListItemVersionsRequest, ListItemVersionsResponse> callback) {
+        return executeMemoryOperation(request, ListItemVersionsResponse.class, callback);
+    }
+
+    public Future<GetItemVersionResponse> getItemVersion(GetItemVersionRequest request,
+            TableStoreCallback<GetItemVersionRequest, GetItemVersionResponse> callback) {
+        return executeMemoryOperation(request, GetItemVersionResponse.class, callback);
+    }
+
+    public Future<RedactItemVersionResponse> redactItemVersion(RedactItemVersionRequest request,
+            TableStoreCallback<RedactItemVersionRequest, RedactItemVersionResponse> callback) {
+        return executeMemoryOperation(request, RedactItemVersionResponse.class, callback);
     }
 
 }

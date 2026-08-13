@@ -2,11 +2,15 @@ package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
+import com.alicloud.openservices.tablestore.model.StorageClass;
+import com.alicloud.openservices.tablestore.model.search.CreateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.DescribeSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.FieldSchema;
 import com.alicloud.openservices.tablestore.model.search.FieldType;
+import com.alicloud.openservices.tablestore.model.search.IndexSchema;
 import com.alicloud.openservices.tablestore.model.search.JsonType;
 import com.alicloud.openservices.tablestore.model.search.QueryFlowWeight;
+import com.alicloud.openservices.tablestore.model.search.TextSimilarity;
 import com.alicloud.openservices.tablestore.model.search.UpdateSearchIndexRequest;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
@@ -43,6 +47,82 @@ import static org.junit.Assert.fail;
 
 public class SearchProtocolBuilderTest extends BaseSearchTest {
 
+    private IndexSchema newIndexSchema() {
+        IndexSchema schema = new IndexSchema();
+        schema.addFieldSchema(new FieldSchema("field", FieldType.KEYWORD));
+        return schema;
+    }
+
+    @Test
+    public void buildCreateSearchIndexRequestStorageClass() {
+        CreateSearchIndexRequest request = new CreateSearchIndexRequest("table", "index");
+        request.setIndexSchema(newIndexSchema());
+
+        Search.CreateSearchIndexRequest pbRequest = SearchProtocolBuilder.buildCreateSearchIndexRequest(request);
+        assertFalse(pbRequest.hasStorageClass());
+
+        request.setStorageClass(StorageClass.SC_IA);
+        pbRequest = SearchProtocolBuilder.buildCreateSearchIndexRequest(request);
+        assertTrue(pbRequest.hasStorageClass());
+        assertEquals(Search.StorageClass.SC_IA, pbRequest.getStorageClass());
+
+        request.setStorageClass(StorageClass.SC_STANDARD);
+        pbRequest = SearchProtocolBuilder.buildCreateSearchIndexRequest(request);
+        assertTrue(pbRequest.hasStorageClass());
+        assertEquals(Search.StorageClass.SC_STANDARD, pbRequest.getStorageClass());
+    }
+
+    @Test
+    public void buildUpdateSearchIndexRequestStorageClass() {
+        UpdateSearchIndexRequest request = new UpdateSearchIndexRequest("table", "index");
+
+        Search.UpdateSearchIndexRequest pbRequest = SearchProtocolBuilder.buildUpdateSearchIndexRequest(request);
+        assertFalse(pbRequest.hasStorageClass());
+
+        request.setStorageClass(StorageClass.SC_IA);
+        pbRequest = SearchProtocolBuilder.buildUpdateSearchIndexRequest(request);
+        assertTrue(pbRequest.hasStorageClass());
+        assertEquals(Search.StorageClass.SC_IA, pbRequest.getStorageClass());
+
+        request.setStorageClass(StorageClass.SC_STANDARD);
+        pbRequest = SearchProtocolBuilder.buildUpdateSearchIndexRequest(request);
+        assertTrue(pbRequest.hasStorageClass());
+        assertEquals(Search.StorageClass.SC_STANDARD, pbRequest.getStorageClass());
+    }
+
+    @Test
+    public void buildUpdateSearchIndexRequestStorageClassCannotMixWithOtherOperations() {
+        for (StorageClass storageClass : Arrays.asList(StorageClass.SC_IA, StorageClass.SC_STANDARD)) {
+            assertStorageClassConflict(
+                    new UpdateSearchIndexRequest("table", "index", "index_reindex")
+                            .setStorageClass(storageClass));
+
+            assertStorageClassConflict(
+                    new UpdateSearchIndexRequest("table", "index",
+                            Arrays.asList(new QueryFlowWeight("index", 10), new QueryFlowWeight("index_reindex", 90)))
+                            .setStorageClass(storageClass));
+
+            assertStorageClassConflict(
+                    new UpdateSearchIndexRequest("table", "index")
+                            .setTimeToLive(1, TimeUnit.DAYS)
+                            .setStorageClass(storageClass));
+
+            assertStorageClassConflict(
+                    new UpdateSearchIndexRequest("table", "index")
+                            .setAddedFieldSchemas(Collections.singletonList(new FieldSchema("new_field", FieldType.KEYWORD)))
+                            .setStorageClass(storageClass));
+        }
+    }
+
+    private void assertStorageClassConflict(UpdateSearchIndexRequest request) {
+        try {
+            SearchProtocolBuilder.buildUpdateSearchIndexRequest(request);
+            fail();
+        } catch (ClientException e) {
+            assertEquals("[storage_class] must not be set with other update operations", e.getMessage());
+        }
+    }
+
     @Test
     public void buildFieldSchema_FieldType() throws InvalidProtocolBufferException {
         Map<FieldType, Search.FieldType> modelToPbFieldType = new HashMap<>();
@@ -58,7 +138,7 @@ public class SearchProtocolBuilderTest extends BaseSearchTest {
         modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
         modelToPbFieldType.put(FieldType.IP, Search.FieldType.IP);
         modelToPbFieldType.put(FieldType.JSON, Search.FieldType.JSON);
-        modelToPbFieldType.put(FieldType.FLATTENED, Search.FieldType.FLATTENED);
+        modelToPbFieldType.put(FieldType.FLAT_OBJECT, Search.FieldType.FLAT_OBJECT);
 
         for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
             FieldType modelFieldType = entry.getKey();
@@ -702,12 +782,36 @@ public class SearchProtocolBuilderTest extends BaseSearchTest {
             assertEquals(1, pbFieldSchema.getFieldSchemasCount());
             assertEquals(Search.FieldType.TEXT, pbFieldSchema.getFieldSchemas(0).getFieldType());
         }
-        // FLATTENED
+        // FLAT_OBJECT
         {
             FieldSchema fieldSchema =
-                    new FieldSchema("field1", FieldType.FLATTENED);
+                    new FieldSchema("field1", FieldType.FLAT_OBJECT);
             Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
-            assertEquals(Search.FieldType.FLATTENED, pbFieldSchema.getFieldType());
+            assertEquals(Search.FieldType.FLAT_OBJECT, pbFieldSchema.getFieldType());
+        }
+        // TEXT with TextSimilarity BM25
+        {
+            FieldSchema fieldSchema =
+                new FieldSchema("field1", FieldType.TEXT).setTextSimilarity(TextSimilarity.BM25);
+            Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
+            assertEquals(Search.FieldType.TEXT, pbFieldSchema.getFieldType());
+            assertEquals(Search.TextSimilarity.BM25, pbFieldSchema.getTextSimilarity());
+        }
+        // TEXT with TextSimilarity SHORT_TEXT
+        {
+            FieldSchema fieldSchema =
+                new FieldSchema("field1", FieldType.TEXT).setTextSimilarity(TextSimilarity.SHORT_TEXT);
+            Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
+            assertEquals(Search.FieldType.TEXT, pbFieldSchema.getFieldType());
+            assertEquals(Search.TextSimilarity.SHORT_TEXT, pbFieldSchema.getTextSimilarity());
+        }
+        // TEXT without TextSimilarity
+        {
+            FieldSchema fieldSchema =
+                new FieldSchema("field1", FieldType.TEXT);
+            Search.FieldSchema pbFieldSchema = SearchProtocolBuilder.buildFieldSchema(fieldSchema);
+            assertEquals(Search.FieldType.TEXT, pbFieldSchema.getFieldType());
+            assertFalse(pbFieldSchema.hasTextSimilarity());
         }
     }
 }

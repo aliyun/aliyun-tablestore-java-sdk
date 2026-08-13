@@ -12,6 +12,7 @@ import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.*;
 
 public class AsyncClient implements AsyncClientInterface {
 
@@ -478,6 +479,186 @@ public class AsyncClient implements AsyncClientInterface {
     @Override
     public Future<RetrieveResponse> retrieve(RetrieveRequest request, TableStoreCallback<RetrieveRequest, RetrieveResponse> callback) {
         return internalClient.retrieve(request, callback);
+    }
+
+    @Override
+    public Future<CreateMemoryStoreResponse> createMemoryStore(CreateMemoryStoreRequest request,
+            TableStoreCallback<CreateMemoryStoreRequest, CreateMemoryStoreResponse> callback) {
+        return internalClient.createMemoryStore(request, callback);
+    }
+
+    @Override
+    public Future<GetMemoryStoreResponse> getMemoryStore(GetMemoryStoreRequest request,
+            TableStoreCallback<GetMemoryStoreRequest, GetMemoryStoreResponse> callback) {
+        return internalClient.getMemoryStore(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryStoresResponse> listMemoryStores(ListMemoryStoresRequest request,
+            TableStoreCallback<ListMemoryStoresRequest, ListMemoryStoresResponse> callback) {
+        return internalClient.listMemoryStores(request, callback);
+    }
+
+    @Override
+    public Future<UpdateMemoryStoreResponse> updateMemoryStore(UpdateMemoryStoreRequest request,
+            TableStoreCallback<UpdateMemoryStoreRequest, UpdateMemoryStoreResponse> callback) {
+        return internalClient.updateMemoryStore(request, callback);
+    }
+
+    @Override
+    public Future<DeleteMemoryStoreResponse> deleteMemoryStore(DeleteMemoryStoreRequest request,
+            TableStoreCallback<DeleteMemoryStoreRequest, DeleteMemoryStoreResponse> callback) {
+        return internalClient.deleteMemoryStore(request, callback);
+    }
+
+    @Override
+    public Future<AddMemoriesResponse> addMemories(AddMemoriesRequest request,
+            TableStoreCallback<AddMemoriesRequest, AddMemoriesResponse> callback) {
+        return internalClient.addMemories(request, callback);
+    }
+
+    @Override
+    public Future<SearchMemoriesResponse> searchMemories(SearchMemoriesRequest request,
+            TableStoreCallback<SearchMemoriesRequest, SearchMemoriesResponse> callback) {
+        return internalClient.searchMemories(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoriesResponse> listMemories(ListMemoriesRequest request,
+            TableStoreCallback<ListMemoriesRequest, ListMemoriesResponse> callback) {
+        return internalClient.listMemories(request, callback);
+    }
+
+    @Override
+    public Future<GetMemoryResponse> getMemory(GetMemoryRequest request,
+            TableStoreCallback<GetMemoryRequest, GetMemoryResponse> callback) {
+        return internalClient.getMemory(request, callback);
+    }
+
+    @Override
+    public Future<UpdateMemoryResponse> updateMemory(UpdateMemoryRequest request,
+            TableStoreCallback<UpdateMemoryRequest, UpdateMemoryResponse> callback) {
+        return internalClient.updateMemory(request, callback);
+    }
+
+    @Override
+    public Future<DeleteMemoryResponse> deleteMemory(DeleteMemoryRequest request,
+            TableStoreCallback<DeleteMemoryRequest, DeleteMemoryResponse> callback) {
+        return internalClient.deleteMemory(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryStoreMessagesResponse> listMemoryStoreMessages(ListMemoryStoreMessagesRequest request,
+            TableStoreCallback<ListMemoryStoreMessagesRequest, ListMemoryStoreMessagesResponse> callback) {
+        return internalClient.listMemoryStoreMessages(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryStoreRequestsResponse> listMemoryStoreRequests(ListMemoryStoreRequestsRequest request,
+            TableStoreCallback<ListMemoryStoreRequestsRequest, ListMemoryStoreRequestsResponse> callback) {
+        return internalClient.listMemoryStoreRequests(request, callback);
+    }
+
+    @Override
+    public Future<GetMemoryTaskResponse> getMemoryTask(GetMemoryTaskRequest request,
+            TableStoreCallback<GetMemoryTaskRequest, GetMemoryTaskResponse> callback) {
+        return internalClient.getMemoryTask(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryTasksResponse> listMemoryTasks(ListMemoryTasksRequest request,
+            TableStoreCallback<ListMemoryTasksRequest, ListMemoryTasksResponse> callback) {
+        return internalClient.listMemoryTasks(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryStoreScopesResponse> listMemoryStoreScopes(ListMemoryStoreScopesRequest request,
+            TableStoreCallback<ListMemoryStoreScopesRequest, ListMemoryStoreScopesResponse> callback) {
+        return internalClient.listMemoryStoreScopes(request, callback);
+    }
+
+    @Override
+    public Future<CreateMemoryDreamTaskResponse> createMemoryDreamTask(CreateMemoryDreamTaskRequest request,
+            TableStoreCallback<CreateMemoryDreamTaskRequest, CreateMemoryDreamTaskResponse> callback) {
+        return internalClient.createMemoryDreamTask(request, callback);
+    }
+
+    @Override
+    public Future<GetMemoryDreamTaskResponse> getMemoryDreamTask(GetMemoryDreamTaskRequest request,
+            TableStoreCallback<GetMemoryDreamTaskRequest, GetMemoryDreamTaskResponse> callback) {
+        return internalClient.getMemoryDreamTask(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryDreamTasksResponse> listMemoryDreamTasks(ListMemoryDreamTasksRequest request,
+            TableStoreCallback<ListMemoryDreamTasksRequest, ListMemoryDreamTasksResponse> callback) {
+        return internalClient.listMemoryDreamTasks(request, callback);
+    }
+
+    @Override
+    public Future<CancelMemoryDreamTaskResponse> cancelMemoryDreamTask(CancelMemoryDreamTaskRequest request,
+            TableStoreCallback<CancelMemoryDreamTaskRequest, CancelMemoryDreamTaskResponse> callback) {
+        return internalClient.cancelMemoryDreamTask(request, callback);
+    }
+
+    @Override
+    public Future<ListMemoryDreamActionsResponse> listMemoryDreamActions(ListMemoryDreamActionsRequest request,
+            TableStoreCallback<ListMemoryDreamActionsRequest, ListMemoryDreamActionsResponse> callback) {
+        return internalClient.listMemoryDreamActions(request, callback);
+    }
+
+    @Override
+    public Future<ApplyMemoryDreamActionsResponse> applyMemoryDreamActions(ApplyMemoryDreamActionsRequest request,
+            TableStoreCallback<ApplyMemoryDreamActionsRequest, ApplyMemoryDreamActionsResponse> callback) {
+        return internalClient.applyMemoryDreamActions(request, callback);
+    }
+
+    @Override
+    public Future<AddItemResponse> addItem(AddItemRequest request,
+            TableStoreCallback<AddItemRequest, AddItemResponse> callback) {
+        return internalClient.addItem(request, callback);
+    }
+
+    @Override
+    public Future<ListItemsResponse> listItems(ListItemsRequest request,
+            TableStoreCallback<ListItemsRequest, ListItemsResponse> callback) {
+        return internalClient.listItems(request, callback);
+    }
+
+    @Override
+    public Future<GetItemResponse> getItem(GetItemRequest request,
+            TableStoreCallback<GetItemRequest, GetItemResponse> callback) {
+        return internalClient.getItem(request, callback);
+    }
+
+    @Override
+    public Future<UpdateItemResponse> updateItem(UpdateItemRequest request,
+            TableStoreCallback<UpdateItemRequest, UpdateItemResponse> callback) {
+        return internalClient.updateItem(request, callback);
+    }
+
+    @Override
+    public Future<DeleteItemResponse> deleteItem(DeleteItemRequest request,
+            TableStoreCallback<DeleteItemRequest, DeleteItemResponse> callback) {
+        return internalClient.deleteItem(request, callback);
+    }
+
+    @Override
+    public Future<ListItemVersionsResponse> listItemVersions(ListItemVersionsRequest request,
+            TableStoreCallback<ListItemVersionsRequest, ListItemVersionsResponse> callback) {
+        return internalClient.listItemVersions(request, callback);
+    }
+
+    @Override
+    public Future<GetItemVersionResponse> getItemVersion(GetItemVersionRequest request,
+            TableStoreCallback<GetItemVersionRequest, GetItemVersionResponse> callback) {
+        return internalClient.getItemVersion(request, callback);
+    }
+
+    @Override
+    public Future<RedactItemVersionResponse> redactItemVersion(RedactItemVersionRequest request,
+            TableStoreCallback<RedactItemVersionRequest, RedactItemVersionResponse> callback) {
+        return internalClient.redactItemVersion(request, callback);
     }
 
 }

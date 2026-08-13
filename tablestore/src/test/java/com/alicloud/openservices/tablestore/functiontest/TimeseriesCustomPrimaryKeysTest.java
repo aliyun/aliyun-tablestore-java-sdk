@@ -19,6 +19,12 @@ public class TimeseriesCustomPrimaryKeysTest {
     static TimeseriesClient client = null;
     static SyncClient tableStoreClient = null;
 
+    // unique per run: fixed names get deleted by / collide with concurrent gate shards
+    static final String TABLE_CUSTOM_PK = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_custom_primary_keys");
+    static final String TABLE_CUSTOM_PK_META = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_custom_primary_keys_meta");
+    static final String TABLE_CUSTOM_PK_BATCH_WRITE = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_custom_primary_keys_batch_write");
+    static final String TABLE_NO_MEASUREMENTS = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("test_no_measurements");
+
     @BeforeClass
     public static void beforeClass() {
         ServiceSettings settings = ServiceSettings.load();
@@ -33,10 +39,10 @@ public class TimeseriesCustomPrimaryKeysTest {
 
     @AfterClass
     public static void afterClass() {
-        deleteTable("test_custom_primary_keys");
-        deleteTable("test_custom_primary_keys_meta");
-        deleteTable("test_custom_primary_keys_batch_write");
-        deleteTable("test_no_measurements");
+        deleteTable(TABLE_CUSTOM_PK);
+        deleteTable(TABLE_CUSTOM_PK_META);
+        deleteTable(TABLE_CUSTOM_PK_BATCH_WRITE);
+        deleteTable(TABLE_NO_MEASUREMENTS);
         client.shutdown();
         tableStoreClient.shutdown();
     }
@@ -50,7 +56,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     @Test
     public void testCustomPrimaryKeys() throws InterruptedException {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_custom_primary_keys");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_CUSTOM_PK);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         meta.addTimeseriesKey("_m_name");
         meta.addTimeseriesKey("_tags");
@@ -59,9 +65,9 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        TimeUnit.SECONDS.sleep(60);
+        com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, TABLE_CUSTOM_PK);
         // describe table
-        DescribeTimeseriesTableRequest describeTimeseriesTableRequest = new DescribeTimeseriesTableRequest("test_custom_primary_keys");
+        DescribeTimeseriesTableRequest describeTimeseriesTableRequest = new DescribeTimeseriesTableRequest(TABLE_CUSTOM_PK);
         DescribeTimeseriesTableResponse describeTimeseriesTableResponse = client.describeTimeseriesTable(describeTimeseriesTableRequest);
         List<String> primaryKeys = describeTimeseriesTableResponse.getTimeseriesTableMeta().getTimeseriesKeys();
         Assert.assertEquals(3, primaryKeys.size());
@@ -80,7 +86,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         List<TimeseriesTableMeta> tableMetas = listTimeseriesTableResponse.getTimeseriesTableMetas();
         boolean hasTestPrimaryKeyFieldsTable = false;
         for (TimeseriesTableMeta tableMeta : tableMetas) {
-            if (tableMeta.getTimeseriesTableName().equals("test_custom_primary_keys")) {
+            if (tableMeta.getTimeseriesTableName().equals(TABLE_CUSTOM_PK)) {
                 hasTestPrimaryKeyFieldsTable = true;
                 primaryKeys = tableMeta.getTimeseriesKeys();
                 Assert.assertEquals(3, primaryKeys.size());
@@ -98,7 +104,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertTrue(hasTestPrimaryKeyFieldsTable);
 
         // put data
-        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest("test_custom_primary_keys");
+        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest(TABLE_CUSTOM_PK);
         Map<String, String> tags = new HashMap<String, String>();
         tags.put("region", "hangzhou");
         tags.put("vendor", "intel");
@@ -115,7 +121,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertEquals(0, putTimeseriesDataResponse.getFailedRows().size());
 
         // get data
-        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest("test_custom_primary_keys");
+        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest(TABLE_CUSTOM_PK);
         getTimeseriesDataRequest.setTimeseriesKey(primaryKey);
         getTimeseriesDataRequest.setTimeRange(0, System.currentTimeMillis() * 1000);
         GetTimeseriesDataResponse getTimeseriesDataResponse = client.getTimeseriesData(getTimeseriesDataRequest);
@@ -137,7 +143,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         }
 
         // scan data
-        ScanTimeseriesDataRequest scanTimeseriesDataRequest = new ScanTimeseriesDataRequest("test_custom_primary_keys");
+        ScanTimeseriesDataRequest scanTimeseriesDataRequest = new ScanTimeseriesDataRequest(TABLE_CUSTOM_PK);
         scanTimeseriesDataRequest.setTimeRange(0, System.currentTimeMillis() * 1000);
         ScanTimeseriesDataResponse scanTimeseriesDataResponse = client.scanTimeseriesData(scanTimeseriesDataRequest);
         rows = scanTimeseriesDataResponse.getRows();
@@ -155,7 +161,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     @Test
     public void testCustomPrimaryKeysMeta() throws InterruptedException {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_custom_primary_keys_meta");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_CUSTOM_PK_META);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         meta.addTimeseriesKey("_m_name");
         meta.addTimeseriesKey("_tags");
@@ -164,9 +170,9 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        TimeUnit.SECONDS.sleep(60);
+        com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, TABLE_CUSTOM_PK_META);
         // update meta
-        UpdateTimeseriesMetaRequest updateTimeseriesMetaRequest = new UpdateTimeseriesMetaRequest("test_custom_primary_keys_meta");
+        UpdateTimeseriesMetaRequest updateTimeseriesMetaRequest = new UpdateTimeseriesMetaRequest(TABLE_CUSTOM_PK_META);
         List<TimeseriesMeta> metas = new ArrayList<TimeseriesMeta>();
         Map<String, String> tags = new HashMap<String, String>();
         tags.put("region", "hangzhou");
@@ -187,7 +193,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         TimeUnit.SECONDS.sleep(60);
 
         // get meta
-        QueryTimeseriesMetaRequest queryTimeseriesMetaRequest = new QueryTimeseriesMetaRequest("test_custom_primary_keys_meta");
+        QueryTimeseriesMetaRequest queryTimeseriesMetaRequest = new QueryTimeseriesMetaRequest(TABLE_CUSTOM_PK_META);
         queryTimeseriesMetaRequest.setCondition(new TagMetaQueryCondition(MetaQuerySingleOperator.OP_EQUAL, "region", "beijing"));
         QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
         List<TimeseriesMeta> timeseriesMetas = queryTimeseriesMetaResponse.getTimeseriesMetas();
@@ -200,7 +206,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertEquals("amd", tags.get("vendor"));
 
         // delete meta
-        DeleteTimeseriesMetaRequest deleteTimeseriesMetaRequest = new DeleteTimeseriesMetaRequest("test_custom_primary_keys_meta");
+        DeleteTimeseriesMetaRequest deleteTimeseriesMetaRequest = new DeleteTimeseriesMetaRequest(TABLE_CUSTOM_PK_META);
         List<TimeseriesKey> pks = new ArrayList<TimeseriesKey>();
         pks.add(primaryKey);
         deleteTimeseriesMetaRequest.setTimeseriesKeys(pks);
@@ -215,7 +221,7 @@ public class TimeseriesCustomPrimaryKeysTest {
     @Test
     public void testBatchWrite() throws InterruptedException {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_custom_primary_keys_batch_write");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_CUSTOM_PK_BATCH_WRITE);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         meta.addTimeseriesKey("_m_name");
         meta.addTimeseriesKey("_tags");
@@ -224,9 +230,9 @@ public class TimeseriesCustomPrimaryKeysTest {
         meta.addFieldPrimaryKey("frequency", PrimaryKeyType.STRING);
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        TimeUnit.SECONDS.sleep(60);
+        com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, TABLE_CUSTOM_PK_BATCH_WRITE);
         // describe table
-        DescribeTableRequest describeTableRequest = new DescribeTableRequest("test_custom_primary_keys_batch_write#timeseries");
+        DescribeTableRequest describeTableRequest = new DescribeTableRequest(TABLE_CUSTOM_PK_BATCH_WRITE + "#timeseries");
         DescribeTableResponse describeTableResponse = tableStoreClient.describeTable(describeTableRequest);
         List<PrimaryKeySchema> primaryKeyList = describeTableResponse.getTableMeta().getPrimaryKeyList();
         Assert.assertEquals(7, primaryKeyList.size());
@@ -247,7 +253,7 @@ public class TimeseriesCustomPrimaryKeysTest {
 
         // batch write
         BatchWriteRowRequest batchWriteRowRequest = new BatchWriteRowRequest();
-        RowPutChange rowPutChange = new RowPutChange("test_custom_primary_keys_batch_write#timeseries");
+        RowPutChange rowPutChange = new RowPutChange(TABLE_CUSTOM_PK_BATCH_WRITE + "#timeseries");
         rowPutChange.setPrimaryKey(new PrimaryKey(new PrimaryKeyColumn[]{
                 new PrimaryKeyColumn("_#h", PrimaryKeyValue.fromString("")),
                 new PrimaryKeyColumn("_m_name", PrimaryKeyValue.fromString("cpu")),
@@ -263,7 +269,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertEquals(0, batchWriteRowResponse.getFailedRows().size());
 
         // get range
-        RangeRowQueryCriteria rangeRowQueryCriteria = new RangeRowQueryCriteria("test_custom_primary_keys_batch_write#timeseries");
+        RangeRowQueryCriteria rangeRowQueryCriteria = new RangeRowQueryCriteria(TABLE_CUSTOM_PK_BATCH_WRITE + "#timeseries");
         rangeRowQueryCriteria.setMaxVersions(1);
         rangeRowQueryCriteria.setInclusiveStartPrimaryKey(new PrimaryKey(new PrimaryKeyColumn[]{
                 new PrimaryKeyColumn("_#h", PrimaryKeyValue.INF_MIN),
@@ -302,16 +308,16 @@ public class TimeseriesCustomPrimaryKeysTest {
     @Test
     public void testNoMeasurements() throws InterruptedException {
         // create table
-        TimeseriesTableMeta meta = new TimeseriesTableMeta("test_no_measurements");
+        TimeseriesTableMeta meta = new TimeseriesTableMeta(TABLE_NO_MEASUREMENTS);
         meta.setTimeseriesMetaOptions(new TimeseriesMetaOptions());
         meta.addTimeseriesKey("_data_source");
         meta.addTimeseriesKey("_tags");
         CreateTimeseriesTableRequest createTimeseriesTableRequest = new CreateTimeseriesTableRequest(meta);
         client.createTimeseriesTable(createTimeseriesTableRequest);
-        TimeUnit.SECONDS.sleep(60);
+        com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, TABLE_NO_MEASUREMENTS);
 
         // put data
-        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest("test_no_measurements");
+        PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest(TABLE_NO_MEASUREMENTS);
         Map<String, String> tags = new HashMap<String, String>();
         tags.put("region", "hangzhou");
         tags.put("vendor", "intel");
@@ -326,7 +332,7 @@ public class TimeseriesCustomPrimaryKeysTest {
         Assert.assertEquals(0, putTimeseriesDataResponse.getFailedRows().size());
 
         // get data
-        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest("test_no_measurements");
+        GetTimeseriesDataRequest getTimeseriesDataRequest = new GetTimeseriesDataRequest(TABLE_NO_MEASUREMENTS);
         getTimeseriesDataRequest.setTimeseriesKey(primaryKey);
         getTimeseriesDataRequest.setTimeRange(0, System.currentTimeMillis() * 1000);
         GetTimeseriesDataResponse getTimeseriesDataResponse = client.getTimeseriesData(getTimeseriesDataRequest);

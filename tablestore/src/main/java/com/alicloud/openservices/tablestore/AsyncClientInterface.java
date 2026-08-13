@@ -9,6 +9,7 @@ import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.*;
 
 public interface AsyncClientInterface {
 
@@ -537,5 +538,457 @@ public interface AsyncClientInterface {
     // Retrieval operations
     public Future<RetrieveResponse> retrieve(
             RetrieveRequest request, TableStoreCallback<RetrieveRequest, RetrieveResponse> callback);
+
+    // Memory Store operations
+    /**
+     * Creates a memory store.
+     *
+     * @param request parameters for the CreateMemoryStore operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<CreateMemoryStoreResponse> createMemoryStore(CreateMemoryStoreRequest request,
+            TableStoreCallback<CreateMemoryStoreRequest, CreateMemoryStoreResponse> callback) {
+        throw new UnsupportedOperationException("createMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory store.
+     *
+     * @param request parameters for the GetMemoryStore operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetMemoryStoreResponse> getMemoryStore(GetMemoryStoreRequest request,
+            TableStoreCallback<GetMemoryStoreRequest, GetMemoryStoreResponse> callback) {
+        throw new UnsupportedOperationException("getMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Lists memory stores.
+     *
+     * @param request parameters for the ListMemoryStores operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryStoresResponse> listMemoryStores(ListMemoryStoresRequest request,
+            TableStoreCallback<ListMemoryStoresRequest, ListMemoryStoresResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryStores is not implemented by this client");
+    }
+
+    /**
+     * Updates a memory store.
+     *
+     * @param request parameters for the UpdateMemoryStore operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<UpdateMemoryStoreResponse> updateMemoryStore(UpdateMemoryStoreRequest request,
+            TableStoreCallback<UpdateMemoryStoreRequest, UpdateMemoryStoreResponse> callback) {
+        throw new UnsupportedOperationException("updateMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Deletes a memory store.
+     *
+     * @param request parameters for the DeleteMemoryStore operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<DeleteMemoryStoreResponse> deleteMemoryStore(DeleteMemoryStoreRequest request,
+            TableStoreCallback<DeleteMemoryStoreRequest, DeleteMemoryStoreResponse> callback) {
+        throw new UnsupportedOperationException("deleteMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Adds messages to a memory store for extraction.
+     *
+     * @param request parameters for the AddMemories operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<AddMemoriesResponse> addMemories(AddMemoriesRequest request,
+            TableStoreCallback<AddMemoriesRequest, AddMemoriesResponse> callback) {
+        throw new UnsupportedOperationException("addMemories is not implemented by this client");
+    }
+
+    /**
+     * Searches memories in a memory store.
+     *
+     * @param request parameters for the SearchMemories operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<SearchMemoriesResponse> searchMemories(SearchMemoriesRequest request,
+            TableStoreCallback<SearchMemoriesRequest, SearchMemoriesResponse> callback) {
+        throw new UnsupportedOperationException("searchMemories is not implemented by this client");
+    }
+
+    /**
+     * Lists memories in a memory store.
+     *
+     * @param request parameters for the ListMemories operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoriesResponse> listMemories(ListMemoriesRequest request,
+            TableStoreCallback<ListMemoriesRequest, ListMemoriesResponse> callback) {
+        throw new UnsupportedOperationException("listMemories is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory by ID.
+     *
+     * @param request parameters for the GetMemory operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetMemoryResponse> getMemory(GetMemoryRequest request,
+            TableStoreCallback<GetMemoryRequest, GetMemoryResponse> callback) {
+        throw new UnsupportedOperationException("getMemory is not implemented by this client");
+    }
+
+    /**
+     * Updates a memory.
+     *
+     * @param request parameters for the UpdateMemory operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<UpdateMemoryResponse> updateMemory(UpdateMemoryRequest request,
+            TableStoreCallback<UpdateMemoryRequest, UpdateMemoryResponse> callback) {
+        throw new UnsupportedOperationException("updateMemory is not implemented by this client");
+    }
+
+    /**
+     * Deletes a memory.
+     *
+     * @param request parameters for the DeleteMemory operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<DeleteMemoryResponse> deleteMemory(DeleteMemoryRequest request,
+            TableStoreCallback<DeleteMemoryRequest, DeleteMemoryResponse> callback) {
+        throw new UnsupportedOperationException("deleteMemory is not implemented by this client");
+    }
+
+    /**
+     * Lists session messages stored for a scope.
+     *
+     * @param request parameters for the ListMemoryStoreMessages operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryStoreMessagesResponse> listMemoryStoreMessages(ListMemoryStoreMessagesRequest request,
+            TableStoreCallback<ListMemoryStoreMessagesRequest, ListMemoryStoreMessagesResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryStoreMessages is not implemented by this client");
+    }
+
+    /**
+     * Lists memory service request records.
+     *
+     * @param request parameters for the ListMemoryStoreRequests operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryStoreRequestsResponse> listMemoryStoreRequests(ListMemoryStoreRequestsRequest request,
+            TableStoreCallback<ListMemoryStoreRequestsRequest, ListMemoryStoreRequestsResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryStoreRequests is not implemented by this client");
+    }
+
+    /**
+     * Gets the task associated with a memory request.
+     *
+     * @param request parameters for the GetMemoryTask operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetMemoryTaskResponse> getMemoryTask(GetMemoryTaskRequest request,
+            TableStoreCallback<GetMemoryTaskRequest, GetMemoryTaskResponse> callback) {
+        throw new UnsupportedOperationException("getMemoryTask is not implemented by this client");
+    }
+
+    /**
+     * Lists memory tasks.
+     *
+     * @param request parameters for the ListMemoryTasks operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryTasksResponse> listMemoryTasks(ListMemoryTasksRequest request,
+            TableStoreCallback<ListMemoryTasksRequest, ListMemoryTasksResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryTasks is not implemented by this client");
+    }
+
+    /**
+     * Lists scopes that contain memories in a memory store.
+     *
+     * @param request parameters for the ListMemoryStoreScopes operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryStoreScopesResponse> listMemoryStoreScopes(ListMemoryStoreScopesRequest request,
+            TableStoreCallback<ListMemoryStoreScopesRequest, ListMemoryStoreScopesResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryStoreScopes is not implemented by this client");
+    }
+
+    /**
+     * Creates a memory dream task.
+     *
+     * @param request parameters for the CreateMemoryDreamTask operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<CreateMemoryDreamTaskResponse> createMemoryDreamTask(CreateMemoryDreamTaskRequest request,
+            TableStoreCallback<CreateMemoryDreamTaskRequest, CreateMemoryDreamTaskResponse> callback) {
+        throw new UnsupportedOperationException("createMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory dream task.
+     *
+     * @param request parameters for the GetMemoryDreamTask operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetMemoryDreamTaskResponse> getMemoryDreamTask(GetMemoryDreamTaskRequest request,
+            TableStoreCallback<GetMemoryDreamTaskRequest, GetMemoryDreamTaskResponse> callback) {
+        throw new UnsupportedOperationException("getMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Lists memory dream tasks.
+     *
+     * @param request parameters for the ListMemoryDreamTasks operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryDreamTasksResponse> listMemoryDreamTasks(ListMemoryDreamTasksRequest request,
+            TableStoreCallback<ListMemoryDreamTasksRequest, ListMemoryDreamTasksResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryDreamTasks is not implemented by this client");
+    }
+
+    /**
+     * Cancels a memory dream task.
+     *
+     * @param request parameters for the CancelMemoryDreamTask operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<CancelMemoryDreamTaskResponse> cancelMemoryDreamTask(CancelMemoryDreamTaskRequest request,
+            TableStoreCallback<CancelMemoryDreamTaskRequest, CancelMemoryDreamTaskResponse> callback) {
+        throw new UnsupportedOperationException("cancelMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Lists actions produced by memory dream tasks.
+     *
+     * @param request parameters for the ListMemoryDreamActions operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListMemoryDreamActionsResponse> listMemoryDreamActions(ListMemoryDreamActionsRequest request,
+            TableStoreCallback<ListMemoryDreamActionsRequest, ListMemoryDreamActionsResponse> callback) {
+        throw new UnsupportedOperationException("listMemoryDreamActions is not implemented by this client");
+    }
+
+    /**
+     * Applies actions produced by memory dream tasks.
+     *
+     * @param request parameters for the ApplyMemoryDreamActions operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ApplyMemoryDreamActionsResponse> applyMemoryDreamActions(ApplyMemoryDreamActionsRequest request,
+            TableStoreCallback<ApplyMemoryDreamActionsRequest, ApplyMemoryDreamActionsResponse> callback) {
+        throw new UnsupportedOperationException("applyMemoryDreamActions is not implemented by this client");
+    }
+
+    // File Memory Item operations
+    /**
+     * Adds a file memory item.
+     *
+     * @param request parameters for the AddItem operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<AddItemResponse> addItem(AddItemRequest request,
+            TableStoreCallback<AddItemRequest, AddItemResponse> callback) {
+        throw new UnsupportedOperationException("addItem is not implemented by this client");
+    }
+
+    /**
+     * Lists file memory items.
+     *
+     * @param request parameters for the ListItems operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListItemsResponse> listItems(ListItemsRequest request,
+            TableStoreCallback<ListItemsRequest, ListItemsResponse> callback) {
+        throw new UnsupportedOperationException("listItems is not implemented by this client");
+    }
+
+    /**
+     * Gets a file memory item.
+     *
+     * @param request parameters for the GetItem operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetItemResponse> getItem(GetItemRequest request,
+            TableStoreCallback<GetItemRequest, GetItemResponse> callback) {
+        throw new UnsupportedOperationException("getItem is not implemented by this client");
+    }
+
+    /**
+     * Updates a file memory item.
+     *
+     * @param request parameters for the UpdateItem operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<UpdateItemResponse> updateItem(UpdateItemRequest request,
+            TableStoreCallback<UpdateItemRequest, UpdateItemResponse> callback) {
+        throw new UnsupportedOperationException("updateItem is not implemented by this client");
+    }
+
+    /**
+     * Deletes a file memory item.
+     *
+     * @param request parameters for the DeleteItem operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<DeleteItemResponse> deleteItem(DeleteItemRequest request,
+            TableStoreCallback<DeleteItemRequest, DeleteItemResponse> callback) {
+        throw new UnsupportedOperationException("deleteItem is not implemented by this client");
+    }
+
+    /**
+     * Lists versions of a file memory item.
+     *
+     * @param request parameters for the ListItemVersions operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<ListItemVersionsResponse> listItemVersions(ListItemVersionsRequest request,
+            TableStoreCallback<ListItemVersionsRequest, ListItemVersionsResponse> callback) {
+        throw new UnsupportedOperationException("listItemVersions is not implemented by this client");
+    }
+
+    /**
+     * Gets a version of a file memory item.
+     *
+     * @param request parameters for the GetItemVersion operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<GetItemVersionResponse> getItemVersion(GetItemVersionRequest request,
+            TableStoreCallback<GetItemVersionRequest, GetItemVersionResponse> callback) {
+        throw new UnsupportedOperationException("getItemVersion is not implemented by this client");
+    }
+
+    /**
+     * Redacts a version of a file memory item.
+     *
+     * @param request parameters for the RedactItemVersion operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<RedactItemVersionResponse> redactItemVersion(RedactItemVersionRequest request,
+            TableStoreCallback<RedactItemVersionRequest, RedactItemVersionResponse> callback) {
+        throw new UnsupportedOperationException("redactItemVersion is not implemented by this client");
+    }
 
 }

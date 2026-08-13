@@ -15,6 +15,7 @@ import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.*;
 
 public class SyncClient implements SyncClientInterface {
     public class DefaultPrepareCallback implements PrepareCallback {
@@ -793,6 +794,192 @@ public class SyncClient implements SyncClientInterface {
         prepareCallback.onPrepare();
         Future<RetrieveResponse> res = this.internalClient.retrieve(request, null);
         return waitForFuture(res);
+    }
+
+    private void prepareMemoryRequest(MemoryRequest request) {
+        Preconditions.checkNotNull(request);
+        Preconditions.checkNotNull(prepareCallback);
+        prepareCallback.onPrepare();
+    }
+
+    @Override
+    public CreateMemoryStoreResponse createMemoryStore(CreateMemoryStoreRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.createMemoryStore(request, null));
+    }
+
+    @Override
+    public GetMemoryStoreResponse getMemoryStore(GetMemoryStoreRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getMemoryStore(request, null));
+    }
+
+    @Override
+    public ListMemoryStoresResponse listMemoryStores(ListMemoryStoresRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryStores(request, null));
+    }
+
+    @Override
+    public UpdateMemoryStoreResponse updateMemoryStore(UpdateMemoryStoreRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.updateMemoryStore(request, null));
+    }
+
+    @Override
+    public DeleteMemoryStoreResponse deleteMemoryStore(DeleteMemoryStoreRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.deleteMemoryStore(request, null));
+    }
+
+    @Override
+    public AddMemoriesResponse addMemories(AddMemoriesRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.addMemories(request, null));
+    }
+
+    @Override
+    public SearchMemoriesResponse searchMemories(SearchMemoriesRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.searchMemories(request, null));
+    }
+
+    @Override
+    public ListMemoriesResponse listMemories(ListMemoriesRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemories(request, null));
+    }
+
+    @Override
+    public GetMemoryResponse getMemory(GetMemoryRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getMemory(request, null));
+    }
+
+    @Override
+    public UpdateMemoryResponse updateMemory(UpdateMemoryRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.updateMemory(request, null));
+    }
+
+    @Override
+    public DeleteMemoryResponse deleteMemory(DeleteMemoryRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.deleteMemory(request, null));
+    }
+
+    @Override
+    public ListMemoryStoreMessagesResponse listMemoryStoreMessages(ListMemoryStoreMessagesRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryStoreMessages(request, null));
+    }
+
+    @Override
+    public ListMemoryStoreRequestsResponse listMemoryStoreRequests(ListMemoryStoreRequestsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryStoreRequests(request, null));
+    }
+
+    @Override
+    public GetMemoryTaskResponse getMemoryTask(GetMemoryTaskRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getMemoryTask(request, null));
+    }
+
+    @Override
+    public ListMemoryTasksResponse listMemoryTasks(ListMemoryTasksRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryTasks(request, null));
+    }
+
+    @Override
+    public ListMemoryStoreScopesResponse listMemoryStoreScopes(ListMemoryStoreScopesRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryStoreScopes(request, null));
+    }
+
+    @Override
+    public CreateMemoryDreamTaskResponse createMemoryDreamTask(CreateMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.createMemoryDreamTask(request, null));
+    }
+
+    @Override
+    public GetMemoryDreamTaskResponse getMemoryDreamTask(GetMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getMemoryDreamTask(request, null));
+    }
+
+    @Override
+    public ListMemoryDreamTasksResponse listMemoryDreamTasks(ListMemoryDreamTasksRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryDreamTasks(request, null));
+    }
+
+    @Override
+    public CancelMemoryDreamTaskResponse cancelMemoryDreamTask(CancelMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.cancelMemoryDreamTask(request, null));
+    }
+
+    @Override
+    public ListMemoryDreamActionsResponse listMemoryDreamActions(ListMemoryDreamActionsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listMemoryDreamActions(request, null));
+    }
+
+    @Override
+    public ApplyMemoryDreamActionsResponse applyMemoryDreamActions(ApplyMemoryDreamActionsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.applyMemoryDreamActions(request, null));
+    }
+
+    @Override
+    public AddItemResponse addItem(AddItemRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.addItem(request, null));
+    }
+
+    @Override
+    public ListItemsResponse listItems(ListItemsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listItems(request, null));
+    }
+
+    @Override
+    public GetItemResponse getItem(GetItemRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getItem(request, null));
+    }
+
+    @Override
+    public UpdateItemResponse updateItem(UpdateItemRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.updateItem(request, null));
+    }
+
+    @Override
+    public DeleteItemResponse deleteItem(DeleteItemRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.deleteItem(request, null));
+    }
+
+    @Override
+    public ListItemVersionsResponse listItemVersions(ListItemVersionsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.listItemVersions(request, null));
+    }
+
+    @Override
+    public GetItemVersionResponse getItemVersion(GetItemVersionRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.getItemVersion(request, null));
+    }
+
+    @Override
+    public RedactItemVersionResponse redactItemVersion(RedactItemVersionRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.redactItemVersion(request, null));
     }
 
 }

@@ -25,7 +25,7 @@ import com.google.gson.JsonSyntaxException;
 public class CreateTableTest extends BaseFT {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
 
-    private static final String tableName = "CreateTableTest";
+    private String tableName;
     private static SyncClientInterface client;
     private static Logger LOG = Logger.getLogger(BatchWriteTest.class.getName());
     
@@ -36,7 +36,12 @@ public class CreateTableTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(client);
+        tableName = OTSHelper.generateUniqueTableName("CreateTableTest");
+    }
+
+    @org.junit.After
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(client, tableName);
     }
     
     public static boolean checkNameExiste(List<String> names, String name) {

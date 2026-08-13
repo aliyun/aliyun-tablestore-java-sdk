@@ -1,9 +1,12 @@
 package com.alicloud.openservices.tablestore.core.protocol;
 
 import com.alicloud.openservices.tablestore.ClientException;
+import com.alicloud.openservices.tablestore.core.ResponseContentWithMeta;
 import com.alicloud.openservices.tablestore.core.protocol.Search.Aggregations;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBySort;
 import com.alicloud.openservices.tablestore.core.protocol.Search.GroupBys;
+import com.alicloud.openservices.tablestore.model.Response;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.search.agg.Aggregation;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
@@ -38,6 +41,32 @@ import static org.junit.Assert.*;
 public class SearchProtocolParserTest extends BaseSearchTest {
 
     @Test
+    public void createDescribeSearchIndexResponseStorageClass() {
+        Search.DescribeSearchIndexResponse pbResponse = Search.DescribeSearchIndexResponse.newBuilder()
+                .setSchema(Search.IndexSchema.newBuilder().build())
+                .build();
+        DescribeSearchIndexResponse response = ResponseFactory.createDescribeSearchIndexResponse(
+                new ResponseContentWithMeta(null, new Response()), pbResponse);
+        assertNull(response.getStorageClass());
+
+        pbResponse = Search.DescribeSearchIndexResponse.newBuilder()
+                .setSchema(Search.IndexSchema.newBuilder().build())
+                .setStorageClass(Search.StorageClass.SC_IA)
+                .build();
+        response = ResponseFactory.createDescribeSearchIndexResponse(
+                new ResponseContentWithMeta(null, new Response()), pbResponse);
+        assertEquals(StorageClass.SC_IA, response.getStorageClass());
+
+        pbResponse = Search.DescribeSearchIndexResponse.newBuilder()
+                .setSchema(Search.IndexSchema.newBuilder().build())
+                .setStorageClass(Search.StorageClass.SC_STANDARD)
+                .build();
+        response = ResponseFactory.createDescribeSearchIndexResponse(
+                new ResponseContentWithMeta(null, new Response()), pbResponse);
+        assertEquals(StorageClass.SC_STANDARD, response.getStorageClass());
+    }
+
+    @Test
     public void toFieldSchema_FieldSchemaNotSet() {
         Search.FieldSchema.Builder builder = Search.FieldSchema.newBuilder();
 
@@ -63,7 +92,7 @@ public class SearchProtocolParserTest extends BaseSearchTest {
         modelToPbFieldType.put(FieldType.FUZZY_KEYWORD, Search.FieldType.FUZZY_KEYWORD);
         modelToPbFieldType.put(FieldType.IP, Search.FieldType.IP);
         modelToPbFieldType.put(FieldType.JSON, Search.FieldType.JSON);
-        modelToPbFieldType.put(FieldType.FLATTENED, Search.FieldType.FLATTENED);
+        modelToPbFieldType.put(FieldType.FLAT_OBJECT, Search.FieldType.FLAT_OBJECT);
 
         for (Map.Entry<FieldType, Search.FieldType> entry : modelToPbFieldType.entrySet()) {
             FieldType modelFieldType = entry.getKey();
@@ -669,19 +698,51 @@ public class SearchProtocolParserTest extends BaseSearchTest {
             assertEquals("subField1", fieldSchema.getSubFieldSchemas().get(0).getFieldName());
         }
         {
-            // Flattened
+            // flat_object
             Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
                     .setFieldName("field1")
-                    .setFieldType(Search.FieldType.FLATTENED)
+                    .setFieldType(Search.FieldType.FLAT_OBJECT)
                     .setSortAndAgg(false)
                     .setStore(false)
                     .setIndex(false)
                     .build();
             FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
-            assertEquals(FieldType.FLATTENED, fieldSchema.getFieldType());
+            assertEquals(FieldType.FLAT_OBJECT, fieldSchema.getFieldType());
             assertFalse(fieldSchema.isEnableSortAndAgg());
             assertFalse(fieldSchema.isStore());
             assertFalse(fieldSchema.isIndex());
+        }
+        // TEXT with TextSimilarity BM25
+        {
+            Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
+                .setFieldName("field1")
+                .setFieldType(Search.FieldType.TEXT)
+                .setTextSimilarity(Search.TextSimilarity.BM25)
+                .build();
+            FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
+            assertEquals(FieldType.TEXT, fieldSchema.getFieldType());
+            assertEquals(TextSimilarity.BM25, fieldSchema.getTextSimilarity());
+        }
+        // TEXT with TextSimilarity SHORT_TEXT
+        {
+            Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
+                .setFieldName("field1")
+                .setFieldType(Search.FieldType.TEXT)
+                .setTextSimilarity(Search.TextSimilarity.SHORT_TEXT)
+                .build();
+            FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
+            assertEquals(FieldType.TEXT, fieldSchema.getFieldType());
+            assertEquals(TextSimilarity.SHORT_TEXT, fieldSchema.getTextSimilarity());
+        }
+        // TEXT without TextSimilarity
+        {
+            Search.FieldSchema pbFieldSchema = Search.FieldSchema.newBuilder()
+                .setFieldName("field1")
+                .setFieldType(Search.FieldType.TEXT)
+                .build();
+            FieldSchema fieldSchema = SearchProtocolParser.toFieldSchema(pbFieldSchema);
+            assertEquals(FieldType.TEXT, fieldSchema.getFieldType());
+            assertNull(fieldSchema.getTextSimilarity());
         }
     }
 }

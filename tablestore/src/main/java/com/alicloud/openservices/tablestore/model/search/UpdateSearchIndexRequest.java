@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.core.utils.NumberUtils;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 import com.alicloud.openservices.tablestore.model.Request;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class UpdateSearchIndexRequest implements Request {
      * <p>For dynamically adding new fields to the index, this operation is more lightweight compared to dynamically modifying the index schema, but it can only add fields, and the types of the added fields have certain restrictions.</p>
      */
     private List<FieldSchema> addedFieldSchemas;
+
+    /**
+     * Storage class of the SearchIndex.
+     */
+    private StorageClass storageClass;
 
     public UpdateSearchIndexRequest(String tableName, String indexName) {
         this.tableName = tableName;
@@ -132,6 +138,24 @@ public class UpdateSearchIndexRequest implements Request {
             this.addedFieldSchemas = new ArrayList<>();
         }
         this.addedFieldSchemas.addAll(addedFieldSchemas);
+        return this;
+    }
+
+    public StorageClass getStorageClass() {
+        return storageClass;
+    }
+
+    /**
+     * Set the storage class of the SearchIndex.
+     * <p>Set {@link StorageClass#SC_IA} to enable Infrequent Access for an existing SearchIndex.
+     * Set {@link StorageClass#SC_STANDARD} to switch it back to standard storage class.</p>
+     * <p>This operation must be sent alone. It cannot be mixed with index switch, query flow
+     * weight, TTL, or dynamic field schema updates.</p>
+     *
+     * @param storageClass storage class of the SearchIndex
+     */
+    public UpdateSearchIndexRequest setStorageClass(StorageClass storageClass) {
+        this.storageClass = storageClass;
         return this;
     }
 

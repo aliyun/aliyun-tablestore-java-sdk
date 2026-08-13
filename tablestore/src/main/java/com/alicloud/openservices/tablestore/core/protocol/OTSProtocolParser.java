@@ -9,6 +9,7 @@ import com.alicloud.openservices.tablestore.model.sql.SQLStatementType;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class OTSProtocolParser {
     public static PrimaryKeyType toPrimaryKeyType(OtsInternalApi.PrimaryKeyType type) {
@@ -19,6 +20,8 @@ public class OTSProtocolParser {
                 return PrimaryKeyType.STRING;
             case BINARY:
                 return PrimaryKeyType.BINARY;
+            case PK_BOOLEAN:
+                return PrimaryKeyType.BOOLEAN;
             default:
                 throw new IllegalArgumentException("Unknown primary key type: " + type);
         }
@@ -374,6 +377,59 @@ public class OTSProtocolParser {
         }
         if (sseDetails.hasRoleArn()) {
             result.setRoleArn(sseDetails.getRoleArn().toByteArray());
+        }
+        return result;
+    }
+
+    public static StoragePolicyType parseStoragePolicyType(OtsInternalApi.StoragePolicyType type) {
+        switch (type) {
+            case SPT_BY_TIMESTAMP:
+                return StoragePolicyType.SPT_BY_TIMESTAMP;
+            case SPT_BY_COLUMN:
+                return StoragePolicyType.SPT_BY_COLUMN;
+            default:
+                throw new IllegalArgumentException("Unknown storage policy type: " + type);
+        }
+    }
+
+    public static TimeUnit parseTimeUnit(OtsInternalApi.TimeUnit timeUnit) {
+        switch (timeUnit) {
+            case TU_DAY:
+                return TimeUnit.DAYS;
+            case TU_HOUR:
+                return TimeUnit.HOURS;
+            case TU_MINUTE:
+                return TimeUnit.MINUTES;
+            case TU_SECOND:
+                return TimeUnit.SECONDS;
+            case TU_MILLISECOND:
+                return TimeUnit.MILLISECONDS;
+            case TU_MICROSECOND:
+                return TimeUnit.MICROSECONDS;
+            case TU_NANOSECOND:
+                return TimeUnit.NANOSECONDS;
+            default:
+                throw new IllegalArgumentException("Unknown time unit: " + timeUnit);
+        }
+    }
+
+    public static TieredStorageColumn parseTieredStorageColumn(OtsInternalApi.TieredStorageColumn column) {
+        TieredStorageColumn result = new TieredStorageColumn(column.getName());
+        result.setValueTimeUnit(parseTimeUnit(column.getValueTimeUnit()));
+        return result;
+    }
+
+    public static TieredStoragePolicy parseTieredStoragePolicy(OtsInternalApi.TieredStoragePolicy policy) {
+        TieredStoragePolicy result = new TieredStoragePolicy();
+        result.setEnableTieredStorage(policy.getEnableTieredStorage());
+        if (policy.hasType()) {
+            result.setType(parseStoragePolicyType(policy.getType()));
+        }
+        if (policy.hasHotRetentionPeriod()) {
+            result.setHotRetentionPeriod(policy.getHotRetentionPeriod());
+        }
+        if (policy.hasColumn()) {
+            result.setColumn(parseTieredStorageColumn(policy.getColumn()));
         }
         return result;
     }

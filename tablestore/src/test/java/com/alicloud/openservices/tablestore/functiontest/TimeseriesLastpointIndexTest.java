@@ -41,8 +41,18 @@ public class TimeseriesLastpointIndexTest {
         timeseriesClient = client.asTimeseriesClient();
     }
 
+    private static final java.util.List<String> createdTsTables = new java.util.ArrayList<String>();
+
     @AfterClass
     public static void afterClass() {
+        // idempotent: delete every uniquely-named table we created (also removes their
+        // lastpoint indexes); avoids quota leaks when a test fails before its inline delete
+        for (String t : createdTsTables) {
+            try {
+                timeseriesClient.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(t));
+            } catch (Exception ignore) {
+            }
+        }
         client.shutdown();
     }
 
@@ -289,6 +299,7 @@ public class TimeseriesLastpointIndexTest {
             request.addLastpointIndex(new CreateTimeseriesTableRequest.LastpointIndex(lastpointIndexName));
         }
         timeseriesClient.createTimeseriesTable(request);
+        createdTsTables.add(tableName);
     }
 
     private void createTimeseriesLastpointIndex(String tableName, String indexName, boolean includeBaseData) {
@@ -444,8 +455,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testTimeseriesLastpointIndexCreateAndDelete() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
 
         // Create a time-series table
         createTimeseriesTable(tableName, true);
@@ -478,8 +490,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testCreateTimeseriesTableWithLastpointIndex() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
 
         createTimeseriesTableWithLastpointIndex(tableName, indexName, true);
         // Query time-series table information
@@ -511,8 +524,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testTimeseriesLastpointIndexWithIncrData() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
 
         boolean createIndexAfterCreateTable = Math.random() < 0.5;
         System.out.println("createIndexAfterCreateTable:" + createIndexAfterCreateTable);
@@ -540,8 +554,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testTimeseriesLastpointIndexWithBaseData() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
         // Create a time-series table
         createTimeseriesTable(tableName, true);
         sleepSecond(35);
@@ -588,8 +603,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testTimeseriesLastpointIndexStream() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
         // Create a time-series table
         createTimeseriesTable(tableName, true);
         // Create the lastpoint index for the time-series table
@@ -625,8 +641,9 @@ public class TimeseriesLastpointIndexTest {
     @Test
     public void testTimeseriesLastpointIndexCreateSearchIndexAndSQL() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        String tableName = methodName;
-        String indexName = methodName + "_lastpoint_index";
+        // unique per run: fixed names collide across concurrent gate shards/runs
+        String tableName = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName(methodName);
+        String indexName = tableName + "_lastpoint_index";
         // Create a time-series table
         createTimeseriesTable(tableName, true);
         // Create the lastpoint index for the time-series table

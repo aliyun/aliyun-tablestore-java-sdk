@@ -171,6 +171,38 @@ public class OperationNames {
     // Retrieval operations
     public static final String OP_RETRIEVE = "Retrieve";
 
+    // Memory Store operations
+    public static final String OP_CREATE_MEMORY_STORE = "CreateMemoryStore";
+    public static final String OP_GET_MEMORY_STORE = "GetMemoryStore";
+    public static final String OP_LIST_MEMORY_STORES = "ListMemoryStores";
+    public static final String OP_UPDATE_MEMORY_STORE = "UpdateMemoryStore";
+    public static final String OP_DELETE_MEMORY_STORE = "DeleteMemoryStore";
+    public static final String OP_ADD_MEMORIES = "AddMemories";
+    public static final String OP_SEARCH_MEMORIES = "SearchMemories";
+    public static final String OP_LIST_MEMORIES = "ListMemories";
+    public static final String OP_GET_MEMORY = "GetMemory";
+    public static final String OP_UPDATE_MEMORY = "UpdateMemory";
+    public static final String OP_DELETE_MEMORY = "DeleteMemory";
+    public static final String OP_LIST_MEMORY_STORE_MESSAGES = "ListMemoryStoreMessages";
+    public static final String OP_LIST_MEMORY_STORE_REQUESTS = "ListMemoryStoreRequests";
+    public static final String OP_GET_MEMORY_TASK = "GetMemoryTask";
+    public static final String OP_LIST_MEMORY_TASKS = "ListMemoryTasks";
+    public static final String OP_LIST_MEMORY_STORE_SCOPES = "ListMemoryStoreScopes";
+    public static final String OP_CREATE_MEMORY_DREAM_TASK = "CreateMemoryDreamTask";
+    public static final String OP_GET_MEMORY_DREAM_TASK = "GetMemoryDreamTask";
+    public static final String OP_LIST_MEMORY_DREAM_TASKS = "ListMemoryDreamTasks";
+    public static final String OP_CANCEL_MEMORY_DREAM_TASK = "CancelMemoryDreamTask";
+    public static final String OP_LIST_MEMORY_DREAM_ACTIONS = "ListMemoryDreamActions";
+    public static final String OP_APPLY_MEMORY_DREAM_ACTIONS = "ApplyMemoryDreamActions";
+    public static final String OP_ADD_ITEM = "AddItem";
+    public static final String OP_LIST_ITEMS = "ListItems";
+    public static final String OP_GET_ITEM = "GetItem";
+    public static final String OP_UPDATE_ITEM = "UpdateItem";
+    public static final String OP_DELETE_ITEM = "DeleteItem";
+    public static final String OP_LIST_ITEM_VERSIONS = "ListItemVersions";
+    public static final String OP_GET_ITEM_VERSION = "GetItemVersion";
+    public static final String OP_REDACT_ITEM_VERSION = "RedactItemVersion";
+
     public static class IdempotentActionTool {
         private static final Map<String, Boolean> IDEMPOTENT_ACTIONS = new HashMap<String, Boolean>();
 
@@ -217,6 +249,29 @@ public class OperationNames {
             IDEMPOTENT_ACTIONS.put(OP_GET_DOCUMENT, true);
             IDEMPOTENT_ACTIONS.put(OP_LIST_DOCUMENTS, true);
             IDEMPOTENT_ACTIONS.put(OP_RETRIEVE, true);
+            // memory operations (read-only and idempotent mutations)
+            IDEMPOTENT_ACTIONS.put(OP_GET_MEMORY_STORE, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_STORES, true);
+            IDEMPOTENT_ACTIONS.put(OP_DELETE_MEMORY_STORE, true);
+            IDEMPOTENT_ACTIONS.put(OP_SEARCH_MEMORIES, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORIES, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_MEMORY, true);
+            IDEMPOTENT_ACTIONS.put(OP_DELETE_MEMORY, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_STORE_MESSAGES, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_STORE_REQUESTS, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_MEMORY_TASK, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_TASKS, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_STORE_SCOPES, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_MEMORY_DREAM_TASK, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_DREAM_TASKS, true);
+            IDEMPOTENT_ACTIONS.put(OP_CANCEL_MEMORY_DREAM_TASK, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_MEMORY_DREAM_ACTIONS, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_ITEMS, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_ITEM, true);
+            IDEMPOTENT_ACTIONS.put(OP_DELETE_ITEM, true);
+            IDEMPOTENT_ACTIONS.put(OP_LIST_ITEM_VERSIONS, true);
+            IDEMPOTENT_ACTIONS.put(OP_GET_ITEM_VERSION, true);
+            IDEMPOTENT_ACTIONS.put(OP_REDACT_ITEM_VERSION, true);
         }
 
         public static boolean isIdempotentAction(String action) {

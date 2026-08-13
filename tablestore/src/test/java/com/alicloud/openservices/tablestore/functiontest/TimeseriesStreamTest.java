@@ -19,7 +19,8 @@ import static org.junit.Assert.fail;
 
 public class TimeseriesStreamTest {
 
-    static String testTable = "TestTimeseriesStream";
+    // unique per run: fixed names get deleted by concurrent gate shards on the shared instance
+    static String testTable = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("TestTimeseriesStream");
 
     static SyncClient client = null;
 
@@ -37,6 +38,11 @@ public class TimeseriesStreamTest {
 
     @AfterClass
     public static void afterClass() {
+        // idempotent: clean up our uniquely-named table to avoid quota leaks
+        try {
+            client.asTimeseriesClient().deleteTimeseriesTable(new DeleteTimeseriesTableRequest(testTable));
+        } catch (Exception e) {
+        }
         client.shutdown();
     }
 
@@ -57,7 +63,8 @@ public class TimeseriesStreamTest {
 
             client.asTimeseriesClient().createTimeseriesTable(createTableRequest);
             System.out.println("Waiting for creating Timeseries Table...");
-            Thread.sleep(60000);
+            com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(
+                    client.asTimeseriesClient(), testTable);
             System.out.println("Table created successfully.");
 
             PutTimeseriesDataRequest putTimeseriesDataRequest = new PutTimeseriesDataRequest(testTable);

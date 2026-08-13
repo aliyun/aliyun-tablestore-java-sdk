@@ -18,7 +18,8 @@ import static org.junit.Assert.*;
 
 public class TimeseriesTest {
 
-    static String testTable = "SDKTestTimeseriesTable";
+    // unique per run: fixed names get deleted by concurrent gate shards on the shared instance
+    static String testTable = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("SDKTestTimeseriesTable");
     static TimeseriesClient client = null;
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeseriesTest.class);
@@ -38,28 +39,22 @@ public class TimeseriesTest {
         client = new TimeseriesClient(endPoint, accessId, accessKey, instanceName);
 
         if (createTableBeforeTest) {
-            ListTimeseriesTableResponse listTimeseriesTableResponse = client.listTimeseriesTable();
-            for (String table : listTimeseriesTableResponse.getTimeseriesTableNames()) {
-                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(table));
-            }
-
+            // only create our own uniquely-named table; never wipe the instance
+            // (parallel gate shards share the instance)
             CreateTimeseriesTableRequest request = new CreateTimeseriesTableRequest(new TimeseriesTableMeta(testTable));
             client.createTimeseriesTable(request);
-            LOG.warn("sleep " + waitTableInit + "ms after create table...");
-            try {
-                Thread.sleep(waitTableInit);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            LOG.warn("waiting until timeseries table {} is served after create...", testTable);
+            com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, testTable, waitTableInit);
         }
     }
 
     @AfterClass
     public static void afterClass() {
         if (deleteTableAfterTest) {
-            ListTimeseriesTableResponse listTimeseriesTableResponse = client.listTimeseriesTable();
-            for (String table : listTimeseriesTableResponse.getTimeseriesTableNames()) {
-                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(table));
+            try {
+                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(testTable));
+            } catch (Exception e) {
+                LOG.warn("delete table {} failed in afterClass: {}", testTable, e.getMessage());
             }
         }
         client.shutdown();
@@ -69,11 +64,35 @@ public class TimeseriesTest {
     public void setUp() throws Exception {
     }
 
+    // meta index sync is eventually consistent: poll until the expected number of metas is
+    // visible (or timeout) instead of relying on a single fixed sleep, which flakes on the gate
+    private static QueryTimeseriesMetaResponse waitQueryMetaResult(
+            QueryTimeseriesMetaRequest request, int expectedCount) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + 3 * waitSearchIndexSync;
+        while (true) {
+            QueryTimeseriesMetaResponse response = client.queryTimeseriesMeta(request);
+            if (response.getTimeseriesMetas().size() == expectedCount
+                    || System.currentTimeMillis() >= deadline) {
+                return response;
+            }
+            Thread.sleep(5000);
+        }
+    }
+
     @Test
     public void testTableOperations() throws Exception {
+        // other suites may own tables on the shared instance: assert ours is present
+        // instead of asserting the instance-wide count
         ListTimeseriesTableResponse listTimeseriesTableResponse = client.listTimeseriesTable();
-        Assert.assertEquals(1, listTimeseriesTableResponse.getTimeseriesTableNames().size());
-        TimeseriesTableMeta tableMeta = listTimeseriesTableResponse.getTimeseriesTableMetas().get(0);
+        Assert.assertTrue(listTimeseriesTableResponse.getTimeseriesTableNames().contains(testTable));
+        TimeseriesTableMeta tableMeta = null;
+        for (TimeseriesTableMeta m : listTimeseriesTableResponse.getTimeseriesTableMetas()) {
+            if (m.getTimeseriesTableName().equals(testTable)) {
+                tableMeta = m;
+                break;
+            }
+        }
+        Assert.assertNotNull(tableMeta);
         Assert.assertEquals(testTable, tableMeta.getTimeseriesTableName());
         Assert.assertEquals("CREATED", tableMeta.getStatus());
         Assert.assertEquals(-1, tableMeta.getTimeseriesTableOptions().getTimeToLive());
@@ -223,7 +242,7 @@ public class TimeseriesTest {
             compositeMetaQueryCondition.addSubCondition(new TagMetaQueryCondition(MetaQuerySingleOperator.OP_GREATER_EQUAL, "tag5", "value5"));
             queryTimeseriesMetaRequest.setCondition(compositeMetaQueryCondition);
             queryTimeseriesMetaRequest.setGetTotalHits(true);
-            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
+            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = waitQueryMetaResult(queryTimeseriesMetaRequest, 11);
             Assert.assertEquals(11, queryTimeseriesMetaResponse.getTimeseriesMetas().size());
             Assert.assertEquals(11, queryTimeseriesMetaResponse.getTotalHits());
             Assert.assertNull(queryTimeseriesMetaResponse.getNextToken());
@@ -263,7 +282,7 @@ public class TimeseriesTest {
             compositeMetaQueryCondition.addSubCondition(new AttributeMetaQueryCondition(MetaQuerySingleOperator.OP_GREATER_EQUAL, "attr1", "attr_value1"));
             queryTimeseriesMetaRequest.setCondition(compositeMetaQueryCondition);
             queryTimeseriesMetaRequest.setGetTotalHits(true);
-            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
+            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = waitQueryMetaResult(queryTimeseriesMetaRequest, 10);
             Assert.assertEquals(10, queryTimeseriesMetaResponse.getTimeseriesMetas().size());
             Assert.assertEquals(10, queryTimeseriesMetaResponse.getTotalHits());
             Assert.assertNull(queryTimeseriesMetaResponse.getNextToken());
@@ -282,7 +301,7 @@ public class TimeseriesTest {
             compositeMetaQueryCondition.addSubCondition(new AttributeMetaQueryCondition(MetaQuerySingleOperator.OP_GREATER_EQUAL, "attr1", "attr_value1"));
             queryTimeseriesMetaRequest.setCondition(compositeMetaQueryCondition);
             queryTimeseriesMetaRequest.setGetTotalHits(true);
-            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
+            QueryTimeseriesMetaResponse queryTimeseriesMetaResponse = waitQueryMetaResult(queryTimeseriesMetaRequest, 10);
             Assert.assertEquals(10, queryTimeseriesMetaResponse.getTimeseriesMetas().size());
             Assert.assertEquals(10, queryTimeseriesMetaResponse.getTotalHits());
 
@@ -297,9 +316,7 @@ public class TimeseriesTest {
                     client.deleteTimeseriesMeta(deleteTimeseriesMetaRequest);
             Assert.assertTrue(deleteTimeseriesMetaResponse.isAllSuccess());
 
-            Thread.sleep(waitSearchIndexSync);
-
-            queryTimeseriesMetaResponse = client.queryTimeseriesMeta(queryTimeseriesMetaRequest);
+            queryTimeseriesMetaResponse = waitQueryMetaResult(queryTimeseriesMetaRequest, 0);
             Assert.assertEquals(0, queryTimeseriesMetaResponse.getTimeseriesMetas().size());
             Assert.assertEquals(0, queryTimeseriesMetaResponse.getTotalHits());
         }

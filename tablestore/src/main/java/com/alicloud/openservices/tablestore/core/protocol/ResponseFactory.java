@@ -95,6 +95,9 @@ public class ResponseFactory {
             if (describeTableResponse.hasCreationTime()) {
                 result.setCreationTime(describeTableResponse.getCreationTime());
             }
+            if (describeTableResponse.hasStoragePolicy()) {
+                result.setStoragePolicy(OTSProtocolParser.parseTieredStoragePolicy(describeTableResponse.getStoragePolicy()));
+            }
             return result;
         } catch (Exception e) {
             throw new ClientException("Failed to parse describe table response.", e);
@@ -819,6 +822,9 @@ public class ResponseFactory {
         }
         if(describeSearchIndexResponse.hasIndexStatus()) {
             result.setIndexStatus(SearchProtocolParser.toIndexStatus(describeSearchIndexResponse.getIndexStatus()));
+        }
+        if (describeSearchIndexResponse.hasStorageClass()) {
+            result.setStorageClass(SearchProtocolParser.toStorageClass(describeSearchIndexResponse.getStorageClass()));
         }
         return result;
     }

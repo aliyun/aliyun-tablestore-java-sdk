@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.functiontest;
 
 import com.alicloud.openservices.tablestore.SyncClient;
+import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
@@ -69,7 +70,7 @@ public class KnowledgeBaseRetrieveE2ETest {
             request.setMetadata(metadata);
         }
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         assertEquals("SUCCESS", response.getCode());
         createdKnowledgeBases.add(kbName);
         return kbName;

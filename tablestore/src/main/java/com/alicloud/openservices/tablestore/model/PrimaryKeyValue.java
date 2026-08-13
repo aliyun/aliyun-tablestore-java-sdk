@@ -9,6 +9,7 @@ import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.core.utils.CalculateHelper;
 
 import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_BLOB;
+import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_BOOLEAN;
 import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_INF_MIN;
 import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_INF_MAX;
 import static com.alicloud.openservices.tablestore.core.protocol.PlainBufferConsts.VT_STRING;
@@ -69,6 +70,9 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                     break;
                 case BINARY:
                     this.dataSize = this.asBinary().length;
+                    break;
+                case BOOLEAN:
+                    this.dataSize = 1;
                     break;
                 default:
                     throw new IllegalStateException("Bug: not support the type : " + type);
@@ -141,6 +145,17 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
     }
 
     /**
+     * Constructs a primary key column of type {@link PrimaryKeyType#BOOLEAN}.
+     * <p>Note: {@link PrimaryKeyType#BOOLEAN} can only be used as a non-first primary key column.</p>
+     *
+     * @param value The boolean value.
+     * @return The generated object
+     */
+    public static PrimaryKeyValue fromBoolean(boolean value) {
+        return new PrimaryKeyValue(value, PrimaryKeyType.BOOLEAN);
+    }
+
+    /**
      * Construct a primary key column of type {@link PrimaryKeyType#BINARY}.
      * <p>Note: The value cannot be a null pointer.</p>
      *
@@ -160,6 +175,8 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 return fromLong(value.asLong());
             case BINARY:
                 return fromBinary(value.asBinary());
+            case BOOLEAN:
+                return fromBoolean(value.asBoolean());
             default:
                 throw new IllegalArgumentException("Can not convert from column with not compatible type: " + value.getType());
         }
@@ -204,6 +221,11 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 crc = PlainBufferCrc8.crc8(crc, rawData);
                 break;
             }
+            case BOOLEAN: {
+                crc = PlainBufferCrc8.crc8(crc, VT_BOOLEAN);
+                crc = PlainBufferCrc8.crc8(crc, asBoolean() ? (byte) 0x1 : (byte) 0x0);
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported column type: " + getType());
         }
@@ -226,6 +248,10 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
             }
             case BINARY: {
                 value = ColumnValue.fromBinary(asBinary());
+                break;
+            }
+            case BOOLEAN: {
+                value = ColumnValue.fromBoolean(asBoolean());
                 break;
             }
             default:
@@ -280,6 +306,19 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
             throw new IllegalStateException("The type of primary key is not BINARY");
         }
         return (byte[]) value;
+    }
+
+    /**
+     * Get the boolean value of the primary key column.
+     * <p>Currently, the value can only be obtained when the data type is {@link PrimaryKeyType#BOOLEAN}.</p>
+     *
+     * @return The boolean value
+     */
+    public boolean asBoolean() {
+        if (this.type != PrimaryKeyType.BOOLEAN) {
+            throw new IllegalStateException("The type of primary key is not BOOLEAN.");
+        }
+        return (Boolean) value;
     }
 
     /**
@@ -388,6 +427,8 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                     byte[] b1 = (byte[]) this.value;
                     byte[] b2 = (byte[]) target.value;
                     return Bytes.compareByteArrayInLexOrder(b1, 0, b1.length, b2, 0, b2.length);
+                case BOOLEAN:
+                    return ((Boolean) value).compareTo(target.asBoolean());
                 default:
                     throw new IllegalArgumentException("Unknown type: " + this.type);
             }
@@ -417,6 +458,11 @@ public class PrimaryKeyValue implements Comparable<PrimaryKeyValue>, Measurable 
                 System.arraycopy(value.asBinary(), 0, binaryVal, 0, value.getDataSize());
                 binaryVal[value.getDataSize()] = 0;
                 return new PrimaryKeyValue(binaryVal, PrimaryKeyType.BINARY);
+            case BOOLEAN:
+                if (!target.asBoolean()) {
+                    return new PrimaryKeyValue(Boolean.TRUE, PrimaryKeyType.BOOLEAN);
+                }
+                return new PrimaryKeyValue("INF_MAX", null);
             default:
                 throw new IllegalArgumentException("Unknown type: " + target.getType());
         }

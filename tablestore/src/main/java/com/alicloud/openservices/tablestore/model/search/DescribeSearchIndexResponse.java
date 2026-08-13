@@ -2,6 +2,7 @@ package com.alicloud.openservices.tablestore.model.search;
 
 import com.alicloud.openservices.tablestore.core.utils.Jsonizable;
 import com.alicloud.openservices.tablestore.model.Response;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
      * <p>The TTL time for index data, in seconds.</p>
      */
     private Integer timeToLive;
+    private StorageClass storageClass;
 
     /**
      * Describes the asynchronous creation status of the index
@@ -152,6 +154,19 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
         this.timeToLive = timeToLive;
     }
 
+    public StorageClass getStorageClass() {
+        return storageClass;
+    }
+
+    /**
+     * Set the storage class of the SearchIndex.
+     *
+     * @param storageClass storage class returned by DescribeSearchIndex
+     */
+    public void setStorageClass(StorageClass storageClass) {
+        this.storageClass = storageClass;
+    }
+
     public void setIndexStatus(IndexStatus indexStatus) {
         this.indexStatus = indexStatus;
     }
@@ -230,6 +245,13 @@ public class DescribeSearchIndexResponse extends Response implements Jsonizable 
             sb.append(newline);
             sb.append("\"TimeToLive\": ");
             sb.append(timeToLive);
+        }
+        if (storageClass != null) {
+            sb.append(",");
+            sb.append(newline);
+            sb.append("\"StorageClass\": \"");
+            sb.append(storageClass.name());
+            sb.append("\"");
         }
 
         sb.append(newline.substring(0, newline.length() - 2));

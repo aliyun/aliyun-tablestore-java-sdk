@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.model.search;
 import com.alicloud.openservices.tablestore.core.protocol.BaseSearchTest;
 import com.alicloud.openservices.tablestore.core.utils.Repeat;
 import com.alicloud.openservices.tablestore.model.Response;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 import com.alicloud.openservices.tablestore.model.search.analysis.FuzzyAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SingleWordAnalyzerParameter;
 import com.alicloud.openservices.tablestore.model.search.analysis.SplitAnalyzerParameter;
@@ -16,6 +17,20 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class TestDescribeSearchIndexResponse extends BaseSearchTest {
+
+    @Test
+    public void jsonizeStorageClassOnlyWhenSet() {
+        DescribeSearchIndexResponse response = new DescribeSearchIndexResponse(new Response("req_id"));
+
+        String json = response.jsonize();
+        assertFalse(json.contains("StorageClass"));
+        assertNull(response.getStorageClass());
+
+        response.setStorageClass(StorageClass.SC_IA);
+        assertEquals(StorageClass.SC_IA, response.getStorageClass());
+        json = response.jsonize();
+        assertTrue(json.contains("\"StorageClass\": \"SC_IA\""));
+    }
 
     @Test
     @Repeat(1)
@@ -73,7 +88,7 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
             new FieldSchema("col_inner", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()),
             new FieldSchema("col_inner2", FieldType.TEXT).setSubFieldSchemas(new ArrayList<>()).setVirtualField(true).setSourceFieldName("n1")
         )));
-        indexSchema.addFieldSchema(new FieldSchema("col_flattened", FieldType.FLATTENED).setEnableSortAndAgg(true).setStore(false).setIndex(true));
+        indexSchema.addFieldSchema(new FieldSchema("col_flat_object", FieldType.FLAT_OBJECT).setEnableSortAndAgg(true).setStore(false).setIndex(true));
 
         IndexSetting indexSetting = new IndexSetting();
         indexSetting.setRoutingFields(Arrays.asList("routing_field1", "routing_field2"));
@@ -247,8 +262,8 @@ public class TestDescribeSearchIndexResponse extends BaseSearchTest {
                 "     \"JsonType\": \"NESTED\"\n" +
                 "     },\n" +
                 "     {\n" +
-                "     \"FieldName\": \"col_flattened\",\n" +
-                "     \"FieldType\": \"FLATTENED\",\n" +
+                "     \"FieldName\": \"col_flat_object\",\n" +
+                "     \"FieldType\": \"FLAT_OBJECT\",\n" +
                 "     \"Index\": true,\n" +
                 "     \"EnableSortAndAgg\": true,\n" +
                 "     \"Store\": false,\n" +

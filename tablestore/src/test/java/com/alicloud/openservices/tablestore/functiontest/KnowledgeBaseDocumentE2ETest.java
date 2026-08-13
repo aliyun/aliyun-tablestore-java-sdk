@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.functiontest;
 
 import com.alicloud.openservices.tablestore.SyncClient;
+import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
@@ -69,7 +70,7 @@ public class KnowledgeBaseDocumentE2ETest {
         metadata.add(new MetadataField("year", "long"));
         request.setMetadata(metadata);
 
-        client.createKnowledgeBase(request);
+        OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
         return kbName;
     }
@@ -79,7 +80,7 @@ public class KnowledgeBaseDocumentE2ETest {
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(false);
 
-        client.createKnowledgeBase(request);
+        OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
         return kbName;
     }

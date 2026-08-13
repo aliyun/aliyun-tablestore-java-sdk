@@ -41,6 +41,30 @@ public class TestBackFillTunnel extends TestCase {
         }
     }
 
+    public void testDescribeAndDeleteTunnelByTunnelId() {
+        String tunnelName = "test_zr" + System.currentTimeMillis();
+        String tunnelId = null;
+        try {
+            CreateTunnelResponse createResp =
+                client.createTunnel(new CreateTunnelRequest(TABLE_NAME, tunnelName, TunnelType.Stream));
+            tunnelId = createResp.getTunnelId();
+
+            DescribeTunnelRequest describeRequest = new DescribeTunnelRequest(TABLE_NAME, tunnelName, tunnelId);
+            DescribeTunnelResponse describeResp = client.describeTunnel(describeRequest);
+            Assert.assertEquals(tunnelId, describeResp.getTunnelInfo().getTunnelId());
+            StreamTunnelConfig streamTunnelConfig = describeResp.getTunnelInfo().getStreamTunnelConfig();
+            Assert.assertNotNull(streamTunnelConfig);
+            Assert.assertEquals(StartOffsetFlag.LATEST, streamTunnelConfig.getFlag());
+            Assert.assertEquals(0, streamTunnelConfig.getStartOffset());
+            Assert.assertEquals(0, streamTunnelConfig.getEndOffset());
+        } finally {
+            if (tunnelId != null) {
+                DeleteTunnelRequest deleteRequest = new DeleteTunnelRequest(TABLE_NAME, tunnelName, tunnelId);
+                client.deleteTunnel(deleteRequest);
+            }
+        }
+    }
+
     public void testCreateTunnelWithDefaultBackFill() {
         String tunnelName = "test_zr" + System.currentTimeMillis();
         try {

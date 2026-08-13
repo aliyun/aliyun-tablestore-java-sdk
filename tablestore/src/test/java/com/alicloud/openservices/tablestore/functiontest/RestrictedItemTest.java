@@ -23,16 +23,15 @@ import com.google.gson.JsonSyntaxException;
 
 public class RestrictedItemTest extends BaseFT {
     
-    private static String tableName = "RestrictedItemFunctiontest";
+    private String tableName;
+    private final java.util.List<String> createdTables = new java.util.ArrayList<String>();
     private static SyncClientInterface ots;
 
-    private static TimeseriesClient tsClient;
     private static final Logger LOG = LoggerFactory.getLogger(RestrictedItemTest.class);
     
     @BeforeClass
     public static void classBefore() throws JsonSyntaxException, IOException {
         ots = Utils.getOTSInstance();
-        tsClient = Utils.getTsClient();
     }
     
     @AfterClass
@@ -42,14 +41,24 @@ public class RestrictedItemTest extends BaseFT {
     
     @Before
     public void setup() throws Exception {
-        // Clean up the environment
-        OTSHelper.deleteAllTable(ots);
-
-        OTSHelper.deleteTsTable(tsClient);
+        tableName = OTSHelper.generateUniqueTableName("RestrictedItemFunctiontest");
+        createdTables.clear();
+        // NOTE: do NOT wipe instance-wide timeseries tables here (former
+        // OTSHelper.deleteTsTable call): this class never creates timeseries tables,
+        // and when the suite runs in parallel against a shared instance it repeatedly
+        // deleted the fixed-name tables of concurrently running Timeseries*Test
+        // shards, causing OTSObjectNotExist / "being deleting" / 500 failures.
     }
-    
+
     @After
-    public void teardown() {}
+    public void teardown() throws Exception {
+        // Most cases create `tableName` without registering it in createdTables;
+        // always include it so no case leaks its table (leaks eat the 64-table quota).
+        if (!createdTables.contains(tableName)) {
+            createdTables.add(tableName);
+        }
+        OTSHelper.deleteTablesByNames(ots, createdTables);
+    }
     
     public static DescribeTableResponse buildDescribeTableResult(Table t) {
     	DescribeTableResponse r = new DescribeTableResponse(new Response());
@@ -76,6 +85,7 @@ public class RestrictedItemTest extends BaseFT {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
         
+        createdTables.add(tableName);
         OTSHelper.createTable(ots, tableName, scheme, -1, 3);
         
         Utils.waitForPartitionLoad(tableName);
@@ -447,6 +457,7 @@ public class RestrictedItemTest extends BaseFT {
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
 
+        createdTables.add(tableName);
         if (Utils.useGlobalTxn()) {
             OTSHelper.createTable(ots, tableName, scheme, -1, 1);
         } else {
@@ -690,6 +701,7 @@ public class RestrictedItemTest extends BaseFT {
             tableOptions.setMaxVersions(1);
             tableOptions.setTimeToLive(-1);
             
+            createdTables.add(tableName);
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
             Utils.waitForPartitionLoad(tableName);
             
@@ -785,6 +797,7 @@ public class RestrictedItemTest extends BaseFT {
             }
             tableOptions.setTimeToLive(-1);
             
+            createdTables.add(tableName);
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
             Utils.waitForPartitionLoad(tableName);
             long ts = System.currentTimeMillis();
@@ -896,6 +909,7 @@ public class RestrictedItemTest extends BaseFT {
                 tableOptions.setMaxVersions(Integer.MAX_VALUE);
             }
             
+            createdTables.add(tableName);
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
             Utils.waitForPartitionLoad(tableName);
             // put row
@@ -1011,6 +1025,7 @@ public class RestrictedItemTest extends BaseFT {
         
         // TS = 0
         {
+            createdTables.add(tableName);
             OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
             Utils.waitForPartitionLoad(tableName);
             
@@ -1111,6 +1126,7 @@ public class RestrictedItemTest extends BaseFT {
         }
         
         OTSHelper.deleteTable(ots, tableName);
+        createdTables.add(tableName);
         OTSHelper.createTable(ots, meta, new CapacityUnit(0, 0), tableOptions);
         Utils.waitForPartitionLoad(tableName);
         // TS = INT64_MAX
@@ -1428,8 +1444,11 @@ public class RestrictedItemTest extends BaseFT {
      */
     @Test
     public void testCase11() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < OTSRestrictedItemConst.TABLE_NAME_LENGTH_MAX; i++) {
+        // max-length name: keep the total length at TABLE_NAME_LENGTH_MAX but embed a
+        // run-unique prefix — a fixed all-'a' name collides across concurrent gate
+        // shards/runs (it was also identical to APITest's 255-byte stream-table name)
+        StringBuilder sb = new StringBuilder(OTSHelper.generateUniqueTableName("RestrictedItemLongName"));
+        while (sb.length() < OTSRestrictedItemConst.TABLE_NAME_LENGTH_MAX) {
             sb.append("a");
         }
         String tableName = sb.toString();
@@ -1442,6 +1461,7 @@ public class RestrictedItemTest extends BaseFT {
 
         // create table
         {
+            createdTables.add(tableName);
             OTSHelper.createTable(ots, tableName, pkMeta);
             Utils.waitForPartitionLoad(tableName);
         }
@@ -1632,6 +1652,7 @@ public class RestrictedItemTest extends BaseFT {
         
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk_0", PrimaryKeyType.STRING));
+        createdTables.add(tableName);
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
         String columnName = sb.toString();
@@ -1782,6 +1803,7 @@ public class RestrictedItemTest extends BaseFT {
 
         List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
         scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
+        createdTables.add(tableName);
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
         
@@ -1961,25 +1983,73 @@ public class RestrictedItemTest extends BaseFT {
      */
     @Test
     public void testCase15() throws Exception {
-        List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
-        scheme.add(new PrimaryKeySchema("pk_0", PrimaryKeyType.STRING));
-        
-        for (int i = 0; i < OTSRestrictedItemConst.TABLE_NUMBER_MAX; i++) {
-            OTSHelper.createTable(ots, tableName + i, scheme);
-        }
-        
+        // This quota-boundary case creates tables until the instance-wide 64-table
+        // quota is exhausted, i.e. it deliberately occupies every remaining slot, so
+        // it must NEVER run against a shared instance (concurrent createTable calls
+        // would fail randomly). It targets a DEDICATED instance (same endpoint and
+        // credentials) whose name is passed via -Dquota.test.instance; the case is
+        // skipped when the property is absent.
+        String quotaInstance = System.getProperty("quota.test.instance", "");
+        Assume.assumeTrue(quotaInstance != null && !quotaInstance.trim().isEmpty());
+
+        ServiceSettings settings = ServiceSettings.load();
+        SyncClientInterface quotaOts = new SyncClient(settings.getOTSEndpoint(),
+                settings.getOTSAccessKeyId(), settings.getOTSAccessKeySecret(), quotaInstance.trim());
+        // tables live on the dedicated instance: class teardown (shared `ots`) cannot
+        // clean them, so track and always delete them here
+        List<String> quotaTables = new ArrayList<String>();
         try {
-            OTSHelper.createTable(ots, tableName + OTSRestrictedItemConst.TABLE_NUMBER_MAX, scheme);
-            fail();
-        } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.QUOTA_EXHAUSTED, "Number of tables exceeds the quota:" + OTSRestrictedItemConst.TABLE_NUMBER_MAX + ".", 403, e);
+            List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
+            scheme.add(new PrimaryKeySchema("pk_0", PrimaryKeyType.STRING));
+
+            // The instance may hold leftovers of a crashed run, and quota accounting can
+            // include tables not returned by listTable(). Instead of predicting the
+            // remaining capacity, probe: create until the server rejects with QUOTA_EXHAUSTED.
+            int created = 0;
+            TableStoreException quotaEx = null;
+            for (int i = 0; i <= OTSRestrictedItemConst.TABLE_NUMBER_MAX; i++) {
+                try {
+                    OTSHelper.createTable(quotaOts, tableName + i, scheme);
+                    quotaTables.add(tableName + i);
+                    created++;
+                } catch (TableStoreException e) {
+                    quotaEx = e;
+                    break;
+                }
+            }
+            assertTrue("quota was not exhausted after creating " + created + " tables", quotaEx != null);
+            assertTableStoreException(ErrorCode.QUOTA_EXHAUSTED, "Number of tables exceeds the quota:" + OTSRestrictedItemConst.TABLE_NUMBER_MAX + ".", 403, quotaEx);
+
+            assertTrue("instance was already at quota before the test created any table", created > 0);
+
+            // free one slot: creating another table should then succeed
+            OTSHelper.deleteTable(quotaOts, tableName + 0);
+
+            String extraTable = tableName + "_extra";
+            quotaTables.add(extraTable);
+            // quota release after delete can lag on a loaded instance: retry for a bounded time
+            long startMillis = System.currentTimeMillis();
+            while (true) {
+                try {
+                    OTSHelper.createTable(quotaOts, extraTable, scheme);
+                    break;
+                } catch (TableStoreException e) {
+                    if (!ErrorCode.QUOTA_EXHAUSTED.equals(e.getErrorCode())
+                            || System.currentTimeMillis() - startMillis > 30 * 1000) {
+                        throw e;
+                    }
+                    Thread.sleep(2000);
+                }
+            }
+
+            assertTrue(Utils.checkNameExiste(OTSHelper.listTable(quotaOts), extraTable));
+        } finally {
+            try {
+                OTSHelper.deleteTablesByNames(quotaOts, quotaTables);
+            } finally {
+                quotaOts.shutdown();
+            }
         }
-        
-        OTSHelper.deleteTable(ots, tableName + 0);
-        
-        OTSHelper.createTable(ots, tableName + OTSRestrictedItemConst.TABLE_NUMBER_MAX, scheme);
-        
-        assertTrue(Utils.checkNameExiste(OTSHelper.listTable(ots), tableName + OTSRestrictedItemConst.TABLE_NUMBER_MAX));
     }
     
     /**
@@ -2021,6 +2091,7 @@ public class RestrictedItemTest extends BaseFT {
         }
 
         // should create table now to avoid "Request table not exist" error when to get row.
+        createdTables.add(tableName);
         OTSHelper.createTable(ots, tableName, scheme.subList(0, OTSRestrictedItemConst.PRIMARY_KEY_COLUMN_NUMBER_MAX));
 
         { // get row

@@ -34,7 +34,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class OTSBasicCompaFourTest extends BaseFT {
 
-    private static String tableName = "OTSBasicCompaTest";
+    private String tableName;
+    private final List<String> createdTables = new ArrayList<String>();
     private static SyncClientInterface ots;
     private static final Logger LOG = LoggerFactory.getLogger(OTSBasicCompaFourTest.class);
 
@@ -50,12 +51,13 @@ public class OTSBasicCompaFourTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        // Clean up the environment
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("OTSBasicCompaTest");
+        createdTables.clear();
     }
 
     @After
     public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, createdTables);
     }
 
     private void createTableWithOnePrimaryKey(String tableName) throws Exception {
@@ -553,7 +555,8 @@ public class OTSBasicCompaFourTest extends BaseFT {
         List<PrimaryKeyColumn> primaryKeyList;
 
         // One PK: String
-        tableName = "TableNameOnePK";
+        tableName = OTSHelper.generateUniqueTableName("TableNameOnePK");
+        createdTables.add(tableName);
         createTableWithOnePrimaryKey(tableName);
         primaryKeyList = new ArrayList<PrimaryKeyColumn>();
         primaryKeyList.add(new PrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("1")));
@@ -577,7 +580,8 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(0, getRangeResult.getRows().size());
 
         // Two PK: String Integer
-        tableName = "TableNameTwoPK";
+        tableName = OTSHelper.generateUniqueTableName("TableNameTwoPK");
+        createdTables.add(tableName);
         createTableWithTwoPrimaryKeys(tableName);
         primaryKeyList = new ArrayList<PrimaryKeyColumn>();
         primaryKeyList.add(new PrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("1")));
@@ -603,7 +607,8 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(0, getRangeResult.getRows().size());
 
         // Three PK: String Integer Integer
-        tableName = "TableNameThreePK";
+        tableName = OTSHelper.generateUniqueTableName("TableNameThreePK");
+        createdTables.add(tableName);
         createTableWithThreePrimaryKeys(tableName);
         primaryKeyList = new ArrayList<PrimaryKeyColumn>();
         primaryKeyList.add(new PrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("1")));
@@ -631,7 +636,8 @@ public class OTSBasicCompaFourTest extends BaseFT {
         assertEquals(0, getRangeResult.getRows().size());
 
         // Four PK: String Integer Integer Integer
-        tableName = "TableNameFourPK";
+        tableName = OTSHelper.generateUniqueTableName("TableNameFourPK");
+        createdTables.add(tableName);
         createTableWithFourPrimaryKeys(tableName);
         primaryKeyList = new ArrayList<PrimaryKeyColumn>();
         primaryKeyList.add(new PrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("1")));
@@ -674,6 +680,7 @@ public class OTSBasicCompaFourTest extends BaseFT {
  */
     @Test
     public void testCaseGetRangeWithoutPartition() throws Exception {
+        createdTables.add(tableName);
         createAndInitTableForGetRangeTest(tableName);
 
         // ('A' 'A' 10, 'A' 'A' 10) (error occurred)
@@ -765,13 +772,19 @@ public class OTSBasicCompaFourTest extends BaseFT {
      */
     @Test
     public void testCaseBatchWriteRowSucceedWhenAllItemFailedBackend() throws Exception {
-        createTableWithOnePrimaryKeyString("TableForFailTest");
+        String failTestTable = OTSHelper.generateUniqueTableName("TableForFailTest");
+        createdTables.add(failTestTable);
+        createTableWithOnePrimaryKeyString(failTestTable);
+        // wait for table metadata/partition propagation before concurrent writes:
+        // without this, a runner can transiently hit "Requested table does not exist."
+        // on a loaded instance, breaking the error-message assertion below
+        Utils.waitForPartitionLoad(failTestTable);
         int runnerNumber = 10;
         boolean hasConflict = false;
 
         List<BatchWriteRowRunner> runnerList = new ArrayList<BatchWriteRowRunner>();
         for (int i = 1; i <= runnerNumber; i++) {
-            runnerList.add(new BatchWriteRowRunner(i));
+            runnerList.add(new BatchWriteRowRunner(failTestTable, i));
         }
 
         ExecutorService pool = Executors.newFixedThreadPool(runnerNumber);
@@ -794,11 +807,16 @@ public class OTSBasicCompaFourTest extends BaseFT {
     }
 
     public class BatchWriteRowRunner implements Runnable {
+        // NOTE: must write to the table the test actually created — the name is unique
+        // per run; a hardcoded "TableForFailTest" here only ever worked when a leaked
+        // table with that literal name happened to exist on the instance.
+        final String tableName;
         final int value;
         String errorMessage;
         String errorCode;
 
-        public BatchWriteRowRunner(int value) {
+        public BatchWriteRowRunner(String tableName, int value) {
+            this.tableName = tableName;
             this.value = value;
         }
 
@@ -820,12 +838,12 @@ public class OTSBasicCompaFourTest extends BaseFT {
             primaryKeyList.add(new PrimaryKeyColumn("PK1", PrimaryKeyValue.fromString("blah")));
             PrimaryKey primaryKey = new PrimaryKey(primaryKeyList);
 
-            RowPutChange newRowPutChange = new RowPutChange("TableForFailTest", primaryKey);
+            RowPutChange newRowPutChange = new RowPutChange(tableName, primaryKey);
             newRowPutChange.addColumn(new Column("C1", ColumnValue.fromLong((long) value)));
             batchWriteRowRequest.addRowChange(newRowPutChange);
 
             BatchWriteRowResponse batchWriteRowResult = ots.batchWriteRow(batchWriteRowRequest);
-            List<BatchWriteRowResponse.RowResult> rowResultList = batchWriteRowResult.getRowStatus("TableForFailTest");
+            List<BatchWriteRowResponse.RowResult> rowResultList = batchWriteRowResult.getRowStatus(tableName);
             assertEquals(1, rowResultList.size());
             if (rowResultList.get(0).getError() != null) {
                 this.errorMessage = rowResultList.get(0).getError().getMessage();

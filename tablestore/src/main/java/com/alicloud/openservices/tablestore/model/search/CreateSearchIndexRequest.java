@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.core.utils.NumberUtils;
 import com.alicloud.openservices.tablestore.core.utils.Preconditions;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 import com.alicloud.openservices.tablestore.model.Request;
+import com.alicloud.openservices.tablestore.model.StorageClass;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,8 @@ public class CreateSearchIndexRequest implements Request {
      * <p>After the table is created, this configuration item can be dynamically changed by calling {@link UpdateSearchIndexRequest}.</p>
      */
     private Integer timeToLive;
+
+    private StorageClass storageClass;
 
     public CreateSearchIndexRequest() {
     }
@@ -73,6 +76,15 @@ public class CreateSearchIndexRequest implements Request {
 
     public void setSourceIndexName(String sourceIndexName) {
         this.sourceIndexName = sourceIndexName;
+    }
+
+    public StorageClass getStorageClass() {
+        return storageClass;
+    }
+
+    public CreateSearchIndexRequest setStorageClass(StorageClass storageClass) {
+        this.storageClass = storageClass;
+        return this;
     }
 
     /**

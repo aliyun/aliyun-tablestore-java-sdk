@@ -15,6 +15,7 @@ import com.alicloud.openservices.tablestore.model.search.*;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryRequest;
 import com.alicloud.openservices.tablestore.model.sql.SQLQueryResponse;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
+import com.alicloud.openservices.tablestore.model.memory.*;
 
 /**
  * The access interface for Alibaba Cloud Table Store (TableStore, formerly OTS).
@@ -615,5 +616,397 @@ public interface SyncClientInterface {
 
     // Retrieval operations
     public RetrieveResponse retrieve(RetrieveRequest request) throws TableStoreException, ClientException;
+
+    // Memory Store operations
+    /**
+     * Creates a memory store.
+     *
+     * @param request parameters for the CreateMemoryStore operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default CreateMemoryStoreResponse createMemoryStore(CreateMemoryStoreRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("createMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory store.
+     *
+     * @param request parameters for the GetMemoryStore operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetMemoryStoreResponse getMemoryStore(GetMemoryStoreRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Lists memory stores.
+     *
+     * @param request parameters for the ListMemoryStores operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryStoresResponse listMemoryStores(ListMemoryStoresRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryStores is not implemented by this client");
+    }
+
+    /**
+     * Updates a memory store.
+     *
+     * @param request parameters for the UpdateMemoryStore operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default UpdateMemoryStoreResponse updateMemoryStore(UpdateMemoryStoreRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("updateMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Deletes a memory store.
+     *
+     * @param request parameters for the DeleteMemoryStore operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default DeleteMemoryStoreResponse deleteMemoryStore(DeleteMemoryStoreRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("deleteMemoryStore is not implemented by this client");
+    }
+
+    /**
+     * Adds messages to a memory store for extraction.
+     *
+     * @param request parameters for the AddMemories operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default AddMemoriesResponse addMemories(AddMemoriesRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("addMemories is not implemented by this client");
+    }
+
+    /**
+     * Searches memories in a memory store.
+     *
+     * @param request parameters for the SearchMemories operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default SearchMemoriesResponse searchMemories(SearchMemoriesRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("searchMemories is not implemented by this client");
+    }
+
+    /**
+     * Lists memories in a memory store.
+     *
+     * @param request parameters for the ListMemories operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoriesResponse listMemories(ListMemoriesRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemories is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory by ID.
+     *
+     * @param request parameters for the GetMemory operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetMemoryResponse getMemory(GetMemoryRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getMemory is not implemented by this client");
+    }
+
+    /**
+     * Updates a memory.
+     *
+     * @param request parameters for the UpdateMemory operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default UpdateMemoryResponse updateMemory(UpdateMemoryRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("updateMemory is not implemented by this client");
+    }
+
+    /**
+     * Deletes a memory.
+     *
+     * @param request parameters for the DeleteMemory operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default DeleteMemoryResponse deleteMemory(DeleteMemoryRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("deleteMemory is not implemented by this client");
+    }
+
+    /**
+     * Lists session messages stored for a scope.
+     *
+     * @param request parameters for the ListMemoryStoreMessages operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryStoreMessagesResponse listMemoryStoreMessages(ListMemoryStoreMessagesRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryStoreMessages is not implemented by this client");
+    }
+
+    /**
+     * Lists memory service request records.
+     *
+     * @param request parameters for the ListMemoryStoreRequests operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryStoreRequestsResponse listMemoryStoreRequests(ListMemoryStoreRequestsRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryStoreRequests is not implemented by this client");
+    }
+
+    /**
+     * Gets the task associated with a memory request.
+     *
+     * @param request parameters for the GetMemoryTask operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetMemoryTaskResponse getMemoryTask(GetMemoryTaskRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getMemoryTask is not implemented by this client");
+    }
+
+    /**
+     * Lists memory tasks.
+     *
+     * @param request parameters for the ListMemoryTasks operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryTasksResponse listMemoryTasks(ListMemoryTasksRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryTasks is not implemented by this client");
+    }
+
+    /**
+     * Lists scopes that contain memories in a memory store.
+     *
+     * @param request parameters for the ListMemoryStoreScopes operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryStoreScopesResponse listMemoryStoreScopes(ListMemoryStoreScopesRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryStoreScopes is not implemented by this client");
+    }
+
+    /**
+     * Creates a memory dream task.
+     *
+     * @param request parameters for the CreateMemoryDreamTask operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default CreateMemoryDreamTaskResponse createMemoryDreamTask(CreateMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("createMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Gets a memory dream task.
+     *
+     * @param request parameters for the GetMemoryDreamTask operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetMemoryDreamTaskResponse getMemoryDreamTask(GetMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Lists memory dream tasks.
+     *
+     * @param request parameters for the ListMemoryDreamTasks operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryDreamTasksResponse listMemoryDreamTasks(ListMemoryDreamTasksRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryDreamTasks is not implemented by this client");
+    }
+
+    /**
+     * Cancels a memory dream task.
+     *
+     * @param request parameters for the CancelMemoryDreamTask operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default CancelMemoryDreamTaskResponse cancelMemoryDreamTask(CancelMemoryDreamTaskRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("cancelMemoryDreamTask is not implemented by this client");
+    }
+
+    /**
+     * Lists actions produced by memory dream tasks.
+     *
+     * @param request parameters for the ListMemoryDreamActions operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListMemoryDreamActionsResponse listMemoryDreamActions(ListMemoryDreamActionsRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listMemoryDreamActions is not implemented by this client");
+    }
+
+    /**
+     * Applies actions produced by memory dream tasks.
+     *
+     * @param request parameters for the ApplyMemoryDreamActions operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ApplyMemoryDreamActionsResponse applyMemoryDreamActions(ApplyMemoryDreamActionsRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("applyMemoryDreamActions is not implemented by this client");
+    }
+
+    // File Memory Item operations
+    /**
+     * Adds a file memory item.
+     *
+     * @param request parameters for the AddItem operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default AddItemResponse addItem(AddItemRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("addItem is not implemented by this client");
+    }
+
+    /**
+     * Lists file memory items.
+     *
+     * @param request parameters for the ListItems operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListItemsResponse listItems(ListItemsRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listItems is not implemented by this client");
+    }
+
+    /**
+     * Gets a file memory item.
+     *
+     * @param request parameters for the GetItem operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetItemResponse getItem(GetItemRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getItem is not implemented by this client");
+    }
+
+    /**
+     * Updates a file memory item.
+     *
+     * @param request parameters for the UpdateItem operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default UpdateItemResponse updateItem(UpdateItemRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("updateItem is not implemented by this client");
+    }
+
+    /**
+     * Deletes a file memory item.
+     *
+     * @param request parameters for the DeleteItem operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default DeleteItemResponse deleteItem(DeleteItemRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("deleteItem is not implemented by this client");
+    }
+
+    /**
+     * Lists versions of a file memory item.
+     *
+     * @param request parameters for the ListItemVersions operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default ListItemVersionsResponse listItemVersions(ListItemVersionsRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("listItemVersions is not implemented by this client");
+    }
+
+    /**
+     * Gets a version of a file memory item.
+     *
+     * @param request parameters for the GetItemVersion operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default GetItemVersionResponse getItemVersion(GetItemVersionRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("getItemVersion is not implemented by this client");
+    }
+
+    /**
+     * Redacts a version of a file memory item.
+     *
+     * @param request parameters for the RedactItemVersion operation
+     * @return the result returned by the TableStore service
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default RedactItemVersionResponse redactItemVersion(RedactItemVersionRequest request) throws TableStoreException, ClientException {
+        throw new UnsupportedOperationException("redactItemVersion is not implemented by this client");
+    }
 
 }

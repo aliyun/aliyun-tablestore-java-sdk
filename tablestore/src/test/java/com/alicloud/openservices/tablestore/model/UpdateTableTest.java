@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class UpdateTableTest extends BaseFT {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
 
-    private static final String tableName = "UpdateTableTest";
+    private String tableName;
     private static SyncClientInterface client;
     private static Logger LOG = Logger.getLogger(BatchWriteTest.class.getName());
 
@@ -30,7 +30,12 @@ public class UpdateTableTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(client);
+        tableName = OTSHelper.generateUniqueTableName("UpdateTableTest");
+    }
+
+    @org.junit.After
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(client, tableName);
     }
 
     /**

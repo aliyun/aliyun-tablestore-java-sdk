@@ -4,6 +4,7 @@ import com.alicloud.openservices.tablestore.ClientException;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.TableStoreException;
+import com.alicloud.openservices.tablestore.core.ErrorCode;
 import com.alicloud.openservices.tablestore.core.utils.StringUtils;
 import com.alicloud.openservices.tablestore.model.*;
 import com.alicloud.openservices.tablestore.model.iterator.RowIterator;
@@ -56,6 +57,7 @@ public class SearchIndexSample {
     private static final String TABLE_NAME = "search_index_sample_table";
     private static final String INDEX_NAME = "test_index";
     private static final String INDEX_NAME_SCHEMA_MODIFIED = "test_index_reindex";
+    private static final String INDEX_NAME_IA = "test_index_ia";
     private static final String PRIMARY_KEY_NAME_1 = "pk1";
     private static final String PRIMARY_KEY_NAME_2 = "pk2";
 
@@ -78,6 +80,17 @@ public class SearchIndexSample {
             // Create a SearchIndex
             createSearchIndex(client);
             System.out.println("create search index succeeded.");
+
+            // Create an IA SearchIndex with an independent index name under the same table.
+            createSearchIndexWithIA(client);
+            System.out.println("create IA search index succeeded.");
+            describeSearchIndexStorageClass(client, INDEX_NAME_IA, "after create IA");
+
+            // Switch the independent SearchIndex between IA and Standard.
+            disableSearchIndexIA(client);
+            System.out.println("disable IA search index succeeded.");
+            enableSearchIndexIA(client);
+            System.out.println("enable IA search index succeeded.");
 
             // List all SearchIndexes under the table
             System.out.println(System.currentTimeMillis());
@@ -234,10 +247,41 @@ public class SearchIndexSample {
                 new FieldSchema("Level1_Col3_NestedJson", FieldType.JSON).setJsonType(JsonType.NESTED)
                     .setSubFieldSchemas(Collections.singletonList(new FieldSchema("Level2_Col1_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true)))
             )),
-            new FieldSchema("Col_Flattened", FieldType.FLATTENED).setIndex(true).setStore(false).setEnableSortAndAgg(true)
+            new FieldSchema("Col_Flat_Object", FieldType.FLAT_OBJECT).setIndex(true).setStore(false).setEnableSortAndAgg(true)
         ));
         request.setIndexSchema(indexSchema);
         client.createSearchIndex(request);
+    }
+
+    private static void createSearchIndexWithIA(SyncClient client) {
+        CreateSearchIndexRequest request = new CreateSearchIndexRequest();
+        request.setTableName(TABLE_NAME);
+        request.setIndexName(INDEX_NAME_IA);
+        request.setStorageClass(StorageClass.SC_IA);
+
+        IndexSchema indexSchema = new IndexSchema();
+        indexSchema.setFieldSchemas(Arrays.asList(
+            new FieldSchema("Col_Keyword", FieldType.KEYWORD).setIndex(true).setEnableSortAndAgg(true),
+            new FieldSchema("Col_Long", FieldType.LONG).setIndex(true).setEnableSortAndAgg(true)
+        ));
+        request.setIndexSchema(indexSchema);
+        client.createSearchIndex(request);
+    }
+
+    private static void updateSearchIndexStorageClass(SyncClient client, StorageClass storageClass) {
+        UpdateSearchIndexRequest request = new UpdateSearchIndexRequest(TABLE_NAME, INDEX_NAME_IA);
+        request.setStorageClass(storageClass);
+        client.updateSearchIndex(request);
+
+        describeSearchIndexStorageClass(client, INDEX_NAME_IA, "after update " + storageClass);
+    }
+
+    private static void enableSearchIndexIA(SyncClient client) {
+        updateSearchIndexStorageClass(client, StorageClass.SC_IA);
+    }
+
+    private static void disableSearchIndexIA(SyncClient client) {
+        updateSearchIndexStorageClass(client, StorageClass.SC_STANDARD);
     }
 
     private static void createSearchIndexWithAnalyzer(SyncClient client) {
@@ -304,9 +348,13 @@ public class SearchIndexSample {
     }
 
     private static DescribeSearchIndexResponse describeSearchIndex(SyncClient client) {
+        return describeSearchIndex(client, INDEX_NAME);
+    }
+
+    private static DescribeSearchIndexResponse describeSearchIndex(SyncClient client, String indexName) {
         DescribeSearchIndexRequest request = new DescribeSearchIndexRequest();
         request.setTableName(TABLE_NAME);
-        request.setIndexName(INDEX_NAME);
+        request.setIndexName(indexName);
 
         // If includeSyncStat is set to false, the SyncStat information will not be included in the returned result. Not setting it or setting it to true will both return SyncStat normally.
         // request.setIncludeSyncStat(false);
@@ -315,14 +363,41 @@ public class SearchIndexSample {
         return response;
     }
 
+    private static void describeSearchIndexStorageClass(SyncClient client, String indexName, String label) {
+        DescribeSearchIndexResponse response = describeSearchIndex(client, indexName);
+        System.out.println(label + ", index: " + indexName + ", StorageClass: " + response.getStorageClass());
+    }
+
     private static void deleteSearchIndex(SyncClient client) {
         DeleteSearchIndexRequest request = new DeleteSearchIndexRequest();
-        request.setTableName(TABLE_NAME);
-        request.setIndexName(INDEX_NAME);
-        client.deleteSearchIndex(request);
 
-        request.setIndexName(INDEX_NAME_SCHEMA_MODIFIED);
-        client.deleteSearchIndex(request);
+        try {
+            request.setTableName(TABLE_NAME);
+            request.setIndexName(INDEX_NAME);
+            client.deleteSearchIndex(request);
+        } catch (TableStoreException e) {
+            if (!e.getErrorCode().equals(ErrorCode.OBJECT_NOT_EXIST)) {
+                throw e;
+            }
+        }
+
+        try {
+            request.setIndexName(INDEX_NAME_SCHEMA_MODIFIED);
+            client.deleteSearchIndex(request);
+        } catch (TableStoreException e) {
+            if (!e.getErrorCode().equals(ErrorCode.OBJECT_NOT_EXIST)) {
+                throw e;
+            }
+        }
+
+        try {
+            request.setIndexName(INDEX_NAME_IA);
+            client.deleteSearchIndex(request);
+        } catch (TableStoreException e) {
+            if (!e.getErrorCode().equals(ErrorCode.OBJECT_NOT_EXIST)) {
+                throw e;
+            }
+        }
     }
 
     private static void deleteTable(SyncClient client) {

@@ -72,12 +72,13 @@ public class PlainBufferCodedInputStreamTest {
                 }
                 case PlainBufferConsts.VT_BOOLEAN:
                 {
-                    if (isPK) {
-                        throw new IOException("Unsupported pk type: " + type);
-                    }
                     final boolean value = random.nextInt(2) == 1;
                     output.writeBoolean(value);
-                    values.add(ColumnValue.fromBoolean(value));
+                    if (isPK) {
+                        pkValues.add(PrimaryKeyValue.fromBoolean(value));
+                    } else {
+                        values.add(ColumnValue.fromBoolean(value));
+                    }
                     break;
                 }
                 case PlainBufferConsts.VT_DOUBLE:
@@ -133,6 +134,7 @@ public class PlainBufferCodedInputStreamTest {
             PlainBufferConsts.VT_INTEGER,
             PlainBufferConsts.VT_BLOB,
             PlainBufferConsts.VT_STRING,
+            PlainBufferConsts.VT_BOOLEAN,
             PlainBufferConsts.VT_INF_MAX,
             PlainBufferConsts.VT_INF_MIN
     };

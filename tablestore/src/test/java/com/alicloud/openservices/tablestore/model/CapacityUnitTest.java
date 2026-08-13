@@ -22,6 +22,10 @@ public class CapacityUnitTest extends BaseFT {
     private static SyncClientInterface client;
     private static Logger LOG = Logger.getLogger(CapacityUnitTest.class.getName());
 
+    // Every table a test creates, so teardown can delete it even when the test fails before its inline
+    // delete. Without this, failed CapacityUnitTest<ts> tables leak and accumulate against the 64-table quota.
+    private final List<String> createdTables = new ArrayList<String>();
+
 
     @BeforeClass
     public static void classBefore() throws JsonSyntaxException, IOException {
@@ -30,10 +34,22 @@ public class CapacityUnitTest extends BaseFT {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(client);
+    }
+
+    @After
+    public void teardown() {
+        for (String t : createdTables) {
+            try {
+                OTSHelper.deleteTable(client, t);
+            } catch (Exception e) {
+                // already deleted by the test body, or never fully created — safe to ignore
+            }
+        }
+        createdTables.clear();
     }
 
     private void CreateTable(SyncClientInterface otsForPublic, String tableName, Map<String, PrimaryKeyType> pk) throws Exception {
+        createdTables.add(tableName);
         try {
             OTSHelper.createTable(otsForPublic, tableName, pk);
             Thread.sleep(MILLISECONDS_UNTIL_TABLE_READY);
@@ -86,6 +102,8 @@ public class CapacityUnitTest extends BaseFT {
         GetRowResponse result = OTSHelper.getRowForAll(client, modifiedTableName, new PrimaryKey(pk));
         CapacityUnit cu = result.getConsumedCapacity().getCapacityUnit();
         assertCapacityUnitEqual(cu, new CapacityUnit(1, 0));
+
+        OTSHelper.deleteTable(client, modifiedTableName);
     }
 
     /**

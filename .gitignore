@@ -15,3 +15,5 @@ src/test/resources/conf.properties
 *.iml
 .DS_Store
 /protoc
+dependency-reduced-pom.xml
+opencode.json

@@ -44,6 +44,10 @@ public class PlainBufferBuilder {
                 size += value.asBinary().length;
                 break;
             }
+            case BOOLEAN: {
+                size += 1;
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported primary key type: " + value.getType());
 
@@ -267,6 +271,12 @@ public class PlainBufferBuilder {
                 output.writeBytes(rawData);
                 break;
             }
+            case BOOLEAN: {
+                output.writeRawLittleEndian32(1 + 1); // type + value
+                output.writeRawByte(PlainBufferConsts.VT_BOOLEAN);
+                output.writeBoolean(value.asBoolean());
+                break;
+            }
             default:
                 throw new IOException("Bug: unsupported primary key type: " + value.getType());
         }
@@ -354,7 +364,28 @@ public class PlainBufferBuilder {
                         break;
                     case INCREMENT:
                         cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.INCREMENT));
-                    break;
+                        break;
+                    case JSON_SET:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_SET));
+                        break;
+                    case JSON_INSERT:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_INSERT));
+                        break;
+                    case JSON_REPLACE:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_REPLACE));
+                        break;
+                    case JSON_REMOVE:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_REMOVE));
+                        break;
+                    case JSON_ARRAY_APPEND:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_ARRAY_APPEND));
+                        break;
+                    case JSON_ARRAY_INSERT:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_ARRAY_INSERT));
+                        break;
+                    case JSON_ARRAY_REMOVE:
+                        cells.add(PlainBufferConversion.toPlainBufferCell(column.getFirst(), false, true, true, PlainBufferConsts.JSON_ARRAY_REMOVE));
+                        break;
                 }
             }
         }

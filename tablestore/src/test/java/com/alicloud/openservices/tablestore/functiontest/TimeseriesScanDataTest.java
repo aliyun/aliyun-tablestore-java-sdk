@@ -17,7 +17,8 @@ import static org.junit.Assert.*;
 
 public class TimeseriesScanDataTest {
 
-    static String testTable = "SDKTestScanTimeseriesData";
+    // unique per run: fixed names get deleted by concurrent gate shards on the shared instance
+    static String testTable = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("SDKTestScanTimeseriesData");
     static TimeseriesClient client = null;
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeseriesTest.class);
@@ -40,19 +41,16 @@ public class TimeseriesScanDataTest {
         client = new TimeseriesClient(endPoint, accessId, accessKey, instanceName);
 
         if (createTableBeforeTest) {
-            ListTimeseriesTableResponse listTimeseriesTableResponse = client.listTimeseriesTable();
-            for (String table : listTimeseriesTableResponse.getTimeseriesTableNames()) {
-                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(table));
-            }
-
+            // only create our own uniquely-named table; never wipe the instance
+            // (parallel gate shards share the instance)
             CreateTimeseriesTableRequest request = new CreateTimeseriesTableRequest(new TimeseriesTableMeta(testTable));
             client.createTimeseriesTable(request);
-            LOG.warn("sleep " + waitTableInit + "ms after create table...");
-            try {
-                Thread.sleep(waitTableInit);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            LOG.warn("waiting until timeseries table {} is served after create...", testTable);
+            com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesTableReady(client, testTable);
+            // scan-task readiness lags behind CREATED status: split requests keep failing with
+            // "still being creating" for a while, so poll it explicitly before running tests
+            LOG.warn("waiting until timeseries table {} is ready for split scan tasks...", testTable);
+            com.alicloud.openservices.tablestore.common.OTSHelper.waitForTimeseriesSplitReady(client, testTable, 300 * 1000);
 
             loadData();
         }
@@ -61,9 +59,10 @@ public class TimeseriesScanDataTest {
     @AfterClass
     public static void afterClass() {
         if (deleteTableAfterTest) {
-            ListTimeseriesTableResponse listTimeseriesTableResponse = client.listTimeseriesTable();
-            for (String table : listTimeseriesTableResponse.getTimeseriesTableNames()) {
-                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(table));
+            try {
+                client.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(testTable));
+            } catch (Exception e) {
+                LOG.warn("delete table {} failed in afterClass: {}", testTable, e.getMessage());
             }
         }
         client.shutdown();

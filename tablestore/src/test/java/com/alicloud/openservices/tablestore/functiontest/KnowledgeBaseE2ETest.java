@@ -1,6 +1,7 @@
 package com.alicloud.openservices.tablestore.functiontest;
 
 import com.alicloud.openservices.tablestore.SyncClient;
+import com.alicloud.openservices.tablestore.common.OTSHelper;
 import com.alicloud.openservices.tablestore.common.ServiceSettings;
 import com.alicloud.openservices.tablestore.common.Utils;
 import com.alicloud.openservices.tablestore.model.knowledgebase.*;
@@ -67,7 +68,7 @@ public class KnowledgeBaseE2ETest {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -80,7 +81,7 @@ public class KnowledgeBaseE2ETest {
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setDescription("Test knowledge base with description");
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -92,7 +93,7 @@ public class KnowledgeBaseE2ETest {
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(true);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -104,7 +105,7 @@ public class KnowledgeBaseE2ETest {
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(false);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -116,7 +117,7 @@ public class KnowledgeBaseE2ETest {
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setTags(Arrays.asList("tag1", "tag2", "tag3"));
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -133,7 +134,7 @@ public class KnowledgeBaseE2ETest {
         metadata.add(new MetadataField("score", "double"));
         request.setMetadata(metadata);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -152,7 +153,7 @@ public class KnowledgeBaseE2ETest {
         metadata.add(new MetadataField("priority", "long"));
         request.setMetadata(metadata);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -163,7 +164,7 @@ public class KnowledgeBaseE2ETest {
         String kbName = "a"; // 1 character
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -178,7 +179,7 @@ public class KnowledgeBaseE2ETest {
         }
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName.toString());
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName.toString());
 
         assertEquals("SUCCESS", response.getCode());
@@ -189,7 +190,7 @@ public class KnowledgeBaseE2ETest {
         String kbName = "test_kb_with_underscore";
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -200,7 +201,7 @@ public class KnowledgeBaseE2ETest {
         String kbName = "test123kb456";
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
 
-        CreateKnowledgeBaseResponse response = client.createKnowledgeBase(request);
+        CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
         assertEquals("SUCCESS", response.getCode());
@@ -211,10 +212,10 @@ public class KnowledgeBaseE2ETest {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
 
-        client.createKnowledgeBase(request);
+        OTSHelper.createKnowledgeBaseWithRetry(client, request);
         createdKnowledgeBases.add(kbName);
 
-        // Try to create again with same name - should fail
+        // Try to create again with same name - should fail (no retry: any error must surface)
         client.createKnowledgeBase(request);
     }
 
@@ -226,7 +227,7 @@ public class KnowledgeBaseE2ETest {
     public void testDeleteExistingKnowledgeBase() {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
 
         DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
         deleteRequest.setKnowledgeBaseName(kbName);
@@ -245,7 +246,7 @@ public class KnowledgeBaseE2ETest {
         createRequest.setDescription("KB to delete");
         createRequest.setSubspace(true);
         createRequest.setTags(Arrays.asList("delete", "test"));
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
 
         DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
         deleteRequest.setKnowledgeBaseName(kbName);
@@ -268,7 +269,7 @@ public class KnowledgeBaseE2ETest {
     public void testDeleteAlreadyDeletedKnowledgeBase() {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
 
         DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
         deleteRequest.setKnowledgeBaseName(kbName);
@@ -286,7 +287,7 @@ public class KnowledgeBaseE2ETest {
     public void testDescribeExistingKnowledgeBase() {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         DescribeKnowledgeBaseRequest describeRequest = new DescribeKnowledgeBaseRequest();
@@ -304,7 +305,7 @@ public class KnowledgeBaseE2ETest {
         String description = "Test description";
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
         createRequest.setDescription(description);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         DescribeKnowledgeBaseRequest describeRequest = new DescribeKnowledgeBaseRequest();
@@ -320,7 +321,7 @@ public class KnowledgeBaseE2ETest {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
         createRequest.setSubspace(true);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         DescribeKnowledgeBaseRequest describeRequest = new DescribeKnowledgeBaseRequest();
@@ -337,7 +338,7 @@ public class KnowledgeBaseE2ETest {
         List<String> tags = Arrays.asList("tag1", "tag2");
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
         createRequest.setTags(tags);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         DescribeKnowledgeBaseRequest describeRequest = new DescribeKnowledgeBaseRequest();
@@ -353,7 +354,7 @@ public class KnowledgeBaseE2ETest {
     public void testDescribeKnowledgeBaseResponseContainsTimestamps() {
         String kbName = generateKbName();
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         DescribeKnowledgeBaseRequest describeRequest = new DescribeKnowledgeBaseRequest();
@@ -392,7 +393,7 @@ public class KnowledgeBaseE2ETest {
         for (int i = 0; i < 3; i++) {
             String kbName = generateKbName();
             CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-            client.createKnowledgeBase(createRequest);
+            OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
             createdKnowledgeBases.add(kbName);
         }
 
@@ -411,7 +412,7 @@ public class KnowledgeBaseE2ETest {
         for (int i = 0; i < 5; i++) {
             String kbName = generateKbName();
             CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-            client.createKnowledgeBase(createRequest);
+            OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
             createdKnowledgeBases.add(kbName);
         }
 
@@ -445,7 +446,7 @@ public class KnowledgeBaseE2ETest {
         CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
         createRequest.setDescription("Test KB");
         createRequest.setTags(Arrays.asList("test"));
-        client.createKnowledgeBase(createRequest);
+        OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
         createdKnowledgeBases.add(kbName);
 
         ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();

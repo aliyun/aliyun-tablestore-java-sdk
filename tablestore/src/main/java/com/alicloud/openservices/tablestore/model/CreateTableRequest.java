@@ -50,6 +50,11 @@ public class CreateTableRequest implements Request {
     private OptionalValue<Boolean> enableLocalTxn = new OptionalValue<Boolean>("EnableLocalTxn");
 
     /**
+     * The tiered storage policy of the table, controlling how data is migrated between hot and cold storage tiers.
+     */
+    private OptionalValue<TieredStoragePolicy> storagePolicy = new OptionalValue<TieredStoragePolicy>("StoragePolicy");
+
+    /**
      * Initializes a CreateTableRequest instance.
      * <p>The table's reserved throughput and configuration will both use default values. If there is a need for customization, the corresponding setter functions can be called.
      * <p>By default, the table will not perform any pre-splitting. If you need to configure the table partitions, you can call the corresponding setting function.
@@ -258,5 +263,26 @@ public class CreateTableRequest implements Request {
             throw new IllegalStateException("The value of enableLocalTxn is not set.");
         }
         return enableLocalTxn.getValue();
+    }
+
+    /**
+     * Get the tiered storage policy of the table.
+     *
+     * @return The tiered storage policy, or null if not set.
+     */
+    public TieredStoragePolicy getStoragePolicy() {
+        return storagePolicy.getValue();
+    }
+
+    /**
+     * Set the tiered storage policy for the table.
+     * The policy controls how data is migrated between hot and cold storage tiers,
+     * either by timestamp or by a custom time column.
+     *
+     * @param storagePolicy The tiered storage policy for the table.
+     */
+    public void setStoragePolicy(TieredStoragePolicy storagePolicy) {
+        Preconditions.checkArgument(storagePolicy != null, "The storage policy should not be null.");
+        this.storagePolicy.setValue(storagePolicy);
     }
 }

@@ -49,6 +49,15 @@ public class TestPrimaryKeyValue {
 
             }
         }
+
+        if (type != PrimaryKeyType.BOOLEAN) {
+            try {
+                v.asBoolean();
+                fail();
+            } catch (IllegalStateException e) {
+
+            }
+        }
     }
 
     @Test
@@ -74,6 +83,21 @@ public class TestPrimaryKeyValue {
         PrimaryKeyValue v = PrimaryKeyValue.fromBinary(value);
         assertArrayEquals(v.asBinary(), value);
         checkType(v);
+    }
+
+    @Test
+    public void testBoolean() {
+        PrimaryKeyValue t = PrimaryKeyValue.fromBoolean(true);
+        assertEquals(PrimaryKeyType.BOOLEAN, t.getType());
+        assertTrue(t.asBoolean());
+        assertEquals("true", t.toString());
+        checkType(t);
+
+        PrimaryKeyValue f = PrimaryKeyValue.fromBoolean(false);
+        assertEquals(PrimaryKeyType.BOOLEAN, f.getType());
+        assertFalse(f.asBoolean());
+        assertEquals("false", f.toString());
+        checkType(f);
     }
 
     private void checkEquals(PrimaryKeyValue v1, PrimaryKeyValue v2) {
@@ -106,6 +130,15 @@ public class TestPrimaryKeyValue {
     }
 
     @Test
+    public void testEquals_Boolean() {
+        checkEquals(PrimaryKeyValue.fromBoolean(true), PrimaryKeyValue.fromBoolean(true));
+        checkEquals(PrimaryKeyValue.fromBoolean(false), PrimaryKeyValue.fromBoolean(false));
+        assertTrue(!PrimaryKeyValue.fromBoolean(true).equals(PrimaryKeyValue.fromBoolean(false)));
+        assertTrue(!PrimaryKeyValue.fromBoolean(true).equals(PrimaryKeyValue.fromLong(1)));
+        assertTrue(!PrimaryKeyValue.fromBoolean(true).equals(PrimaryKeyValue.fromString("true")));
+    }
+
+    @Test
     public void testEquals_AUTOINCREMENT() {
         checkEquals(PrimaryKeyValue.AUTO_INCREMENT, PrimaryKeyValue.AUTO_INCRMENT);
     }
@@ -134,6 +167,15 @@ public class TestPrimaryKeyValue {
         if (type != PrimaryKeyType.BINARY) {
             try {
                 v.compareTo(PrimaryKeyValue.fromBinary(new byte[]{0x1, 0x2}));
+                fail();
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+
+        if (type != PrimaryKeyType.BOOLEAN) {
+            try {
+                v.compareTo(PrimaryKeyValue.fromBoolean(true));
                 fail();
             } catch (IllegalArgumentException e) {
 
@@ -175,6 +217,17 @@ public class TestPrimaryKeyValue {
     }
 
     @Test
+    public void testCompareTo_Boolean() {
+        PrimaryKeyValue value = PrimaryKeyValue.fromBoolean(false);
+        assertTrue(value.compareTo(PrimaryKeyValue.fromBoolean(false)) == 0);
+        assertTrue(value.compareTo(PrimaryKeyValue.fromBoolean(true)) < 0);
+        assertTrue(PrimaryKeyValue.fromBoolean(true).compareTo(PrimaryKeyValue.fromBoolean(false)) > 0);
+        assertTrue(PrimaryKeyValue.fromBoolean(true).compareTo(PrimaryKeyValue.fromBoolean(true)) == 0);
+
+        compareWithOtherType(value);
+    }
+
+    @Test
     public void testFromColumn() {
         ColumnValue column = ColumnValue.fromString("hello world");
         PrimaryKeyValue pk = PrimaryKeyValue.fromColumn(column);
@@ -188,15 +241,11 @@ public class TestPrimaryKeyValue {
         pk = PrimaryKeyValue.fromColumn(column);
         assertEquals(pk.asLong(), column.asLong());
 
-        column = ColumnValue.fromDouble(1024);
-        try {
-            PrimaryKeyValue.fromColumn(column);
-            fail();
-        } catch(IllegalArgumentException e) {
-
-        }
-
         column = ColumnValue.fromBoolean(false);
+        pk = PrimaryKeyValue.fromColumn(column);
+        assertEquals(pk.asBoolean(), column.asBoolean());
+
+        column = ColumnValue.fromDouble(1024);
         try {
             PrimaryKeyValue.fromColumn(column);
             fail();
@@ -231,6 +280,7 @@ public class TestPrimaryKeyValue {
         assertEquals(PrimaryKeyValue.fromString("abc").getDataSize(), 3);
         assertEquals(PrimaryKeyValue.fromBinary(new byte[]{0x0, 0x1, 0x2}).getDataSize(), 3);
         assertEquals(8, PrimaryKeyValue.fromLong(100).getDataSize());
+        assertEquals(1, PrimaryKeyValue.fromBoolean(true).getDataSize());
     }
 
     @Test

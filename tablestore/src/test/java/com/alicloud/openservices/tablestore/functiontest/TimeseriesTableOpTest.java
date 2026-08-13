@@ -21,7 +21,8 @@ import static org.junit.Assert.*;
 
 public class TimeseriesTableOpTest {
 
-    static String testTable = "SDKTestTimeseriesTableOperation";
+    // unique per run: avoid collisions between concurrent gate runs on the shared instance
+    static String testTable = com.alicloud.openservices.tablestore.common.OTSHelper.generateUniqueTableName("SDKTestTimeseriesTableOperation");
 
     static TimeseriesClient client = null;
 
@@ -38,6 +39,8 @@ public class TimeseriesTableOpTest {
 
     @AfterClass
     public static void afterClass() {
+        // idempotent: avoid leaking the uniquely-named table if a test failed mid-way
+        deleteTable(testTable);
         client.shutdown();
     }
 

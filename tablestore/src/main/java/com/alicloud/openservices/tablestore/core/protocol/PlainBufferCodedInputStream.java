@@ -97,6 +97,10 @@ public class PlainBufferCodedInputStream {
                 primaryKeyValue = PrimaryKeyValue.fromString(PlainBufferInputStream.bytes2UTFString(originBytes), originBytes);
                 break;
             }
+            case VT_BOOLEAN: {
+                primaryKeyValue = PrimaryKeyValue.fromBoolean(input.readBoolean());
+                break;
+            }
             case VT_INF_MAX: {
                 primaryKeyValue = PrimaryKeyValue.INF_MAX;
                 break;

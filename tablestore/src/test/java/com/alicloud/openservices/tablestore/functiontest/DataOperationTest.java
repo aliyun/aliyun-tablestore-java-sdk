@@ -28,7 +28,7 @@ import com.google.gson.JsonSyntaxException;
 
 public class DataOperationTest extends BaseFT{
 
-    private static String tableName = "TableOptionsFunctiontest";
+    private String tableName;
     
     private static SyncClientInterface ots;
     
@@ -47,12 +47,12 @@ public class DataOperationTest extends BaseFT{
     @Before
     public void setup() throws Exception {
         // Clean up the environment
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("TableOptionsFunctiontest");
     }
     
     @After
-    public void teardown() {
-        
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
     }
     
     /**

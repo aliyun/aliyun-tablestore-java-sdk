@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.aliyun.openservices</groupId>
   <artifactId>tablestore</artifactId>
-  <version>5.17.11</version>
+  <version>5.17.13</version>
   <packaging>jar</packaging>
   <name>AliCloud TableStore SDK for Java</name>
   <parent>
@@ -12,6 +12,24 @@
     <version>1.0.3</version>
   </parent>
   <description>Aliyun Open Services SDK for Java Copyright (C) Alibaba Cloud Computing All rights reserved. 版权所有 （C）阿里云计算有限公司 http://www.aliyun.com</description>
+  <properties>
+    <!-- Live-OTS integration tests: they need a real TableStore instance and a filled-in           -->
+    <!-- src/test/resources/conf.properties. Single source of truth shared by the fast unit gate    -->
+    <!-- (`mvn test`, which EXCLUDES these) and the `integration-test` profile                      -->
+    <!-- (`mvn test -Pintegration-test`, which runs ONLY these). Comma-separated Ant patterns.      -->
+    <!-- Whole-package globs cover functiontest/functionTest/smoketest/ecosystem (and the           -->
+    <!-- tunnel/timestream functiontest dirs); writer/timeserieswriter integration tests are the    -->
+    <!-- Test*-prefixed ones (their unittest/mocktest siblings are *Test-suffixed and stay in the   -->
+    <!-- gate); the model/* and core/* live-OTS classes are enumerated because their packages also  -->
+    <!-- hold pure-unit tests.                                                                     -->
+    <integration.tests>**/functiontest/*.java,**/functionTest/*.java,**/smoketest/*.java,**/ecosystem/*.java,**/writer/Test*.java,**/timeserieswriter/Test*.java,**/model/BatchWriteTest.java,**/model/CapacityUnitTest.java,**/model/CreateTableTest.java,**/model/DeleteRowTest.java,**/model/GetRowTest.java,**/model/PutRowTest.java,**/model/UnifiedConditionalUpdateTest.java,**/model/UnifiedFilterAdvanceTest.java,**/model/UnifiedFilterRestrictionAndParamCheckingTest.java,**/model/UpdateRowTest.java,**/model/UpdateTableTest.java,**/core/ResourceManagerTest.java</integration.tests>
+    <!-- Overridable surefire report location. Surefire 3.2.2's reportsDirectory has no user
+         property, so this indirection lets a CI system that only scans <repo root>/target/
+         surefire-reports redirect the reports of this multi-module build via
+         -Dsurefire.reports.dir=$(pwd)/target/surefire-reports. The default keeps the standard
+         per-module path for local runs. -->
+    <surefire.reports.dir>${project.build.directory}/surefire-reports</surefire.reports.dir>
+  </properties>
   <profiles>
     <profile>
       <id>java8-doclint-disabled</id>
@@ -21,6 +39,33 @@
       <properties>
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
       </properties>
+    </profile>
+    <!-- `mvn test -Pintegration-test` runs ONLY the live-OTS integration tests (needs a real     -->
+    <!-- TableStore instance + conf.properties). Inverts the gate's exclude into an include.       -->
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-test</id>
+                <configuration>
+                  <excludes combine.self="override">
+                    <exclude>**/examples/*.java</exclude>
+                    <exclude>**/integration/*.java</exclude>
+                  </excludes>
+                  <includes>
+                    <include>${integration.tests}</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
   <scm>
@@ -179,10 +224,11 @@
         <version>3.2.2</version>
         <configuration>
           <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+          <reportsDirectory>${surefire.reports.dir}</reportsDirectory>
         </configuration>
         <executions>
           <execution>
-            <id>run-test</id>
+            <id>default-test</id>
             <phase>test</phase>
             <goals>
               <goal>test</goal>
@@ -191,6 +237,9 @@
               <excludes>
                 <exclude>**/integration/*.java</exclude>
                 <exclude>**/examples/*.java</exclude>
+                <!-- Keep the default gate fast: live-OTS integration tests are opt-in via
+                     `mvn test -Pintegration-test`. -->
+                <exclude>${integration.tests}</exclude>
               </excludes>
             </configuration>
           </execution>

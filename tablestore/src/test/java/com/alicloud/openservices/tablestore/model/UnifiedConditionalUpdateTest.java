@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class UnifiedConditionalUpdateTest {
     private static final int MILLISECONDS_UNTIL_TABLE_READY = 10 * 1000;
     
-    private static String tableName = "conditional_update_test_table";
+    private String tableName;
 
     private static SyncClientInterface ots;
     private static Logger LOG = Logger.getLogger(UnifiedConditionalUpdateTest.class.getName());
@@ -41,7 +41,12 @@ public class UnifiedConditionalUpdateTest {
 
     @Before
     public void setup() throws Exception {
-        OTSHelper.deleteAllTable(ots);
+        tableName = OTSHelper.generateUniqueTableName("conditional_update_test_table");
+    }
+
+    @org.junit.After
+    public void teardown() throws Exception {
+        OTSHelper.deleteTablesByNames(ots, tableName);
     }
 
     @Test

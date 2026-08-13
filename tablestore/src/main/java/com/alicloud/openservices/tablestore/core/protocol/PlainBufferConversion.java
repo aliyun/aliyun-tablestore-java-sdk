@@ -38,7 +38,8 @@ public class PlainBufferConversion {
         }
 
         if (cell.hasCellType() &&
-                cell.getCellType() != PlainBufferConsts.INCREMENT) {
+                cell.getCellType() != PlainBufferConsts.INCREMENT &&
+                !PlainBufferConsts.isJsonUpdateOp(cell.getCellType())) {
             throw new IOException("The cell should not has type: " + cell);
         }
 

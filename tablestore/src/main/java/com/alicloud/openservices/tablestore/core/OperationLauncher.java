@@ -134,13 +134,17 @@ public abstract class OperationLauncher<Req, Res> {
     {
         if (logger.isDebugEnabled()) {
             logger.debug("Operation: {}, RequestMessage: {}, TraceId: {}",
-                    actionURI, message, traceLogger.getTraceId());
+                    actionURI, formatRequestMessageForLog(message), traceLogger.getTraceId());
         }
         List<ResponseHandler> responseHandlers = new ArrayList<>();
         responseHandlers.add(new OTSDeflateResponseHandler());
         responseHandlers.add(new ErrorJsonResponseHandler());
 
         asyncInvokePostInternal(actionURI, queryParameters, message.getBytes(StandardCharsets.UTF_8), traceLogger, responseHandlers, consumer, callback);
+    }
+
+    protected String formatRequestMessageForLog(String message) {
+        return message;
     }
 
     private void asyncInvokePostInternal(

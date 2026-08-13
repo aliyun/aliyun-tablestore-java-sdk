@@ -122,6 +122,9 @@ public class TunnelProtocolBuilder {
         TunnelServiceApi.DescribeTunnelRequest.Builder builder = TunnelServiceApi.DescribeTunnelRequest.newBuilder();
         builder.setTableName(request.getTableName());
         builder.setTunnelName(request.getTunnelName());
+        if (request.getTunnelId() != null) {
+            builder.setTunnelId(request.getTunnelId());
+        }
         return builder.build();
     }
 
@@ -129,6 +132,9 @@ public class TunnelProtocolBuilder {
         TunnelServiceApi.DeleteTunnelRequest.Builder builder = TunnelServiceApi.DeleteTunnelRequest.newBuilder();
         builder.setTableName(request.getTableName());
         builder.setTunnelName(request.getTunnelName());
+        if (request.getTunnelId() != null) {
+            builder.setTunnelId(request.getTunnelId());
+        }
         return builder.build();
     }
 
