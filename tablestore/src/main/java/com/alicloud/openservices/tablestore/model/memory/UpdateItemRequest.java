@@ -3,19 +3,20 @@ package com.alicloud.openservices.tablestore.model.memory;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 
 public class UpdateItemRequest extends ItemRequest {
-    private String path;
+    private String itemId;
     private String content;
-    private String newPath;
+    private String path;
+    private ItemPrecondition precondition;
     private Boolean overwrite;
-    private String expectedSha256;
     private String sessionId;
+    private String view;
 
     public UpdateItemRequest() {
     }
 
-    public UpdateItemRequest(String memoryStoreName, Scope scope, String path) {
+    public UpdateItemRequest(String memoryStoreName, Scope scope, String itemId) {
         super(memoryStoreName, scope);
-        this.path = path;
+        this.itemId = itemId;
     }
 
     @Override
@@ -39,12 +40,12 @@ public class UpdateItemRequest extends ItemRequest {
         this.content = content;
     }
 
-    public String getNewPath() {
-        return newPath;
+    public ItemPrecondition getPrecondition() {
+        return precondition;
     }
 
-    public void setNewPath(String newPath) {
-        this.newPath = newPath;
+    public void setPrecondition(ItemPrecondition precondition) {
+        this.precondition = precondition;
     }
 
     public Boolean getOverwrite() {
@@ -55,19 +56,27 @@ public class UpdateItemRequest extends ItemRequest {
         this.overwrite = overwrite;
     }
 
-    public String getExpectedSha256() {
-        return expectedSha256;
-    }
-
-    public void setExpectedSha256(String expectedSha256) {
-        this.expectedSha256 = expectedSha256;
-    }
-
     public String getSessionId() {
         return sessionId;
     }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 }

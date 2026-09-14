@@ -8,9 +8,15 @@ import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.model.NoRetryStrategy;
 import com.alicloud.openservices.tablestore.model.memory.AddItemRequest;
 import com.alicloud.openservices.tablestore.model.memory.AddItemResponse;
+import com.alicloud.openservices.tablestore.model.memory.DeleteItemRequest;
+import com.alicloud.openservices.tablestore.model.memory.DeleteItemResponse;
+import com.alicloud.openservices.tablestore.model.memory.ItemPrecondition;
+import com.alicloud.openservices.tablestore.model.memory.MemoryConstants;
 import com.alicloud.openservices.tablestore.model.memory.Scope;
 import com.alicloud.openservices.tablestore.model.memory.SearchMemoriesRequest;
 import com.alicloud.openservices.tablestore.model.memory.SearchMemoriesResponse;
+import com.alicloud.openservices.tablestore.model.memory.UpdateItemRequest;
+import com.alicloud.openservices.tablestore.model.memory.UpdateItemResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
@@ -112,6 +118,70 @@ public class MemoryJsonOperationTransportTest {
                 JsonObject body = new JsonParser().parse(server.getBodies().get(0)).getAsJsonObject();
                 assertEquals("memoryfile", body.get("type").getAsString());
                 assertEquals("", body.get("content").getAsString());
+            } finally {
+                client.shutdown();
+            }
+        }
+    }
+
+    @Test
+    public void sendsRevisedUpdateItemContract() throws Exception {
+        ResponseSpec response = ResponseSpec.success("transport-update-item-1",
+                "{\"type\":\"memoryfile\",\"itemId\":\"item-1\",\"scope\":{" +
+                        "\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
+                        "\"runId\":\"run\"},\"path\":\"/renamed.md\",\"content\":\"\"," +
+                        "\"contentSha256\":\"sha\",\"contentSizeBytes\":0,\"latestSeq\":2," +
+                        "\"latestVersionId\":\"fmver-2\",\"createdAt\":\"c\",\"updatedAt\":\"u\"}");
+        try (TestServer server = new TestServer(response)) {
+            AsyncClient client = newClient(server, false);
+            try {
+                UpdateItemRequest request = new UpdateItemRequest("store", SCOPE, "item-1");
+                request.setContent("");
+                request.setPath("/renamed.md");
+                request.setPrecondition(new ItemPrecondition("fmver-1"));
+                request.setOverwrite(false);
+                request.setView(MemoryConstants.ITEM_VIEW_FULL);
+
+                UpdateItemResponse result = client.updateItem(request, null).get(5, TimeUnit.SECONDS);
+
+                assertEquals("app", result.getScope().getAppId());
+                assertEquals("fmver-2", result.getLatestVersionId());
+                assertEquals("/UpdateItem", server.getPaths().get(0));
+                JsonObject body = new JsonParser().parse(server.getBodies().get(0)).getAsJsonObject();
+                assertEquals("item-1", body.get("itemId").getAsString());
+                assertEquals("", body.get("content").getAsString());
+                assertEquals("/renamed.md", body.get("path").getAsString());
+                assertEquals("fmver-1",
+                        body.getAsJsonObject("precondition").get("expectedVersionId").getAsString());
+                assertFalse(body.get("overwrite").getAsBoolean());
+                assertFalse(body.has("newPath"));
+                assertFalse(body.has("expectedSha256"));
+            } finally {
+                client.shutdown();
+            }
+        }
+    }
+
+    @Test
+    public void sendsRangedDeleteItemContract() throws Exception {
+        ResponseSpec response = ResponseSpec.success("transport-delete-item-1",
+                "{\"type\":\"memoryfile\",\"taskId\":\"fmdel-1\",\"status\":\"pending\"}");
+        try (TestServer server = new TestServer(response)) {
+            AsyncClient client = newClient(server, false);
+            try {
+                Scope wildcardScope = new Scope("app", "tenant", "*", "*");
+                DeleteItemRequest request = new DeleteItemRequest("store", wildcardScope);
+                request.setPathPrefix("/profile/");
+
+                DeleteItemResponse result = client.deleteItem(request, null).get(5, TimeUnit.SECONDS);
+
+                assertEquals("fmdel-1", result.getTaskId());
+                assertEquals(MemoryConstants.ITEM_DELETE_STATUS_PENDING, result.getStatus());
+                assertEquals("/DeleteItem", server.getPaths().get(0));
+                JsonObject body = new JsonParser().parse(server.getBodies().get(0)).getAsJsonObject();
+                assertEquals("*", body.getAsJsonObject("scope").get("agentId").getAsString());
+                assertEquals("*", body.getAsJsonObject("scope").get("runId").getAsString());
+                assertEquals("/profile/", body.get("pathPrefix").getAsString());
             } finally {
                 client.shutdown();
             }

@@ -132,7 +132,7 @@ public class SingleColumnValueRegexFilter extends ColumnValueFilter {
      * @return this for chain invocation
      */
     private SingleColumnValueRegexFilter setColumnValue(ColumnValue columnValue) {
-        Preconditions.checkNotNull(columnValue, "The value of column should not be null.");
+        Preconditions.checkNotNull(columnValue, "The value of column '%s' should not be null.", columnName);
         this.columnValue = columnValue;
         return this;
     }

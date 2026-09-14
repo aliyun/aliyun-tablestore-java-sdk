@@ -5,14 +5,25 @@ public final class MemoryConstants {
     public static final String STORAGE_MODE_FILE_OTS = "file+ots";
     public static final String STORAGE_MODE_FILE_MEMORY = "filemem";
     public static final String ITEM_TYPE_MEMORY_FILE = "memoryfile";
+    public static final String ITEM_TYPE_MEMORY_FILE_PREFIX = "memoryfile_prefix";
+    public static final String ITEM_VIEW_BASIC = "basic";
+    public static final String ITEM_VIEW_FULL = "full";
 
     public static final int MAX_ITEM_CONTENT_BYTES = 102400;
-    public static final int MAX_ITEM_PATH_BYTES = 800;
+    public static final int MAX_ITEM_PATH_BYTES = 1024;
+    public static final int MAX_ITEM_SCOPE_FIELD_BYTES = 128;
+    public static final int MAX_ITEM_ID_BYTES = 128;
+    public static final int MAX_ITEM_LIST_LIMIT = 100;
+    public static final int MAX_ITEM_FULL_LIST_LIMIT = 20;
     public static final int MAX_ITEMS_PER_SCOPE = 2000;
 
     public static final String ITEM_OPERATION_CREATED = "created";
     public static final String ITEM_OPERATION_MODIFIED = "modified";
     public static final String ITEM_OPERATION_DELETED = "deleted";
+    public static final String ITEM_ACTOR_TYPE_SESSION = "session";
+    public static final String ITEM_ACTOR_TYPE_API_KEY = "api_key";
+    public static final String ITEM_ACTOR_TYPE_USER = "user";
+    public static final String ITEM_DELETE_STATUS_PENDING = "pending";
 
     public static final String MEMORY_TASK_STATUS_QUEUED = "queued";
     public static final String MEMORY_TASK_STATUS_RUNNING = "running";

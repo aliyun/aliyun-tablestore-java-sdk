@@ -510,42 +510,51 @@ public class APITest {
         int startSize = 230;
         int maxSize = 256;
         int maxSizeForStream = 238;
+        int batchSize = 5;
         String uniquePrefix = OTSHelper.generateUniqueTableName("LongNameStream");
-        for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
-            String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
-            createdTables.add(longTableName);
-            List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
-            scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
-            OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
-            UpdateTableRequest updateTableRequest = new UpdateTableRequest(longTableName);
-            updateTableRequest.setStreamSpecification(new StreamSpecification(true, 168));
-            ots.updateTable(updateTableRequest);
-        }
-        Utils.waitForPartitionLoad("");
-        for (int longTableNameSize = startSize; longTableNameSize < maxSize; longTableNameSize += 1) {
-            String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
-            for (int i = 0; i < 10; i++) {
-                OTSHelper.putRow(ots, longTableName, PrimaryKeyBuilder.createPrimaryKeyBuilder().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i)).build(),
-                        Arrays.asList(new Column("col", ColumnValue.fromLong(i))));
+        for (int batchStart = startSize; batchStart < maxSize; batchStart += batchSize) {
+            int batchEnd = Math.min(batchStart + batchSize, maxSize);
+            for (int longTableNameSize = batchStart; longTableNameSize < batchEnd; longTableNameSize++) {
+                String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
+                createdTables.add(longTableName);
+                List<PrimaryKeySchema> scheme = new ArrayList<PrimaryKeySchema>();
+                scheme.add(new PrimaryKeySchema("pk", PrimaryKeyType.INTEGER));
+                OTSHelper.createTable(ots, longTableName, scheme, -1, 1);
+                UpdateTableRequest updateTableRequest = new UpdateTableRequest(longTableName);
+                updateTableRequest.setStreamSpecification(new StreamSpecification(true, 168));
+                ots.updateTable(updateTableRequest);
             }
-            ListStreamRequest listStreamRequest = new ListStreamRequest(longTableName);
-            String streamId = ots.listStream(listStreamRequest).getStreams().get(0).getStreamId();
-            DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest(streamId);
-            String shardId = ots.describeStream(describeStreamRequest).getShards().get(0).getShardId();
-            GetShardIteratorRequest getShardIteratorRequest = new GetShardIteratorRequest(streamId, shardId);
-            String shardIterator = ots.getShardIterator(getShardIteratorRequest).getShardIterator();
-            GetStreamRecordRequest getStreamRecordRequest = new GetStreamRecordRequest(shardIterator);
-            if (longTableNameSize > maxSizeForStream) {
+            Utils.waitForPartitionLoad("");
+            for (int longTableNameSize = batchStart; longTableNameSize < batchEnd; longTableNameSize++) {
+                String longTableName = buildLongTableName(uniquePrefix, longTableNameSize);
                 try {
-                    GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
-                    fail();
-                } catch (TableStoreException ex) {
-                    assertEquals("OTSParameterInvalid", ex.getErrorCode());
-                    assertTrue(ex.getMessage().startsWith("Invalid stream id"));
+                    for (int i = 0; i < 10; i++) {
+                        OTSHelper.putRow(ots, longTableName, PrimaryKeyBuilder.createPrimaryKeyBuilder().addPrimaryKeyColumn("pk", PrimaryKeyValue.fromLong(i)).build(),
+                                Arrays.asList(new Column("col", ColumnValue.fromLong(i))));
+                    }
+                    ListStreamRequest listStreamRequest = new ListStreamRequest(longTableName);
+                    String streamId = ots.listStream(listStreamRequest).getStreams().get(0).getStreamId();
+                    DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest(streamId);
+                    String shardId = ots.describeStream(describeStreamRequest).getShards().get(0).getShardId();
+                    GetShardIteratorRequest getShardIteratorRequest = new GetShardIteratorRequest(streamId, shardId);
+                    String shardIterator = ots.getShardIterator(getShardIteratorRequest).getShardIterator();
+                    GetStreamRecordRequest getStreamRecordRequest = new GetStreamRecordRequest(shardIterator);
+                    if (longTableNameSize > maxSizeForStream) {
+                        try {
+                            ots.getStreamRecord(getStreamRecordRequest);
+                            fail();
+                        } catch (TableStoreException ex) {
+                            assertEquals("OTSParameterInvalid", ex.getErrorCode());
+                            assertTrue(ex.getMessage().startsWith("Invalid stream id"));
+                        }
+                    } else {
+                        GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
+                        assertEquals(10, getStreamRecordResponse.getRecords().size());
+                    }
+                } finally {
+                    OTSHelper.deleteTablesByNames(ots, longTableName);
+                    createdTables.remove(longTableName);
                 }
-            } else {
-                GetStreamRecordResponse getStreamRecordResponse = ots.getStreamRecord(getStreamRecordRequest);
-                assertEquals(10, getStreamRecordResponse.getRecords().size());
             }
         }
     }

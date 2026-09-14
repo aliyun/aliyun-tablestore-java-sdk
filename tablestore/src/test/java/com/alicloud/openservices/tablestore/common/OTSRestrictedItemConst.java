@@ -8,8 +8,8 @@ public class OTSRestrictedItemConst {
     public static final int PRIMARY_KEY_COLUMN_NUMBER_MAX = 4;
     public static final int PRIMARY_KEY_VALUE_STRING_LENGTH_MAX = 1024;
     public static final int PRIMARY_KEY_VALUE_BINARY_LENGTH_MAX = 1024;
-    public static final int COLUMN_VALUE_STRING_LENGTH_MAX = 2 * 1024 * 1024;
-    public static final int COLUMN_VALUE_BINARY_LENGTH_MAX = 2 * 1024 * 1024;
+    public static final int COLUMN_VALUE_STRING_LENGTH_MAX = 10 * 1024 * 1024;
+    public static final int COLUMN_VALUE_BINARY_LENGTH_MAX = 10 * 1024 * 1024;
     public static final int BATCH_GET_ROW_COUNT_MAX = 100;
     public static final int BATCH_WRITE_ROW_COUNT_MAX = 200;
     public static final int GET_RANGE_COUNT_MAX = 5000;

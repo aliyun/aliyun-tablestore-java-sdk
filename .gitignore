@@ -17,3 +17,4 @@ src/test/resources/conf.properties
 /protoc
 dependency-reduced-pom.xml
 opencode.json
+.worktrees/

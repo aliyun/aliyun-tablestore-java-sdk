@@ -18,6 +18,10 @@ public class MemoryRequestSerializationTest {
         return new JsonParser().parse(request.toJson()).getAsJsonObject();
     }
 
+    private void assertJsonEquals(String expected, JsonObject actual) {
+        assertEquals(new JsonParser().parse(expected), actual);
+    }
+
     @Test
     public void serializesStoreAndPatchRequests() {
         CreateMemoryStoreRequest create = new CreateMemoryStoreRequest("store_a");
@@ -150,15 +154,21 @@ public class MemoryRequestSerializationTest {
 
     @Test
     public void itemRequestsInjectDefaultTypeAndPreserveCustomType() {
+        GetItemRequest get = new GetItemRequest("store", SCOPE);
+        get.setPath("/a.md");
+        DeleteItemRequest delete = new DeleteItemRequest("store", SCOPE);
+        delete.setPath("/a.md");
+        ListItemVersionsRequest versions = new ListItemVersionsRequest("store", SCOPE);
+        versions.setItemId("item-1");
         MemoryRequest[] requests = new MemoryRequest[] {
                 new AddItemRequest("store", SCOPE, "/a.md", ""),
                 new ListItemsRequest("store", SCOPE),
-                new GetItemRequest("store", SCOPE, "/a.md"),
-                new UpdateItemRequest("store", SCOPE, "/a.md"),
-                new DeleteItemRequest("store", SCOPE, "/a.md"),
-                new ListItemVersionsRequest("store", SCOPE, "item-1"),
-                new GetItemVersionRequest("store", SCOPE, "item-1", "version-1", 1L),
-                new RedactItemVersionRequest("store", SCOPE, "item-1", "version-1", 1L)
+                get,
+                new UpdateItemRequest("store", SCOPE, "item-1"),
+                delete,
+                versions,
+                new GetItemVersionRequest("store", SCOPE, "version-1"),
+                new RedactItemVersionRequest("store", SCOPE, "version-1")
         };
         for (MemoryRequest request : requests) {
             assertEquals("memoryfile", json(request).get("type").getAsString());
@@ -166,6 +176,169 @@ public class MemoryRequestSerializationTest {
         ((GetItemRequest) requests[2]).setType("customtype");
         assertEquals("customtype", json(requests[2]).get("type").getAsString());
         assertEquals("", json(requests[0]).get("content").getAsString());
+    }
+
+    @Test
+    public void itemRequestContractMatchesRevisedService() {
+        ItemPrecondition precondition = new ItemPrecondition("fmver-1");
+        assertEquals("fmver-1", precondition.getExpectedVersionId());
+        precondition.setExpectedVersionId("fmver-2");
+        assertEquals("fmver-2", precondition.getExpectedVersionId());
+
+        assertEquals("memoryfile_prefix", MemoryConstants.ITEM_TYPE_MEMORY_FILE_PREFIX);
+        assertEquals("memoryfile", MemoryConstants.ITEM_TYPE_MEMORY_FILE);
+        assertEquals("basic", MemoryConstants.ITEM_VIEW_BASIC);
+        assertEquals("full", MemoryConstants.ITEM_VIEW_FULL);
+        assertEquals("created", MemoryConstants.ITEM_OPERATION_CREATED);
+        assertEquals("modified", MemoryConstants.ITEM_OPERATION_MODIFIED);
+        assertEquals("deleted", MemoryConstants.ITEM_OPERATION_DELETED);
+        assertEquals("session", MemoryConstants.ITEM_ACTOR_TYPE_SESSION);
+        assertEquals("api_key", MemoryConstants.ITEM_ACTOR_TYPE_API_KEY);
+        assertEquals("user", MemoryConstants.ITEM_ACTOR_TYPE_USER);
+        assertEquals("pending", MemoryConstants.ITEM_DELETE_STATUS_PENDING);
+        assertEquals(102400, MemoryConstants.MAX_ITEM_CONTENT_BYTES);
+        assertEquals(1024, MemoryConstants.MAX_ITEM_PATH_BYTES);
+        assertEquals(128, MemoryConstants.MAX_ITEM_SCOPE_FIELD_BYTES);
+        assertEquals(128, MemoryConstants.MAX_ITEM_ID_BYTES);
+        assertEquals(100, MemoryConstants.MAX_ITEM_LIST_LIMIT);
+        assertEquals(20, MemoryConstants.MAX_ITEM_FULL_LIST_LIMIT);
+        assertEquals(2000, MemoryConstants.MAX_ITEMS_PER_SCOPE);
+
+        AddItemRequest add = new AddItemRequest("store", SCOPE, "/a.md", "");
+        add.setView(MemoryConstants.ITEM_VIEW_FULL);
+        add.setSessionId("s1");
+        JsonObject addJson = json(add);
+        assertJsonEquals("{\"path\":\"/a.md\",\"content\":\"\",\"sessionId\":\"s1\"," +
+                "\"view\":\"full\",\"type\":\"memoryfile\",\"memoryStoreName\":\"store\"," +
+                "\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
+                "\"runId\":\"run\"}}", addJson);
+
+        GetItemRequest get = new GetItemRequest("store", SCOPE);
+        get.setItemId("item-1");
+        get.setView(MemoryConstants.ITEM_VIEW_BASIC);
+        JsonObject getJson = json(get);
+        assertJsonEquals("{\"itemId\":\"item-1\",\"view\":\"basic\",\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"agent\",\"runId\":\"run\"}}", getJson);
+
+        UpdateItemRequest update = new UpdateItemRequest("store", SCOPE, "item-1");
+        update.setContent("");
+        update.setPath("/renamed.md");
+        update.setPrecondition(new ItemPrecondition("fmver-1"));
+        update.setOverwrite(false);
+        update.setSessionId("s2");
+        update.setView(MemoryConstants.ITEM_VIEW_FULL);
+        JsonObject updateJson = json(update);
+        assertJsonEquals("{\"itemId\":\"item-1\",\"content\":\"\",\"path\":\"/renamed.md\"," +
+                "\"precondition\":{\"expectedVersionId\":\"fmver-1\"},\"overwrite\":false," +
+                "\"sessionId\":\"s2\",\"view\":\"full\",\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"agent\",\"runId\":\"run\"}}", updateJson);
+
+        DeleteItemRequest exactDelete = new DeleteItemRequest("store", SCOPE);
+        exactDelete.setItemId("item-1");
+        exactDelete.setPrecondition(new ItemPrecondition("fmver-1"));
+        JsonObject exactDeleteJson = json(exactDelete);
+        assertJsonEquals("{\"itemId\":\"item-1\",\"precondition\":{\"expectedVersionId\":\"fmver-1\"}," +
+                "\"type\":\"memoryfile\",\"memoryStoreName\":\"store\",\"scope\":{" +
+                "\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
+                "\"runId\":\"run\"}}", exactDeleteJson);
+
+        Scope wildcardScope = new Scope("app", "tenant", "*", "*");
+        DeleteItemRequest delete = new DeleteItemRequest("store", wildcardScope);
+        delete.setPathPrefix("/profile/");
+        delete.setSessionId("s3");
+        JsonObject deleteJson = json(delete);
+        assertJsonEquals("{\"pathPrefix\":\"/profile/\",\"sessionId\":\"s3\",\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"*\",\"runId\":\"*\"}}", deleteJson);
+
+        ListItemsRequest listItems = new ListItemsRequest("store", wildcardScope);
+        listItems.setPathPrefix("/profile/");
+        listItems.setDepth(1);
+        listItems.setView(MemoryConstants.ITEM_VIEW_FULL);
+        listItems.setLimit(20);
+        listItems.setNextToken("item-next");
+        JsonObject listItemsJson = json(listItems);
+        assertJsonEquals("{\"pathPrefix\":\"/profile/\",\"depth\":1,\"view\":\"full\"," +
+                "\"nextToken\":\"item-next\",\"limit\":20,\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"*\",\"runId\":\"*\"}}", listItemsJson);
+
+        ListItemVersionsRequest versions = new ListItemVersionsRequest("store", wildcardScope);
+        versions.setItemId("item-1");
+        versions.setSessionId("s4");
+        versions.setCreatedAtGte("2026-08-01T00:00:00Z");
+        versions.setCreatedAtLte("2026-08-20T00:00:00Z");
+        versions.setOperation("modified");
+        versions.setView(MemoryConstants.ITEM_VIEW_FULL);
+        versions.setLimit(20);
+        versions.setNextToken("next");
+        JsonObject versionsJson = json(versions);
+        assertJsonEquals("{\"itemId\":\"item-1\",\"sessionId\":\"s4\"," +
+                "\"createdAtGte\":\"2026-08-01T00:00:00Z\"," +
+                "\"createdAtLte\":\"2026-08-20T00:00:00Z\",\"operation\":\"modified\"," +
+                "\"view\":\"full\",\"nextToken\":\"next\",\"limit\":20,\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"*\",\"runId\":\"*\"}}", versionsJson);
+
+        GetItemVersionRequest getVersion = new GetItemVersionRequest("store", SCOPE, "fmver-1");
+        getVersion.setView(MemoryConstants.ITEM_VIEW_FULL);
+        assertJsonEquals("{\"versionId\":\"fmver-1\",\"view\":\"full\",\"type\":\"memoryfile\"," +
+                "\"memoryStoreName\":\"store\",\"scope\":{\"appId\":\"app\",\"tenantId\":\"tenant\"," +
+                "\"agentId\":\"agent\",\"runId\":\"run\"}}", json(getVersion));
+
+        RedactItemVersionRequest redact = new RedactItemVersionRequest("store", SCOPE, "fmver-1");
+        redact.setSessionId("privacy-job");
+        assertJsonEquals("{\"versionId\":\"fmver-1\",\"sessionId\":\"privacy-job\"," +
+                "\"type\":\"memoryfile\",\"memoryStoreName\":\"store\",\"scope\":{" +
+                "\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
+                "\"runId\":\"run\"}}", json(redact));
+
+        assertNoMethod(GetItemRequest.class, "getIncludeContent");
+        assertNoMethod(GetItemRequest.class, "setIncludeContent", Boolean.class);
+        assertNoMethod(UpdateItemRequest.class, "getNewPath");
+        assertNoMethod(UpdateItemRequest.class, "setNewPath", String.class);
+        assertNoMethod(UpdateItemRequest.class, "getExpectedSha256");
+        assertNoMethod(UpdateItemRequest.class, "setExpectedSha256", String.class);
+        assertNoMethod(DeleteItemRequest.class, "getExpectedSha256");
+        assertNoMethod(DeleteItemRequest.class, "setExpectedSha256", String.class);
+        assertNoMethod(ListItemVersionsRequest.class, "getPath");
+        assertNoMethod(ListItemVersionsRequest.class, "setPath", String.class);
+        assertNoMethod(GetItemVersionRequest.class, "getItemId");
+        assertNoMethod(GetItemVersionRequest.class, "setItemId", String.class);
+        assertNoMethod(GetItemVersionRequest.class, "getVersionSeq");
+        assertNoMethod(GetItemVersionRequest.class, "setVersionSeq", Long.class);
+        assertNoMethod(RedactItemVersionRequest.class, "getItemId");
+        assertNoMethod(RedactItemVersionRequest.class, "setItemId", String.class);
+        assertNoMethod(RedactItemVersionRequest.class, "getVersionSeq");
+        assertNoMethod(RedactItemVersionRequest.class, "setVersionSeq", Long.class);
+
+        assertNoConstructor(GetItemRequest.class, String.class, Scope.class, String.class);
+        assertNoConstructor(DeleteItemRequest.class, String.class, Scope.class, String.class);
+        assertNoConstructor(ListItemVersionsRequest.class, String.class, Scope.class, String.class);
+        assertNoConstructor(GetItemVersionRequest.class,
+                String.class, Scope.class, String.class, String.class, Long.class);
+        assertNoConstructor(RedactItemVersionRequest.class,
+                String.class, Scope.class, String.class, String.class, Long.class);
+    }
+
+    private static void assertNoMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+        try {
+            type.getMethod(name, parameterTypes);
+            fail("legacy method must be removed: " + type.getSimpleName() + "." + name);
+        } catch (NoSuchMethodException expected) {
+            // Expected: forward compatibility with the old Item contract is intentionally unsupported.
+        }
+    }
+
+    private static void assertNoConstructor(Class<?> type, Class<?>... parameterTypes) {
+        try {
+            type.getConstructor(parameterTypes);
+            fail("legacy constructor must be removed from " + type.getSimpleName());
+        } catch (NoSuchMethodException expected) {
+            // Expected: forward compatibility with the old Item contract is intentionally unsupported.
+        }
     }
 
     @Test

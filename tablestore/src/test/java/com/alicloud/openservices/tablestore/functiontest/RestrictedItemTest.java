@@ -2820,7 +2820,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.putRow(ots, tableName, new PrimaryKey(primaryKeyColumn), columns);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
         { // update row
@@ -2828,7 +2828,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.updateRow(ots, tableName, new PrimaryKey(primaryKeyColumn), columns, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
         { // batch write row
@@ -2840,7 +2840,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.batchWriteRow(ots, puts, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
     }
@@ -3031,7 +3031,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.putRow(ots, tableName, new PrimaryKey(primaryKeyColumn), columns);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
         { // update row
@@ -3039,7 +3039,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.updateRow(ots, tableName, new PrimaryKey(primaryKeyColumn), columns, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
         { // batch write row
@@ -3051,7 +3051,7 @@ public class RestrictedItemTest extends BaseFT {
                 OTSHelper.batchWriteRow(ots, puts, null, null);
                 fail();
             } catch (TableStoreException e) {
-                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:2097152 with CurrentLength:2097153.", 400, e);
+                assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The length of attribute column: 'attr' exceeds the MaxLength:10485760 with CurrentLength:10485761.", 400, e);
             }
         }
     }
@@ -4875,7 +4875,7 @@ public class RestrictedItemTest extends BaseFT {
     }
     
     /**
-     * Construct the put and update operations of BatchWriteRow for the case where the data size is exactly 4M + 1, with types being STRING/BINARY respectively.
+     * Construct the put and update operations of BatchWriteRow for the case where the data size is exactly 12M + 1, with types being STRING/BINARY respectively.
      * Expect to return OTSParameterInvalid.
      */
     @Test
@@ -4886,18 +4886,18 @@ public class RestrictedItemTest extends BaseFT {
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
         
-         // 4,194,305
-        // 1,398,103
-        // 1,398,101
-        // 1,398,101
+         // 12,582,913
+        // 4,194,305
+        // 4,194,304
+        // 4,194,304
 
-        //   2    +     98     +    50    + 1397945 + 8  = 1,398,103
+        //   2    +     98     +    50    + 4194147 + 8  = 4,194,305
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts 
        
         
@@ -4912,9 +4912,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowPutChange put = new RowPutChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397953)));
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194155)));
             } else {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194147)), (new Date()).getTime());
             }
             puts.add(put);
         }
@@ -4925,9 +4925,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowPutChange put = new RowPutChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397951)));
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194154)));
             } else {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194146)), (new Date()).getTime());
             }
             puts.add(put);
         }
@@ -4938,9 +4938,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowPutChange put = new RowPutChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397951)));
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194154)));
             } else {
-                put.addColumn(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+                put.addColumn(columName, ColumnValue.fromString(getString('a', 4194146)), (new Date()).getTime());
             }
             puts.add(put);
         }
@@ -4949,7 +4949,7 @@ public class RestrictedItemTest extends BaseFT {
             OTSHelper.batchWriteRow(ots, puts, null, null);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 4194304, data size: 4194305.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 12582912, data size: 12582913.", 400, e);
         }
     }
     
@@ -4961,18 +4961,18 @@ public class RestrictedItemTest extends BaseFT {
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
         
+        // 12,582,913
         // 4,194,305
-        // 1,398,103
-        // 1,398,101
-        // 1,398,101
+        // 4,194,304
+        // 4,194,304
 
-        //   2    +     98     +    50    + 1397945 + 8  = 1,398,103
+        //   2    +     98     +    50    + 4194147 + 8  = 4,194,305
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts
  
         List<RowUpdateChange> updates = new ArrayList<RowUpdateChange>();
@@ -4986,9 +4986,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397953)));
+                up.put(columName, ColumnValue.fromString(getString('a', 4194155)));
             } else {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397945)), (new Date()).getTime());
+                up.put(columName, ColumnValue.fromString(getString('a', 4194147)), (new Date()).getTime());
             }
             updates.add(up);
         }
@@ -4999,9 +4999,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397951)));
+                up.put(columName, ColumnValue.fromString(getString('a', 4194154)));
             } else {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+                up.put(columName, ColumnValue.fromString(getString('a', 4194146)), (new Date()).getTime());
             }
             updates.add(up);
         }
@@ -5012,9 +5012,9 @@ public class RestrictedItemTest extends BaseFT {
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
             if (Utils.useGlobalTxn()) {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397951)));
+                up.put(columName, ColumnValue.fromString(getString('a', 4194154)));
             } else {
-                up.put(columName, ColumnValue.fromString(getString('a', 1397943)), (new Date()).getTime());
+                up.put(columName, ColumnValue.fromString(getString('a', 4194146)), (new Date()).getTime());
             }
             updates.add(up);
         }
@@ -5023,7 +5023,7 @@ public class RestrictedItemTest extends BaseFT {
             OTSHelper.batchWriteRow(ots, null, updates, null);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 4194304, data size: 4194305.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 12582912, data size: 12582913.", 400, e);
         }
     }
     
@@ -5035,18 +5035,18 @@ public class RestrictedItemTest extends BaseFT {
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
 
+        // 12,582,913
         // 4,194,305
-        // 1,398,103
-        // 1,398,101
-        // 1,398,101
+        // 4,194,304
+        // 4,194,304
 
-        //   2    +     98     +    50    + 1397945 + 8  = 1,398,103
+        //   2    +     98     +    50    + 4194147 + 8  = 4,194,305
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts 
         
         List<RowPutChange> puts = new ArrayList<RowPutChange>();
@@ -5059,7 +5059,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 1397945).getBytes("UTF-8")), (new Date()).getTime());
+            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 4194147).getBytes("UTF-8")), (new Date()).getTime());
             puts.add(put);
         }
         {
@@ -5068,7 +5068,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 1397943).getBytes("UTF-8")), (new Date()).getTime());
+            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 4194146).getBytes("UTF-8")), (new Date()).getTime());
             puts.add(put);
         }
         {
@@ -5077,7 +5077,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowPutChange put = new RowPutChange(tableName, pk);
-            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 1397943).getBytes("UTF-8")), (new Date()).getTime());
+            put.addColumn(columName, ColumnValue.fromBinary(getString('a', 4194146).getBytes("UTF-8")), (new Date()).getTime());
             puts.add(put);
         }
        
@@ -5085,7 +5085,7 @@ public class RestrictedItemTest extends BaseFT {
             OTSHelper.batchWriteRow(ots, puts, null, null);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 4194304, data size: 4194305.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 12582912, data size: 12582913.", 400, e);
         }
     }
     
@@ -5097,18 +5097,18 @@ public class RestrictedItemTest extends BaseFT {
         OTSHelper.createTable(ots, tableName, scheme);
         Utils.waitForPartitionLoad(tableName);
         
+        // 12,582,913
         // 4,194,305
-        // 1,398,103
-        // 1,398,101
-        // 1,398,101
+        // 4,194,304
+        // 4,194,304
 
-        //   2    +     98     +    50    + 1397945 + 8  = 1,398,103
+        //   2    +     98     +    50    + 4194147 + 8  = 4,194,305
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts
 
-        //   2    +     98     +    50    + 1397943 + 8  = 1,398,101
+        //   2    +     98     +    50    + 4194146 + 8  = 4,194,304
         // pk_name + pk_value + col_name + col_value + ts        
 
         List<RowUpdateChange> updates = new ArrayList<RowUpdateChange>();
@@ -5121,7 +5121,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromBinary(getString('a', 1397945).getBytes("UTF-8")), (new Date()).getTime());
+            up.put(columName, ColumnValue.fromBinary(getString('a', 4194147).getBytes("UTF-8")), (new Date()).getTime());
             updates.add(up);
         }
         {
@@ -5130,7 +5130,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromBinary(getString('a', 1397943).getBytes("UTF-8")), (new Date()).getTime());
+            up.put(columName, ColumnValue.fromBinary(getString('a', 4194146).getBytes("UTF-8")), (new Date()).getTime());
             updates.add(up);
         }
         {
@@ -5139,7 +5139,7 @@ public class RestrictedItemTest extends BaseFT {
                     .build();
             
             RowUpdateChange up = new RowUpdateChange(tableName, pk);
-            up.put(columName, ColumnValue.fromBinary(getString('a', 1397943).getBytes("UTF-8")), (new Date()).getTime());
+            up.put(columName, ColumnValue.fromBinary(getString('a', 4194146).getBytes("UTF-8")), (new Date()).getTime());
             updates.add(up);
         }
      
@@ -5147,7 +5147,7 @@ public class RestrictedItemTest extends BaseFT {
             OTSHelper.batchWriteRow(ots, null, updates, null);
             fail();
         } catch (TableStoreException e) {
-            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 4194304, data size: 4194305.", 400, e);
+            assertTableStoreException(ErrorCode.INVALID_PARAMETER, "The total data size of BatchWriteRow request exceeds the limit, limit size: 12582912, data size: 12582913.", 400, e);
         }
     }
 }

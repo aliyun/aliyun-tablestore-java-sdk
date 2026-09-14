@@ -451,11 +451,11 @@ public class TestWriter {
         config.setConcurrency(concurrency);
         config.setBufferSize(queueSize);
         config.setFlushInterval(1000000);
-        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxAttrColumnSize(11 * 1024 * 1024); // max attribute length set to 11MB
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         final ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -603,13 +603,13 @@ public class TestWriter {
         config.setConcurrency(concurrency);
         config.setBufferSize(queueSize);
         config.setFlushInterval(1000000);
-        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxAttrColumnSize(11 * 1024 * 1024); // max attribute length set to 11MB
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setBucketCount(1);
         config.setBatchRequestType(BatchRequestType.BULK_IMPORT);
         config.setWriteMode(WriteMode.SEQUENTIAL);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         final ExecutorService executor = Executors.newFixedThreadPool(10);

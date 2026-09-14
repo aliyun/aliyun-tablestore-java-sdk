@@ -4,6 +4,8 @@ import com.alicloud.openservices.tablestore.model.OperationNames;
 
 public class ListItemsRequest extends ItemRequest {
     private String pathPrefix;
+    private Integer depth;
+    private String view;
     private String nextToken;
     private Integer limit;
 
@@ -25,6 +27,22 @@ public class ListItemsRequest extends ItemRequest {
 
     public void setPathPrefix(String pathPrefix) {
         this.pathPrefix = pathPrefix;
+    }
+
+    public Integer getDepth() {
+        return depth;
+    }
+
+    public void setDepth(Integer depth) {
+        this.depth = depth;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 
     public String getNextToken() {

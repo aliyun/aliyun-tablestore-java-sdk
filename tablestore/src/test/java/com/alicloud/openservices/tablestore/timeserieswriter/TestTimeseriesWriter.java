@@ -249,7 +249,7 @@ public class TestTimeseriesWriter {
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         final ExecutorService executor = Executors.newFixedThreadPool(10);

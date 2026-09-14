@@ -42,9 +42,7 @@ public class KnowledgeBaseDocumentE2ETest {
         // Clean up all created knowledge bases
         for (String kbName : createdKnowledgeBases) {
             try {
-                DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
-                deleteRequest.setKnowledgeBaseName(kbName);
-                client.deleteKnowledgeBase(deleteRequest);
+                OTSHelper.deleteKnowledgeBaseAndWait(client, kbName);
             } catch (Exception e) {
                 // Ignore cleanup errors
                 System.err.println("Failed to cleanup knowledge base: " + kbName + ", error: " + e.getMessage());
@@ -62,6 +60,7 @@ public class KnowledgeBaseDocumentE2ETest {
 
     private String createKnowledgeBaseWithSubspace() {
         String kbName = generateKbName();
+        createdKnowledgeBases.add(kbName);
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(true);
 
@@ -71,17 +70,16 @@ public class KnowledgeBaseDocumentE2ETest {
         request.setMetadata(metadata);
 
         OTSHelper.createKnowledgeBaseWithRetry(client, request);
-        createdKnowledgeBases.add(kbName);
         return kbName;
     }
 
     private String createKnowledgeBaseWithoutSubspace() {
         String kbName = generateKbName();
+        createdKnowledgeBases.add(kbName);
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(false);
 
         OTSHelper.createKnowledgeBaseWithRetry(client, request);
-        createdKnowledgeBases.add(kbName);
         return kbName;
     }
 

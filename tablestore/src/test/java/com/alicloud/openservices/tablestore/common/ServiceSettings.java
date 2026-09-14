@@ -21,7 +21,7 @@ public class ServiceSettings {
 
     public String getOTSEndpoint() {
         String endpoint =  properties.getProperty("ots.endpoint");
-        if (endpoint.isEmpty()) {
+        if (endpoint == null || endpoint.isEmpty()) {
             endpoint = System.getenv("endpoint");
         }
         return endpoint;
@@ -33,7 +33,7 @@ public class ServiceSettings {
 
     public String getOTSAccessKeyId() {
         String accessKeyId =  properties.getProperty("ots.accesskeyid");
-        if (accessKeyId.isEmpty()) {
+        if (accessKeyId == null || accessKeyId.isEmpty()) {
             accessKeyId = System.getenv("accesskeyid");
         }
         return accessKeyId;
@@ -45,7 +45,7 @@ public class ServiceSettings {
 
     public String getOTSAccessKeySecret() {
         String accessKeySecret =  properties.getProperty("ots.accesskeysecret");
-        if (accessKeySecret.isEmpty()) {
+        if (accessKeySecret == null || accessKeySecret.isEmpty()) {
             accessKeySecret = System.getenv("accesskeysecret");
         }
         return accessKeySecret;
@@ -57,7 +57,7 @@ public class ServiceSettings {
 
     public String getOTSInstanceName() {
         String instanceName =  properties.getProperty("ots.instancename");
-        if (instanceName.isEmpty()) {
+        if (instanceName == null || instanceName.isEmpty()) {
             instanceName = System.getenv("instancename");
         }
         return instanceName;
@@ -73,7 +73,7 @@ public class ServiceSettings {
 
     public String getOTSInstanceNameInternal() {
         String instanceName =  properties.getProperty("ots.instancenameinternal");
-        if (instanceName.isEmpty()) {
+        if (instanceName == null || instanceName.isEmpty()) {
             instanceName = System.getenv("instancenameinternal");
         }
         return instanceName;
@@ -140,11 +140,19 @@ public class ServiceSettings {
     }
 
     public static ServiceSettings load() {
-        if (new File(LOCAL_SETTINGS_FILE_NAME).isFile()) {
-            return load(LOCAL_SETTINGS_FILE_NAME);
-        } else {
-            return load(SETTINGS_FILE_NAME);
+        String[] localCandidates = {LOCAL_SETTINGS_FILE_NAME, "tablestore/" + LOCAL_SETTINGS_FILE_NAME};
+        for (String candidate : localCandidates) {
+            if (new File(candidate).isFile()) {
+                return load(candidate);
+            }
         }
+
+        String[] candidates = {SETTINGS_FILE_NAME, "tablestore/" + SETTINGS_FILE_NAME};
+        for (String candidate : candidates) {
+            if (new File(candidate).isFile()) {
+                return load(candidate);
+            }
+        }
+        return load(SETTINGS_FILE_NAME);
     }
 }
-

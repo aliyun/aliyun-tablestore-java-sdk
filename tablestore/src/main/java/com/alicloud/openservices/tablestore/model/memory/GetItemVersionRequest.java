@@ -3,31 +3,20 @@ package com.alicloud.openservices.tablestore.model.memory;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 
 public class GetItemVersionRequest extends ItemRequest {
-    private String itemId;
     private String versionId;
-    private Long versionSeq;
+    private String view;
 
     public GetItemVersionRequest() {
     }
 
-    public GetItemVersionRequest(String memoryStoreName, Scope scope, String itemId, String versionId, Long versionSeq) {
+    public GetItemVersionRequest(String memoryStoreName, Scope scope, String versionId) {
         super(memoryStoreName, scope);
-        this.itemId = itemId;
         this.versionId = versionId;
-        this.versionSeq = versionSeq;
     }
 
     @Override
     public String getOperationName() {
         return OperationNames.OP_GET_ITEM_VERSION;
-    }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
     }
 
     public String getVersionId() {
@@ -38,11 +27,11 @@ public class GetItemVersionRequest extends ItemRequest {
         this.versionId = versionId;
     }
 
-    public Long getVersionSeq() {
-        return versionSeq;
+    public String getView() {
+        return view;
     }
 
-    public void setVersionSeq(Long versionSeq) {
-        this.versionSeq = versionSeq;
+    public void setView(String view) {
+        this.view = view;
     }
 }

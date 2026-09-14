@@ -39,7 +39,7 @@ public class Column implements Jsonizable, Measurable {
      */
     public Column(String name, ColumnValue value, long timestamp) {
         Preconditions.checkArgument(name != null && !name.isEmpty(), "The name of column should not be null or empty.");
-        Preconditions.checkNotNull(value, "The value of column should not be null.");
+        Preconditions.checkNotNull(value, "The value of column '%s' should not be null.", name);
         Preconditions.checkArgument(timestamp >= 0, "The timestamp should not be negative.");
 
         this.name = name;
@@ -49,7 +49,7 @@ public class Column implements Jsonizable, Measurable {
 
     public Column(String name, ColumnValue value) {
         Preconditions.checkArgument(name != null && !name.isEmpty(), "The name of column should not be null or empty.");
-        Preconditions.checkNotNull(value, "The value of column should not be null.");
+        Preconditions.checkNotNull(value, "The value of column '%s' should not be null.", name);
 
         this.name = name;
         this.value = value;

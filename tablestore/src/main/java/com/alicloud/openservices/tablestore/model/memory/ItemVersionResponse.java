@@ -6,17 +6,17 @@ public class ItemVersionResponse extends Response {
     private String type;
     private String versionId;
     private String itemId;
-    private Long versionSeq;
+    private Scope scope;
     private String operation;
     private String path;
     private String content;
     private String contentSha256;
     private Long contentSizeBytes;
-    private String sessionId;
+    private ItemActor createdBy;
     private String createdAt;
     private Boolean redacted;
     private String redactedAt;
-    private String redactedBy;
+    private ItemActor redactedBy;
 
     public ItemVersionResponse() {
     }
@@ -45,12 +45,12 @@ public class ItemVersionResponse extends Response {
         this.itemId = itemId;
     }
 
-    public Long getVersionSeq() {
-        return versionSeq;
+    public Scope getScope() {
+        return scope;
     }
 
-    public void setVersionSeq(Long versionSeq) {
-        this.versionSeq = versionSeq;
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public String getOperation() {
@@ -93,12 +93,12 @@ public class ItemVersionResponse extends Response {
         this.contentSizeBytes = contentSizeBytes;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public ItemActor getCreatedBy() {
+        return createdBy;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setCreatedBy(ItemActor createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getCreatedAt() {
@@ -125,11 +125,11 @@ public class ItemVersionResponse extends Response {
         this.redactedAt = redactedAt;
     }
 
-    public String getRedactedBy() {
+    public ItemActor getRedactedBy() {
         return redactedBy;
     }
 
-    public void setRedactedBy(String redactedBy) {
+    public void setRedactedBy(ItemActor redactedBy) {
         this.redactedBy = redactedBy;
     }
 }

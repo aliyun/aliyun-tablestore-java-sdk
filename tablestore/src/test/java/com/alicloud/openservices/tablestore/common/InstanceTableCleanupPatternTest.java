@@ -117,6 +117,41 @@ public class InstanceTableCleanupPatternTest {
     }
 
     @Test
+    public void knowledgeBaseTablesAreMatched() {
+        assertTrue(P.matcher("test_kb_java_13d0874e").matches());
+        assertTrue(P.matcher("test_kb_doc_0d5c750a_24ca895b_a775_4038_a743_a2a59607f5b3").matches());
+        assertTrue(P.matcher("test_kb_doc_0d5c750a_24ca895b_a775_4038_a743_a2a59607f5b3_chunk").matches());
+        assertTrue(P.matcher("test_kb_retrieve_84ec02e9_index").matches());
+        assertTrue(P.matcher("JavaSdkKnowledgeBaseQuotaLock").matches());
+    }
+
+    @Test
+    public void timestampedNamesCanBeClassifiedAsStale() {
+        assertTrue(InstanceTableCleanup.isTimestampedNameStale(
+                "APIFunctiontest_1784016387343_12", 1784016387344L));
+        assertFalse(InstanceTableCleanup.isTimestampedNameStale(
+                "APIFunctiontest_1784016387343_12", 1784016387343L));
+        assertFalse(InstanceTableCleanup.isTimestampedNameStale("test_kb_java_13d0874e", Long.MAX_VALUE));
+    }
+
+    @Test
+    public void cleanupModeCanBeConfigured() {
+        String previous = System.getProperty("cleanup.shared");
+        try {
+            System.setProperty("cleanup.shared", "true");
+            assertTrue(InstanceTableCleanup.isSharedRun());
+            System.setProperty("cleanup.shared", "false");
+            assertFalse(InstanceTableCleanup.isSharedRun());
+        } finally {
+            if (previous == null) {
+                System.clearProperty("cleanup.shared");
+            } else {
+                System.setProperty("cleanup.shared", previous);
+            }
+        }
+    }
+
+    @Test
     public void protectedNamesNeverMatch() {
         for (String name : PROTECTED_NAMES) {
             assertFalse("must NOT match potential real table: " + name, P.matcher(name).matches());

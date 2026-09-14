@@ -3,16 +3,17 @@ package com.alicloud.openservices.tablestore.model.memory;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 
 public class DeleteItemRequest extends ItemRequest {
+    private String itemId;
     private String path;
-    private String expectedSha256;
+    private String pathPrefix;
+    private ItemPrecondition precondition;
     private String sessionId;
 
     public DeleteItemRequest() {
     }
 
-    public DeleteItemRequest(String memoryStoreName, Scope scope, String path) {
+    public DeleteItemRequest(String memoryStoreName, Scope scope) {
         super(memoryStoreName, scope);
-        this.path = path;
     }
 
     @Override
@@ -28,12 +29,20 @@ public class DeleteItemRequest extends ItemRequest {
         this.path = path;
     }
 
-    public String getExpectedSha256() {
-        return expectedSha256;
+    public String getPathPrefix() {
+        return pathPrefix;
     }
 
-    public void setExpectedSha256(String expectedSha256) {
-        this.expectedSha256 = expectedSha256;
+    public void setPathPrefix(String pathPrefix) {
+        this.pathPrefix = pathPrefix;
+    }
+
+    public ItemPrecondition getPrecondition() {
+        return precondition;
+    }
+
+    public void setPrecondition(ItemPrecondition precondition) {
+        this.precondition = precondition;
     }
 
     public String getSessionId() {
@@ -42,5 +51,13 @@ public class DeleteItemRequest extends ItemRequest {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 }

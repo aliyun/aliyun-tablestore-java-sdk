@@ -23,6 +23,12 @@ public class TieredStorageColumn implements Jsonizable {
     private OptionalValue<TimeUnit> valueTimeUnit = new OptionalValue<TimeUnit>("ValueTimeUnit");
 
     /**
+     * Construct a TieredStorageColumn instance with default values.
+     */
+    public TieredStorageColumn() {
+    }
+
+    /**
      * Construct a TieredStorageColumn instance.
      *
      * @param name The name of the custom time column.

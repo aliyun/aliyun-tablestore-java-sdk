@@ -5,11 +5,13 @@ import com.alicloud.openservices.tablestore.model.Response;
 public class ItemResponse extends Response {
     private String type;
     private String itemId;
+    private Scope scope;
     private String path;
     private String content;
     private String contentSha256;
     private Long contentSizeBytes;
     private Long latestSeq;
+    private String latestVersionId;
     private String createdAt;
     private String updatedAt;
 
@@ -30,6 +32,14 @@ public class ItemResponse extends Response {
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public String getPath() {
@@ -70,6 +80,14 @@ public class ItemResponse extends Response {
 
     public void setLatestSeq(Long latestSeq) {
         this.latestSeq = latestSeq;
+    }
+
+    public String getLatestVersionId() {
+        return latestVersionId;
+    }
+
+    public void setLatestVersionId(String latestVersionId) {
+        this.latestVersionId = latestVersionId;
     }
 
     public String getCreatedAt() {

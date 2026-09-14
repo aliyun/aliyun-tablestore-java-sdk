@@ -3,15 +3,15 @@ package com.alicloud.openservices.tablestore.model.memory;
 import com.alicloud.openservices.tablestore.model.OperationNames;
 
 public class GetItemRequest extends ItemRequest {
+    private String itemId;
     private String path;
-    private Boolean includeContent;
+    private String view;
 
     public GetItemRequest() {
     }
 
-    public GetItemRequest(String memoryStoreName, Scope scope, String path) {
+    public GetItemRequest(String memoryStoreName, Scope scope) {
         super(memoryStoreName, scope);
-        this.path = path;
     }
 
     @Override
@@ -27,11 +27,19 @@ public class GetItemRequest extends ItemRequest {
         this.path = path;
     }
 
-    public Boolean getIncludeContent() {
-        return includeContent;
+    public String getView() {
+        return view;
     }
 
-    public void setIncludeContent(Boolean includeContent) {
-        this.includeContent = includeContent;
+    public void setView(String view) {
+        this.view = view;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 }

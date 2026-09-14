@@ -323,6 +323,8 @@ public class ClientConfiguration {
 
     /**
      * Set the proxy server host address.
+     * When this value is set, the SDK uses this proxy for both HTTP and HTTPS requests and
+     * ignores HTTP_PROXY, HTTPS_PROXY, and NO_PROXY environment variables.
      *
      * @param proxyHost The proxy server host address.
      */

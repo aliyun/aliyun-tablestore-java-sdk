@@ -105,7 +105,7 @@ public class SingleColumnValueCondition implements ColumnCondition {
      * @return this for chain invocation
      */
     public SingleColumnValueCondition setColumnValue(ColumnValue columnValue) {
-        Preconditions.checkNotNull(columnValue, "The value of column should not be null.");
+        Preconditions.checkNotNull(columnValue, "The value of column '%s' should not be null.", columnName);
         this.columnValue = columnValue;
         return this;
     }

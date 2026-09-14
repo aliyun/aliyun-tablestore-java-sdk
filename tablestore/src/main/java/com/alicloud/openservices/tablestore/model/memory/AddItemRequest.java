@@ -6,6 +6,7 @@ public class AddItemRequest extends ItemRequest {
     private String path;
     private String content;
     private String sessionId;
+    private String view;
 
     public AddItemRequest() {
     }
@@ -43,5 +44,13 @@ public class AddItemRequest extends ItemRequest {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

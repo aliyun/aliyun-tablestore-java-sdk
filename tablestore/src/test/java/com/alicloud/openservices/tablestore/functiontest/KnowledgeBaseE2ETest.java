@@ -22,6 +22,7 @@ public class KnowledgeBaseE2ETest {
     private SyncClient client;
     private List<String> createdKnowledgeBases = new ArrayList<>();
     private static final String KB_NAME_PREFIX = "test_kb_java_";
+    private static final String KB_QUOTA_LOCK = "JavaSdkKnowledgeBaseQuotaLock";
 
     @Before
     public void setUp() {
@@ -38,20 +39,22 @@ public class KnowledgeBaseE2ETest {
 
     @After
     public void tearDown() {
-        // Clean up all created knowledge bases
-        for (String kbName : createdKnowledgeBases) {
+        cleanupCreatedKnowledgeBases();
+
+        if (client != null) {
+            client.shutdown();
+        }
+    }
+
+    private void cleanupCreatedKnowledgeBases() {
+        for (String kbName : new ArrayList<String>(createdKnowledgeBases)) {
             try {
-                DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
-                deleteRequest.setKnowledgeBaseName(kbName);
-                client.deleteKnowledgeBase(deleteRequest);
+                OTSHelper.deleteKnowledgeBaseAndWait(client, kbName);
+                createdKnowledgeBases.remove(kbName);
             } catch (Exception e) {
                 // Ignore cleanup errors
                 System.err.println("Failed to cleanup knowledge base: " + kbName + ", error: " + e.getMessage());
             }
-        }
-
-        if (client != null) {
-            client.shutdown();
         }
     }
 
@@ -234,6 +237,7 @@ public class KnowledgeBaseE2ETest {
 
         DeleteKnowledgeBaseResponse response = client.deleteKnowledgeBase(deleteRequest);
         assertEquals("SUCCESS", response.getCode());
+        OTSHelper.waitForKnowledgeBaseTablesDeleted(client, kbName);
 
         // Remove from cleanup list since already deleted
         createdKnowledgeBases.remove(kbName);
@@ -253,6 +257,7 @@ public class KnowledgeBaseE2ETest {
 
         DeleteKnowledgeBaseResponse response = client.deleteKnowledgeBase(deleteRequest);
         assertEquals("SUCCESS", response.getCode());
+        OTSHelper.waitForKnowledgeBaseTablesDeleted(client, kbName);
 
         createdKnowledgeBases.remove(kbName);
     }
@@ -389,55 +394,67 @@ public class KnowledgeBaseE2ETest {
 
     @Test
     public void testListKnowledgeBaseWithMaxResults() {
-        // Create multiple knowledge bases
-        for (int i = 0; i < 3; i++) {
-            String kbName = generateKbName();
-            CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-            OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
-            createdKnowledgeBases.add(kbName);
+        OTSHelper.acquireTestTableLock(client, KB_QUOTA_LOCK, 10 * 60 * 1000, 15 * 60 * 1000);
+        try {
+            // Create multiple knowledge bases
+            for (int i = 0; i < 3; i++) {
+                String kbName = generateKbName();
+                createdKnowledgeBases.add(kbName);
+                CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
+                OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
+            }
+
+            ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();
+            request.setMaxResults(2);
+
+            ListKnowledgeBaseResponse response = client.listKnowledgeBase(request);
+            assertEquals("SUCCESS", response.getCode());
+            assertNotNull(response.getData().getKnowledgeBases());
+            assertTrue(response.getData().getKnowledgeBases().size() <= 2);
+        } finally {
+            cleanupCreatedKnowledgeBases();
+            OTSHelper.releaseTestTableLock(client, KB_QUOTA_LOCK);
         }
-
-        ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();
-        request.setMaxResults(2);
-
-        ListKnowledgeBaseResponse response = client.listKnowledgeBase(request);
-        assertEquals("SUCCESS", response.getCode());
-        assertNotNull(response.getData().getKnowledgeBases());
-        assertTrue(response.getData().getKnowledgeBases().size() <= 2);
     }
 
     @Test
     public void testListKnowledgeBaseWithPagination() {
-        // Create multiple knowledge bases
-        for (int i = 0; i < 5; i++) {
-            String kbName = generateKbName();
-            CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
-            OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
-            createdKnowledgeBases.add(kbName);
+        OTSHelper.acquireTestTableLock(client, KB_QUOTA_LOCK, 10 * 60 * 1000, 15 * 60 * 1000);
+        try {
+            // Keep five knowledge bases to cover multiple pagination rounds.
+            for (int i = 0; i < 5; i++) {
+                String kbName = generateKbName();
+                createdKnowledgeBases.add(kbName);
+                CreateKnowledgeBaseRequest createRequest = new CreateKnowledgeBaseRequest(kbName);
+                OTSHelper.createKnowledgeBaseWithRetry(client, createRequest);
+            }
+
+            ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();
+            request.setMaxResults(2);
+
+            List<ListKnowledgeBaseResponse.KnowledgeBaseInfo> allKbs = new ArrayList<>();
+            String nextToken = null;
+
+            do {
+                if (nextToken != null) {
+                    request.setNextToken(nextToken);
+                }
+
+                ListKnowledgeBaseResponse response = client.listKnowledgeBase(request);
+                assertEquals("SUCCESS", response.getCode());
+
+                if (response.getData().getKnowledgeBases() != null) {
+                    allKbs.addAll(response.getData().getKnowledgeBases());
+                }
+
+                nextToken = response.getData().getNextToken();
+            } while (nextToken != null && !nextToken.isEmpty());
+
+            assertTrue(allKbs.size() >= 5);
+        } finally {
+            cleanupCreatedKnowledgeBases();
+            OTSHelper.releaseTestTableLock(client, KB_QUOTA_LOCK);
         }
-
-        ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();
-        request.setMaxResults(2);
-
-        List<ListKnowledgeBaseResponse.KnowledgeBaseInfo> allKbs = new ArrayList<>();
-        String nextToken = null;
-
-        do {
-            if (nextToken != null) {
-                request.setNextToken(nextToken);
-            }
-
-            ListKnowledgeBaseResponse response = client.listKnowledgeBase(request);
-            assertEquals("SUCCESS", response.getCode());
-
-            if (response.getData().getKnowledgeBases() != null) {
-                allKbs.addAll(response.getData().getKnowledgeBases());
-            }
-
-            nextToken = response.getData().getNextToken();
-        } while (nextToken != null && !nextToken.isEmpty());
-
-        assertTrue(allKbs.size() >= 5);
     }
 
     @Test

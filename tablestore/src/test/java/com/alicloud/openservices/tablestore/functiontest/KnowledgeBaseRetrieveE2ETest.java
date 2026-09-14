@@ -44,9 +44,7 @@ public class KnowledgeBaseRetrieveE2ETest {
         // Clean up all created knowledge bases
         for (String kbName : createdKnowledgeBases) {
             try {
-                DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
-                deleteRequest.setKnowledgeBaseName(kbName);
-                client.deleteKnowledgeBase(deleteRequest);
+                OTSHelper.deleteKnowledgeBaseAndWait(client, kbName);
             } catch (Exception e) {
                 // Ignore cleanup errors
                 System.err.println("Failed to cleanup knowledge base: " + kbName + ", error: " + e.getMessage());
@@ -64,6 +62,7 @@ public class KnowledgeBaseRetrieveE2ETest {
 
     private String createKnowledgeBaseWithMetadata(boolean subspace, List<MetadataField> metadata) {
         String kbName = generateKbName();
+        createdKnowledgeBases.add(kbName);
         CreateKnowledgeBaseRequest request = new CreateKnowledgeBaseRequest(kbName);
         request.setSubspace(subspace);
         if (metadata != null && !metadata.isEmpty()) {
@@ -72,7 +71,6 @@ public class KnowledgeBaseRetrieveE2ETest {
 
         CreateKnowledgeBaseResponse response = OTSHelper.createKnowledgeBaseWithRetry(client, request);
         assertEquals("SUCCESS", response.getCode());
-        createdKnowledgeBases.add(kbName);
         return kbName;
     }
 

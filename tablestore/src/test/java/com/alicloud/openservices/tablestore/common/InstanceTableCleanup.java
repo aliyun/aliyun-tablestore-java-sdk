@@ -1,14 +1,21 @@
 package com.alicloud.openservices.tablestore.common;
 
 import com.alicloud.openservices.tablestore.SyncClient;
+import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.TimeseriesClient;
+import com.alicloud.openservices.tablestore.core.ErrorCode;
 import com.alicloud.openservices.tablestore.model.DeleteIndexRequest;
 import com.alicloud.openservices.tablestore.model.IndexMeta;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListKnowledgeBaseRequest;
+import com.alicloud.openservices.tablestore.model.knowledgebase.ListKnowledgeBaseResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesTableRequest;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -22,6 +29,13 @@ import java.util.regex.Pattern;
  * tests' distinctive naming families (see {@link #DEFAULT_PATTERN}) — generic names like {@code id}, {@code test},
  * {@code table1} are intentionally NOT matched. And it is DRY-RUN by default: it prints what it would delete and
  * leaves the instance untouched unless {@code -Dcleanup.confirm=true} is passed.
+ *
+ * <p>{@link #main(String[])} is an explicit, non-interactive entry point for CI wiring that wants to sweep
+ * leftovers before a suite; it is NOT hooked into this build, so nothing runs it unless you invoke it
+ * yourself. Beware that it deletes without asking: exclusive runs delete all matched leftovers, while shared
+ * runs ({@code -Dcleanup.shared=true}) delete only resources older than {@code cleanup.stale.hours} (three
+ * hours by default). It skips when service settings are incomplete or {@code -Dcleanup.before.tests.skip=true}
+ * is set.
  *
  * <p>Not a gate test: it lives in {@code common} (outside the {@code integration.tests} patterns) and lacks a
  * {@code Test*}/{@code *Test} name, so surefire never auto-selects it. Run it explicitly:
@@ -38,6 +52,10 @@ public class InstanceTableCleanup {
 
     /** The {@code _<ts>_<threadId>} suffix appended by {@code OTSHelper.generateUniqueTableName}. */
     static final String UNIQUE_SUFFIX = "_[0-9]+_[0-9]+";
+    static final String KNOWLEDGE_BASE_PATTERN = "^test_kb_(?:java|doc|retrieve)_.*";
+    private static final Pattern KNOWLEDGE_BASE_NAME_PATTERN = Pattern.compile(KNOWLEDGE_BASE_PATTERN);
+    private static final Pattern UNIQUE_TIMESTAMP_PATTERN = Pattern.compile("_([0-9]{13})_[0-9]+(?:_|$)");
+    private static final long DEFAULT_STALE_HOURS = 3;
 
     /**
      * Distinctive integration-test table families only. Three groups:
@@ -68,6 +86,8 @@ public class InstanceTableCleanup {
             + "|FilterRestrictionTest|conditional_update_test_table|bool_pk_ft"
             + "|test_analytical_store[0-9]+|test_create_and_delete_analytical_store[0-9]+|test_update_analytical_store"
             + "|test_describe_index_sync_phase|test_custom_primary_keys(?:_meta|_batch_write)?|test_no_measurements"
+            + "|test_kb_(?:java|doc|retrieve)_.*"
+            + "|JavaSdkKnowledgeBaseQuotaLock"
             // dynamic bases from TimeseriesLastpointIndexTest @Test method names — includes
             // testCreateTimeseriesTableWithLastpointIndex, which does NOT share the
             // testTimeseriesLastpointIndex prefix
@@ -81,24 +101,51 @@ public class InstanceTableCleanup {
 
     @Test
     public void cleanup() throws Exception {
-        ServiceSettings s = ServiceSettings.load();
+        cleanup(ServiceSettings.load(), Boolean.getBoolean("cleanup.confirm"), isSharedRun());
+    }
+
+    /** Invoked once by Maven before the test suite. */
+    public static void main(String[] args) throws Exception {
+        if (Boolean.getBoolean("cleanup.before.tests.skip")) {
+            System.out.println("[cleanup] skipped by cleanup.before.tests.skip");
+            return;
+        }
+
+        ServiceSettings settings = ServiceSettings.load();
+        if (isBlank(settings.getOTSEndpoint()) || isBlank(settings.getOTSAccessKeyId())
+                || isBlank(settings.getOTSAccessKeySecret()) || isBlank(settings.getOTSInstanceName())) {
+            System.out.println("[cleanup] skipped because TableStore test settings are incomplete");
+            return;
+        }
+        cleanup(settings, true, isSharedRun());
+    }
+
+    private static void cleanup(ServiceSettings s, boolean confirm, boolean shared) throws Exception {
         Pattern pattern = Pattern.compile(System.getProperty("cleanup.pattern", DEFAULT_PATTERN));
-        boolean confirm = Boolean.getBoolean("cleanup.confirm");
-        // -Dcleanup.instance overrides the target instance (e.g. the dedicated instance
-        // used by RestrictedItemTest#testCase15); defaults to conf.properties
+        long staleHours = Long.getLong("cleanup.stale.hours", DEFAULT_STALE_HOURS);
+        long staleBeforeMillis = System.currentTimeMillis() - TimeUnit.HOURS.toMillis(staleHours);
+        // -Dcleanup.instance overrides the target instance (e.g. the dedicated instance used by
+        // RestrictedItemTest#testCase15); defaults to conf.properties
         String instanceName = System.getProperty("cleanup.instance", s.getOTSInstanceName());
         System.out.println("[cleanup] mode=" + (confirm ? "DELETE" : "DRY-RUN (pass -Dcleanup.confirm=true to delete)")
-                + " instance=" + instanceName + " pattern=" + pattern.pattern());
+                + " instance=" + instanceName + " sharing=" + (shared ? "SHARED" : "EXCLUSIVE")
+                + (shared ? " staleHours=" + staleHours : "") + " pattern=" + pattern.pattern());
 
         int deleted = 0, failed = 0;
         SyncClient client = new SyncClient(s.getOTSEndpoint(), s.getOTSAccessKeyId(),
                 s.getOTSAccessKeySecret(), instanceName);
         try {
+            int[] kbResult = cleanupKnowledgeBases(client, confirm, shared, staleBeforeMillis);
+            deleted += kbResult[0];
+            failed += kbResult[1];
+
             List<String> all = client.listTable().getTableNames();
             List<String> matched = new ArrayList<String>();
             List<String> skipped = new ArrayList<String>();
             for (String t : all) {
-                (pattern.matcher(t).matches() ? matched : skipped).add(t);
+                boolean delete = pattern.matcher(t).matches()
+                        && (!shared || isRegularTableStale(client, t, staleBeforeMillis));
+                (delete ? matched : skipped).add(t);
             }
             System.out.println("[cleanup] regular tables: " + all.size() + " total, " + matched.size()
                     + " matched, " + skipped.size() + " left alone");
@@ -116,6 +163,12 @@ public class InstanceTableCleanup {
                         OTSHelper.deleteTable(client, t);
                         deleted++;
                         System.out.println("[cleanup] deleted table: " + t);
+                    } catch (TableStoreException e) {
+                        if (isNotExist(e)) {
+                            continue;
+                        }
+                        failed++;
+                        System.out.println("[cleanup] FAILED table " + t + ": " + e.getMessage());
                     } catch (Exception e) {
                         failed++;
                         System.out.println("[cleanup] FAILED table " + t + ": " + e.getMessage());
@@ -133,7 +186,8 @@ public class InstanceTableCleanup {
             List<String> all = ts.listTimeseriesTable().getTimeseriesTableNames();
             List<String> matched = new ArrayList<String>();
             for (String t : all) {
-                if (pattern.matcher(t).matches()) {
+                if (pattern.matcher(t).matches()
+                        && (!shared || isTimestampedNameStale(t, staleBeforeMillis))) {
                     matched.add(t);
                 }
             }
@@ -145,6 +199,12 @@ public class InstanceTableCleanup {
                         ts.deleteTimeseriesTable(new DeleteTimeseriesTableRequest(t));
                         deleted++;
                         System.out.println("[cleanup] deleted timeseries table: " + t);
+                    } catch (TableStoreException e) {
+                        if (isNotExist(e)) {
+                            continue;
+                        }
+                        failed++;
+                        System.out.println("[cleanup] FAILED timeseries table " + t + ": " + e.getMessage());
                     } catch (Exception e) {
                         failed++;
                         System.out.println("[cleanup] FAILED timeseries table " + t + ": " + e.getMessage());
@@ -159,5 +219,86 @@ public class InstanceTableCleanup {
 
         System.out.println("[cleanup] done. " + (confirm ? ("deleted=" + deleted + " failed=" + failed)
                 : "DRY-RUN — nothing deleted."));
+        if (confirm && failed > 0) {
+            throw new AssertionError("Failed to delete " + failed + " leftover test table(s).");
+        }
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    static boolean isSharedRun() {
+        return Boolean.parseBoolean(System.getProperty("cleanup.shared",
+                String.valueOf(System.getProperty("test") != null)));
+    }
+
+    private static boolean isRegularTableStale(SyncClient client, String tableName, long staleBeforeMillis) {
+        try {
+            long creationTimeMicros = OTSHelper.describeTable(client, tableName).getCreationTime();
+            return creationTimeMicros > 0 && creationTimeMicros / 1000 < staleBeforeMillis;
+        } catch (TableStoreException e) {
+            return isNotExist(e);
+        }
+    }
+
+    static boolean isTimestampedNameStale(String tableName, long staleBeforeMillis) {
+        Matcher matcher = UNIQUE_TIMESTAMP_PATTERN.matcher(tableName);
+        return matcher.find() && Long.parseLong(matcher.group(1)) < staleBeforeMillis;
+    }
+
+    private static int[] cleanupKnowledgeBases(SyncClient client, boolean confirm, boolean shared,
+                                                long staleBeforeMillis) {
+        int deleted = 0;
+        int failed = 0;
+        String nextToken = null;
+        do {
+            ListKnowledgeBaseRequest request = new ListKnowledgeBaseRequest();
+            request.setMaxResults(100);
+            request.setNextToken(nextToken);
+            ListKnowledgeBaseResponse response = client.listKnowledgeBase(request);
+            if (response.getData() == null) {
+                break;
+            }
+            List<ListKnowledgeBaseResponse.KnowledgeBaseInfo> knowledgeBases =
+                    response.getData().getKnowledgeBases();
+            if (knowledgeBases != null) {
+                for (ListKnowledgeBaseResponse.KnowledgeBaseInfo kb : knowledgeBases) {
+                    Long createdAt = kb.getCreatedAt();
+                    if (!KNOWLEDGE_BASE_NAME_PATTERN.matcher(kb.getKnowledgeBaseName()).matches()
+                            || (shared && (createdAt == null || createdAt >= staleBeforeMillis))) {
+                        continue;
+                    }
+                    System.out.println("[cleanup] knowledge base would-delete: " + kb.getKnowledgeBaseName());
+                    if (confirm) {
+                        try {
+                            DeleteKnowledgeBaseRequest deleteRequest = new DeleteKnowledgeBaseRequest();
+                            deleteRequest.setKnowledgeBaseName(kb.getKnowledgeBaseName());
+                            client.deleteKnowledgeBase(deleteRequest);
+                            OTSHelper.waitForKnowledgeBaseTablesDeleted(client, kb.getKnowledgeBaseName());
+                            deleted++;
+                            System.out.println("[cleanup] deleted knowledge base: " + kb.getKnowledgeBaseName());
+                        } catch (TableStoreException e) {
+                            if (!isNotExist(e)) {
+                                failed++;
+                                System.out.println("[cleanup] FAILED knowledge base "
+                                        + kb.getKnowledgeBaseName() + ": " + e.getMessage());
+                            }
+                        } catch (Exception e) {
+                            failed++;
+                            System.out.println("[cleanup] FAILED knowledge base "
+                                    + kb.getKnowledgeBaseName() + ": " + e.getMessage());
+                        }
+                    }
+                }
+            }
+            nextToken = response.getData().getNextToken();
+        } while (nextToken != null && !nextToken.isEmpty());
+        return new int[]{deleted, failed};
+    }
+
+    private static boolean isNotExist(TableStoreException e) {
+        return ErrorCode.OBJECT_NOT_EXIST.equals(e.getErrorCode())
+                || (e.getMessage() != null && e.getMessage().contains("not exist"));
     }
 }

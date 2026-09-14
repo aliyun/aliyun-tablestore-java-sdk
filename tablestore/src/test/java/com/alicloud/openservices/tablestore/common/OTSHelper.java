@@ -3,6 +3,7 @@ package com.alicloud.openservices.tablestore.common;
 import com.alicloud.openservices.tablestore.SyncClientInterface;
 import com.alicloud.openservices.tablestore.TableStoreException;
 import com.alicloud.openservices.tablestore.TimeseriesClient;
+import com.alicloud.openservices.tablestore.core.ErrorCode;
 import com.alicloud.openservices.tablestore.core.utils.Pair;
 import com.alicloud.openservices.tablestore.model.BatchGetRowRequest;
 import com.alicloud.openservices.tablestore.model.BatchGetRowResponse;
@@ -52,6 +53,7 @@ import com.alicloud.openservices.tablestore.model.search.SearchIndexInfo;
 import com.alicloud.openservices.tablestore.model.TimeseriesTableMeta;
 import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseRequest;
 import com.alicloud.openservices.tablestore.model.knowledgebase.CreateKnowledgeBaseResponse;
+import com.alicloud.openservices.tablestore.model.knowledgebase.DeleteKnowledgeBaseRequest;
 import com.alicloud.openservices.tablestore.model.timeseries.DescribeTimeseriesTableRequest;
 import com.alicloud.openservices.tablestore.model.timeseries.DescribeTimeseriesTableResponse;
 import com.alicloud.openservices.tablestore.model.timeseries.DeleteTimeseriesTableRequest;
@@ -346,22 +348,139 @@ public class OTSHelper {
             SyncClientInterface client, CreateKnowledgeBaseRequest request) {
         int maxAttempts = 4;
         long backoffMs = 2000;
+        long quotaDeadline = System.currentTimeMillis() + 5 * 60 * 1000;
         for (int attempt = 1; ; attempt++) {
             try {
                 return client.createKnowledgeBase(request);
             } catch (TableStoreException e) {
-                if (attempt >= maxAttempts || !"OTSInternalServerError".equals(e.getErrorCode())) {
+                boolean internalError = "OTSInternalServerError".equals(e.getErrorCode());
+                boolean quotaExhausted = ErrorCode.QUOTA_EXHAUSTED.equals(e.getErrorCode());
+                boolean retry = (internalError && attempt < maxAttempts)
+                        || (quotaExhausted && System.currentTimeMillis() < quotaDeadline);
+                if (!retry) {
+                    if ("OTSInternalServerError".equals(e.getErrorCode())
+                            || ErrorCode.QUOTA_EXHAUSTED.equals(e.getErrorCode())) {
+                        try {
+                            deleteKnowledgeBaseAndWait(client, request.getKnowledgeBaseName());
+                        } catch (Exception cleanupError) {
+                            LOG.warn("Failed to clean up knowledge base after create failure: {}",
+                                    request.getKnowledgeBaseName(), cleanupError);
+                        }
+                    }
                     throw e;
                 }
-                LOG.warn("createKnowledgeBase got transient server error (attempt {}/{}): {}",
-                        attempt, maxAttempts, e.getMessage());
+                LOG.warn("createKnowledgeBase retrying after {} (attempt {}): {}",
+                        e.getErrorCode(), attempt, e.getMessage());
                 try {
-                    Thread.sleep(backoffMs);
+                    Thread.sleep(quotaExhausted ? 2000 : backoffMs);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     throw e;
                 }
-                backoffMs *= 2;
+                if (internalError) {
+                    backoffMs *= 2;
+                }
+            }
+        }
+    }
+
+    public static void deleteKnowledgeBaseAndWait(SyncClientInterface client, String knowledgeBaseName) {
+        DeleteKnowledgeBaseRequest request = new DeleteKnowledgeBaseRequest();
+        request.setKnowledgeBaseName(knowledgeBaseName);
+        client.deleteKnowledgeBase(request);
+        waitForKnowledgeBaseTablesDeleted(client, knowledgeBaseName);
+    }
+
+    public static void waitForKnowledgeBaseTablesDeleted(SyncClientInterface client, String knowledgeBaseName) {
+        long deadline = System.currentTimeMillis() + 60 * 1000;
+        while (true) {
+            boolean exists = false;
+            for (String tableName : client.listTable().getTableNames()) {
+                if (tableName.equals(knowledgeBaseName) || tableName.startsWith(knowledgeBaseName + "_")) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                return;
+            }
+            if (System.currentTimeMillis() >= deadline) {
+                throw new IllegalStateException("knowledge base tables still exist after delete: "
+                        + knowledgeBaseName);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("interrupted while waiting for knowledge base cleanup", e);
+            }
+        }
+    }
+
+    public static void acquireTestTableLock(SyncClientInterface client, String lockTableName,
+                                            long timeoutMillis, long staleMillis) {
+        long deadline = System.currentTimeMillis() + timeoutMillis;
+        while (true) {
+            try {
+                TableMeta meta = new TableMeta(lockTableName);
+                meta.addPrimaryKeyColumn("pk", PrimaryKeyType.STRING);
+                createTable(client, meta);
+                return;
+            } catch (TableStoreException e) {
+                boolean beingDeleted = e.getMessage() != null && e.getMessage().contains("being deleting");
+                if (!ErrorCode.OBJECT_ALREADY_EXIST.equals(e.getErrorCode())
+                        && !ErrorCode.QUOTA_EXHAUSTED.equals(e.getErrorCode()) && !beingDeleted) {
+                    throw e;
+                }
+                if (ErrorCode.OBJECT_ALREADY_EXIST.equals(e.getErrorCode())) {
+                    try {
+                        long creationTimeMillis = describeTable(client, lockTableName).getCreationTime() / 1000;
+                        if (creationTimeMillis > 0
+                                && System.currentTimeMillis() - creationTimeMillis > staleMillis) {
+                            deleteTable(client, lockTableName);
+                        }
+                    } catch (TableStoreException ignored) {
+                        // Another waiter may have removed the stale lock.
+                    }
+                }
+                if (System.currentTimeMillis() >= deadline) {
+                    throw new IllegalStateException("timed out acquiring test lock: " + lockTableName, e);
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException interrupted) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("interrupted while acquiring test lock: " + lockTableName,
+                            interrupted);
+                }
+            }
+        }
+    }
+
+    public static void releaseTestTableLock(SyncClientInterface client, String lockTableName) {
+        try {
+            deleteTable(client, lockTableName);
+            waitForTableDeleted(client, lockTableName, 60 * 1000);
+        } catch (TableStoreException e) {
+            boolean notExist = ErrorCode.OBJECT_NOT_EXIST.equals(e.getErrorCode())
+                    || (e.getMessage() != null && e.getMessage().contains("not exist"));
+            if (!notExist) {
+                throw e;
+            }
+        }
+    }
+
+    private static void waitForTableDeleted(SyncClientInterface client, String tableName, long timeoutMillis) {
+        long deadline = System.currentTimeMillis() + timeoutMillis;
+        while (client.listTable().getTableNames().contains(tableName)) {
+            if (System.currentTimeMillis() >= deadline) {
+                throw new IllegalStateException("table still exists after delete: " + tableName);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("interrupted while waiting for table cleanup", e);
             }
         }
     }

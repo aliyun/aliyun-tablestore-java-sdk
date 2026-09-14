@@ -11,6 +11,7 @@ import com.alicloud.openservices.tablestore.model.sql.SQLResultSet;
 import com.alicloud.openservices.tablestore.model.sql.SQLRow;
 import com.alicloud.openservices.tablestore.model.timeseries.*;
 import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,14 +35,6 @@ public class TimeseriesAnalyticalStoreTest {
 
     @BeforeClass
     public static void beforeClass() {
-        deleteTable(TABLE_AS1);
-        deleteTable(TABLE_AS2);
-        deleteTable(TABLE_AS3);
-        deleteTable(TABLE_CD_AS1);
-        deleteTable(TABLE_CD_AS2);
-        deleteTable(TABLE_UPDATE_AS);
-        deleteTable(TABLE_DESC_SYNC_PHASE);
-
         ServiceSettings settings = ServiceSettings.load();
         final String endPoint = settings.getOTSEndpoint();
         final String accessId = settings.getOTSAccessKeyId();
@@ -50,10 +43,22 @@ public class TimeseriesAnalyticalStoreTest {
 
         client = new TimeseriesClient(endPoint, accessId, accessKey, instanceName);
         tableStoreClient = new SyncClient(endPoint, accessId, accessKey, instanceName);
+        deleteTestTables();
+    }
+
+    @After
+    public void after() {
+        deleteTestTables();
     }
 
     @AfterClass
     public static void afterClass() {
+        deleteTestTables();
+        client.shutdown();
+        tableStoreClient.shutdown();
+    }
+
+    private static void deleteTestTables() {
         deleteTable(TABLE_AS1);
         deleteTable(TABLE_AS2);
         deleteTable(TABLE_AS3);
@@ -61,8 +66,6 @@ public class TimeseriesAnalyticalStoreTest {
         deleteTable(TABLE_CD_AS2);
         deleteTable(TABLE_UPDATE_AS);
         deleteTable(TABLE_DESC_SYNC_PHASE);
-        client.shutdown();
-        tableStoreClient.shutdown();
     }
 
     static void deleteTable(String tableName) {

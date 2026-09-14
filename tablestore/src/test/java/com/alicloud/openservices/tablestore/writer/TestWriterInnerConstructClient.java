@@ -493,12 +493,12 @@ public class TestWriterInnerConstructClient {
         config.setConcurrency(concurrency);
         config.setBufferSize(queueSize);
         config.setFlushInterval(1000000);
-        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxAttrColumnSize(11 * 1024 * 1024); // max attribute length set to 11MB
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setWriteMode(writeMode);
         config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         DefaultTableStoreWriter writer = createWriter(config, TABLE_NAME);
@@ -728,12 +728,12 @@ public class TestWriterInnerConstructClient {
         config.setConcurrency(concurrency);
         config.setBufferSize(queueSize);
         config.setFlushInterval(1000000);
-        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxAttrColumnSize(11 * 1024 * 1024); // max attribute length set to 11MB
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setWriteMode(writeMode);
         config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         DefaultTableStoreWriter writer = createWriter(config, TABLE_NAME);
@@ -781,7 +781,7 @@ public class TestWriterInnerConstructClient {
                     failedCounter++;
                     assertEquals(result.getFailedRows().size(), 1);
                     assertEquals(result.getFailedRows().get(0).getException().getMessage(),
-                            "The length of attribute column: 'longattr' exceeds the MaxLength:2097152 with CurrentLength:2097153.");
+                            "The length of attribute column: 'longattr' exceeds the MaxLength:10485760 with CurrentLength:10485761.");
                 }
             } catch (Exception e) {
                 fail();
@@ -807,12 +807,12 @@ public class TestWriterInnerConstructClient {
         config.setConcurrency(concurrency);
         config.setBufferSize(queueSize);
         config.setFlushInterval(1000000);
-        config.setMaxAttrColumnSize(3 * 1024 * 1024); // max attribute length set to 3MB
+        config.setMaxAttrColumnSize(11 * 1024 * 1024); // max attribute length set to 11MB
         config.setMaxBatchSize(4 * 1024 * 1024);
         config.setWriteMode(writeMode);
         config.setBucketCount(1);
         StringBuilder longStr = new StringBuilder();
-        for (int i = 0; i < 2 * 1024 * 1024 + 1; i++) {
+        for (int i = 0; i < 10 * 1024 * 1024 + 1; i++) {
             longStr.append('a');
         }
         DefaultTableStoreWriter writer = createWriter(config, TABLE_NAME);
@@ -867,7 +867,7 @@ public class TestWriterInnerConstructClient {
                     assertFalse(result.getSucceedRows().size() == rowCount);
                     assertEquals(result.getFailedRows().size(), 1);
                     assertEquals(result.getFailedRows().get(0).getException().getMessage(),
-                            "The length of attribute column: 'longattr' exceeds the MaxLength:2097152 with CurrentLength:2097153.");
+                            "The length of attribute column: 'longattr' exceeds the MaxLength:10485760 with CurrentLength:10485761.");
                 }
             } catch (Exception e) {
                 fail();

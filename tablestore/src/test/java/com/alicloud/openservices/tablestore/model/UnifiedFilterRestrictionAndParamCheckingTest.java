@@ -1254,14 +1254,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             criteria.setPrimaryKey(primaryKey);
             criteria.setMaxVersions(1);
              
-            ColumnValue v = ColumnValue.fromString(NewString(2 * 1024 * 1024 + 1, 'a'));
+            ColumnValue v = ColumnValue.fromString(NewString(10 * 1024 * 1024 + 1, 'a'));
             SingleColumnValueFilter singleFilter = new SingleColumnValueFilter("Column", SingleColumnValueFilter.CompareOperator.EQUAL, v);
             CompositeColumnValueFilter compositeFilter = new CompositeColumnValueFilter(CompositeColumnValueFilter.LogicOperator.OR);
             compositeFilter.addFilter(singleFilter);
             compositeFilter.addFilter(new SingleColumnValueFilter("Column1", SingleColumnValueFilter.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
 
             TableStoreException lengthExceedExp = new TableStoreException(
-                    "The length of attribute column: 'Column' exceeds the MaxLength:2097152 with CurrentLength:2097153.",
+                    "The length of attribute column: 'Column' exceeds the MaxLength:10485760 with CurrentLength:10485761.",
                     null, "OTSParameterInvalid", "", 400);
             runAndExpectFail(singleFilter, lengthExceedExp);
             runAndExpectFail(compositeFilter, lengthExceedExp);
@@ -1276,14 +1276,14 @@ public class UnifiedFilterRestrictionAndParamCheckingTest extends BaseFT {
             criteria.setMaxVersions(1);
             criteria.setPrimaryKey(primaryKey);
              
-            ColumnValue v = ColumnValue.fromBinary(new byte[2 * 1024 * 1024 + 1]);
+            ColumnValue v = ColumnValue.fromBinary(new byte[10 * 1024 * 1024 + 1]);
             SingleColumnValueFilter singleFilter = new SingleColumnValueFilter("Column", SingleColumnValueFilter.CompareOperator.EQUAL, v);
             CompositeColumnValueFilter compositeFilter = new CompositeColumnValueFilter(CompositeColumnValueFilter.LogicOperator.OR);
             compositeFilter.addFilter(singleFilter);
             compositeFilter.addFilter(new SingleColumnValueFilter("Column1", SingleColumnValueFilter.CompareOperator.EQUAL, ColumnValue.fromBoolean(false)));
 
             TableStoreException lengthExceedExp = new TableStoreException(
-                    "The length of attribute column: 'Column' exceeds the MaxLength:2097152 with CurrentLength:2097153.",
+                    "The length of attribute column: 'Column' exceeds the MaxLength:10485760 with CurrentLength:10485761.",
                     null, "OTSParameterInvalid", "", 400);
             runAndExpectFail(singleFilter, lengthExceedExp);
             runAndExpectFail(compositeFilter, lengthExceedExp);
