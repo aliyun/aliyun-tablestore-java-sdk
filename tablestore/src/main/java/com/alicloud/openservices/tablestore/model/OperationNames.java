@@ -202,6 +202,7 @@ public class OperationNames {
     public static final String OP_LIST_ITEM_VERSIONS = "ListItemVersions";
     public static final String OP_GET_ITEM_VERSION = "GetItemVersion";
     public static final String OP_REDACT_ITEM_VERSION = "RedactItemVersion";
+    public static final String OP_DELETE_ITEM_VERSIONS = "DeleteItemVersions";
 
     public static class IdempotentActionTool {
         private static final Map<String, Boolean> IDEMPOTENT_ACTIONS = new HashMap<String, Boolean>();
@@ -272,6 +273,7 @@ public class OperationNames {
             IDEMPOTENT_ACTIONS.put(OP_LIST_ITEM_VERSIONS, true);
             IDEMPOTENT_ACTIONS.put(OP_GET_ITEM_VERSION, true);
             IDEMPOTENT_ACTIONS.put(OP_REDACT_ITEM_VERSION, true);
+            IDEMPOTENT_ACTIONS.put(OP_DELETE_ITEM_VERSIONS, true);
         }
 
         public static boolean isIdempotentAction(String action) {

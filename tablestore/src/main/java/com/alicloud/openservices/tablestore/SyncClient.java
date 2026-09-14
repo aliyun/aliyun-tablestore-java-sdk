@@ -982,4 +982,10 @@ public class SyncClient implements SyncClientInterface {
         return waitForFuture(internalClient.redactItemVersion(request, null));
     }
 
+    @Override
+    public DeleteItemVersionsResponse deleteItemVersions(DeleteItemVersionsRequest request) throws TableStoreException, ClientException {
+        prepareMemoryRequest(request);
+        return waitForFuture(internalClient.deleteItemVersions(request, null));
+    }
+
 }

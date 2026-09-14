@@ -661,4 +661,10 @@ public class AsyncClient implements AsyncClientInterface {
         return internalClient.redactItemVersion(request, callback);
     }
 
+    @Override
+    public Future<DeleteItemVersionsResponse> deleteItemVersions(DeleteItemVersionsRequest request,
+            TableStoreCallback<DeleteItemVersionsRequest, DeleteItemVersionsResponse> callback) {
+        return internalClient.deleteItemVersions(request, callback);
+    }
+
 }

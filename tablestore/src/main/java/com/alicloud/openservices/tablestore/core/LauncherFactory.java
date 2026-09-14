@@ -265,7 +265,8 @@ public class LauncherFactory {
                 OP_DELETE_ITEM,
                 OP_LIST_ITEM_VERSIONS,
                 OP_GET_ITEM_VERSION,
-                OP_REDACT_ITEM_VERSION
+                OP_REDACT_ITEM_VERSION,
+                OP_DELETE_ITEM_VERSIONS
         };
         for (String operation : memoryOperations) {
             contexts.put(operation, new Context(new OTSUri(endpoint, operation)));

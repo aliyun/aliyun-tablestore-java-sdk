@@ -991,4 +991,25 @@ public interface AsyncClientInterface {
         throw new UnsupportedOperationException("redactItemVersion is not implemented by this client");
     }
 
+    /**
+     * Physically deletes every historical version of the file memory items in a wildcard scope. The deletion is
+     * asynchronous and irreversible, and the response only acknowledges that the task was accepted.
+     *
+     * <p>Delete the current items of the same scope first (a scope-wide DeleteItem, then poll ListItems until it
+     * reports no items and no paging token), otherwise the service answers OTSOperationConflict. Afterwards poll
+     * ListItemVersions on the same scope to decide whether the cleanup finished; the returned task id cannot be
+     * queried through {@link #getMemoryTask}.
+     *
+     * @param request parameters for the DeleteItemVersions operation
+     * @param callback callback invoked when the request completes; may be null
+     * @return a Future for obtaining the operation result
+     * @throws TableStoreException exception returned by the TableStore service
+     * @throws ClientException invalid response or network exception
+     * @throws UnsupportedOperationException if the client does not implement this operation
+     */
+    default Future<DeleteItemVersionsResponse> deleteItemVersions(DeleteItemVersionsRequest request,
+            TableStoreCallback<DeleteItemVersionsRequest, DeleteItemVersionsResponse> callback) {
+        throw new UnsupportedOperationException("deleteItemVersions is not implemented by this client");
+    }
+
 }

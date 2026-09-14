@@ -97,7 +97,8 @@ public class JsonOperationLauncherTest {
                 OperationNames.OP_DELETE_ITEM,
                 OperationNames.OP_LIST_ITEM_VERSIONS,
                 OperationNames.OP_GET_ITEM_VERSION,
-                OperationNames.OP_REDACT_ITEM_VERSION);
+                OperationNames.OP_REDACT_ITEM_VERSION,
+                OperationNames.OP_DELETE_ITEM_VERSIONS);
         ClientConfiguration config = new ClientConfiguration();
         AsyncServiceClient client = new AsyncServiceClient(config);
         try {
@@ -139,7 +140,8 @@ public class JsonOperationLauncherTest {
                 OperationNames.OP_DELETE_ITEM,
                 OperationNames.OP_LIST_ITEM_VERSIONS,
                 OperationNames.OP_GET_ITEM_VERSION,
-                OperationNames.OP_REDACT_ITEM_VERSION);
+                OperationNames.OP_REDACT_ITEM_VERSION,
+                OperationNames.OP_DELETE_ITEM_VERSIONS);
         List<String> nonIdempotentActions = Arrays.asList(
                 OperationNames.OP_CREATE_MEMORY_STORE,
                 OperationNames.OP_UPDATE_MEMORY_STORE,

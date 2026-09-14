@@ -135,6 +135,15 @@ public class MemoryResponseParsingTest {
         assertEquals("fmdel-1", pending.getTaskId());
         assertEquals("pending", pending.getStatus());
 
+        // DeleteItemVersions is always asynchronous: the body is a bare acknowledgement with no
+        // code/data envelope, and "pending" does not mean the versions are gone yet.
+        DeleteItemVersionsResponse versionsAccepted = parse(
+                "{\"type\":\"memoryfile\",\"taskId\":\"fmverdel_task-1\",\"status\":\"pending\"}",
+                DeleteItemVersionsResponse.class);
+        assertEquals("memoryfile", versionsAccepted.getType());
+        assertEquals("fmverdel_task-1", versionsAccepted.getTaskId());
+        assertEquals("pending", versionsAccepted.getStatus());
+
         assertNoMethod(ItemVersion.class, "getVersionSeq");
         assertNoMethod(ItemVersion.class, "getSessionId");
         assertNoMethod(ItemVersionResponse.class, "getVersionSeq");

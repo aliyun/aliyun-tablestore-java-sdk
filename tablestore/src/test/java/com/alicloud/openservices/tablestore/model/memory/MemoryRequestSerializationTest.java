@@ -295,6 +295,18 @@ public class MemoryRequestSerializationTest {
                 "\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
                 "\"runId\":\"run\"}}", json(redact));
 
+        // DeleteItemVersions accepts only type/memoryStoreName/scope; any extra field makes the
+        // service reject the call with OTSResponseFail, so pin the whole body, not just some keys.
+        DeleteItemVersionsRequest deleteVersions =
+                new DeleteItemVersionsRequest("store", new Scope("app", "tenant", "agent", "*"));
+        assertJsonEquals("{\"type\":\"memoryfile\",\"memoryStoreName\":\"store\",\"scope\":{" +
+                "\"appId\":\"app\",\"tenantId\":\"tenant\",\"agentId\":\"agent\"," +
+                "\"runId\":\"*\"}}", json(deleteVersions));
+        for (String rejected : Arrays.asList("itemId", "versionId", "path", "pathPrefix",
+                "sessionId", "precondition", "operation", "filter")) {
+            assertFalse(rejected, json(deleteVersions).has(rejected));
+        }
+
         assertNoMethod(GetItemRequest.class, "getIncludeContent");
         assertNoMethod(GetItemRequest.class, "setIncludeContent", Boolean.class);
         assertNoMethod(UpdateItemRequest.class, "getNewPath");

@@ -2533,4 +2533,9 @@ public class InternalClient {
         return executeMemoryOperation(request, RedactItemVersionResponse.class, callback);
     }
 
+    public Future<DeleteItemVersionsResponse> deleteItemVersions(DeleteItemVersionsRequest request,
+            TableStoreCallback<DeleteItemVersionsRequest, DeleteItemVersionsResponse> callback) {
+        return executeMemoryOperation(request, DeleteItemVersionsResponse.class, callback);
+    }
+
 }

@@ -41,7 +41,8 @@ public class MemoryClientApiTest {
             api("deleteItem", DeleteItemRequest.class, DeleteItemResponse.class),
             api("listItemVersions", ListItemVersionsRequest.class, ListItemVersionsResponse.class),
             api("getItemVersion", GetItemVersionRequest.class, GetItemVersionResponse.class),
-            api("redactItemVersion", RedactItemVersionRequest.class, RedactItemVersionResponse.class)
+            api("redactItemVersion", RedactItemVersionRequest.class, RedactItemVersionResponse.class),
+            api("deleteItemVersions", DeleteItemVersionsRequest.class, DeleteItemVersionsResponse.class)
     };
 
     @Test
